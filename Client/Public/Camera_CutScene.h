@@ -51,6 +51,8 @@ public:
 
 	void Set_StartBlend(_bool bStartBlend) { m_bOrbitalToSetOrbital = bStartBlend; }
 	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
+
+	HRESULT InitDatas();
 private:
 	/* [ 카메라 위치, 회전 보간 ] */
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -73,7 +75,6 @@ private:
 	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
 
 	/* [ 컷씬 데이터 로드 ] */
-	HRESULT InitDatas();
 	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }

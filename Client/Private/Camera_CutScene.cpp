@@ -48,9 +48,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	{
 		m_bStopCamera = !m_bStopCamera;
 	}
+	
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
-
+	
 	if (m_bActive)
 	{
 		if (!m_bOrbitalToSetOrbital)
@@ -105,8 +106,12 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
 
 			if (iNewFrame != m_iCurrentFrame)
-			{
+			{ 
 				m_iCurrentFrame = iNewFrame;
+
+				printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				printf("%d CurrentFrame\n", m_iCurrentFrame);
 
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
@@ -146,7 +151,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			}
 		}
 	}
-	__super::Priority_Update(fTimeDelta);
+	//__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_CutScene::Update(_float fTimeDelta)
@@ -501,8 +506,6 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 			m_pTransformCom->LookAt(vtargetPos);
-			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
 			return;
 		}
 	}
@@ -516,6 +519,7 @@ XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 
 HRESULT CCamera_CutScene::InitDatas()
 {
+	m_CutSceneDatas.clear();
 
 	ifstream inFile("../Bin/Save/CutScene/WakeUp.json");
 	if (inFile.is_open())

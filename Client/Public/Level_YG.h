@@ -28,6 +28,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual HRESULT Reset() override;
+
 private:
 	HRESULT Ready_Player();
 	HRESULT Ready_Camera();
@@ -37,6 +39,7 @@ private:
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
 	HRESULT Add_MapActor(const _char* Map); //맵 액터 추가(콜라이더 활성화)
+	HRESULT Ready_Monster(const _char* Map);
 private:
 	HRESULT Load_Shader();
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

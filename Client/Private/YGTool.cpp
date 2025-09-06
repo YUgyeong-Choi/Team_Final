@@ -674,6 +674,8 @@ HRESULT CYGTool::Render_CameraTool()
 			break;
 		}
 		SaveToJsonFile(filePath, m_CameraDatas);
+
+		CCamera_Manager::Get_Instance()->GetCutScene()->InitDatas();
 	}
 
 	ImGui::End();

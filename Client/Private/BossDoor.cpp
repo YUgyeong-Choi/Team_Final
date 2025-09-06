@@ -82,7 +82,7 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pSecondAnimator->Get_CurrentAnimController()->SetState("Idle");
 		m_bRenderSecond = false;
 		m_bFinish = false;
-		m_bCanActive = true;
+		m_bCanActive = false;
 	}
 #endif // _DEBUG
 
