@@ -1,7 +1,7 @@
 #include "Camera_CutScene.h"
 #include "GameInstance.h"
 #include "Client_Calculation.h"
-
+#include "BossUnit.h"
 #include "Camera_Manager.h"
 CCamera_CutScene::CCamera_CutScene(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -44,13 +44,14 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	if (KEY_DOWN(DIK_C))
+	/*if (KEY_DOWN(DIK_C))
 	{
 		m_bStopCamera = !m_bStopCamera;
-	}
+	}*/
+	
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
-
+	
 	if (m_bActive)
 	{
 		if (!m_bOrbitalToSetOrbital)
@@ -105,8 +106,12 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
 
 			if (iNewFrame != m_iCurrentFrame)
-			{
+			{ 
 				m_iCurrentFrame = iNewFrame;
+
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("%d CurrentFrame\n", m_iCurrentFrame);
 
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
@@ -114,6 +119,8 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				Interp_OffsetPos(m_iCurrentFrame);
 				Interp_Target(m_iCurrentFrame);
 
+				Event();
+				
 				// 종료 조건
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
@@ -146,7 +153,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			}
 		}
 	}
-	__super::Priority_Update(fTimeDelta);
+	//__super::Priority_Update(fTimeDelta);
 }
 
 void CCamera_CutScene::Update(_float fTimeDelta)
@@ -174,7 +181,7 @@ HRESULT CCamera_CutScene::Render()
 	return S_OK;
 }
 
-void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
+void CCamera_CutScene::Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData)
 {
 	m_CameraDatas = CameraFrameData;
 	m_bOrbitalToSetOrbital = CameraFrameData.bOrbitalToSetOrbital;
@@ -183,7 +190,12 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
 
+
+	m_eCurrentCutScene = cutSceneType;
+
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+
+	m_iCurrentFrame = -1;
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
@@ -195,7 +207,10 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
 
+	m_eCurrentCutScene = cutSceneType;
+
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	m_iCurrentFrame = -1;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -501,8 +516,6 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 
 			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 			m_pTransformCom->LookAt(vtargetPos);
-			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-			//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
 			return;
 		}
 	}
@@ -516,6 +529,7 @@ XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 
 HRESULT CCamera_CutScene::InitDatas()
 {
+	m_CutSceneDatas.clear();
 
 	ifstream inFile("../Bin/Save/CutScene/WakeUp.json");
 	if (inFile.is_open())
@@ -664,6 +678,32 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		}
 	}
 	return data;
+}
+
+void CCamera_CutScene::Event()
+{
+	switch (m_eCurrentCutScene)
+	{
+	case Client::CUTSCENE_TYPE::WAKEUP:
+		break;
+	case Client::CUTSCENE_TYPE::TUTORIALDOOR:
+		break;
+	case Client::CUTSCENE_TYPE::OUTDOOOR:
+		break;
+	case Client::CUTSCENE_TYPE::FUOCO:
+	{
+		if (m_iCurrentFrame == 860)
+		{
+			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			unit->EnterCutScene();
+		}
+		break;
+	}
+	case Client::CUTSCENE_TYPE::FESTIVAL:
+		break;
+	default:
+		break;
+	}
 }
 
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)

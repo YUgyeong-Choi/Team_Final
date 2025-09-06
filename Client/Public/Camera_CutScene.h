@@ -36,7 +36,7 @@ public:
 	// 오비탈 초기 위치 : 플레이어 등 뒤에 위치하며 플레이어랑 같은 Look을 가진 위치
 
 	/* [ 컷씬 키프레임 설정 ] */
-	void Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData);
+	void Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData);
 
 	_int Get_CurrentFrame() { return m_iCurrentFrame; }
 
@@ -51,6 +51,8 @@ public:
 
 	void Set_StartBlend(_bool bStartBlend) { m_bOrbitalToSetOrbital = bStartBlend; }
 	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
+
+	HRESULT InitDatas();
 private:
 	/* [ 카메라 위치, 회전 보간 ] */
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -73,8 +75,10 @@ private:
 	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
 
 	/* [ 컷씬 데이터 로드 ] */
-	HRESULT InitDatas();
 	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
+
+	/* [ 이벤트 ] */
+	void Event();
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -85,6 +89,8 @@ private:
 	CGameObject* m_pPlayer = { nullptr };
 
 	CAMERA_FRAMEDATA m_CameraDatas;
+	CUTSCENE_TYPE m_eCurrentCutScene;
+
 	_bool m_bActive = false;
 	_float m_fElapsedTime = 0.f;
 	_int   m_iCurrentFrame = -1;

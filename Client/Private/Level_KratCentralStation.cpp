@@ -225,14 +225,20 @@ HRESULT CLevel_KratCentralStation::Render()
 
 HRESULT CLevel_KratCentralStation::Reset()
 {
-	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster");
+	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_Monster", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+
+	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FestivalLeader");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj);
+
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
 		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
 	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
 
 	return S_OK;
@@ -255,12 +261,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 
 	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -1178,9 +1184,13 @@ HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
 
 			wstring wsLayer = {};
 
-			if (wstrMonsterName == TEXT("FireEater") || wstrMonsterName == TEXT("FestivalLeader"))
+			if (wstrMonsterName == TEXT("FireEater"))
 			{
-				wsLayer = TEXT("Layer_Monster");
+				wsLayer = TEXT("Layer_FireEater");
+			}
+			else if (wstrMonsterName == TEXT("FestivalLeader"))
+			{
+				wsLayer = TEXT("Layer_FestivalLeader");
 			}
 			else
 			{
