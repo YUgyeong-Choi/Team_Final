@@ -94,6 +94,12 @@
         {
             "ClipName": "AS_Idle_C",
             "Duration": 337.0,
+            "Events": [
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -241,6 +247,24 @@
         {
             "ClipName": "AS_Groggy_Start_1",
             "Duration": 125.0,
+            "Events": [
+                {
+                    "EventName": "OffFury",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "ColliderRightHandOff",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "ColliderHammerOff",
+                    "Time": 3.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -429,6 +453,26 @@
                 {
                     "EventName": "EndStrikeCollisionFlag",
                     "Time": 44.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "ColliderRightHandOn",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOn",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 44.0
+                },
+                {
+                    "EventName": "ColliderRightHandOff",
+                    "Time": 44.0
                 }
             ],
             "IsLoop": false,
@@ -445,6 +489,16 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_02_Start",
             "Duration": 84.0,
+            "Events": [
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -456,10 +510,6 @@
                 {
                     "EventName": "BeginStrikeCollisionFlag",
                     "Time": 2.0
-                },
-                {
-                    "EventName": "SetRootStep",
-                    "Time": 23.0
                 }
             ],
             "IsLoop": false,
@@ -486,6 +536,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_04_Start",
             "Duration": 36.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -532,6 +588,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_06_Start",
             "Duration": 90.0,
+            "Events": [
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -736,7 +798,7 @@
             "Events": [
                 {
                     "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 35.0
+                    "Time": 30.0
                 },
                 {
                     "EventName": "EndStrikeCollisionFlag",
@@ -768,10 +830,6 @@
                 {
                     "EventName": "BeginStrikeCollisionFlag",
                     "Time": 2.0
-                },
-                {
-                    "EventName": "SetRootStep",
-                    "Time": 23.0
                 }
             ],
             "IsLoop": false,
@@ -798,6 +856,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
             "Duration": 36.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0

@@ -36,6 +36,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fChasingDistance = 4.f;
 	m_iPatternLimit = 1;
 	m_fMinimumTurnAngle = 50.f;
+	m_fChangeMoveDirCooldown = 2.f;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -410,10 +411,11 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform hammerPose = GetBonePose(m_pHammerBone);
 
-		PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.f);
+		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.f,1.f,1.f));
+		//PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.5f);
 		m_pPhysXActorComForHammer->Create_Collision(
 			m_pGameInstance->GetPhysics(),
-			hammerGeom,
+			geom,
 			hammerPose,
 			m_pGameInstance->GetMaterial(L"Default")
 		);
@@ -464,7 +466,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
 
-		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.2f);
 		m_pPhysXActorComForLeftHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			leftGeom,
@@ -489,7 +491,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	if (m_pRightHandBone)
 	{
 		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
-		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.2f);
 		m_pPhysXActorComForRightHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			rightGeom,
@@ -541,7 +543,7 @@ void CFestivalLeader::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
-		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Hand"); });
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Ref_Bip001-L-Hand"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
 	{
@@ -689,6 +691,17 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Fatal_Hit_Loop):
 	case ENUM_CLASS(BossStateID::Fatal_Hit_End):
 		m_eCurrentState = EEliteState::FATAL;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_SwingCom_Start):
+	case ENUM_CLASS(BossStateID::Atk_DashSwingCom_Start):
+		m_iSwingComboLimit++;
+		if (m_iSwingComboLimit > 3)
+		{
+			m_pAnimator->SetBool("IsCombo", false);
+			m_iSwingComboLimit = 0;
+		}
+		break;
+	case ENUM_CLASS(BossStateID::Atk_HalfSpin_Start):
 		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
@@ -847,8 +860,7 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		break;
 	case Client::CFestivalLeader::HammerSlam:
 	{
-		_int iDir = GetYawSignFromDiretion();
-		m_pAnimator->SetInt("Direction", iDir);
+
 	}
 	break;
 	case Client::CFestivalLeader::DashSwing:
@@ -1081,6 +1093,7 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 	if (m_eCurrentState == EEliteState::FATAL
 		|| m_eCurrentState == EEliteState::ATTACK)
 		return;
+	if(m_bStartPhase2 == false)
 	m_pAnimator->SetTrigger("Phase2Start");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
@@ -1089,20 +1102,11 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 	};
 	m_PatternWeightMap.clear();
 	m_PatternCountMap.clear();
-	//for (const auto& pattern : m_vecBossPatterns)
-	//{
-	//	if (pattern == P2_FireOil || pattern == P2_FireBall ||
-	//		pattern == P2_FireFlame || pattern == P2_FireBall_B)
-	//	{
-	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
-	//	}
-	//	else
-	//	{
-	//		m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
-	//	}
-
-	//	m_PatternCountMap[pattern] = 0;
-	//}
+	for (const auto& pattern : m_vecBossPatterns)
+	{
+		m_PatternWeightMap[pattern] = m_fBasePatternWeight;
+		m_PatternCountMap[pattern] = 0;
+	}
 	SwitchFury(false, 1.f);
 }
 
