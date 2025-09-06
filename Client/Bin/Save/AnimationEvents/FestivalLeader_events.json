@@ -524,7 +524,11 @@
             "Events": [
                 {
                     "EventName": "Phase2InvisibledModel",
-                    "Time": 341.0
+                    "Time": 320.0
+                },
+                {
+                    "EventName": "ShowHead",
+                    "Time": 440.0
                 }
             ],
             "IsLoop": false,
