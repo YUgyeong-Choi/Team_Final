@@ -27,6 +27,7 @@ public:
 private:
 	HRESULT Load_StaticMesh(const _char* Map);
 	HRESULT Load_Stargazer(const _char* Map);
+	HRESULT Load_ErgoItem(const _char* Map);
 
 private:
 	//∏ ≈¯ ¡∂¿€
@@ -109,7 +110,7 @@ private:
 	const _char* m_ObjType[ENUM_CLASS(CMapToolObject::OBJ_TYPE::END)] = {
 		"STATIC_MESH",
 		"STARGAZER",
-		"ITEM",
+		"ERGO_ITEM",
 		"BREAKABLE",
 	};
 

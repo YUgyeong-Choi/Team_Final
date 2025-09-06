@@ -1,6 +1,12 @@
 {
-    "ModelCount": 159,
+    "ModelCount": 160,
     "Models": [
+        {
+            "Collision": false,
+            "ModelName": "ErgoItem",
+            "ObjectCount": 0,
+            "Objects": []
+        },
         {
             "Collision": false,
             "ModelName": "SM_BuildingA_Balcony_03",

@@ -18,19 +18,19 @@ class CMapToolObject final : public CGameObject
 	friend class CMapTool;
 
 public:
-	enum class OBJ_TYPE { STATIC_MESH, STARGAZER, ITEM, BREAKABLE, END };
+	enum class OBJ_TYPE { STATIC_MESH, STARGAZER, ERGO_ITEM, BREAKABLE, END };
 
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_tchar		szModelName[MAX_PATH];
 		_tchar		szModelPrototypeTag[MAX_PATH];
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
+		//_float4x4	WorldMatrix = _float4x4(
+		//	1.f, 0.f, 0.f, 0.f,
+		//	0.f, 1.f, 0.f, 0.f,
+		//	0.f, 0.f, 1.f, 0.f,
+		//	0.f, 0.f, 0.f, 1.f
+		//);
 		_uint		iID = { 0 };
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 0.3f, 0.3f };
@@ -117,11 +117,13 @@ private:
 	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	class CEffectContainer* m_pEffect = { nullptr };
 
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Collider();
+	HRESULT Ready_Effect();
 public:
 	static CMapToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

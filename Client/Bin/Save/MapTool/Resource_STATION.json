@@ -1,5 +1,12 @@
 [
     {
+        "Collision": false,
+        "ModelName": "ErgoItem",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "FloorB",
         "NoInstancing": false,

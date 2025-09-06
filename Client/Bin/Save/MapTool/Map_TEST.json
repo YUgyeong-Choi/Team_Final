@@ -1,6 +1,12 @@
 {
-    "ModelCount": 5,
+    "ModelCount": 6,
     "Models": [
+        {
+            "Collision": false,
+            "ModelName": "ErgoItem",
+            "ObjectCount": 0,
+            "Objects": []
+        },
         {
             "Collision": true,
             "ModelName": "FloorA",

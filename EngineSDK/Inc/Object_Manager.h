@@ -5,7 +5,7 @@
 /* 레벨별로 구분하여 사본객체를 보관한다. */
 /* 리스트들로 보관한다. 리스트 == 객체들 == 내가 나누고 싶은 기준에따라 그룹짓는다. */
 
-//#include <mutex>
+#include <mutex>
 
 
 NS_BEGIN(Engine)
@@ -24,6 +24,7 @@ public:
 	HRESULT Initialize(_uint iNumLevels);
 	HRESULT Add_GameObject(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg);
 	HRESULT Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, class CGameObject** ppOut, void* pArg);
+	HRESULT Add_GameObject_And_PushOctoTree(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg);
 	HRESULT Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
 	CGameObject* Recycle_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag);
 	void Priority_Update(_float fTimeDelta);
@@ -50,7 +51,7 @@ private:
 	class CGameInstance*				m_pGameInstance = { nullptr };
 
 private:
-	//mutex m_mtx = {};
+	mutex m_mtx = {};
 
 private:
 	class CLayer* Find_Layer(_uint iLevelIndex, const _wstring& strLayerTag);

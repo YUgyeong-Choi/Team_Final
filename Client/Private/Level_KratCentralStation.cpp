@@ -86,14 +86,14 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	Reset();
 
-//#pragma region 영웅 별바라기 테스트
-//	CStargazer::STARGAZER_DESC Desc{};
-//	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-//
-//	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
-//		Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
-//		return E_FAIL;
-//#pragma endregion
+#pragma region 영웅 아이템 테스트
+	//CGameObject::GAMEOBJECT_DESC Desc{};
+	//Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+	//if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
+	//	Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))
+	//	return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -256,12 +256,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -281,6 +281,10 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
+	if (FAILED(Ready_ErgoItem()))
+		return E_FAIL;
+
+
 	if (FAILED(Ready_Stargazer()))
 		return E_FAIL;
 
@@ -1065,6 +1069,64 @@ HRESULT CLevel_KratCentralStation::Ready_Stargazer(const _char* Map)
 
 		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
 			Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_ErgoItem()
+{
+#ifdef TESTMAP
+	if (FAILED(Ready_ErgoItem("TEST")))
+		return E_FAIL;
+#endif // TESTMAP
+
+#ifndef TESTMAP
+	if (FAILED(Ready_ErgoItem("STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_ErgoItem("HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_ErgoItem("OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_ErgoItem("FIRE_EATER")))
+		return E_FAIL;
+#endif // !TESTMAP
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_ErgoItem(const _char* Map)
+{
+	string ErgoItemFilePath = string("../Bin/Save/MapTool/ErgoItem_") + Map + ".json";
+	ifstream inFile(ErgoItemFilePath);
+	if (!inFile.is_open())
+	{
+		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json ErgoItemJson;
+	inFile >> ErgoItemJson;
+	inFile.close();
+
+	// 배열 순회
+	for (auto& ErgoItemData : ErgoItemJson)
+	{
+		// 월드 행렬
+		const json& WorldMatrixJson = ErgoItemData["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		CGameObject::GAMEOBJECT_DESC Desc{};
+		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		Desc.WorldMatrix = WorldMatrix;
+
+		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
+			Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))
 			return E_FAIL;
 	}
 

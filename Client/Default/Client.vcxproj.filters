@@ -541,6 +541,9 @@
     <Filter Include="02.GameObjects\99.UI\Container\SelectLocation">
       <UniqueIdentifier>{c8d583f2-acba-448d-82c4-ff80ddc93c9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03. Item\ErgoItem">
+      <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1114,6 +1117,9 @@
     <ClInclude Include="..\public\UI_SelectLocation.h">
       <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ErgoItem.h">
+      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1660,6 +1666,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_SelectLocation.cpp">
       <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ErgoItem.cpp">
+      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
