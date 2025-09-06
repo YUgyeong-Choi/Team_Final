@@ -130,6 +130,8 @@ protected:
 	PxTransform ToPxPose(const _fmatrix& W);
 	PxTransform GetBonePose(CBone* pBone, const _matrix* pLocalOffset = nullptr) ;
 
+	void ApplyAttackTypeToPlayer(EAttackType type);
+
 public:
 	EEliteState GetCurrentState() const { return m_eCurrentState; }
 

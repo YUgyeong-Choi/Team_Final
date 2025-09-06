@@ -676,6 +676,15 @@ PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pLocalOffset)
     return ToPxPose(W);
 }
 
+void CEliteUnit::ApplyAttackTypeToPlayer(EAttackType type)
+{
+	// 이미 검사해서 넣어주는거라 static_cast
+    if (auto pPlayer = static_cast<CPlayer*>(m_pPlayer)) 
+    {
+        pPlayer->SetHitedAttackType(type);
+    }
+}
+
 void CEliteUnit::EnterFatalHit()
 {
     if (m_pAnimator && m_eCurrentState == EEliteState::GROGGY && m_eCurrentState != EEliteState::FATAL

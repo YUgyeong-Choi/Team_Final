@@ -455,10 +455,6 @@
                     "Time": 44.0
                 },
                 {
-                    "EventName": "ResetRootStep",
-                    "Time": 35.0
-                },
-                {
                     "EventName": "ColliderRightHandOn",
                     "Time": 35.0
                 },
@@ -493,10 +489,6 @@
                 {
                     "EventName": "ResetRootStep",
                     "Time": 1.0
-                },
-                {
-                    "EventName": "SetRootStep",
-                    "Time": 2.0
                 }
             ],
             "IsLoop": false,
@@ -683,15 +675,15 @@
             "Events": [
                 {
                     "EventName": "EndStrikeCollisionFlag",
-                    "Time": 20.0
+                    "Time": 25.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 20.0
+                    "Time": 25.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 20.0
+                    "Time": 25.0
                 }
             ],
             "IsLoop": false,
@@ -717,15 +709,15 @@
             "Events": [
                 {
                     "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 118.0
+                    "Time": 110.0
                 },
                 {
                     "EventName": "ColliderRightHandOn",
-                    "Time": 118.0
+                    "Time": 110.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 118.0
+                    "Time": 110.0
                 },
                 {
                     "EventName": "OnFury",

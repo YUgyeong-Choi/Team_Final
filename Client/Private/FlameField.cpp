@@ -293,19 +293,9 @@ void CFlameField::Check_SpawnEffectDistance()
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-	auto monsterList = m_pGameInstance->Get_ObjectList(iLevelIndex, TEXT("Layer_Monster"));
+	CFuoco* pFuoco = dynamic_cast<CFuoco*>(m_pGameInstance->Get_LastObject(iLevelIndex, TEXT("Layer_FireEater")));
 
-	auto it = find_if(monsterList.begin(), monsterList.end(),
-		[](CGameObject* pObj)
-		{
-			return dynamic_cast<CFuoco*>(pObj) != nullptr;
-		});
 
-	CFuoco* pFuoco = nullptr;
-	if (it != monsterList.end())
-	{
-		pFuoco = dynamic_cast<CFuoco*>(*it);
-	}
 	unordered_set<PxActor*> ignoreActors;
 	if (pFuoco)
 	{
