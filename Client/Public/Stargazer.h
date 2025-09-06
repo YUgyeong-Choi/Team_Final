@@ -14,6 +14,7 @@ NS_BEGIN(Client)
 class CStargazer : public CGameObject
 {
 public:
+	enum class STARGAZER_STATE { DESTROYED, FUNCTIONAL, END };
 	// 대화 가 있으면 이걸로 넣기
 	typedef struct tagTalkDatas
 	{
@@ -33,6 +34,8 @@ public:
 		);
 		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 	}STARGAZER_DESC;
+
+	STARGAZER_STATE Get_State() { return m_eState; }
 
 protected:
 	CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -57,10 +60,11 @@ private:
 	void LoadScriptData();
 
 private:
-	enum class STARGAZER_STATE { DESTROYED, FUNCTIONAL, END };
+
 
 private:
 	STARGAZER_STATE m_eState = { STARGAZER_STATE::END };
+	
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
@@ -82,7 +86,7 @@ private:    /* [ 컴포넌트 ] */
 	_bool m_bAutoTalk = {};
 
 	class CUI_Script_StarGazer* m_pScript = { nullptr };
-
+	vector<class CUI_Button_Script*> m_pSelectButtons;
 
 protected:
 	HRESULT Ready_Components(void* pArg);

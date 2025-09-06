@@ -5,6 +5,7 @@
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
 #include "UI_Script_StarGazer.h"
+#include "UI_Button_Script.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -102,15 +103,16 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			{
 				if (m_eScriptDatas.empty())
 				{
-					// 바로 별바라기용 스크립트로 띄우기
-					
-					// 좀 더 찾아보고
+					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
+
 					if (nullptr == m_pScript)
 					{
 					/*	m_pScript = static_cast<CUI_Script_StarGazer*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
 							ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"), nullptr));*/
 
-						
+						// 파일 찾아서 
+
+						return;
 					}
 
 				}
@@ -164,8 +166,11 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
 			}
 
+			// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
+			if (nullptr != m_pScript)
+			{
 
-
+			}
 
 		}
 

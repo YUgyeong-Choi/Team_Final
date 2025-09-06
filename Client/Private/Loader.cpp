@@ -2113,6 +2113,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Q"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_Q.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_ESC"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_ESC.dds")))))
 		return E_FAIL;
@@ -2361,6 +2366,32 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Cloud"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Effect_Cloud.dds")))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Location_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_TorsionCoil_Bg_Main.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_HotelBtn_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_TorsionCoil_HotelBtn_Bg.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_HotelBtn_Deco"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_TorsionCoil_HotelBtn_Deco.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ChapterOne"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_Chapter_One.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Location"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_Location_%d.dds"),3))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
