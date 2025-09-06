@@ -26,12 +26,12 @@ public:
 public:
 	typedef struct tagStargazerDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_float4x4	WorldMatrix = _float4x4(
+		/*_float4x4	WorldMatrix = _float4x4(
 			1.f, 0.f, 0.f, 0.f,
 			0.f, 1.f, 0.f, 0.f,
 			0.f, 0.f, 1.f, 0.f,
 			0.f, 0.f, 0.f, 1.f
-		);
+		);*/
 		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 	}STARGAZER_DESC;
 
