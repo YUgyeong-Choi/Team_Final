@@ -1,7 +1,7 @@
 #include "Camera_CutScene.h"
 #include "GameInstance.h"
 #include "Client_Calculation.h"
-
+#include "BossUnit.h"
 #include "Camera_Manager.h"
 CCamera_CutScene::CCamera_CutScene(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -119,6 +119,8 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				Interp_OffsetPos(m_iCurrentFrame);
 				Interp_Target(m_iCurrentFrame);
 
+				Event();
+				
 				// 종료 조건
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
@@ -179,7 +181,7 @@ HRESULT CCamera_CutScene::Render()
 	return S_OK;
 }
 
-void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
+void CCamera_CutScene::Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData)
 {
 	m_CameraDatas = CameraFrameData;
 	m_bOrbitalToSetOrbital = CameraFrameData.bOrbitalToSetOrbital;
@@ -187,6 +189,9 @@ void CCamera_CutScene::Set_CameraFrame(const CAMERA_FRAMEDATA CameraFrameData)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = CameraFrameData.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
+
+
+	m_eCurrentCutScene = cutSceneType;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
@@ -199,6 +204,8 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 		m_pTransformCom->Set_WorldMatrix(m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 	m_bReadyCutSceneOrbital = m_CameraDatas.bReadyCutSceneOrbital;
 	m_bReadyCutScene = false;
+
+	m_eCurrentCutScene = cutSceneType;
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 }
@@ -668,6 +675,32 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 		}
 	}
 	return data;
+}
+
+void CCamera_CutScene::Event()
+{
+	switch (m_eCurrentCutScene)
+	{
+	case Client::CUTSCENE_TYPE::WAKEUP:
+		break;
+	case Client::CUTSCENE_TYPE::TUTORIALDOOR:
+		break;
+	case Client::CUTSCENE_TYPE::OUTDOOOR:
+		break;
+	case Client::CUTSCENE_TYPE::FUOCO:
+	{
+		if (m_iCurrentFrame == 770)
+		{
+			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			unit->EnterCutScene();
+		}
+		break;
+	}
+	case Client::CUTSCENE_TYPE::FESTIVAL:
+		break;
+	default:
+		break;
+	}
 }
 
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)

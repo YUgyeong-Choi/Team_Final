@@ -6,6 +6,8 @@
 #include "Camera_Manager.h"
 
 #include "Camera_CutScene.h"
+#include "BossUnit.h"
+
 CYGTool::CYGTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -631,7 +633,7 @@ HRESULT CYGTool::Render_CameraTool()
 		pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
 
 		CCamera_Manager::Get_Instance()->SetCutSceneCam();
-		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_CameraDatas);
+		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_eCutSceneType,m_CameraDatas);
 		CCamera_Manager::Get_Instance()->GetCutScene()->PlayCutScene();
 	}
 

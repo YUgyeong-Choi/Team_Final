@@ -172,6 +172,11 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_bDebugMode = !m_bDebugMode;
 	}
 
+	if (KEY_DOWN(DIK_V))
+	{
+		Reset();
+	}
+
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
 		if (KEY_DOWN(DIK_A))
