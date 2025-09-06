@@ -367,9 +367,15 @@ void CFestivalLeader::Reset()
 	}
 	m_pModelCom->SetMeshVisible(2, true);
 	m_pModelCom->SetMeshVisible(3, true);
+	m_pModelCom->SetMeshVisible(5, true);
 
 	m_bSwitchHeadSpace = false;                       
-	m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit)); // 초기 로컬로 복원
+	if (m_pHammerBone && m_iOriginBoneIndex >= 0)
+	{
+		m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+		m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit));
+	}
+	m_pAnimator->Update(0.016f);
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
 }
