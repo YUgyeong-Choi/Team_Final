@@ -87,6 +87,8 @@ void CWeapon_Monster::Update(_float fTimeDelta)
 
 void CWeapon_Monster::Late_Update(_float fTimeDelta)
 {
+	if(m_isActive == false)
+		return;
 	//__super::Late_Update(fTimeDelta);
 	_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 

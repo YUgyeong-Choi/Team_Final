@@ -71,9 +71,6 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	//if(KEY_DOWN(DIK_C))
-	//	CCamera_Manager::Get_Instance()->SetbMoveable(true);
-
 #ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
 	{

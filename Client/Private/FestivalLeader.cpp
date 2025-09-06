@@ -76,8 +76,29 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	//	m_pModelCom->SetMeshVisible(3, false);
 	m_fMaxRootMotionSpeed = 18.f;
 
-	if(FAILED(Ready_Weapon()))
-		return E_FAIL;
+	//if(FAILED(Ready_Weapon()))
+	//	return E_FAIL;
+
+	if (m_pAnimator)
+	{
+		m_HeadLocalInit = m_pHammerBone->Get_TransformationMatrix_Float4x4();
+		m_pAnimator->PlayClip(m_pModelCom->GetAnimationClipByName("AS_Idle_C_1"), false);
+		m_pAnimator->Update(0.016f);
+		m_pModelCom->Update_Bones();
+
+		if (m_pHammerBone)
+		{
+			_matrix W_head = XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()); // 머리 컴바인드
+			_matrix W_hand = XMLoadFloat4x4(m_pRightHandBone->Get_CombinedTransformationMatrix()); // 손 컴바인드
+
+			//  손 기준 로컬 오프셋
+			_matrix attachOffset = W_head * XMMatrixInverse(nullptr, W_hand); // row
+			XMStoreFloat4x4(&m_StoredHeadLocalMatrix, attachOffset);
+		}
+
+
+		m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
+	}
 	return S_OK;
 }
 
@@ -210,12 +231,21 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	}
 
 	__super::Update(fTimeDelta);
-
+	if (m_bSwitchHeadSpace)
+	{
+		ApplyHeadSpaceSwitch(fTimeDelta);
+		Update_Collider(); 
+	}
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
+
+	//if (m_pHammer && m_pHammer->Get_isActive() == false)
+	//{
+	//	m_pHammer->Update(fTimeDelta);
+	//}
 
 //#ifdef _DEBUG
 //
@@ -337,6 +367,11 @@ void CFestivalLeader::Reset()
 	}
 	m_pModelCom->SetMeshVisible(2, true);
 	m_pModelCom->SetMeshVisible(3, true);
+
+	m_bSwitchHeadSpace = false;                       
+	m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit)); // 초기 로컬로 복원
+	m_pModelCom->Update_Bones();                      // 뼈 재계산
+	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -475,6 +510,7 @@ HRESULT CFestivalLeader::Ready_Weapon()
 	pTrans->Set_WorldMatrix(worldMat);
 
 	m_pHammer->SetisAttack(false);
+	m_pHammer->Set_isActive(false);
 	m_pHammer->Set_WeaponTrail_Active(true);
 	return S_OK;
 }
@@ -714,6 +750,20 @@ _bool CFestivalLeader::CanProcessTurn()
 	return !(m_bIsPhase2 && m_bWaitPhase2);
 }
 
+void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
+{
+	// 거꾸로 뒤집혀 있어서 x축으로 90도 회적
+	_matrix rotExtra = XMMatrixRotationX(XMConvertToRadians(90.f));
+
+	// 로컬 = 추가회전과 저장해둔 부착 오프셋 회전 후에 위치
+	_matrix L = rotExtra * XMLoadFloat4x4(&m_StoredHeadLocalMatrix);
+
+	m_pHammerBone->Set_TransformationMatrix(L);
+
+	// 뼈 정보 반영
+	m_pModelCom->Update_Bones();
+}
+
 
 void CFestivalLeader::SetupAttackByType(_int iPattern)
 {
@@ -929,8 +979,7 @@ void CFestivalLeader::Register_Events()
 			{
 				if (m_pModelCom->IsMeshVisible(2))
 				{
-				m_pModelCom->SetMeshVisible(2, false);
-
+					m_pModelCom->SetMeshVisible(2, false);
 				}
 				else
 				{
@@ -954,8 +1003,30 @@ void CFestivalLeader::Register_Events()
 				m_ePrevState = m_eCurrentState;
 				m_eCurrentState = EEliteState::ATTACK;
 			}
+			if (m_pHammerBone)
+			{
+				if(m_iOriginBoneIndex == -1)
+				m_iOriginBoneIndex = m_pHammerBone->Get_ParentBoneIndex();
+
+				m_iNewParentIndex = m_pModelCom->Find_BoneIndex("BN_Weapon_R");
+				if (m_iNewParentIndex >= 0)
+				{
+					m_pHammerBone->Set_ParentBoneIndex(m_iNewParentIndex);
+					m_bSwitchHeadSpace = true;
+				}
+			}
 		});
 
+
+	m_pAnimator->RegisterEventListener("RestoreHeadBoneIndex", [this]()
+		{
+			if (!m_pModelCom || !m_pHammerBone || m_iOriginBoneIndex < 0) return;
+			// 부모 교체
+			m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+			m_pModelCom->Update_Bones();
+			m_bSwitchHeadSpace = false;
+		});
+	
 
 }
 
@@ -1276,7 +1347,6 @@ CGameObject* CFestivalLeader::Clone(void* pArg)
 void CFestivalLeader::Free()
 {
 	__super::Free();
-	//Safe_Release(m_pHammer);
 	Safe_Release(m_pPhysXActorComForHammer);
 	Safe_Release(m_pPhysXActorComForBasket);
 }
