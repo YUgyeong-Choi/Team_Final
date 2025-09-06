@@ -1599,7 +1599,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		return;
 
 	CEffectContainer::DESC desc = {};
-	if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P2"))
+	if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5"))
 	{
 		auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 		_vector rot, trans, scale;

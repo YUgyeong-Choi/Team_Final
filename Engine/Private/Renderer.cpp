@@ -527,11 +527,6 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Effect_WB_Composite()))
-	{
-		MSG_BOX("Render_Effect_WB_Composite Failed");
-		return E_FAIL;
-	}
 
 	if (FAILED(Render_Pury()))
 	{
@@ -557,6 +552,11 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
+	if (FAILED(Render_Effect_WB_Composite()))
+	{
+		MSG_BOX("Render_Effect_WB_Composite Failed");
+		return E_FAIL;
+	}
 
 	/* 블렌딩이전에 백버퍼를 완성시킨다.  */
 	if (FAILED(Render_Blend()))

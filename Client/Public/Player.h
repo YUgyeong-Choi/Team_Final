@@ -172,7 +172,7 @@ public: /* [ 불타는 셰이딩 ] */
 	void OffBurn(_float fTimeDelta);
 
 public: /* [ 림라이트 셰이딩 ] */
-	void LimActive(_bool bOnOff, _float fSpeed);
+	void LimActive(_bool bOnOff, _float fSpeed, _float4 vColor = { 0.f, 0.749f, 1.f, 1.f }); // 기본 스킬 색상
 	void OnLim(_float fTimeDelta);
 	void OffLim(_float fTimeDelta);
 
@@ -285,6 +285,7 @@ private: /* [ 림라이트 ] */
 	_float	m_fLimPhase = {};
 	_float	m_fLimSpeed = 1.7f;
 	_bool	m_bLimSwitch = {};
+	_float4 m_vLimLightColor = { 1.f ,1.f ,1.f ,1.f };
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
