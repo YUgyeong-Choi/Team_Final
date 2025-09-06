@@ -206,35 +206,70 @@
             ]
         }
     ],
-    "vecRotData": [
-        {
-            "interpRotation": 1,
-            "keyFrame": 0,
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 50,
-            "rotation": [
-                -10.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "interpRotation": 0,
-            "keyFrame": 200,
-            "rotation": [
-                -10.0,
-                0.0,
-                0.0
-            ]
-        }
-    ],
+  "vecRotData": [
+    {
+      "interpRotation": 1,
+      "keyFrame": 0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 50,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "interpRotation": 0,
+      "keyFrame": 200,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 245,
+      "rotation": [ 0.0, 3.8, 4.5 ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 251,
+      "rotation": [ 0.0, -4.2, -5.0 ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 258,
+      "rotation": [ 0.0, -4.5, 4.7 ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 266,
+      "rotation": [ 0.0, 5.0, -4.3 ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 274,
+      "rotation": [ 0.0, -3.9, 4.8 ]
+    },
+    {
+      "interpRotation": 1,
+      "keyFrame": 282,
+      "rotation": [ 0.0, 4.4, -4.6 ]
+    },
+    {
+      "interpRotation": 0,
+      "keyFrame": 290,
+      "rotation": [ 0.0, 0.0, 0.0 ]
+    }
+  ],
     "vecTargetData": [
         {
             "distance": 3.0,

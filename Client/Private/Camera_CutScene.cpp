@@ -109,9 +109,9 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			{ 
 				m_iCurrentFrame = iNewFrame;
 
-				printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				printf("%d CurrentFrame\n", m_iCurrentFrame);
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("%d CurrentFrame\n", m_iCurrentFrame);
 
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
