@@ -526,10 +526,10 @@
                     "EventName": "Phase2InvisibledModel",
                     "Time": 320.0
                 },
-                {
-                    "EventName": "ShowHead",
-                    "Time": 440.0
-                }
+              {
+                "EventName": "RestoreHeadBoneIndex",
+                "Time": 440.0
+              }
             ],
             "IsLoop": false,
             "RootMotion": true,

@@ -190,6 +190,7 @@ private:
 	_int m_iOriginBoneIndex = -1;
 	_int m_iNewParentIndex = -1;
 	_float4x4 m_StoredHeadLocalMatrix{};
+	_float4x4 m_HeadLocalInit{};
 	_bool m_bSwitchHeadSpace = false;
 	_float3   m_vHeadExtraEulerDeg = {90.f, 0.f, 0.f}; // X=90° 기본
 	_float3   m_vHeadExtraOffset   = {0.f, 0.f, 0.f};  // 추가 위치 보정(로컬)
