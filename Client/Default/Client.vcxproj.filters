@@ -535,6 +535,9 @@
     <Filter Include="02.GameObjects\07.Effect\MeshEmitter%3f">
       <UniqueIdentifier>{27f0ce26-06a0-4848-ac27-0f3a1159fcb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script\StarGazer">
+      <UniqueIdentifier>{c9befa50-89d3-4c6f-ad8f-78751ad4ace5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1102,6 +1105,9 @@
     <ClInclude Include="..\public\MeshEmitter.h">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Script_StarGazer.h">
+      <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1642,6 +1648,9 @@
     </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Script_StarGazer.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

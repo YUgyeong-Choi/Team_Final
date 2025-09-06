@@ -113,6 +113,7 @@
 #include "DeBuff_Bar.h"
 #include "UI_Container_DeBuff.h"
 #include "WatchDog.h"
+#include "UI_Script_StarGazer.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -437,6 +438,9 @@ HRESULT CLoader::Loading_For_Static()
 		CUI_Container_DeBuff::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"),
+		CUI_Script_StarGazer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

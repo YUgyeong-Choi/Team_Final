@@ -14,6 +14,15 @@ NS_BEGIN(Client)
 class CStargazer : public CGameObject
 {
 public:
+	// 대화 가 있으면 이걸로 넣기
+	typedef struct tagTalkDatas
+	{
+		string strSoundTag;
+		string strSpeaker;
+		string strSoundText;
+	}TALKDATA;
+
+public:
 	typedef struct tagStargazerDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_float4x4	WorldMatrix = _float4x4(
@@ -44,6 +53,9 @@ private:
 	void Teleport_Stargazer(STARGAZER_TAG eTag);
 	_bool Check_Player_Close();
 
+	// 필요한 데이터를 로드함
+	void LoadScriptData();
+
 private:
 	enum class STARGAZER_STATE { DESTROYED, FUNCTIONAL, END };
 
@@ -60,6 +72,17 @@ private:    /* [ 컴포넌트 ] */
 	CModel* m_pModelCom[ENUM_CLASS(STARGAZER_STATE::END)] = {nullptr};
 	CShader* m_pShaderCom = { nullptr };
 	CAnimator* m_pAnimator[ENUM_CLASS(STARGAZER_STATE::END)] = { nullptr };
+
+	// 대화가 있으면 따로 추가하기, npc처럼
+	vector<TALKDATA> m_eScriptDatas = { };
+
+	_int m_iScriptIndex = {  };
+
+	_bool m_bTalkActive = { false };
+	_bool m_bAutoTalk = {};
+
+	class CUI_Script_StarGazer* m_pScript = { nullptr };
+
 
 protected:
 	HRESULT Ready_Components(void* pArg);

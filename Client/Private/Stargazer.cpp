@@ -2,6 +2,9 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Level.h"
+#include "UI_Manager.h"
+#include "Camera_Manager.h"
+#include "UI_Script_StarGazer.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -45,6 +48,7 @@ HRESULT CStargazer::Initialize(void* pArg)
 	m_eState = STARGAZER_STATE::DESTROYED;
 
 
+	LoadScriptData();
 
 
 
@@ -67,6 +71,117 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	//AS_Close_Idle 
 	//AS_Open
 	//AS_Open_Idle
+
+	if (Check_Player_Close())
+	{
+		if (m_eState == STARGAZER_STATE::DESTROYED)
+		{
+			CUI_Manager::Get_Instance()->Activate_Popup(true);
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
+		}
+		else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
+		{
+			if (!m_bTalkActive)
+			{
+				CUI_Manager::Get_Instance()->Activate_Popup(true);
+				CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
+			}
+			
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_E))
+		{
+			if (m_eState == STARGAZER_STATE::DESTROYED)
+			{
+				// 나중에 트리거로 바꾸기
+				m_eState = STARGAZER_STATE::FUNCTIONAL;
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				return;
+			}
+			else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
+			{
+				if (m_eScriptDatas.empty())
+				{
+					// 바로 별바라기용 스크립트로 띄우기
+					
+					// 좀 더 찾아보고
+					if (nullptr == m_pScript)
+					{
+					/*	m_pScript = static_cast<CUI_Script_StarGazer*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+							ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"), nullptr));*/
+
+						
+					}
+
+				}
+				else
+				{
+					// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
+					if (!m_bTalkActive)
+					{
+						m_bTalkActive = true;
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+						CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+						//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+
+
+						CUI_Manager::Get_Instance()->Off_Panel();
+						CUI_Manager::Get_Instance()->Activate_Popup(false);
+						CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+						CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+
+					
+					}
+				
+				}
+			}
+
+		}
+		else if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			if (m_bTalkActive)
+			{
+				++m_iScriptIndex;
+
+				// 대화 끝 인 경우.
+				if (m_iScriptIndex >= m_eScriptDatas.size())
+				{
+
+					m_iScriptIndex = 0;
+					m_bTalkActive = false;
+					m_eScriptDatas.clear();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+					// 일단...
+					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+					CUI_Manager::Get_Instance()->On_Panel();
+					return;
+				}
+
+
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+			}
+
+
+
+
+		}
+
+
+	}
+	else
+	{
+		CUI_Manager::Get_Instance()->Activate_Popup(false);
+	}
+
+	if (nullptr != m_pScript)
+	{
+		m_pScript->Update(fTimeDelta);
+	}
+
+
 
 	//상태변경
 	if (m_pGameInstance->Key_Down(DIK_C))
@@ -101,7 +216,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_0))
 	{
-		if (Check_Player_Close())
+		if (Check_Player_Close()) 
 		{
 			Teleport_Stargazer(STARGAZER_TAG::OUTER);
 		}
@@ -125,10 +240,20 @@ void CStargazer::Update(_float fTimeDelta)
 
 	if (m_pModelCom[ENUM_CLASS(m_eState)])
 		m_pModelCom[ENUM_CLASS(m_eState)]->Update_Bones();
+
+	if (nullptr != m_pScript)
+	{
+
+	}
 }
 
 void CStargazer::Late_Update(_float fTimeDelta)
 {
+	if (nullptr != m_pScript)
+	{
+		m_pScript->Late_Update(fTimeDelta);
+	}
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -245,6 +370,33 @@ _bool CStargazer::Check_Player_Close()
 		return false;
 }
 
+void CStargazer::LoadScriptData()
+{
+	// 각 타입에 맞게 파일을 저장함
+	string filename = "../Bin/Save/Stargazer/Stargazer_" + to_string(ENUM_CLASS(m_eStargazerTag)) + ".json";
+
+	ifstream ifs(filename);
+	// 파일이 없음 - 스크립트 데이터가 없음
+	if (!ifs.is_open())
+		return;
+
+	// 스크립트 데이터가 존재하면, 넣어준다
+	json j;
+
+	ifs >> j;
+
+	for (auto& entry : j["ScriptDatas"])
+	{
+		TALKDATA data;
+		data.strSoundTag = entry["SoundName"].get<std::string>();
+		data.strSpeaker = entry["Speaker"].get<std::string>();
+		data.strSoundText = entry["Text"].get<std::string>();
+		m_eScriptDatas.push_back(data);
+	}
+
+	
+}
+
 HRESULT CStargazer::Bind_ShaderResources()
 {
 	/* [ 월드 스페이스 넘기기 ] */
@@ -329,4 +481,6 @@ void CStargazer::Free()
 	
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pShaderCom);
+
+	Safe_Release(m_pScript);
 }
