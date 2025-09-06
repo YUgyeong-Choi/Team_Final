@@ -63,7 +63,7 @@ namespace Client
 	
 	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
 	
-	enum class SPAWN_TYPE {IDLE, STAND, WALK, END};
+	enum class SPAWN_TYPE {IDLE, PATROL, STAND, WALK, END};
 
 	
 

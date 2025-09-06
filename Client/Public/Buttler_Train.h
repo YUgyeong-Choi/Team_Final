@@ -71,6 +71,8 @@ private:
 	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);
 	//PxCapsuleGeometry m_DebugCapsule = PxCapsuleGeometry(0.8f, 2.0f);
 
+
+
 public:
 	static CButtler_Train* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

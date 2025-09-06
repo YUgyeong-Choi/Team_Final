@@ -487,7 +487,7 @@ _bool CMonster_Base::Check_Detect()
 		ToggleEmissive(1.f);
 		m_isDetect = true;
 		m_pAnimator->SetBool("Detect", m_isDetect);
-		
+		m_isPatrol = false;
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 		return true;
 	}
