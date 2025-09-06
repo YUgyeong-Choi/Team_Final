@@ -1879,30 +1879,19 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map); //Layer_StaticMesh_STATION, Layer_StaticMesh_HOTEL
 
 		// 락 걸기
-		lock_guard<mutex> lock(m_mtx);
+		//lock_guard<mutex> lock(m_mtx);
 
-//		//스타게이저라면 다르게 소환
-//		if (wstrModelName == TEXT("Stargazer"))
-//		{
-//#pragma region 영웅 별바라기 테스트
-//			CStargazer::STARGAZER_DESC Desc{};
-//			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-//			Desc.WorldMatrix = WorldMatrix;
-//
-//			if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
-//				Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
-//				return E_FAIL;
-//#pragma endregion
-//
-//			continue;
-//		}
 
-		CGameObject* pGameObject = nullptr;
+		if (FAILED(m_pGameInstance->Add_GameObject_And_PushOctoTree(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
+			iLevelIndex, wsLayerTag, &StaticMeshDesc)))
+			return E_FAIL;
+
+	/*	CGameObject* pGameObject = nullptr;
 		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
 			iLevelIndex, wsLayerTag, &pGameObject, &StaticMeshDesc)))
 			return E_FAIL;
 
-		m_pGameInstance->PushOctoTreeObjects(pGameObject);
+		m_pGameInstance->PushOctoTreeObjects(pGameObject);*/
 	}
 
 	return S_OK;
