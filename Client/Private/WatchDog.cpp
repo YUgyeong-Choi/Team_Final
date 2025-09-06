@@ -37,7 +37,7 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	if (FAILED(Ready_Weapon()))
 		return E_FAIL;
 
-	m_fDetectDist = 10.f;
+	m_fDetectDist = 15.f;
 	m_fGroggyThreshold = 100;
 
 	m_fHp = 300;

@@ -16,23 +16,30 @@ NS_BEGIN(Client)
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
+
+public:
+	enum class OBJ_TYPE { STATIC_MESH, STARGAZER, ERGO_ITEM, BREAKABLE, END };
+
 public:
 	typedef struct tagMapToolObjectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		_tchar		szModelName[MAX_PATH];
 		_tchar		szModelPrototypeTag[MAX_PATH];
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
+		//_float4x4	WorldMatrix = _float4x4(
+		//	1.f, 0.f, 0.f, 0.f,
+		//	0.f, 1.f, 0.f, 0.f,
+		//	0.f, 0.f, 1.f, 0.f,
+		//	0.f, 0.f, 0.f, 1.f
+		//);
 		_uint		iID = { 0 };
 		_bool		bUseTiling = { false };
 		_float2		vTileDensity = { 0.3f, 0.3f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 }; //라이트 모양
 		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
+		OBJ_TYPE	eObjType = { OBJ_TYPE::STATIC_MESH };
+		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
+		ITEM_TAG eItemTag = { ITEM_TAG::END };
 
 	}MAPTOOLOBJ_DESC;
 
@@ -62,7 +69,7 @@ public:
 		return m_ModelPrototypeTag;
 	}
 
-	_uint Get_ID() const {
+	_int Get_ID() const {
 	return m_iID;
 	}
 
@@ -78,7 +85,7 @@ private:
 	wstring m_ModelPrototypeTag = {};
 	string	m_ModelName = {};
 	//맵 오브젝트들 간 고유 식별 번호
-	_uint	m_iID = { 0 };
+	_int	m_iID = { -1 };
 
 private:
 	_bool	m_bUseTiling = { false };
@@ -100,16 +107,27 @@ private:
 	_bool			m_bDoOnce = {};
 
 private:
+	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };
+
+private:
+	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
+
+private:
+	OBJ_TYPE m_eObjType = { OBJ_TYPE::STATIC_MESH };
+
+private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom[ENUM_CLASS(LOD::END)] = {nullptr};
 	CPhysXDynamicActor* m_pPhysXActorConvexCom = { nullptr };
 	CPhysXStaticActor*	m_pPhysXActorTriangleCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
+	class CEffectContainer* m_pEffect = { nullptr };
 
 private:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Collider();
+	HRESULT Ready_Effect();
 public:
 	static CMapToolObject* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

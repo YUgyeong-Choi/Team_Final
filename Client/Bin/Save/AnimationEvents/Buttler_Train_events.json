@@ -800,9 +800,9 @@
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 60.0,
-            "IsLoop": true,
-            "RootMotion": false,
-            "TickPerSecond": 70.0
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_Walk_C_B",
@@ -840,13 +840,13 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "LookAt",
+                    "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
                 }
             ],
             "IsLoop": true,
             "RootMotion": true,
-            "TickPerSecond": 70.0
+            "TickPerSecond": 40.0
         },
         {
             "ClipName": "AS_Walk_C_L",

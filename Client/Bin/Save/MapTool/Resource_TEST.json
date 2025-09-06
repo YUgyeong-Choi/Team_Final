@@ -1,5 +1,12 @@
 [
     {
+        "Collision": false,
+        "ModelName": "ErgoItem",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "FloorA",
         "NoInstancing": false,
@@ -31,7 +38,7 @@
         "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
     }
 ]

@@ -1,0 +1,297 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.5,
+                    "G": 0.5,
+                    "R": 0.5
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1.0,
+                "SizeY": 1.0,
+                "Texturetag": "Prototype_Component_Texture_Location_BackGround",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.5,
+                "fY": 0.5,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 0.6000000238418579
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.5,
+                "SizeY": 0.30000001192092896,
+                "Texturetag": "Prototype_Component_Texture_HotelBtn_BackGround",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.25,
+                "fY": 0.75,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.07500000298023224,
+                "SizeY": 0.25,
+                "Texturetag": "Prototype_Component_Texture_HotelBtn_Deco",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.049000002443790436,
+                "fY": 0.7540000677108765,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.4000000059604645,
+                    "G": 0.4000000059604645,
+                    "R": 0.4000000059604645
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.0010000000474974513,
+                "SizeY": 0.800000011920929,
+                "Texturetag": "Prototype_Component_Texture_Line_Vertical",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.05900000035762787,
+                "fY": 0.609000027179718,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.4000000059604645,
+                    "G": 0.4000000059604645,
+                    "R": 0.4000000059604645
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 1.0,
+                "SizeY": 0.001500000013038516,
+                "Texturetag": "Prototype_Component_Texture_Line_Center",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.5,
+                "fY": 0.2380000203847885,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.02500000037252903,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_Q",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.057999998331069946,
+                "fY": 0.19699999690055847,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.02500000037252903,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_E",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.14800000190734863,
+                "fY": 0.19699999690055847,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.02500000037252903,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_ESC",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.1550000011920929,
+                "fY": 0.8849999904632568,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.04500000178813934,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_Space",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.09000000357627869,
+                "fY": 0.8849999904632568,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.04500000178813934,
+                "SizeY": 0.04500000178813934,
+                "Texturetag": "Prototype_Component_Texture_Weapon_Background",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.10249999910593033,
+                "fY": 0.19699999690055847,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.02500000037252903,
+                "SizeY": 0.04500000178813934,
+                "Texturetag": "Prototype_Component_Texture_ChapterOne",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.10249999910593033,
+                "fY": 0.19499999284744263,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 1.0
+                },
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.032999999821186066,
+                "SizeY": 0.0020000000949949026,
+                "Texturetag": "Prototype_Component_Texture_Line_Center",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.10300000011920929,
+                "fY": 0.2380000203847885,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "별바라기",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.699999988079071,
+                    "G": 0.699999988079071,
+                    "R": 0.699999988079071
+                },
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.5,
+                "SizeY": 0.5,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.07400000095367432,
+                "fY": 0.09000000357627869,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

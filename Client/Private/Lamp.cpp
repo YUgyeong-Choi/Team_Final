@@ -118,7 +118,7 @@ CLamp* CLamp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	CLamp* pInstance = new CLamp(pDevice, pContext);
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CLamp");
 		Safe_Release(pInstance);
 	}
 	return pInstance;
@@ -128,7 +128,7 @@ CGameObject* CLamp::Clone(void* pArg)
 	CLamp* pInstance = new CLamp(*this);
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer");
+		MSG_BOX("Failed to Cloned : CLamp");
 		Safe_Release(pInstance);
 	}
 	return pInstance;

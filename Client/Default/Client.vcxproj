@@ -169,6 +169,7 @@
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
+    <ClInclude Include="..\public\BreakableMesh.h" />
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\Buttler_Range.h" />
     <ClInclude Include="..\public\DeBuff_Bar.h" />
@@ -191,6 +192,7 @@
     <ClInclude Include="..\public\DecalToolObject.h" />
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
+    <ClInclude Include="..\public\ErgoItem.h" />
     <ClInclude Include="..\Public\FestivalLeader.h" />
     <ClInclude Include="..\Public\KeyDoor.h" />
     <ClInclude Include="..\public\MeshEmitter.h" />
@@ -307,8 +309,10 @@
     <ClInclude Include="..\public\UI_MonsterHP_Bar.h" />
     <ClInclude Include="..\public\UI_Pickup_Item.h" />
     <ClInclude Include="..\public\UI_Popup.h" />
+    <ClInclude Include="..\public\UI_Script_StarGazer.h" />
     <ClInclude Include="..\public\UI_Script_Talk.h" />
     <ClInclude Include="..\public\UI_Script_Text.h" />
+    <ClInclude Include="..\public\UI_SelectLocation.h" />
     <ClInclude Include="..\public\UI_SelectWeapon.h" />
     <ClInclude Include="..\public\UI_Sequence.h" />
     <ClInclude Include="..\public\UI_Text.h" />
@@ -361,6 +365,7 @@
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
+    <ClCompile Include="..\private\BreakableMesh.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\Buttler_Range.cpp" />
     <ClCompile Include="..\private\DeBuff_Bar.cpp" />
@@ -378,6 +383,7 @@
     <ClCompile Include="..\private\DecalToolObject.cpp" />
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
+    <ClCompile Include="..\private\ErgoItem.cpp" />
     <ClCompile Include="..\Private\FestivalLeader.cpp" />
     <ClCompile Include="..\Private\KeyDoor.cpp" />
     <ClCompile Include="..\private\MeshEmitter.cpp" />
@@ -493,8 +499,10 @@
     <ClCompile Include="..\private\UI_MonsterHP_Bar.cpp" />
     <ClCompile Include="..\private\UI_Pickup_Item.cpp" />
     <ClCompile Include="..\private\UI_Popup.cpp" />
+    <ClCompile Include="..\private\UI_Script_StarGazer.cpp" />
     <ClCompile Include="..\private\UI_Script_Talk.cpp" />
     <ClCompile Include="..\private\UI_Script_Text.cpp" />
+    <ClCompile Include="..\private\UI_SelectLocation.cpp" />
     <ClCompile Include="..\private\UI_SelectWeapon.cpp" />
     <ClCompile Include="..\private\UI_Sequence.cpp" />
     <ClCompile Include="..\private\UI_Text.cpp" />

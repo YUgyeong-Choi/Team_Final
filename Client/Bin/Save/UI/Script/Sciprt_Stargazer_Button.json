@@ -1,0 +1,75 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Caption": "선택",
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 0.800000011920929,
+                    "G": 0.800000011920929,
+                    "R": 0.800000011920929
+                },
+                "FontSize": 0.6499999761581421,
+                "Padding": {
+                    "X": 0.0,
+                    "Y": 10.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "RotationZ": 0.0,
+                "SizeX": 0.07500000298023224,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.8980000019073486,
+                "fY": 0.925000011920929,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "닫기",
+                "Color": {
+                    "A": 0.800000011920929,
+                    "B": 0.800000011920929,
+                    "G": 0.800000011920929,
+                    "R": 0.800000011920929
+                },
+                "FontSize": 0.6499999761581421,
+                "Padding": {
+                    "X": 0.0,
+                    "Y": 10.0
+                },
+                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "RotationZ": 0.0,
+                "SizeX": 0.06199999898672104,
+                "SizeY": 0.03999999910593033,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.9574999809265137,
+                "fY": 0.925000011920929,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

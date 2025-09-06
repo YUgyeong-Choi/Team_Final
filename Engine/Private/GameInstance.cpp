@@ -323,6 +323,11 @@ HRESULT CGameInstance::Add_GameObjectReturn(_uint iPrototypeLevelIndex, const _w
 	return m_pObject_Manager->Add_GameObjectReturn(iPrototypeLevelIndex, strPrototypeTag, iLevelIndex, strLayerTag, ppOut, pArg);
 }
 
+HRESULT CGameInstance::Add_GameObject_And_PushOctoTree(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg)
+{
+	return m_pObject_Manager->Add_GameObject_And_PushOctoTree(iPrototypeLevelIndex, strPrototypeTag, iLevelIndex, strLayerTag, pArg);
+}
+
 HRESULT CGameInstance::Push_GameObject(CGameObject* pObj, _uint iLevelIndex, const _wstring& strLayerTag)
 {
 	return m_pObject_Manager->Push_GameObject(pObj, iLevelIndex, strLayerTag);

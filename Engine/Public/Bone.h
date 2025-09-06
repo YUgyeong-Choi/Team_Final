@@ -20,7 +20,9 @@ public:
 	const _float4x4* Get_TransformationMatrix() const {
 		return &m_TransformationMatrix;
 	}
-
+	_float4x4& Get_TransformationMatrix_Float4x4() {
+		return m_TransformationMatrix;
+	}
 	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
 	}
@@ -66,6 +68,10 @@ public:
 
 	_int Get_UseParentIndex() const {
 		return m_iUseParentIndex;
+	}
+
+	void Set_ParentBoneIndex(_int iParentIndex) {
+		m_iParentBoneIndex = iParentIndex;
 	}
 
 private:

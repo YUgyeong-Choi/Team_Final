@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+
 CMapToolObject::CMapToolObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
 {
@@ -46,6 +49,15 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//인스턴싱 제외 여부
 	m_bNoInstancing = pDesc->bNoInstancing;
 
+	//오브젝트 타입
+	m_eObjType = pDesc->eObjType;
+
+	//별바라기 태그
+	m_eStargazerTag = pDesc->eStargazerTag;
+
+	//아이템 태그
+	m_eItemTag = pDesc->eItemTag;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
@@ -57,6 +69,11 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	else
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorConvexCom->Get_Actor());
 
+
+	if (m_eObjType == OBJ_TYPE::ERGO_ITEM)
+	{
+		Ready_Effect();
+	}
 
 	return S_OK;
 }
@@ -442,6 +459,28 @@ HRESULT CMapToolObject::Ready_Collider()
 	return S_OK;
 }
 
+
+
+HRESULT CMapToolObject::Ready_Effect()
+{
+	if (m_pEffect != nullptr)
+	{
+		m_pEffect->Set_isActive(true);
+		//m_pEffect->Set_Loop(true);
+		return S_OK;
+	}
+
+
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+	if (nullptr == m_pEffect)
+		MSG_BOX("이펙트 생성 실패함");
+
+	return S_OK;
+}
 
 CMapToolObject* CMapToolObject::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

@@ -2,6 +2,10 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Level.h"
+#include "UI_Manager.h"
+#include "Camera_Manager.h"
+#include "UI_Script_StarGazer.h"
+#include "UI_Button_Script.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -40,9 +44,17 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
+	m_eStargazerTag = pDesc->eStargazerTag;
+
 	m_eState = STARGAZER_STATE::DESTROYED;
 
+	Register_Events();
 
+	LoadScriptData();
+
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
@@ -64,40 +76,175 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	//AS_Open
 	//AS_Open_Idle
 
-	//상태변경
-	if (m_pGameInstance->Key_Down(DIK_C))
+	if (Check_Player_Close())
 	{
 		if (m_eState == STARGAZER_STATE::DESTROYED)
-			m_eState = STARGAZER_STATE::FUNCTIONAL;
-		else
-			m_eState = STARGAZER_STATE::DESTROYED;
+		{
+			CUI_Manager::Get_Instance()->Activate_Popup(true);
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
+		}
+		else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
+		{
+			if (!m_bTalkActive)
+			{
+				CUI_Manager::Get_Instance()->Activate_Popup(true);
+				CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
+			}
+			
+		}
+
+		if (m_pGameInstance->Key_Down(DIK_E))
+		{
+			if (m_eState == STARGAZER_STATE::DESTROYED)
+			{
+				// 나중에 트리거로 바꾸기
+				m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+
+				//m_eState = STARGAZER_STATE::FUNCTIONAL;
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				return;
+			}
+			else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
+			{
+				if (m_eScriptDatas.empty())
+				{
+					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
+
+					if (nullptr == m_pScript)
+					{
+					/*	m_pScript = static_cast<CUI_Script_StarGazer*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+							ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"), nullptr));*/
+
+						// 파일 찾아서 
+
+						return;
+					}
+
+				}
+				else
+				{
+					// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
+					if (!m_bTalkActive)
+					{
+						m_bTalkActive = true;
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+						CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+						//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+
+
+						CUI_Manager::Get_Instance()->Off_Panel();
+						CUI_Manager::Get_Instance()->Activate_Popup(false);
+						CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+						CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+
+					
+					}
+				
+				}
+			}
+
+		}
+		else if (m_pGameInstance->Key_Down(DIK_SPACE))
+		{
+			if (m_bTalkActive)
+			{
+				++m_iScriptIndex;
+
+				// 대화 끝 인 경우.
+				if (m_iScriptIndex >= m_eScriptDatas.size())
+				{
+
+					m_iScriptIndex = 0;
+					m_bTalkActive = false;
+					m_eScriptDatas.clear();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+					// 일단...
+					CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+					CUI_Manager::Get_Instance()->On_Panel();
+					return;
+				}
+
+
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+			}
+
+			// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
+			if (nullptr != m_pScript)
+			{
+
+			}
+
+		}
+
+
+	}
+	else
+	{
+		CUI_Manager::Get_Instance()->Activate_Popup(false);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_R))
+	if (nullptr != m_pScript)
 	{
-		m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+		m_pScript->Update(fTimeDelta);
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_O))
-	{
-		m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
-	}
+
+
+	//상태변경
+	//if (m_pGameInstance->Key_Down(DIK_C))
+	//{
+	//	if (m_eState == STARGAZER_STATE::DESTROYED)
+	//		m_eState = STARGAZER_STATE::FUNCTIONAL;
+	//	else
+	//		m_eState = STARGAZER_STATE::DESTROYED;
+	//}
+
+	//if (m_pGameInstance->Key_Down(DIK_R))
+	//{
+	//	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+	//}
+
+	//if (m_pGameInstance->Key_Down(DIK_O))
+	//{
+	//	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+	//}
 
 	//플레이어와 가깝고 E를 누르면 다른 별바라기로 이동(테스트)
 	//플레이어쪽으로 코드 옮기는 작업 필요할지도
 	if (m_pGameInstance->Key_Down(DIK_E))
 	{
-		//플레이어가 가까운지 체크
-		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vDiff = vPos - vPlayerPos;
-		_float fDist = XMVectorGetX(XMVector3Length(vDiff));
-
-		if (fDist < 2.f)
+		if (Check_Player_Close())
 		{
 			//리셋
 			m_pGameInstance->Get_CurrentLevel()->Reset();
 			m_pPlayer->Reset();
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_0))
+	{
+		if (Check_Player_Close()) 
+		{
+			Teleport_Stargazer(STARGAZER_TAG::OUTER);
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_9))
+	{
+		if (Check_Player_Close())
+		{
+			Teleport_Stargazer(STARGAZER_TAG::FIRE_EATER);
+		}
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_MINUS))
+	{
+		if (Check_Player_Close())
+		{
+			Teleport_Stargazer(STARGAZER_TAG::FESTIVAL_LEADER);
 		}
 	}
 	 
@@ -111,10 +258,20 @@ void CStargazer::Update(_float fTimeDelta)
 
 	if (m_pModelCom[ENUM_CLASS(m_eState)])
 		m_pModelCom[ENUM_CLASS(m_eState)]->Update_Bones();
+
+	if (nullptr != m_pScript)
+	{
+
+	}
 }
 
 void CStargazer::Late_Update(_float fTimeDelta)
 {
+	if (nullptr != m_pScript)
+	{
+		m_pScript->Late_Update(fTimeDelta);
+	}
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -137,6 +294,12 @@ HRESULT CStargazer::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom[ENUM_CLASS(m_eState)]->Render(i)))
+			return E_FAIL;
+	}
+
+	if (m_pGameInstance->Get_RenderMapCollider())
+	{
+		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 			return E_FAIL;
 	}
 
@@ -188,6 +351,88 @@ void CStargazer::Find_Player()
 	Safe_AddRef(m_pPlayer);
 }
 
+void CStargazer::Register_Events()
+{
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("ChangeModel", [this]()
+		{
+			if (m_eState == STARGAZER_STATE::DESTROYED)
+				m_eState = STARGAZER_STATE::FUNCTIONAL;
+			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+		});
+}
+
+void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
+{
+	//별바라기 리스트에서 같은 태그를 찾고 그곳으로 플레이어 이동시켜라
+
+	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Stargazer"));
+
+	for (CGameObject* pObj : ObjList)
+	{
+		if (static_cast<CStargazer*>(pObj)->m_eStargazerTag == eTag)
+		{
+			_float3 vPos;
+			XMStoreFloat3(&vPos, pObj->Get_TransfomCom()->Get_State(STATE::POSITION));
+
+			//살짝 위로
+			vPos.y += 1.f;
+			//살짝 뒤로
+			vPos.x -= 2.f;
+
+			PxVec3 pxPos(vPos.x, vPos.y, vPos.z);
+
+			PxTransform posTrans = PxTransform(pxPos);
+
+			m_pPlayer->Get_Controller()->Set_Transform(posTrans);
+
+			break;
+		}
+	}
+
+
+}
+
+_bool CStargazer::Check_Player_Close()
+{
+	//플레이어가 가까운지 체크
+	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDiff = vPos - vPlayerPos;
+	_float fDist = XMVectorGetX(XMVector3Length(vDiff));
+
+	if (fDist < 2.f)
+		return true;
+	else 
+		return false;
+}
+
+void CStargazer::LoadScriptData()
+{
+	// 각 타입에 맞게 파일을 저장함
+	string filename = "../Bin/Save/Stargazer/Stargazer_" + to_string(ENUM_CLASS(m_eStargazerTag)) + ".json";
+
+	ifstream ifs(filename);
+	// 파일이 없음 - 스크립트 데이터가 없음
+	if (!ifs.is_open())
+		return;
+
+	// 스크립트 데이터가 존재하면, 넣어준다
+	json j;
+
+	ifs >> j;
+
+	for (auto& entry : j["ScriptDatas"])
+	{
+		TALKDATA data;
+		data.strSoundTag = entry["SoundName"].get<std::string>();
+		data.strSpeaker = entry["Speaker"].get<std::string>();
+		data.strSoundText = entry["Text"].get<std::string>();
+		m_eScriptDatas.push_back(data);
+	}
+
+	
+}
+
 HRESULT CStargazer::Bind_ShaderResources()
 {
 	/* [ 월드 스페이스 넘기기 ] */
@@ -202,6 +447,50 @@ HRESULT CStargazer::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_Collider()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = {};
+
+	/*if (pArg != nullptr)
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
+	}
+	else
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
+	}*/
+
+	_float3 vHalf = _float3(0.5f, 0.5f, 0.5f);
+
+	halfExtents = VectorToPxVec3(XMLoadFloat3(&vHalf));
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
+	//m_pPhysXActorCom->Set_Kinematic(true);
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
@@ -231,6 +520,10 @@ HRESULT CStargazer::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
 
 
 	return S_OK;
@@ -272,4 +565,7 @@ void CStargazer::Free()
 	
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pShaderCom);
+
+	Safe_Release(m_pScript);
+	Safe_Release(m_pPhysXActorCom);
 }

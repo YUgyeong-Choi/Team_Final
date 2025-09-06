@@ -55,10 +55,12 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	m_pWeapon->Collider_FilterOff();
 
-	/*if (m_eSpawnType == SPAWN_TYPE::STAND)
+	if (m_eSpawnType == SPAWN_TYPE::PATROL)
 	{
-		m_pAnimator->SetTrigger("SpawnStand");
-	}*/
+		m_pAnimator->SetTrigger("SpawnPatrol");
+		m_isPatrol = true;
+
+	}
 	
 	return S_OK; 
 }
@@ -121,6 +123,18 @@ void CButtler_Train::Update(_float fTimeDelta)
 	if (m_strStateName.find("Getup") != m_strStateName.npos)
 	{
 		m_isFatal = false;
+	}
+
+	if (m_isPatrol)
+	{
+		m_fPatrolTime += fTimeDelta;
+
+		if (m_fPatrolTime > 7.5f)
+		{
+			m_pAnimator->SetBool("Turn", true);
+			m_fPatrolTime = 0.f;
+		}
+	
 	}
 
 }
@@ -280,6 +294,7 @@ void CButtler_Train::Update_State()
 	}
 
 
+	
 
 
 }
@@ -410,6 +425,9 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 			fSpeed = 0.5f;
 		}
 
+		if(m_strStateName.find("Patrol") != m_strStateName.npos)
+			fSpeed = 0.25f;
+
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 		
 		m_vPushDir  = XMVector3Normalize(m_vPushDir);
@@ -431,6 +449,15 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 			m_isCollisionPlayer = false;
 		}
 
+		if (m_strStateName.find("Turn") != m_strStateName.npos)
+		{
+			_vector vAxis = {0.f,1.f,0.f,0.f};
+			m_isLookAt = false;
+			m_pTransformCom->Rotate_Special(fTimeDelta, 1.f, vAxis, 180.f);
+			m_pAnimator->SetBool("Turn", false);
+			return;
+		}
+
 
 		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
 		{
@@ -446,7 +473,7 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 		if (m_strStateName.find("Away") != m_strStateName.npos)
 		{
 			m_fAwaySpeed -= fTimeDelta * 0.5f;
-
+			
 			if (m_fAwaySpeed <= 0.f)
 				m_fAwaySpeed = 0.f;
 
@@ -520,6 +547,13 @@ void CButtler_Train::Register_Events()
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
 		});
+
+	m_pAnimator->RegisterEventListener("Turn", [this]() {
+
+		m_pWeapon->SetisAttack(true);
+		m_pWeapon->Clear_CollisionObj();
+		});
+
 
 }
 

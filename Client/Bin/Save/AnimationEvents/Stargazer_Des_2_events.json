@@ -7,12 +7,18 @@
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-        {
-            "ClipName": "AS_Stargazer_restore",
-            "Duration": 220.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        }
+      {
+        "ClipName": "AS_Stargazer_restore",
+        "Duration": 220.0,
+        "Events": [
+          {
+            "EventName": "ChangeModel",
+            "Time": 219.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      }
     ]
 }

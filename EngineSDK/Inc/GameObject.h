@@ -12,6 +12,13 @@ public:
 	{
 		_tchar		szName[MAX_PATH];
 		_uint		iLevelID = { 0 }; // ±âº» static
+
+		_float4x4	WorldMatrix = _float4x4(
+			1.f, 0.f, 0.f, 0.f,
+			0.f, 1.f, 0.f, 0.f,
+			0.f, 0.f, 1.f, 0.f,
+			0.f, 0.f, 0.f, 1.f
+		);
 	}GAMEOBJECT_DESC;
 
 protected:

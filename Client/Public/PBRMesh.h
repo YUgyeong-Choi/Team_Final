@@ -25,12 +25,12 @@ public:
 		_float3 		InitScale = { 1.f, 1.f, 1.f };
 
 		_tchar		szModelPrototypeTag[MAX_PATH];
-		_float4x4	WorldMatrix = _float4x4(
-			1.f, 0.f, 0.f, 0.f,
-			0.f, 1.f, 0.f, 0.f,
-			0.f, 0.f, 1.f, 0.f,
-			0.f, 0.f, 0.f, 1.f
-		);
+		//_float4x4	WorldMatrix = _float4x4(
+		//	1.f, 0.f, 0.f, 0.f,
+		//	0.f, 1.f, 0.f, 0.f,
+		//	0.f, 0.f, 1.f, 0.f,
+		//	0.f, 0.f, 0.f, 1.f
+		//);
 
 	}STATICMESH_DESC;
 

@@ -535,6 +535,18 @@
     <Filter Include="02.GameObjects\07.Effect\MeshEmitter%3f">
       <UniqueIdentifier>{27f0ce26-06a0-4848-ac27-0f3a1159fcb9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Script\StarGazer">
+      <UniqueIdentifier>{c9befa50-89d3-4c6f-ad8f-78751ad4ace5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\SelectLocation">
+      <UniqueIdentifier>{c8d583f2-acba-448d-82c4-ff80ddc93c9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03. Item\ErgoItem">
+      <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13. DynamicMesh\01.BreakableMesh">
+      <UniqueIdentifier>{a8dc9d78-dfec-4a6e-b3b0-6f4ebac7416f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1102,6 +1114,18 @@
     <ClInclude Include="..\public\MeshEmitter.h">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Script_StarGazer.h">
+      <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_SelectLocation.h">
+      <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ErgoItem.h">
+      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BreakableMesh.h">
+      <Filter>02.GameObjects\13. DynamicMesh\01.BreakableMesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1642,6 +1666,18 @@
     </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Script_StarGazer.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_SelectLocation.cpp">
+      <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ErgoItem.cpp">
+      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BreakableMesh.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\01.BreakableMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

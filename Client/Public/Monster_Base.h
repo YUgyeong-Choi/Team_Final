@@ -131,6 +131,9 @@ protected:
 
 
 	_vector m_vKnockBackDir = {};
+
+	_bool m_isPatrol = {};
+	_float m_fPatrolTime = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

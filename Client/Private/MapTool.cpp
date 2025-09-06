@@ -15,6 +15,8 @@
 
 #include "Client_Function.h"
 
+#include "EffectContainer.h"
+
 
 
 //ImGuiFileDialog g_ImGuiFileDialog;
@@ -344,13 +346,26 @@ HRESULT CMapTool::Save(const _char* Map)
 {
 	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
 	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
+	//별바라기
+	string StargazerPath = string("../Bin/Save/MapTool/Stargazer_") + Map + ".json";
+	//에르고아이템
+	string ErgoItemPath = string("../Bin/Save/MapTool/ErgoItem_") + Map + ".json";
 
-	filesystem::create_directories("../Bin/Save/MapTool");
 	ofstream MapDataFile(MapPath); //맵별로 데이터를 저장해야지, Map_Station; Map_Hotel; Map_Test;
 	ofstream ReadyModelFile(ResourcePath);//맵별로도 리소스 저장, Resource_Station; Resource_Hotel; Resoucce_Test;
 
+	//별바라기
+	ofstream StargazerFile(StargazerPath);
+	//에르고 아이템
+	ofstream ErgoItemFile(ErgoItemPath);
+
 	json ReadyModelJsonArray = json::array();
 	json MapDataJson; // 모델과 오브젝트 정보 저장용
+
+	//별바라기
+	json StargazerJsonArray = json::array();
+	//에르고 아이템
+	json ErgoItemJsonArray = json::array();
 
 	//현재 필드에 존재하는 모델들의 레이어 이름들을 가져온다.
 	vector<wstring> LayerNames = m_pGameInstance->Find_LayerNamesContaining(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MapToolObject_"));
@@ -387,12 +402,12 @@ HRESULT CMapTool::Save(const _char* Map)
 		_uint iLength = static_cast<_uint>(ModelName.length());
 
 		// 오브젝트 갯수 저장
-		_uint iObjectCount = static_cast<_uint>(MapObjectList.size());
+		_uint iObjectCount = 0;
 
 		// 모델 JSON
 		json ModelJson;
 		ModelJson["ModelName"] = strModelName;
-		ModelJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());
+		//ModelJson["ObjectCount"] = static_cast<_uint>(MapObjectList.size());
 		ModelJson["Collision"] = false;
 		ModelJson["Objects"] = json::array();
 
@@ -420,27 +435,75 @@ HRESULT CMapTool::Save(const _char* Map)
 
 			CMapToolObject* pMapToolObject = static_cast<CMapToolObject*>(pGameObject);
 
-			ObjectJson["WorldMatrix"] = MatrixJson;
-			if(pMapToolObject->m_bUseTiling)
-				ObjectJson["TileDensity"] = { pMapToolObject->m_TileDensity[0], pMapToolObject->m_TileDensity[1] };
-
-			ObjectJson["ColliderType"] = static_cast<_int>(pMapToolObject->m_eColliderType);
-			//한번이라도 충돌체가 있으면 인스턴싱으로 못부르게 만들 것임
-			if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+			//스태틱 메쉬만 저장
+			if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::STATIC_MESH)
 			{
-				ModelJson["Collision"] = true;
-				ReadyModelJson["Collision"] = true;
+				//카운트 증가 
+				iObjectCount++;
+
+				ObjectJson["WorldMatrix"] = MatrixJson;
+				if (pMapToolObject->m_bUseTiling)
+					ObjectJson["TileDensity"] = { pMapToolObject->m_TileDensity[0], pMapToolObject->m_TileDensity[1] };
+
+				ObjectJson["ColliderType"] = static_cast<_int>(pMapToolObject->m_eColliderType);
+
+				//한번이라도 충돌체가 있으면 인스턴싱으로 못부르게 만들 것임
+				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+				{
+					ModelJson["Collision"] = true;
+					ReadyModelJson["Collision"] = true;
+				}
+
+				//라이트 모양
+				ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
+
+				//인스턴싱 제외
+				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+
+				ModelJson["Objects"].push_back(ObjectJson);
 			}
-			
-			//라이트 모양
-			ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
+			else if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER) // 별바라기라면
+			{
+				//별바라기 제이슨에 저장
+				json StargazerJson;
 
-			//인스턴싱 제외
-			ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
-			ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+				// 위치 행렬 저장
+				StargazerJson["WorldMatrix"] = MatrixJson;
 
-			ModelJson["Objects"].push_back(ObjectJson);
+				//스타게이트 태그 저장
+				StargazerJson["Tag"] = static_cast<_uint>(pMapToolObject->m_eStargazerTag);
+
+				StargazerJsonArray.push_back(StargazerJson);
+
+				// ReadyModelJson은 별도로 유지 (충돌 체크 등)
+				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+					ReadyModelJson["Collision"] = true;
+
+				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+			}
+			else if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::ERGO_ITEM) // 에르고아이템이라면
+			{
+				//에르고 제이슨에 저장
+				json ErgoItemJson;
+
+				// 위치 행렬 저장
+				ErgoItemJson["WorldMatrix"] = MatrixJson;
+
+				//아이템 태그 저장
+				ErgoItemJson["Tag"] = static_cast<_uint>(pMapToolObject->m_eItemTag);
+
+				ErgoItemJsonArray.push_back(ErgoItemJson);
+
+				// ReadyModelJson은 별도로 유지 (충돌 체크 등)
+				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+					ReadyModelJson["Collision"] = true;
+
+				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+			}
 		}
+
+		ModelJson["ObjectCount"] = iObjectCount;
 
 		ReadyModelJsonArray.push_back(ReadyModelJson);
 		MapDataJson["Models"].push_back(ModelJson);
@@ -449,23 +512,21 @@ HRESULT CMapTool::Save(const _char* Map)
 	// 파일에 JSON 쓰기
 	ReadyModelFile << ReadyModelJsonArray.dump(4);
 	MapDataFile << MapDataJson.dump(4);
+	StargazerFile << StargazerJsonArray.dump(4);
+	ErgoItemFile << ErgoItemJsonArray.dump(4);
 
 	MapDataFile.close();
 	ReadyModelFile.close();
+	StargazerFile.close();
+	ErgoItemFile.close();
 
 	MSG_BOX("맵 저장 성공");
 
 	return S_OK;
 }
 
-HRESULT CMapTool::Load(const _char* Map)
+HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 {
-	//현재 맵에 배치된 오브젝트를 모두 삭제하자
-	Clear_Map();
-
-	//로드 맵 하기전에 모델을 준비하자
-	Ready_Model(Map);
-
 	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
 	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
 
@@ -543,15 +604,164 @@ HRESULT CMapTool::Load(const _char* Map)
 			if (Models[i].contains("NoInstancing"))
 				MapToolObjDesc.bNoInstancing = Models[i]["NoInstancing"].get<_bool>();
 
+			MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::STATIC_MESH;
+
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YW), TEXT("Prototype_GameObject_MapToolObject"),
 				ENUM_CLASS(LEVEL::YW), LayerTag, &MapToolObjDesc)))
 				return E_FAIL;
 
-			//방금 추가한서을 모델 그룹에 분류해서 저장
+			//방금 추가한것을 모델 그룹에 분류해서 저장
 			Add_ModelGroup(ModelName, m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 
 		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Load_Stargazer(const _char* Map)
+{
+	// 별바라기 JSON 경로
+	string StargazerPath = string("../Bin/Save/MapTool/Stargazer_") + Map + ".json";
+
+	ifstream inFile(StargazerPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json StargazerDataJson;
+	inFile >> StargazerDataJson;
+	inFile.close();
+
+	// 배열이니까 바로 순회
+	for (const auto& StargazerObj : StargazerDataJson)
+	{
+		const json& WorldMatrixJson = StargazerObj["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		// 별바라기 디스크립터 생성
+		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+		MapToolObjDesc.WorldMatrix = WorldMatrix;
+		MapToolObjDesc.iID = ++m_iID;
+		MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::STARGAZER;
+		lstrcpy(MapToolObjDesc.szModelName, TEXT("Stargazer"));
+		lstrcpy(MapToolObjDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Stargazer"));
+
+		if (StargazerObj.contains("Tag") && StargazerObj["Tag"].is_number_unsigned())
+		{
+			MapToolObjDesc.eStargazerTag = static_cast<STARGAZER_TAG>(StargazerObj["Tag"].get<_uint>());
+		}
+		else
+		{
+			MapToolObjDesc.eStargazerTag = STARGAZER_TAG::END;
+		}
+
+
+		// 게임 오브젝트 생성
+		if (FAILED(m_pGameInstance->Add_GameObject(
+			ENUM_CLASS(LEVEL::YW),
+			TEXT("Prototype_GameObject_MapToolObject"),
+			ENUM_CLASS(LEVEL::YW),
+			TEXT("Layer_MapToolObject_Stargazer"),
+			&MapToolObjDesc)))
+		{
+			return E_FAIL;
+		}
+
+		//방금 추가한것을 모델 그룹에 분류해서 저장
+		Add_ModelGroup("Stargazer", m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MapToolObject_Stargazer")));
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Load_ErgoItem(const _char* Map)
+{
+	// 에르고아이템 JSON 경로
+	string ItemPath = string("../Bin/Save/MapTool/ErgoItem_") + Map + ".json";
+
+	ifstream inFile(ItemPath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"ErgoItem_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json ItemDataJson;
+	inFile >> ItemDataJson;
+	inFile.close();
+
+	// 배열이니까 바로 순회
+	for (const auto& ItemObj : ItemDataJson)
+	{
+		const json& WorldMatrixJson = ItemObj["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		// 아이템 디스크립터 생성
+		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+		MapToolObjDesc.WorldMatrix = WorldMatrix;
+		MapToolObjDesc.iID = ++m_iID;
+		MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::ERGO_ITEM;
+		lstrcpy(MapToolObjDesc.szModelName, TEXT("ErgoItem"));
+		lstrcpy(MapToolObjDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_ErgoItem"));
+
+		if (ItemObj.contains("Tag") && ItemObj["Tag"].is_number_unsigned())
+		{
+			MapToolObjDesc.eItemTag = static_cast<ITEM_TAG>(ItemObj["Tag"].get<_uint>());
+		}
+		else
+		{
+			MapToolObjDesc.eItemTag = ITEM_TAG::END;
+		}
+
+		// 게임 오브젝트 생성
+		if (FAILED(m_pGameInstance->Add_GameObject(
+			ENUM_CLASS(LEVEL::YW),
+			TEXT("Prototype_GameObject_MapToolObject"),
+			ENUM_CLASS(LEVEL::YW),
+			TEXT("Layer_MapToolObject_ErgoItem"),
+			&MapToolObjDesc)))
+		{
+			return E_FAIL;
+		}
+
+		//방금 추가한것을 모델 그룹에 분류해서 저장
+		Add_ModelGroup("ErgoItem", m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MapToolObject_ErgoItem")));
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapTool::Load(const _char* Map)
+{
+	//현재 맵에 배치된 오브젝트를 모두 삭제하자
+	Clear_Map();
+
+	//로드 맵 하기전에 모델을 준비하자
+	Ready_Model(Map);
+
+	if (FAILED(Load_StaticMesh(Map)))
+		return E_FAIL;
+
+	if (FAILED(Load_Stargazer(Map)))
+		return E_FAIL;
+
+	if (FAILED(Load_ErgoItem(Map)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -1017,23 +1227,44 @@ void CMapTool::Render_Detail()
 
 	ImGui::Separator();
 
+	Detail_ObjType();
+
+	ImGui::Separator();
+
 	Detail_Transform();
 
-	ImGui::Separator();
+	//스태틱 메쉬일때만 렌더
+	if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STATIC_MESH)
+	{
+		ImGui::Separator();
 
-	Detail_Collider();
+		Detail_Collider();
 
-	ImGui::Separator();
+		ImGui::Separator();
 
-	Detail_Tile();
+		Detail_Tile();
 
-	ImGui::Separator();
+		ImGui::Separator();
+
+		Detail_LightShape();
+
+		ImGui::Separator();
+
+		Detail_NoInstancing();
+	}
+	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
+	{
+		//별바라기 태그
+		ImGui::Separator();
+		Detail_StargazerTag();
+	}
+	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::ERGO_ITEM)
+	{
+		//아이템 태그
+		ImGui::Separator();
+		Detail_ItemTag();
+	}
 	
-	Detail_LightShape();
-
-	ImGui::Separator();
-
-	Detail_NoInstancing();
 
 	ImGui::End();
 #pragma endregion
@@ -1701,6 +1932,46 @@ void CMapTool::Detail_Name()
 	ImGui::Text(m_pFocusObject->Get_ModelName().c_str());
 }
 
+
+
+void CMapTool::Detail_ObjType()
+{
+	ImGui::Text("ObjectType");
+
+	if (m_pFocusObject)
+	{
+		// 콜라이더 타입 선택 콤보박스
+		//const _char* ColliderTypes[] = { "None", "Convex", "Triangle" };
+		_int iCurType = static_cast<_int>(m_pFocusObject->m_eObjType);
+
+		if (ImGui::Combo("Obj Type", &iCurType, m_ObjType, IM_ARRAYSIZE(m_ObjType)))
+		{
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->m_eObjType = static_cast<CMapToolObject::OBJ_TYPE>(iCurType);
+
+				//에르고 아이템 종류라면 이펙트 생성 아닐시 끄기
+				if (pObj->m_eObjType == CMapToolObject::OBJ_TYPE::ERGO_ITEM)
+				{
+					pObj->Ready_Effect();
+				}
+				else
+				{
+					if (pObj->m_pEffect)
+					{
+						//pObj->m_pEffect->End_Effect();
+						pObj->m_pEffect->Set_isActive(false);
+						//pObj->m_pEffect->Set_Loop(false);
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
 void CMapTool::Detail_Transform()
 {
 	ImGui::Text("Transform");
@@ -1955,6 +2226,46 @@ void CMapTool::Detail_NoInstancing()
 		}
 	}
 
+}
+
+void CMapTool::Detail_StargazerTag()
+{
+	ImGui::Text("Stargazer Tag");
+
+	if (m_pFocusObject)
+	{
+		_int iCurTag = static_cast<_int>(m_pFocusObject->m_eStargazerTag);
+
+		if (ImGui::Combo("Stargazer Tag", &iCurTag, m_StargazerTag, IM_ARRAYSIZE(m_StargazerTag)))
+		{
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->m_eStargazerTag = static_cast<STARGAZER_TAG>(iCurTag);
+			}
+		}
+
+	}
+}
+
+void CMapTool::Detail_ItemTag()
+{
+	ImGui::Text("Item Tag");
+
+	if (m_pFocusObject)
+	{
+		_int iCurTag = static_cast<_int>(m_pFocusObject->m_eItemTag);
+
+		if (ImGui::Combo("Item Tag", &iCurTag, m_ItemTag, IM_ARRAYSIZE(m_ItemTag)))
+		{
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->m_eItemTag = static_cast<ITEM_TAG>(iCurTag);
+			}
+		}
+
+	}
 }
 
 HRESULT CMapTool::Add_Favorite(const string& ModelName, _bool bSave)

@@ -63,7 +63,7 @@ namespace Client
 	
 	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
 	
-	enum class SPAWN_TYPE {IDLE, STAND, WALK, END};
+	enum class SPAWN_TYPE {IDLE, PATROL, STAND, WALK, END};
 
 	
 
@@ -76,6 +76,24 @@ namespace Client
 		LOD0 = 0,
 		LOD1,
 		LOD2,
+		END
+	};
+
+	//별바라기 태그
+	enum class STARGAZER_TAG 
+	{
+		OUTER,
+		FESTIVAL_LEADER,
+		FIRE_EATER,
+		END
+	};
+	//아이템 태그
+	enum class ITEM_TAG
+	{
+		COGWHEEL, //톱니바퀴
+		PULSE_CELL, //펄스 전지
+		ERGO_SHARD, //희미한 에르고 조각
+		PASSENGER_NOTE, //승객의 쪽지
 		END
 	};
 #pragma endregion

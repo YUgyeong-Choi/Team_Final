@@ -73,18 +73,18 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 
 	//if(KEY_DOWN(DIK_C))
 	//	CCamera_Manager::Get_Instance()->SetbMoveable(true);
-
-#ifdef _DEBUG
-	if (KEY_DOWN(DIK_X))
-	{
-		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
-		if (m_pSecondAnimator)
-			m_pSecondAnimator->Get_CurrentAnimController()->SetState("Idle");
-		m_bRenderSecond = false;
-		m_bFinish = false;
-		m_bCanActive = true;
-	}
-#endif // _DEBUG
+//
+//#ifdef _DEBUG
+//	if (KEY_DOWN(DIK_X))
+//	{
+//		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");h
+//		if (m_pSecondAnimator)
+//			m_pSecondAnimator->Get_CurrentAnimController()->SetState("Idle");
+//		m_bRenderSecond = false;
+//		m_bFinish = false;
+//		m_bCanActive = true;
+//	}
+//#endif // _DEBUG
 
 	if (m_bStartSound)
 		Play_Sound(fTimeDelta);
