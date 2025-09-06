@@ -80,11 +80,20 @@ namespace Client
 	};
 
 	//별바라기 태그
-	enum class STARGAZER_TAG
+	enum class STARGAZER_TAG 
 	{
 		OUTER,
 		FESTIVAL_LEADER,
 		FIRE_EATER,
+		END
+	};
+	//아이템 태그
+	enum class ITEM_TAG
+	{
+		COGWHEEL, //톱니바퀴
+		PULSE_CELL, //펄스 전지
+		ERGO_SHARD, //희미한 에르고 조각
+		PASSENGER_NOTE, //승객의 쪽지
 		END
 	};
 #pragma endregion

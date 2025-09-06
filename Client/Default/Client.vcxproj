@@ -169,6 +169,7 @@
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
+    <ClInclude Include="..\public\BreakableMesh.h" />
     <ClInclude Include="..\public\Bullet.h" />
     <ClInclude Include="..\public\Buttler_Range.h" />
     <ClInclude Include="..\public\DeBuff_Bar.h" />
@@ -364,6 +365,7 @@
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
+    <ClCompile Include="..\private\BreakableMesh.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
     <ClCompile Include="..\private\Buttler_Range.cpp" />
     <ClCompile Include="..\private\DeBuff_Bar.cpp" />

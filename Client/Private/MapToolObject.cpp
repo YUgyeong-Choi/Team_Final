@@ -55,6 +55,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//별바라기 태그
 	m_eStargazerTag = pDesc->eStargazerTag;
 
+	//아이템 태그
+	m_eItemTag = pDesc->eItemTag;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 

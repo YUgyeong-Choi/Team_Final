@@ -39,6 +39,7 @@ public:
 		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
 		OBJ_TYPE	eObjType = { OBJ_TYPE::STATIC_MESH };
 		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
+		ITEM_TAG eItemTag = { ITEM_TAG::END };
 
 	}MAPTOOLOBJ_DESC;
 
@@ -107,6 +108,9 @@ private:
 
 private:
 	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };
+
+private:
+	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
 
 private:
 	OBJ_TYPE m_eObjType = { OBJ_TYPE::STATIC_MESH };

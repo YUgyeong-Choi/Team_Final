@@ -10,9 +10,8 @@
 #include "StaticMesh_Instance.h"
 #include "Nav.h"
 #include "Static_Decal.h"
-
-//별바라기 테스트
 #include "Stargazer.h"
+#include "ErgoItem.h"
 #pragma endregion
 
 #include "SlideDoor.h"
@@ -1121,9 +1120,23 @@ HRESULT CLevel_KratCentralStation::Ready_ErgoItem(const _char* Map)
 			for (_int col = 0; col < 4; ++col)
 				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-		CGameObject::GAMEOBJECT_DESC Desc{};
+		CErgoItem::ERGOITEM_DESC Desc{};
 		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 		Desc.WorldMatrix = WorldMatrix;
+
+		if (ErgoItemData.contains("Tag") && ErgoItemData["Tag"].is_number_unsigned())
+		{
+			Desc.eItemTag = static_cast<ITEM_TAG>(ErgoItemData["Tag"].get<_uint>());
+		}
+		else
+		{
+			//태그 안달아주면 희미한 에르고로 하자
+			Desc.eItemTag = ITEM_TAG::ERGO_SHARD;
+			//MSG_BOX("아이템 태그를 안달아줌!!!!");
+
+			//return E_FAIL;
+		}
+
 
 		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
 			Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))

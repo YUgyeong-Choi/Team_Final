@@ -490,6 +490,9 @@ HRESULT CMapTool::Save(const _char* Map)
 				// 위치 행렬 저장
 				ErgoItemJson["WorldMatrix"] = MatrixJson;
 
+				//아이템 태그 저장
+				ErgoItemJson["Tag"] = static_cast<_uint>(pMapToolObject->m_eItemTag);
+
 				ErgoItemJsonArray.push_back(ErgoItemJson);
 
 				// ReadyModelJson은 별도로 유지 (충돌 체크 등)
@@ -707,7 +710,7 @@ HRESULT CMapTool::Load_ErgoItem(const _char* Map)
 			for (_int col = 0; col < 4; ++col)
 				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-		// 별바라기 디스크립터 생성
+		// 아이템 디스크립터 생성
 		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
 		MapToolObjDesc.WorldMatrix = WorldMatrix;
 		MapToolObjDesc.iID = ++m_iID;
@@ -715,6 +718,14 @@ HRESULT CMapTool::Load_ErgoItem(const _char* Map)
 		lstrcpy(MapToolObjDesc.szModelName, TEXT("ErgoItem"));
 		lstrcpy(MapToolObjDesc.szModelPrototypeTag, TEXT("Prototype_Component_Model_ErgoItem"));
 
+		if (ItemObj.contains("Tag") && ItemObj["Tag"].is_number_unsigned())
+		{
+			MapToolObjDesc.eItemTag = static_cast<ITEM_TAG>(ItemObj["Tag"].get<_uint>());
+		}
+		else
+		{
+			MapToolObjDesc.eItemTag = ITEM_TAG::END;
+		}
 
 		// 게임 오브젝트 생성
 		if (FAILED(m_pGameInstance->Add_GameObject(
@@ -1243,10 +1254,17 @@ void CMapTool::Render_Detail()
 	}
 	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
 	{
-		//스타게이저 태그
+		//별바라기 태그
 		ImGui::Separator();
 		Detail_StargazerTag();
 	}
+	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::ERGO_ITEM)
+	{
+		//아이템 태그
+		ImGui::Separator();
+		Detail_ItemTag();
+	}
+	
 
 	ImGui::End();
 #pragma endregion
@@ -2224,6 +2242,26 @@ void CMapTool::Detail_StargazerTag()
 			for (CMapToolObject* pObj : m_SelectedObjects)
 			{
 				pObj->m_eStargazerTag = static_cast<STARGAZER_TAG>(iCurTag);
+			}
+		}
+
+	}
+}
+
+void CMapTool::Detail_ItemTag()
+{
+	ImGui::Text("Item Tag");
+
+	if (m_pFocusObject)
+	{
+		_int iCurTag = static_cast<_int>(m_pFocusObject->m_eItemTag);
+
+		if (ImGui::Combo("Item Tag", &iCurTag, m_ItemTag, IM_ARRAYSIZE(m_ItemTag)))
+		{
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->m_eItemTag = static_cast<ITEM_TAG>(iCurTag);
 			}
 		}
 

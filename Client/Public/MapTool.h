@@ -100,8 +100,11 @@ private:
 	void Detail_LightShape();
 	void Detail_NoInstancing();
 
-	//스타게이저
+	//별 바라기 태그
 	void Detail_StargazerTag();
+
+	//아이템 태그
+	void Detail_ItemTag();
 
 private:
 	HRESULT Add_Favorite(const string& ModelName, _bool bSave);
@@ -119,6 +122,14 @@ private:
 		"OUTER",
 		"FESTIVAL_LEADER",
 		"FIRE_EATER",
+	};
+
+private:
+	const _char* m_ItemTag[ENUM_CLASS(ITEM_TAG::END)] = {
+		"COGWHEEL", //톱니바퀴
+		"PULSE_CELL", //펄스 전지
+		"ERGO_SHARD", //희미한 에르고 조각
+		"PASSENGER_NOTE", //승객의 쪽지
 	};
 
 private:

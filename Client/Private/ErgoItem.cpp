@@ -29,9 +29,11 @@ HRESULT CErgoItem::Initialize(void* pArg)
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 	
-	GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
+	m_eItemTag = pDesc->eItemTag;
 
 	return S_OK;
 }
@@ -56,7 +58,7 @@ void CErgoItem::Late_Update(_float fTimeDelta)
 
 HRESULT CErgoItem::Render()
 {
-	if (FAILED(Bind_ShaderResources()))
+	/*if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
@@ -75,19 +77,19 @@ HRESULT CErgoItem::Render()
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
-	}
+	}*/
 
 	return S_OK;
 }
 
 HRESULT CErgoItem::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
-		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+	//	return E_FAIL;
+	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -95,14 +97,14 @@ HRESULT CErgoItem::Bind_ShaderResources()
 HRESULT CErgoItem::Ready_Components()
 {
 	/* Com_Shader */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
+	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
+	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	//	return E_FAIL;
 
 	/* For.Com_Model */ 	//아이템 테스트용 모델
-	if (FAILED(__super::Add_Component(m_iLevelID, TEXT("Prototype_Component_Model_ErgoItem"),
-		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-		return E_FAIL;
+	//if (FAILED(__super::Add_Component(m_iLevelID, TEXT("Prototype_Component_Model_ErgoItem"),
+	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -142,6 +144,6 @@ void CErgoItem::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pShaderCom);
+	//Safe_Release(m_pModelCom);
+	//Safe_Release(m_pShaderCom);
 }

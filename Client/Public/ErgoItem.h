@@ -15,6 +15,12 @@ NS_BEGIN(Client)
 
 class CErgoItem final : public CItem
 {
+public:
+	typedef struct tagErgoItemDesc : public CItem::GAMEOBJECT_DESC
+	{
+		ITEM_TAG eItemTag = { ITEM_TAG::END };
+	}ERGOITEM_DESC;
+
 private:
 	CErgoItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CErgoItem(const CErgoItem& Prototype);
@@ -34,8 +40,10 @@ public:
 	HRESULT Ready_Components();
 	HRESULT Ready_Effect();
 
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
+
+	//CShader* m_pShaderCom = { nullptr };
+	//CModel* m_pModelCom = { nullptr };
 
 public:
 	static CErgoItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
