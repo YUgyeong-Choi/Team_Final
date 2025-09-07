@@ -10,7 +10,7 @@
         {
             "ClipName": "AS_Debuff_Fire_Loop",
             "Duration": 120.0,
-            "IsLoop": true,
+            "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
         },
@@ -70,13 +70,31 @@
             "RootMotion": false,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_Groggy_Start",
-            "Duration": 125.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_Groggy_Start",
+        "Duration": 125.0,
+        "Events": [
+          {
+            "EventName": "OffFury",
+            "Time": 3.0
+          },
+          {
+            "EventName": "ColliderLeftHandOff",
+            "Time": 3.0
+          },
+          {
+            "EventName": "ColliderRightHandOff",
+            "Time": 3.0
+          },
+          {
+            "EventName": "ColliderHammerOff",
+            "Time": 3.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_Hit_Dead_F",
             "Duration": 300.0,
@@ -269,13 +287,19 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_Idle_C_1",
-            "Duration": 337.0,
-            "IsLoop": true,
-            "RootMotion": false,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_Idle_C_1",
+        "Duration": 337.0,
+        "Events": [
+          {
+            "EventName": "ResetRootStep",
+            "Time": 1.0
+          }
+        ],
+        "IsLoop": true,
+        "RootMotion": false,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_Idle_Loco_1",
             "Duration": 120.0,
@@ -422,6 +446,18 @@
                 {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 23.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 6.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 1.5
                 }
             ],
             "IsLoop": false,
@@ -438,6 +474,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_01_Start",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 17.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -489,6 +531,10 @@
                 {
                     "EventName": "ResetRootStep",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "Turnning",
+                    "Time": 12.0
                 }
             ],
             "IsLoop": false,
@@ -502,6 +548,10 @@
                 {
                     "EventName": "BeginStrikeCollisionFlag",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -532,6 +582,10 @@
                 {
                     "EventName": "SetRootStep",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 30.0
                 }
             ],
             "IsLoop": false,
@@ -584,6 +638,18 @@
                 {
                     "EventName": "ResetRootStep",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "Turnning",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 81.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 87.0
                 }
             ],
             "IsLoop": false,
@@ -753,23 +819,35 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
-            "Duration": 24.0,
-            "Events": [
-                {
-                    "EventName": "ColliderLeftHandOn",
-                    "Time": 15.0
-                },
-                {
-                    "EventName": "ColliderLeftHandOff",
-                    "Time": 23.0
-                }
-            ],
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
+        "Duration": 24.0,
+        "Events": [
+          {
+            "EventName": "ColliderLeftHandOn",
+            "Time": 15.0
+          },
+          {
+            "EventName": "ColliderLeftHandOff",
+            "Time": 23.0
+          },
+          {
+            "EventName": "FastAnimSpeed",
+            "Time": 6.0
+          },
+          {
+            "EventName": "ResetAnimSpeed",
+            "Time": 20.0
+          },
+          {
+            "EventName": "SlowAnimSpeed",
+            "Time": 1.5
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_ATHBoss0_Skill_01_End_1",
             "Duration": 72.0,
@@ -777,30 +855,52 @@
             "RootMotion": false,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
-            "Duration": 60.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 65.0
-        },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_02_Attack_1",
-            "Duration": 78.0,
-            "Events": [
-                {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 30.0
-                },
-                {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 44.0
-                }
-            ],
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
+        "Duration": 60.0,
+        "Events": [
+          {
+            "EventName": "Turnning",
+            "Time": 17.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 65.0
+      },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_02_Attack_1",
+        "Duration": 78.0,
+        "Events": [
+          {
+            "EventName": "BeginStrikeCollisionFlag",
+            "Time": 35.0
+          },
+          {
+            "EventName": "EndStrikeCollisionFlag",
+            "Time": 44.0
+          },
+          {
+            "EventName": "ColliderRightHandOn",
+            "Time": 35.0
+          },
+          {
+            "EventName": "ColliderLeftHandOn",
+            "Time": 35.0
+          },
+          {
+            "EventName": "ColliderLeftHandOff",
+            "Time": 44.0
+          },
+          {
+            "EventName": "ColliderRightHandOff",
+            "Time": 44.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_ATHBoss0_Skill_02_End_1",
             "Duration": 140.0,
@@ -808,26 +908,40 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_02_Start_1",
-            "Duration": 84.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_04_Attack_1",
-            "Duration": 24.0,
-            "Events": [
-                {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 2.0
-                }
-            ],
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_02_Start_1",
+        "Duration": 84.0,
+        "Events": [
+          {
+            "EventName": "ResetRootStep",
+            "Time": 1.0
+          },
+          {
+            "EventName": "Turnning",
+            "Time": 12.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_04_Attack_1",
+        "Duration": 24.0,
+        "Events": [
+          {
+            "EventName": "BeginStrikeCollisionFlag",
+            "Time": 2.0
+          },
+          {
+            "EventName": "ResetAnimSpeed",
+            "Time": 1.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_ATHBoss0_Skill_04_End_1",
             "Duration": 42.0,
@@ -845,19 +959,23 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
-            "Duration": 36.0,
-            "Events": [
-                {
-                    "EventName": "SetRootStep",
-                    "Time": 2.0
-                }
-            ],
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
+        "Duration": 36.0,
+        "Events": [
+          {
+            "EventName": "SetRootStep",
+            "Time": 1.0
+          },
+          {
+            "EventName": "SlowAnimSpeed",
+            "Time": 30.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_ATHBoss0_Skill_05_1",
             "Duration": 148.0,
@@ -1041,7 +1159,7 @@
             "Duration": 120.0,
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_13_Attack",

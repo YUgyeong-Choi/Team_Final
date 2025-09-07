@@ -464,7 +464,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
 
-		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForLeftHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			leftGeom,
@@ -490,7 +490,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
 
-		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForRightHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			rightGeom,
@@ -656,7 +656,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	m_iPrevNodeID = m_iCurNodeID;
 	m_iCurNodeID = iNodeID;
 	m_ePrevState = m_eCurrentState;
-
+	m_bRootMotionClamped = false;
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(BossStateID::CutScene_Start):
@@ -724,8 +724,19 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Atk_HammerSlam_Loop):
 		m_eAttackType = EAttackType::STAMP;
 		break;
+	case ENUM_CLASS(BossStateID::Atk_HammerSlam_End):
+		m_pAnimator->SetFloat("Distance", Get_DistanceToPlayer());
+		break;
 	case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_Start):
 		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_Strike_Start):
+	case ENUM_CLASS(BossStateID::Atk_Strike_Loop):
+	case ENUM_CLASS(BossStateID::Atk_Strike_End):
+	case ENUM_CLASS(BossStateID::Atk_Jump_Start):
+	case ENUM_CLASS(BossStateID::Atk_Jump_Loop):
+	case ENUM_CLASS(BossStateID::Atk_Jump_End):
+		m_bRootMotionClamped = true;
 		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
@@ -908,7 +919,8 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	default:
 		break;
 	}
-	if (iPattern == Client::CFestivalLeader::Strike)
+	if (iPattern == Client::CFestivalLeader::Strike
+		||iPattern ==Client::CFestivalLeader::JumpAttack )
 	{
 		m_bRootMotionClamped = true;
 	}
@@ -929,17 +941,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
-			_bool bIsFront = IsTargetInFront(180.f);
-
-			if (bIsFront == false)
-			{
-				SetTurnTimeDuringAttack(2.5f, 1.4f);
-			}
-			else
-			{
-				SetTurnTimeDuringAttack(1.3f);
-			}
-
+			SetTurnTimeDuringAttack(0.7f,1.15f);
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
@@ -1119,6 +1121,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 		return;
 	if(m_bStartPhase2 == false)
 	m_pAnimator->SetTrigger("Phase2Start");
+	m_pAnimator->SetBool("Phase2Combo", true);
+	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::STRONG_KNOCKBACK); // 바스켓에 충돌했을 때를 생각해서 
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
