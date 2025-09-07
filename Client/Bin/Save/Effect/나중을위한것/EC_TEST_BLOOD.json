@@ -16,10 +16,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 48,
+            "Duration": 23,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 48,
+            "EndTrack": 23,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -50,7 +50,7 @@
                     ]
                 }
             ],
-            "LifeTime": 718.959716796875,
+            "LifeTime": 775.1217041015625,
             "Loop": false,
             "Name": "Sprite",
             "NumKeyFrames": 1,
@@ -77,8 +77,8 @@
         },
         {
             "Accel": [
-                0.0,
-                0.0
+                -30.0,
+                -28.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -100,12 +100,12 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 48,
+            "Duration": 75,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 48,
+            "EndTrack": 75,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": 11.0,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -136,7 +136,7 @@
                     ]
                 }
             ],
-            "LifeTime": 716.2242431640625,
+            "LifeTime": 1020.9102172851563,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 2.0
@@ -145,7 +145,7 @@
             "Loop": false,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 5.0,
             "Name": "player_hit_blood1",
             "NumInstance": 60,
             "NumKeyFrames": 1,
@@ -186,8 +186,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                5.0,
-                6.0
+                8.449999809265137,
+                11.899999618530273
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -226,10 +226,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 63,
+            "Duration": 24,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 63,
+            "EndTrack": 24,
             "FlipUV": true,
             "KeyFrames": [
                 {
@@ -260,7 +260,7 @@
                     ]
                 }
             ],
-            "LifeTime": 48.18146514892578,
+            "LifeTime": 104.3205795288086,
             "Loop": false,
             "Name": "Sprite",
             "NumKeyFrames": 1,
@@ -346,7 +346,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1442.8875732421875,
+            "LifeTime": 1751.872802734375,
             "LifeTime_Particle": [
                 0.07999999821186066,
                 0.23999999463558197

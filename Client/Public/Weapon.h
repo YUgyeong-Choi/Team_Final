@@ -152,7 +152,8 @@ protected:
 	_int				m_iHandleIndex = {};
 
 protected:				/* [ 무기들이 보통 공통적으로 트레일 이펙트를 갖고 있기 때문에 추가합니다. ] */
-	class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };	// 각자 이펙트가 있을 경우에 Ready_Effect든 뭐든 해서 만들어 사용.
+	class CSwordTrailEffect* m_pTrailEffect[TRAIL_END] = { nullptr }; // 스킬 시에 나오는 트레일 이펙트 전용
+	//class CSwordTrailEffect* m_pWeaponTrailEffect = { nullptr };	// 각자 이펙트가 있을 경우에 Ready_Effect든 뭐든 해서 만들어 사용.
 	vector<CGameObject*> m_CollisonObjects;
 
 protected: /* [ 히트랙 ] */

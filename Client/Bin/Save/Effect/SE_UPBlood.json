@@ -1,0 +1,75 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 24,
+    "EffectType": 0,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 24,
+    "FlipUV": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                2.200000047683716,
+                3.0,
+                2.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                1.2000000476837158,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 108.16062927246094,
+    "Loop": false,
+    "Name": "Sprite",
+    "NumKeyFrames": 1,
+    "RenderGroup": 9,
+    "ShaderPass": 3,
+    "StartTrack": 0,
+    "TextureTags": [
+        "T_SubUV_Blood_01_8x8_SC_KMH",
+        "",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        false,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 150.0,
+    "TileX": 8,
+    "TileY": 8
+}

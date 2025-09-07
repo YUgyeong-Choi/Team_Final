@@ -130,11 +130,14 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 		XMStoreFloat4x4(&m_CombinedWorldMatrix,
 			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
 		);
+		if (m_bBillboard)
+			XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 	}
-
-	if (m_bBillboard)
-		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
-		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+	else
+	{
+		if (m_bBillboard)
+			m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+	}
 
 
 	if (m_bAnimation)

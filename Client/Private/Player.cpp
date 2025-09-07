@@ -2034,6 +2034,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 				}
 
 				m_bIsHit = true;
+				Create_HitEffect();
 				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
 				return;
 			}
@@ -2051,6 +2052,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 		//가드 중이 아니라면 피격상태로 넘긴다.
 		m_bIsHit = true;
+		Create_HitEffect();
 
 	}
 	/* [ 보스 몬스터 피격 ] */
@@ -2239,7 +2241,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 		//가드 중이 아니라면 피격상태로 넘긴다.
 		m_bIsHit = true;
-
+		Create_HitEffect();
 	}
 	/* [ 보스 몬스터 피격 ] */
 	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
@@ -2302,6 +2304,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 				m_bIsHit = true;
 				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
+				Create_HitEffect();
 				return;
 			}
 
@@ -3244,6 +3247,57 @@ void CPlayer::Set_GrinderEffect_Active(_bool bActive)
 		}
 	}
 
+}
+
+void CPlayer::Create_HitEffect()
+{
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	vPos += m_vHitNormal * 0.3f;
+	_float3 vEffPos = {};
+	XMStoreFloat3(&vEffPos, vPos);
+	vEffPos.y += 1.7f;
+
+	CEffectContainer::DESC desc = {};
+
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.5f, 1.5f, 1.5f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+	// 스파크 이펙트
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+
+	_vector vFrom = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 기준: +Y
+	_vector vTo = XMVector3Normalize(-m_vHitNormal);         // 원하는 방향
+
+	_vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(qRot) * XMMatrixTranslation(vEffPos.x, vEffPos.y - 0.2f, vEffPos.z));
+	// 피 이펙트
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TEST_BLOOD_UP"), &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_GuardEffect(_bool isPerfect)
+{
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
+
+	vPos += vDir * 1.5f;
+
+	_float3 vEffPos = {};
+	XMStoreFloat3(&vEffPos, vPos);
+	vEffPos.y += 0.5f;
+
+	CEffectContainer::DESC desc = {};
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
+
+	CGameObject* pEffect = { nullptr };
+	if (isPerfect)
+		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6pls"), &desc);
+	else
+		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerGuardNormal_P2"), &desc);
+
+	if (pEffect == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 void CPlayer::Movement(_float fTimeDelta)
