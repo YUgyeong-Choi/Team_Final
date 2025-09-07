@@ -169,6 +169,27 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Factory_Pipe_01_PipePillar_6_f1",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f1.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Pipe_01_PipePillar_6_f6",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_Pipe_01_PipePillar_6_f7",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Factory_Rail_06",
         "NoInstancing": false,
         "ObjectCount": 48,
