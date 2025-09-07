@@ -121,7 +121,7 @@ void CUI_Manager::Activate_Popup(_bool isActive)
 	if (nullptr == pUI)
 		return;
 
-	pUI->Set_isActive(isActive);
+	static_cast<CUI_Popup*>(pUI)->Active_Update(isActive);
 
 }
 

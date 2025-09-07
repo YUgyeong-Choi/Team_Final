@@ -257,3 +257,9 @@ static _vector XMQuaternionRotationVectorToVector(_fvector vFrom, _fvector vTo)
     _float angle = acosf(dot);
     return XMQuaternionRotationAxis(axis, angle);
 }
+
+// 계산할 값, 밑을 줘서 로그 값 계산
+static _float ComputeLog(_float fValue, _float fBase)
+{
+    return logf(fValue) / logf(fBase);
+}

@@ -36,6 +36,7 @@
 #include <Elite_Police.h>
 #include <KeyDoor.h>
 #include "Bullet.h"
+#include "Client_Calculation.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -127,6 +128,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 
 	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
+
+	if (FAILED(Ready_Stat()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -2386,6 +2390,40 @@ void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const 
 	}
 }
 
+void CPlayer::Apply_Stat()
+{
+	m_fMaxHp = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
+	m_fHp = m_fMaxHp;
+
+	m_fMaxStamina = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
+	m_fStamina = m_fMaxStamina;
+
+	// 무기에 스탯이랑, 무기 기본공격력 이용해서 실제 주는 데미지를 계산해놓는다.
+	// 효율? 이것도 만들어서 나중에 고쳐놓기
+	if (nullptr != m_pWeapon)
+	{
+		_float fBaseDamage = m_pWeapon->GetBaseDamage();
+		
+		fBaseDamage += floorf(fBaseDamage *  (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.15f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.15f);
+
+
+		m_pWeapon->SetDamage(fBaseDamage);
+	
+	}
+	
+	// 방어력 먼저 계산해서 이걸로 데미지 감소율을 구한다.
+	m_fArmor;
+
+	// 저항은 일단 냅둬...
+	
+
+	// 값 동기화
+	Callback_HP();
+	Callback_Stamina();
+
+}
+
 
 
 HRESULT CPlayer::Ready_Weapon()
@@ -2656,6 +2694,21 @@ void CPlayer::LoadPlayerFromJson()
 		ifsStates >> rootStates;
 		m_pAnimator->Deserialize(rootStates);
 	}
+}
+
+HRESULT CPlayer::Ready_Stat()
+{
+	// 기본 값? 나중에 바꾸기.
+	m_eStat.iVitality = 12;
+	m_eStat.iStamina = 10;
+	m_eStat.iCapacity = 8;
+	m_eStat.iMotivity = 13;
+	m_eStat.iTechnique = 7;
+	m_eStat.iAdvance = 6;
+
+	Apply_Stat();
+
+	return S_OK;
 }
 
 //HRESULT CPlayer::Ready_Effect()

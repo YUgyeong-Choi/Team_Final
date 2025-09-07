@@ -1,6 +1,7 @@
 #include "UI_Popup.h"
 #include "Dynamic_Text_UI.h"
 #include "UI_Manager.h"
+#include "GameInstance.h"
 
 CUI_Popup::CUI_Popup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -42,6 +43,10 @@ HRESULT CUI_Popup::Initialize(void* pArg)
 
 	CUI_Manager::Get_Instance()->Emplace_UI(this, TEXT("Popup"));
 
+
+
+	m_vOriginPos = static_cast<CDynamic_UI*>(m_PartObjects[0])->Get_Pos();
+
 	return S_OK;
 }
 
@@ -64,6 +69,18 @@ void CUI_Popup::Late_Update(_float fTimeDelta)
 HRESULT CUI_Popup::Render()
 {
 	return S_OK;
+}
+
+void CUI_Popup::Active_Update(_bool isActive)
+{
+
+	__super::Active_Update(isActive);
+
+	
+	m_isChange = isActive;
+
+	if (false == isActive && true == m_bDoOnce)
+		m_bDoOnce = false;
 }
 
 void CUI_Popup::Set_String(_int iTriggerType)
@@ -94,7 +111,26 @@ void CUI_Popup::Set_String(_int iTriggerType)
 	
 	if (m_PartObjects.empty())
 		return;
+
+	if (m_isChange && !m_bDoOnce)
+	{
+		_float2 vOriginSize = static_cast<CDynamic_UI*>(m_PartObjects[0])->Get_Size();
+
+		_float2 vChangeSize = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Medium"), strCaption.c_str());
+
+		static_cast<CDynamic_UI*>(m_PartObjects[0])->Get_TransfomCom()->Scaling(vChangeSize.x * 1.2f, vOriginSize.y, 0.f);
+		static_cast<CDynamic_UI*>(m_PartObjects[1])->Get_TransfomCom()->Scaling(vChangeSize.x * 1.2f, vOriginSize.y, 0.f);
+
+		
+
+		static_cast<CDynamic_UI*>(m_PartObjects[0])->Set_Position(m_vOriginPos.x + vChangeSize.x * 0.15f, m_vOriginPos.y - g_iWinSizeY * 0.01f);
+		static_cast<CDynamic_UI*>(m_PartObjects[1])->Set_Position(m_vOriginPos.x + vChangeSize.x * 0.15f, m_vOriginPos.y - g_iWinSizeY * 0.0575f);
+
+		m_bDoOnce = true;
+	}
+
 	static_cast<CDynamic_Text_UI*>(m_PartObjects.back())->Set_Caption(strCaption);
+	
 }
 
 CUI_Popup* CUI_Popup::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

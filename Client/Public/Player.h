@@ -147,6 +147,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
 	//HRESULT Ready_Effect();
+	HRESULT Ready_Stat();
 
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
@@ -254,6 +255,13 @@ public: /* [ 부여 속성 관련 ] */
 	
 
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
+
+public:/*[스탯 관련]*/
+	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }
+	STAT_DESC& Get_Stat() { return m_eStat; }
+
+	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
+	void Apply_Stat();
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -447,6 +455,11 @@ private: /* [ 공격한 적 ] */
 	_int m_iFatalAttackCount = {};
 private: // 그라인더용 변수
 	CSoundController* m_pGrinderSound = { nullptr };
+
+private:
+	STAT_DESC m_eStat = {};
+	_float m_fArmor = {};
+	_float m_fDamgaeReduction = {};
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

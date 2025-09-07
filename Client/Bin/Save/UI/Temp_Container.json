@@ -9,55 +9,22 @@
         "FilePath": "",
         "Parts": [
             {
-                "Caption": "이동",
                 "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
                 },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 35.0,
-                    "Y": 3.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
                 "RotationZ": 0.0,
-                "SizeX": 0.0010000000474974513,
-                "SizeY": 0.0010000000474974513,
-                "Texturetag": "",
+                "SizeX": 1.0,
+                "SizeY": 1.0,
+                "Texturetag": "Prototype_Component_Texture_Location_BackGround",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
                 "fOffset": 0.0,
-                "fX": 0.11399999260902405,
-                "fY": 0.8690000176429749,
-                "iPassIndex": 0,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
-            },
-            {
-                "Caption": "닫기 ",
-                "Color": {
-                    "A": 0.800000011920929,
-                    "B": 0.800000011920929,
-                    "G": 0.800000011920929,
-                    "R": 0.800000011920929
-                },
-                "FontSize": 0.6499999761581421,
-                "Padding": {
-                    "X": 35.0,
-                    "Y": 3.0
-                },
-                "ProtoTag": "Prototype_GameObject_UI_Button",
-                "RotationZ": 0.0,
-                "SizeX": 0.0010000000474974513,
-                "SizeY": 0.0010000000474974513,
-                "Texturetag": "",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 0.1720000058412552,
-                "fY": 0.8690000176429749,
+                "fX": 0.5,
+                "fY": 0.5,
                 "iPassIndex": 0,
                 "iTextureIndex": 0,
                 "iTextureLevel": 0

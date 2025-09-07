@@ -2439,6 +2439,20 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_Location_%d.dds"),3))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Stat_BackGround"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Stat/CharacterUpgrade_BG_Slot.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Stat_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Stat/UIT_Icon_Stat_%d.dds"),6))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_EquipList_Icon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Stat/UIT_ListItem_Weapon_Equip_%d.dds"),2))))
+		return E_FAIL;
 
 	return S_OK;
 }
