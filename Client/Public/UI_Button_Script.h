@@ -19,6 +19,7 @@ protected:
 
 public:
 	_float2 Get_ButtonPos();
+	_wstring Get_Caption();
 
 	_bool Get_isSelect() { return m_isSelect; }
 	void Set_isSelect(_bool isSelect);
