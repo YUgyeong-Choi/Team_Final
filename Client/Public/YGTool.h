@@ -53,9 +53,11 @@ private:
 	_float m_fPitch = {};
 	_float m_fYaw = {};
 
-
 	bool bStopCamera = false; // 상태 저장용
 	int iStopFrame = 0;
+
+	_int   curveType = 0;                         // 0=Linear, 1=EaseIn, 2=EaseOut, 3=EaseInOut, 4=Custom5
+	_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f }; // Custom5 전용 y포인트(고정 x=[0,.25,.5,.75,1])
 public:
 	static CYGTool* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
 	virtual CGameObject* Clone(void* pArg) override;

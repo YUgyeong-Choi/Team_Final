@@ -6,21 +6,53 @@
     "iEndFrame": 1901,
     "vecFovData": [
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "fFov": 60.0,
             "interpFov": 1,
             "keyFrame": 0
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "fFov": 45.0,
             "interpFov": 1,
             "keyFrame": 30
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "fFov": 50.0,
             "interpFov": 1,
             "keyFrame": 200
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "fFov": 60.0,
             "interpFov": 0,
             "keyFrame": 290
@@ -28,6 +60,14 @@
     ],
     "vecMatrixPosData": [
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 201,
             "worldMatrix": [
@@ -50,6 +90,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 290,
             "worldMatrix": [
@@ -72,6 +120,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 2,
             "keyFrame": 380,
             "worldMatrix": [
@@ -94,6 +150,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 500,
             "worldMatrix": [
@@ -116,6 +180,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 550,
             "worldMatrix": [
@@ -138,6 +210,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 650,
             "worldMatrix": [
@@ -160,6 +240,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 750,
             "worldMatrix": [
@@ -182,6 +270,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 930,
             "worldMatrix": [
@@ -204,6 +300,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 931,
             "worldMatrix": [
@@ -226,138 +330,14 @@
             ]
         },
         {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1003,
-            "worldMatrix": [
-                0.8417736291885376,
-                -0.3367563784122467,
-                -0.42191460728645325,
+            "curveType": 0,
+            "curveY": [
                 0.0,
-                0.17666611075401306,
-                0.9103795289993286,
-                -0.3741590976715088,
-                0.0,
-                0.5101032257080078,
-                0.2404193878173828,
-                0.8258273601531982,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
+                0.25,
+                0.5,
+                0.75,
                 1.0
-            ]
-        },
-        {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1008,
-            "worldMatrix": [
-                0.7710235714912415,
-                -0.33691567182540894,
-                -0.5403790473937988,
-                0.0,
-                0.18635603785514832,
-                0.9308037161827087,
-                -0.3144412338733673,
-                0.0,
-                0.6089268326759338,
-                0.14173869788646698,
-                0.7804576754570007,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
-                1.0
-            ]
-        },
-        {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1013,
-            "worldMatrix": [
-                0.8150314688682556,
-                -0.3370945155620575,
-                -0.47126275300979614,
-                0.0,
-                0.13772663474082947,
-                0.9027413725852966,
-                -0.4075382947921753,
-                0.0,
-                0.562808096408844,
-                0.26725149154663086,
-                0.7821906805038452,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
-                1.0
-            ]
-        },
-        {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1018,
-            "worldMatrix": [
-                0.7530893087387085,
-                -0.33704331517219543,
-                -0.565029501914978,
-                0.0,
-                0.35696300864219666,
-                0.9307363629341125,
-                -0.0794178768992424,
-                0.0,
-                0.5526607632637024,
-                -0.1418858915567398,
-                0.8212396502494812,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
-                1.0
-            ]
-        },
-        {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1023,
-            "worldMatrix": [
-                0.8392882347106934,
-                -0.3370443880558014,
-                -0.4266103208065033,
-                0.0,
-                0.23785299062728882,
-                0.9332089424133301,
-                -0.26934561133384705,
-                0.0,
-                0.48889800906181335,
-                0.12458807229995728,
-                0.8633982539176941,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
-                1.0
-            ]
-        },
-        {
-            "interpMatrixPosition": 1,
-            "keyFrame": 1028,
-            "worldMatrix": [
-                0.6374185085296631,
-                -0.3374527096748352,
-                -0.6926928162574768,
-                0.0,
-                0.26596903800964355,
-                0.9401018023490906,
-                -0.21323496103286743,
-                0.0,
-                0.7231584787368774,
-                -0.0483148992061615,
-                0.6889902353286743,
-                0.0,
-                -2.707818031311035,
-                0.8160099983215332,
-                -195.69113159179688,
-                1.0
-            ]
-        },
-        {
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 1050,
             "worldMatrix": [
@@ -380,6 +360,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 1051,
             "worldMatrix": [
@@ -402,6 +390,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1150,
             "worldMatrix": [
@@ -424,6 +420,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1230,
             "worldMatrix": [
@@ -446,6 +450,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1330,
             "worldMatrix": [
@@ -468,6 +480,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1400,
             "worldMatrix": [
@@ -490,6 +510,14 @@
             ]
         },
         {
+            "curveType": 2,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1440,
             "worldMatrix": [
@@ -512,6 +540,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1470,
             "worldMatrix": [
@@ -534,6 +570,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1500,
             "worldMatrix": [
@@ -556,6 +600,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 1,
             "keyFrame": 1704,
             "worldMatrix": [
@@ -578,6 +630,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpMatrixPosition": 0,
             "keyFrame": 1900,
             "worldMatrix": [
@@ -602,6 +662,14 @@
     ],
     "vecPosData": [
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpPosition": 1,
             "keyFrame": 0,
             "position": [
@@ -611,6 +679,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpPosition": 1,
             "keyFrame": 50,
             "position": [
@@ -620,6 +696,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpPosition": 0,
             "keyFrame": 200,
             "position": [
@@ -631,6 +715,14 @@
     ],
     "vecRotData": [
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpRotation": 1,
             "keyFrame": 0,
             "rotation": [
@@ -640,6 +732,14 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpRotation": 1,
             "keyFrame": 50,
             "rotation": [
@@ -649,73 +749,18 @@
             ]
         },
         {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "interpRotation": 0,
             "keyFrame": 200,
             "rotation": [
                 -10.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 245,
-            "rotation": [
-                0.0,
-                3.799999952316284,
-                4.5
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 251,
-            "rotation": [
-                0.0,
-                -4.199999809265137,
-                -5.0
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 258,
-            "rotation": [
-                0.0,
-                -4.5,
-                4.699999809265137
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 266,
-            "rotation": [
-                0.0,
-                5.0,
-                -4.300000190734863
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 274,
-            "rotation": [
-                0.0,
-                -3.9000000953674316,
-                4.800000190734863
-            ]
-        },
-        {
-            "interpRotation": 1,
-            "keyFrame": 282,
-            "rotation": [
-                0.0,
-                4.400000095367432,
-                -4.599999904632568
-            ]
-        },
-        {
-            "interpRotation": 0,
-            "keyFrame": 290,
-            "rotation": [
-                0.0,
                 0.0,
                 0.0
             ]
