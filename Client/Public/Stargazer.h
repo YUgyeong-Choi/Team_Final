@@ -65,7 +65,7 @@ private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
 	void Register_Events();
-	void Teleport_Stargazer(STARGAZER_TAG eTag);
+	
 	_bool Check_Player_Close();
 
 	// 필요한 데이터를 로드함
