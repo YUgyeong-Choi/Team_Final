@@ -33,7 +33,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fMaxHp = 850.f;
 	m_fPhase2HPThreshold = 0.65f;
 	m_fDamage = 15.f;
-	m_fAttckDleay = 1.5f;
+	m_fAttckDleay = 1.f;
 	m_fChasingDistance = 2.5f;
 	m_iPatternLimit = 1;
 	m_fMinimumTurnAngle = 50.f;
@@ -170,7 +170,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_C))
 	{
-		m_pAnimator->SetTrigger("Phase2Start");
+
 	}
 
 	if (KEY_DOWN(DIK_B))
@@ -728,7 +728,19 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		m_pAnimator->SetFloat("Distance", Get_DistanceToPlayer());
 		break;
 	case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_Start):
+		if (m_iPrevNodeID != m_iCurNodeID)
+		{
+			m_pAnimator->SetPlayRate(1.3f);
+			SwitchFury(true, 1.f);
+		}
 		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_End):
+		if (m_iPrevNodeID != m_iCurNodeID)
+		{
+			m_pAnimator->SetPlayRate(1.f);
+			SwitchFury(true, 1.f);
+		}
 		break;
 	case ENUM_CLASS(BossStateID::Atk_Strike_Start):
 	case ENUM_CLASS(BossStateID::Atk_Strike_Loop):
@@ -831,7 +843,7 @@ void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
 
 void CFestivalLeader::SetupAttackByType(_int iPattern)
 {
-	_bool bIsCombo = GetRandomInt(0, 1) == 1;
+	_bool bIsCombo = (GetRandomFloat(0.f, 1.f) < 0.8f);
 	switch (iPattern)
 	{
 	case Client::CFestivalLeader::Slam:
@@ -849,27 +861,15 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	case Client::CFestivalLeader::CrossSlam:
 	{
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		if (bIsCombo)
-		{
-				_int iComboType;
-
-				if (m_iLastComboType == -1) // 첫 시작은 랜덤
-					iComboType = GetRandomInt(0, 1);
-				else
-					iComboType = 1 - m_iLastComboType; // 이전 값과 반대로
-
-				m_pAnimator->SetInt("SwingCombo", iComboType);
-				m_iLastComboType = iComboType;
-		}
 		m_eAttackType = EAttackType::NORMAL;
 	}
 	break;
 	case Client::CFestivalLeader::JumpAttack:
-		SetTurnTimeDuringAttack(2.f, 1.5f);
 		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
 	case Client::CFestivalLeader::Strike:
 	{
-		_int iStrikeCombo = GetRandomInt(0, 1);
+		_int iStrikeCombo = (GetRandomFloat(0.f, 1.f) < 0.8f);
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
 		m_pAnimator->SetInt("StrikeCombo", iStrikeCombo);
 		m_eAttackType = EAttackType::AIRBORNE;
@@ -890,7 +890,6 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		break;
 	case Client::CFestivalLeader::HalfSpin:
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		SetTurnTimeDuringAttack(1.2f);
 		m_eAttackType = EAttackType::FURY_AIRBORNE;
 		break;
 	case Client::CFestivalLeader::HammerSlam:
@@ -912,6 +911,7 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		break;
 	case Client::CFestivalLeader::FurySwing:
 		m_eAttackType = EAttackType::STRONG_KNOCKBACK;
+		m_pAnimator->SetBool("IsCombo", bIsCombo);
 		break;
 	case Client::CFestivalLeader::FuryBodySlam:
 		m_eAttackType = EAttackType::FURY_STAMP;
@@ -1038,7 +1038,7 @@ void CFestivalLeader::Register_Events()
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
 			m_fRootMotionAddtiveScale = 7.f;
-			m_fMaxRootMotionSpeed = 40.f;
+			m_fMaxRootMotionSpeed = 50.f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()

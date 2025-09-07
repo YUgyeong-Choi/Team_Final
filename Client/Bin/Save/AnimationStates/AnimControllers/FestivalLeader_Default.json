@@ -1013,7 +1013,7 @@
         "Phase2Combo": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": false,
+            "bValue": true,
             "fValue": 0.0,
             "iValue": 0
         },
@@ -6008,6 +6008,35 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "Phase2Combo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "IsCombo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100079,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000792,
+                "LinkId": 100265,
+                "ToNodeId": 1000331
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.3659999966621399,
+            "ToNodeId": 100033
         }
     ]
 }
