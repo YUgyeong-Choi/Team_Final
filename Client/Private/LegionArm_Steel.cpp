@@ -34,6 +34,7 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 
 	m_fDamage = 100.f;
 
+	m_fBaseDamage = m_fDamage;
 	//
 
 

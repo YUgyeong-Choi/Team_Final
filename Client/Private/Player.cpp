@@ -447,7 +447,7 @@ void CPlayer::Reset()
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
 
-	m_fHp = 100.f;
+	m_fHp = m_fMaxHp;
 	Callback_HP();
 	m_fStamina = m_fMaxStamina;
 	Callback_Stamina();
@@ -2404,18 +2404,27 @@ void CPlayer::Apply_Stat()
 	{
 		_float fBaseDamage = m_pWeapon->GetBaseDamage();
 		
-		fBaseDamage += floorf(fBaseDamage *  (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.15f);
-		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.15f);
+		fBaseDamage += floorf(fBaseDamage *  (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.2f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.2f);
 
 
 		m_pWeapon->SetDamage(fBaseDamage);
 	
 	}
-	
-	// 방어력 먼저 계산해서 이걸로 데미지 감소율을 구한다.
-	m_fArmor;
 
-	// 저항은 일단 냅둬...
+	if (nullptr != m_pLegionArm)
+	{
+		_float fBaseDamage = m_pLegionArm->GetBaseDamage();
+
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
+
+		m_pLegionArm->SetDamage(fBaseDamage);
+
+	}
+	
+	// 방어력, 저항은 일단 냅둬...
 	
 
 	// 값 동기화
