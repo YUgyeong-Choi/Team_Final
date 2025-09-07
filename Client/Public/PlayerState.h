@@ -2116,11 +2116,11 @@ public:
 
                 CEffectContainer::DESC desc = {};
 
-                XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-                CGameObject* pEffect = { nullptr };
-                pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+                XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.5f, 1.5f, 1.5f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
 
-                if (pEffect == nullptr)
+                if (MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc) == nullptr)
+                    MSG_BOX("이펙트 생성 실패함");
+                if (MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_TEST_BLOOD"), &desc) == nullptr)
                     MSG_BOX("이펙트 생성 실패함");
 
                 m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
@@ -3077,18 +3077,19 @@ public:
         /* [ 이펙트를 생성한다. ] */
         _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
 
-        vPos += m_pOwner->m_vHitNormal * 0.5f;
+        vPos += m_pOwner->m_vHitNormal * 0.3f;
         _float3 vEffPos = {};
         XMStoreFloat3(&vEffPos, vPos);
         vEffPos.y += 1.7f;
 
         CEffectContainer::DESC desc = {};
 
-        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-        CGameObject* pEffect = { nullptr };
-        pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(1.5f, 1.5f, 1.5f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
 
-        if (pEffect == nullptr)
+        if (MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc) == nullptr)
+            MSG_BOX("이펙트 생성 실패함");
+        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vEffPos.x, vEffPos.y-0.2f, vEffPos.z));
+        if (MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_TEST_BLOOD"), &desc) == nullptr)
             MSG_BOX("이펙트 생성 실패함");
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);

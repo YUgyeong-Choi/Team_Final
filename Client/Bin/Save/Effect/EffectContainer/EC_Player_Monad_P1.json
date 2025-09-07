@@ -13,9 +13,9 @@
                 0.0
             ],
             "CenterColor": [
-                0.9962721467018127,
+                0.9974508285522461,
                 1.0,
-                0.2879580855369568,
+                0.5130890011787415,
                 1.0
             ],
             "Color": [
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 882.6791381835938,
+            "LifeTime": 883.3856811523438,
             "LifeTime_Particle": [
                 0.25,
                 1.0
@@ -118,7 +118,7 @@
             "StartTrack": 0,
             "TextureTags": [
                 "",
-                "T_Shere_04_C_HJS",
+                "T_Shere_03_C_HJS",
                 "",
                 ""
             ],
@@ -196,7 +196,7 @@
                     ]
                 }
             ],
-            "LifeTime": 208.6949005126953,
+            "LifeTime": 209.4001007080078,
             "LifeTime_Particle": [
                 0.25,
                 1.0
@@ -206,7 +206,7 @@
             "MaxLifeTime": 1.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.20000000298023224,
-            "Name": "Rain_Particle",
+            "Name": "Player_Monad_Particle2",
             "NumInstance": 10,
             "NumKeyFrames": 1,
             "Orbit": true,
@@ -253,7 +253,7 @@
             "StartTrack": 6,
             "TextureTags": [
                 "",
-                "T_Shere_02_C_LGS",
+                "T_Shere_03_C_HJS",
                 "",
                 ""
             ],
@@ -374,7 +374,7 @@
                     ]
                 }
             ],
-            "LifeTime": 12.501649856567383,
+            "LifeTime": 13.207087516784668,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 3,
@@ -412,7 +412,7 @@
                 1.0,
                 0.9411764740943909,
                 0.0,
-                0.0
+                0.06400001049041748
             ],
             "DistortionStrength": 10.0,
             "Duration": 82,
@@ -476,7 +476,7 @@
                     ]
                 }
             ],
-            "LifeTime": 0.0,
+            "LifeTime": 0.7054355144500732,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,
