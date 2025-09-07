@@ -102,6 +102,9 @@ void CUI_SelectLocation::Update(_float fTimeDelta)
 
 void CUI_SelectLocation::Late_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	__super::Late_Update(fTimeDelta);
 
 	m_pLocationImg->Late_Update(fTimeDelta);

@@ -107,9 +107,16 @@ private:    /* [ 컴포넌트 ] */
 	class CUI_Script_StarGazer* m_pScript = { nullptr };
 	// 스크립트와 같이 띄울 버튼과, 선택 되 있는 버튼 인덱스
 	vector<class CUI_Button_Script*> m_pSelectButtons;
-	_int m_iSelectButtonIndex = {};
+	_int m_iSelectButtonIndex = {-1};
 
 	vector<string> m_ButtonEvents = {};
+
+	// 동작 분기를 위해 bool로 구분 하려고 함
+	_bool m_bDoOnce = {};
+	_bool m_bChange = {};
+	_bool m_bUseScript = {};
+
+	_bool m_bUseTeleport = {};
 
 	//vector<CUIObject*> m_
 	
