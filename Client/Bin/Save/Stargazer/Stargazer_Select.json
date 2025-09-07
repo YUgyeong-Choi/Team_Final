@@ -3,19 +3,23 @@
 
     {
       "Label": "다른 별바라기로 이동한다",
-      "RequiredId": 1
+      "RequiredSize": 2,
+      "Event" : "SelectLocation"
     },
     {
-      "Label": "리전 암을 교체한다.",
-      "RequiredId": 3
+      "Label": "리전 암을 교체한다",
+      "RequiredSize": 3,
+      "Event": "ChangeArm"
     },
     {
       "Label": "레벨 업을 한다",
-      "RequiredLevel": 0
+      "RequiredSize": 1,
+      "Event": "LevelUp"
     },
     {
       "Label": "보관 함을 이용한다",
-      "RequiredLevel": 0
+      "RequiredSize": 1,
+      "Event": "UseInventory"
     }
    
   ]

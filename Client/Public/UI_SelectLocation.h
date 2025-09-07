@@ -38,6 +38,9 @@ public:
 private:
 	HRESULT Ready_Button();
 
+	void Update_Button();
+
+	void Interation_Button(_int iButtonIndex);
 
 protected:
 
@@ -47,6 +50,11 @@ protected:
 	CUI_Container* m_pBehindButtons = { nullptr };
 	vector <class CUI_Button* > m_pButtons = {};
 	class CDynamic_UI* m_pSelectUI = { nullptr };
+	vector <STARGAZER_TAG> m_StargazerTag = {};
+
+	_int m_iButtonIndex = {0};
+
+	_bool m_bInit = {};
 
 public:
 	static CUI_SelectLocation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
