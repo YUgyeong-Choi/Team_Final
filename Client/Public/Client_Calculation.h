@@ -257,3 +257,19 @@ static _vector XMQuaternionRotationVectorToVector(_fvector vFrom, _fvector vTo)
     _float angle = acosf(dot);
     return XMQuaternionRotationAxis(axis, angle);
 }
+
+static inline XMVECTOR FromToQ(XMVECTOR a, XMVECTOR b) 
+{
+    a = XMVector3Normalize(a); b = XMVector3Normalize(b);
+    float d = XMVectorGetX(XMVector3Dot(a, b));
+    if (d < -0.9999f) 
+    { // 반대방향 처리
+        XMVECTOR axis = XMVector3Normalize(XMVector3Cross(a, XMVectorSet(1, 0, 0, 0)));
+        if (XMVectorGetX(XMVector3LengthSq(axis)) < 1e-6f)
+            axis = XMVector3Normalize(XMVector3Cross(a, XMVectorSet(0, 1, 0, 0)));
+        return XMQuaternionRotationAxis(axis, XM_PI);
+    }
+    XMVECTOR c = XMVector3Cross(a, b);
+    XMVECTOR q = XMVectorSet(XMVectorGetX(c), XMVectorGetY(c), XMVectorGetZ(c), 1.f + d);
+    return XMQuaternionNormalize(q);
+}

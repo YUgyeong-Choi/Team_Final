@@ -763,6 +763,7 @@ void CAnimator::RegisterEventListener(const string& eventName, AnimEventCallback
 	m_eventListeners[eventName].push_back(move(cb));
 }
 
+
 void CAnimator::RegisterAnimController(const string& name, CAnimController* pController)
 {
 	if (pController == nullptr)

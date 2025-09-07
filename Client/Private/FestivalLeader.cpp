@@ -14,6 +14,8 @@
 #include "UI_MonsterHP_Bar.h"
 #include <PhysX_IgnoreSelfCallback.h>
 
+
+
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
 {
@@ -78,14 +80,14 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 
 		if (m_pHammerBone)
 		{
-			_matrix W_head = XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()); // 머리 컴바인드
-			_matrix W_hand = XMLoadFloat4x4(m_pRightWeaponBone->Get_CombinedTransformationMatrix()); // 오른손 무기 소켓 컴바인드
+			_matrix cmHead = XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()); // 머리 컴바인드
+			_matrix cmHand = XMLoadFloat4x4(m_pRightWeaponBone->Get_CombinedTransformationMatrix()); // 오른손 무기 소켓 컴바인드
 
 			//  손 기준 로컬 오프셋
-			_matrix attachOffset = W_head * XMMatrixInverse(nullptr, W_hand); // row
+			_matrix attachOffset = cmHead * XMMatrixInverse(nullptr, cmHand); 
 			XMStoreFloat4x4(&m_StoredHeadLocalMatrix, attachOffset);
 		}
-
+		InitializeSpringBones();
 		m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	}
 	return S_OK;
@@ -225,16 +227,14 @@ void CFestivalLeader::Update(_float fTimeDelta)
 		ApplyHeadSpaceSwitch(fTimeDelta);
 		Update_Collider(); 
 	}
+
+	Update_HairSpring();
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 
-	//if (m_pHammer && m_pHammer->Get_isActive() == false)
-	//{
-	//	m_pHammer->Update(fTimeDelta);
-	//}
 
 //#ifdef _DEBUG
 //
@@ -556,6 +556,14 @@ void CFestivalLeader::Ready_BoneInformation()
 	{
 		m_pRightHandBone = *it;
 	}
+
+
+	if (m_pAnimator)
+	{
+		m_pAnimator->Update(0.016f);
+		m_pModelCom->Update_Bones();     
+	}
+
 	
 }
 
@@ -1092,10 +1100,18 @@ void CFestivalLeader::Register_Events()
 				return;
 			// 부모 교체
 			m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+			m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit));
 			m_pModelCom->Update_Bones();
 			m_bSwitchHeadSpace = false;
 		});
 	
+	m_pAnimator->RegisterEventListener("EndPhase2Change", [this]()
+		{
+			if (!m_pModelCom || !m_pHammerBone || m_iOriginBoneIndex < 0 || m_bSwitchHeadSpace == false)
+				return;
+			m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
+			m_bSwitchHeadSpace = false;
+		});
 
 }
 
@@ -1358,6 +1374,116 @@ void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 
 void CFestivalLeader::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
+}
+
+void CFestivalLeader::InitializeSpringBones()
+{
+	for (auto* child : m_pModelCom->Get_Bones()) 
+	{
+		if (string(child->Get_Name()).find("Hair") == string::npos
+			&& string(child->Get_Name()).find("Head_Rope") == string::npos)
+			continue;
+		_int iParentIdx = child->Get_ParentBoneIndex();
+		if (iParentIdx < 0)
+			continue;
+		auto* pParent = m_pModelCom->Get_Bones()[iParentIdx];
+
+		SpringBone vSpringBone{};
+		vSpringBone.pBone = child;  // 현재 뼈
+		vSpringBone.pParent = pParent; // 부모 뼈
+
+		_matrix childL = XMLoadFloat4x4(child->Get_TransformationMatrix()); // 초기 위치
+		vSpringBone.restLocalPos = childL.r[3]; // 돌아올 로컬 위치
+		vSpringBone.length = XMVectorGetX(XMVector3Length(vSpringBone.restLocalPos)); // 부모와의 거리
+		vSpringBone.restDirLocal = XMVector3Normalize(vSpringBone.restLocalPos); // 부모 로컬에서의 자식 방향
+		vSpringBone.restUpLocal = XMVector3Normalize(childL.r[1]);    // 업 벡터
+		vSpringBone.restRotQ = XMQuaternionRotationMatrix(childL);
+
+		//  뼈 끝점을 부모 로컬에서의 자식 위치로 초기화
+		vSpringBone.curTipLocal = vSpringBone.restLocalPos;
+
+		m_SpringBones.push_back(vSpringBone);
+	}
+
+	//vector<SpringBone> tempSpringBones(m_SpringBones);
+	//sort(tempSpringBones.begin(), tempSpringBones.end(),
+	//	[](const SpringBone& a, const SpringBone& b) {
+	//		_int parentA = a.pParent ? a.pParent->Get_BoneIndex() : -1;
+	//		_int parentB = b.pParent ? b.pParent->Get_BoneIndex() : -1;
+
+	//		if (parentA != parentB)
+	//		{
+	//			return parentA < parentB;  // 부모 인덱스가 작은 순
+	//		}
+
+	//		// 같은 부모라면 자식 인덱스로 정렬
+	//		_int childA = a.pBone ? a.pBone->Get_BoneIndex() : -1;
+	//		_int childB = b.pBone ? b.pBone->Get_BoneIndex() : -1;
+	//		return childA < childB;
+	//	});
+	//m_SpringBones = move(tempSpringBones);
+
+}
+
+void CFestivalLeader::Update_HairSpring()
+{
+	constexpr _float fTimeDelta = 1.f / 60.f;
+	for (auto& vSpringBone : m_SpringBones)
+	{
+		if (!vSpringBone.pBone || !vSpringBone.pParent)
+			continue;
+
+		// 부모 컴바인드에서 회전 가져오기
+		_matrix parentC = XMLoadFloat4x4(vSpringBone.pParent->Get_CombinedTransformationMatrix());
+		parentC.r[3] = XMVectorSet(0, 0, 0, 1); // 회전하고 스케일만 (평행이동 처리)
+		_matrix parentRInv = XMMatrixInverse(nullptr, parentC);  // 현재 프레임의 회전 역행렬
+
+		// 부모의 회전만큼 역회전으로 관성 유지
+		_matrix toCurr = parentRInv * vSpringBone.parentPrevRotC; // 지난 프레임의 부모로컬 벡터를 이번 프레임의 부모로컬로 옮기는 회전 처리
+		_vector qToCurr = XMQuaternionRotationMatrix(toCurr);
+		_float fFollow = 0.9f; // 따라오는 정도
+		_vector qBlend = XMQuaternionSlerp(XMQuaternionIdentity(), qToCurr, fFollow);
+		_matrix toCurrSoft = XMMatrixRotationQuaternion(qBlend);
+
+		vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft);
+
+
+		_vector gDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
+		_vector gLocalDir = XMVector3TransformNormal(gDir, toCurr); // 중력 처리
+
+		// 중력 크기 적용 
+		vSpringBone.curTipLocal += XMVector3Normalize(gLocalDir) * (vSpringBone.gravity * fTimeDelta * fTimeDelta);
+		vSpringBone.curTipLocal = vSpringBone.curTipLocal + (vSpringBone.restLocalPos - vSpringBone.curTipLocal) * vSpringBone.stiffness; // 복원
+		// 길이 고정
+		_vector dirL = XMVector3Normalize(vSpringBone.curTipLocal);
+		vSpringBone.curTipLocal = dirL * vSpringBone.length;
+
+		// 콘 제한
+		_float fMaxRad = XMConvertToRadians(vSpringBone.maxDeg);
+		_float fAng = acosf(clamp(XMVectorGetX(XMVector3Dot(vSpringBone.restDirLocal, dirL)), -1.f, 1.f));
+		if (fAng > fMaxRad) 
+		{
+			_vector vAxis = XMVector3Normalize(XMVector3Cross(vSpringBone.restDirLocal, dirL));
+			_matrix rot = XMMatrixRotationAxis(vAxis, fMaxRad);
+			dirL = XMVector3TransformNormal(vSpringBone.restDirLocal, rot);
+			vSpringBone.curTipLocal = dirL * vSpringBone.length;
+		}
+
+		// 새 로컬 회전 = 레스트 회전 FromTo(restDir에서 dirL)
+		_vector dq = FromToQ(vSpringBone.restDirLocal, dirL);
+		_vector newRotQ = XMQuaternionMultiply(dq, vSpringBone.restRotQ);
+		_matrix R = XMMatrixRotationQuaternion(newRotQ); // 새로운 회전
+
+		// 로컬 행렬 회전만 변경, 위치는 레스트 유지
+		_matrix L;
+		L.r[0] = R.r[0]; L.r[1] = R.r[1]; L.r[2] = R.r[2];
+		L.r[3] = XMVectorSetW(vSpringBone.restLocalPos, 1.f);  // 위치 고정
+		vSpringBone.pBone->Set_TransformationMatrix(L);
+
+		vSpringBone.parentPrevRotC = parentC; // 부모 회전 저장
+	}
+
+	m_pModelCom->Update_Bones();
 }
 
 
