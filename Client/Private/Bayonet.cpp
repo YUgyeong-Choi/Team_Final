@@ -287,8 +287,11 @@ void CBayonet::Reset()
 
 void CBayonet::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
 {
+
 	if (bActive == false)
 	{
+		if (!m_pSkillTrailEffect || !m_pWeaponTrailEffect)
+			return;
 		m_pWeaponTrailEffect->Set_TrailActive(bActive);
 		m_pSkillTrailEffect->Set_TrailActive(bActive);
 	}

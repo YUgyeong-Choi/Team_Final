@@ -783,7 +783,7 @@ public:
         m_bGrinderEnd = false;
         m_bGrinderFail = false;
         m_bDoOnce = false;
-        m_pOwner->LimActive(false, 0.5f, { 0.f ,0.1f, 1.f, 1.f });
+        m_pOwner->LimActive(false, 1.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
         if (m_pOwner->m_isSelectUpBelt)
             m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
