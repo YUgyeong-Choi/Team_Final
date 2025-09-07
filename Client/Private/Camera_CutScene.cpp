@@ -6,34 +6,66 @@
 
 
 #pragma region help
-inline float EaseIn(float t) { return t * t; }
-inline float EaseOut(float t) { return 1.f - (1.f - t) * (1.f - t); }
-inline float EaseInOut(float t) { return (t < 0.5f) ? 4.f * t * t * t : 1.f - powf(-2.f * t + 2.f, 3.f) * 0.5f; }
+// ===== Speed-curve helpers =====
+// preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
+inline float SpeedLinear(float t) { return 1.0f; }                // F=t
+inline float SpeedEaseIn(float t) { return 2.0f * t; }            // F=t^2
+inline float SpeedEaseOut(float t) { return 2.0f * (1.0f - t); }   // F=1-(1-t)^2
+inline float SpeedEaseInOut(float t) { return (t < 0.5f) ? 12.0f * t * t : 12.0f * (1.0f - t) * (1.0f - t); } // F=4t^3 / 1-4(1-t)^3
 
+// 균등 노드 Hermite (네가 쓰던 것 그대로)
 inline float Hermite01(float y0, float y1, float y2, float y3, float u) {
 	const float m1 = 0.5f * (y2 - y0), m2 = 0.5f * (y3 - y1);
 	const float u2 = u * u, u3 = u2 * u;
 	return (2 * u3 - 3 * u2 + 1) * y1 + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * y2 + (u3 - u2) * m2;
 }
 
-// t∈[0,1] → t'∈[0,1]
-inline float EvaluateCurve01(int curveType, const float curveY[5], float t) {
-	t = std::clamp(t, 0.f, 1.f);
-	switch (curveType) {
-	case 0: return t;          // Linear
-	case 1: return EaseIn(t);
-	case 2: return EaseOut(t);
-	case 3: return EaseInOut(t);
-	case 4: {                  // Custom5 (x=[0,.25,.5,.75,1])
-		constexpr float xs[5] = { 0.f,0.25f,0.5f,0.75f,1.f };
-		int i = 0; while (i<4 && t>xs[i + 1]) ++i;
-		const float x0 = xs[i], x1 = xs[i + 1];
-		const float u = (x1 > x0) ? (t - x0) / (x1 - x0) : 0.f;
-		const int i0 = max(0, i - 1), i1 = i, i2 = i + 1, i3 = std::min(4, i + 2);
-		return std::clamp(Hermite01(curveY[i0], curveY[i1], curveY[i2], curveY[i3], u), 0.f, 1.f);
-	}
-	default: return t;
-	}
+// Custom5를 "속도 s(t)"로 샘플링 (음수 방지)
+inline float SampleCustom5Speed(const float y[5], float t) {
+	t = std::clamp(t, 0.0f, 1.0f);
+	constexpr float xs[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
+	int i = 0; while (i < 4 && t > xs[i + 1]) ++i;
+	const float x0 = xs[i], x1 = xs[i + 1];
+	const float u = (x1 > x0) ? (t - x0) / (x1 - x0) : 0.0f;
+
+	const int i0 = max(0, i - 1), i1 = i, i2 = i + 1, i3 = std::min(4, i + 2);
+	float s = Hermite01(y[i0], y[i1], y[i2], y[i3], u);
+	return (s < 0.0f) ? 0.0f : s; // 속도는 음수 금지
+}
+
+// 0..t까지 속도 적분 / 0..1까지 속도 적분  → t'  (Trapezoidal integration)
+inline float RemapBySpeed(int curveType, const float curveY[5], float t) {
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	auto speed = [&](float u)->float {
+		switch (curveType) {
+		case 0:  return SpeedLinear(u);
+		case 1:  return SpeedEaseIn(u);
+		case 2:  return SpeedEaseOut(u);
+		case 3:  return SpeedEaseInOut(u);
+		case 4:  return SampleCustom5Speed(curveY, u);
+		default: return 1.0f;
+		}
+		};
+
+	auto integrate = [&](float a, float b)->float {
+		if (b <= a) return 0.0f;
+		const int N = 64; // 분할 수(필요시 올려도 됨)
+		float sum = 0.0f;
+		float prevX = a, prevY = speed(a);
+		for (int k = 1; k <= N; ++k) {
+			float x = a + (b - a) * (k / float(N));
+			float y = speed(x);
+			sum += (prevY + y) * 0.5f * (x - prevX);
+			prevX = x; prevY = y;
+		}
+		return sum;
+		};
+
+	const float total = integrate(0.0f, 1.0f);
+	if (total <= 1e-6f) return t;              // 안전 폴백
+	const float part = integrate(0.0f, t);
+	return std::clamp(part / total, 0.0f, 1.0f);
 }
 #pragma endregion
 
@@ -278,6 +310,7 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 	m_iCurrentFrame = -1;
+	m_fElapsedTime = 0.f;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
@@ -296,7 +329,7 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
 			float t = float(curFrame - a.iKeyFrame) / float(span); // 0..1
 
-			float tRemap = EvaluateCurve01(a.curveType, a.curveY, t);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
 
 			const INTERPOLATION_CAMERA interp = a.interpMatrixPos;
 
@@ -369,7 +402,7 @@ void CCamera_CutScene::Interp_Fov(_int curFrame)
 			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
 			float t = float(curFrame - a.iKeyFrame) / float(span); // 0..1
 
-			float tRemap = EvaluateCurve01(a.curveType, a.curveY, t);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
 
 			_float result = a.fFov;
 
@@ -424,7 +457,7 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			const INTERPOLATION_CAMERA interp = a.interpOffSetRot;
 			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
 			float t = float(curFrame - a.iKeyFrame) / float(span); // 0..1
-			float tRemap = EvaluateCurve01(a.curveType, a.curveY, t);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
 
 			XMVECTOR rotA = XMLoadFloat3(&a.offSetRot);
 			XMVECTOR rotB = XMLoadFloat3(&b.offSetRot);
@@ -482,7 +515,7 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 			const INTERPOLATION_CAMERA interp = a.interpOffSetPos;
 			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
 			float t = float(curFrame - a.iKeyFrame) / float(span); // 0..1
-			float tRemap = EvaluateCurve01(a.curveType, a.curveY, t);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
 
 			XMVECTOR rotA = XMLoadFloat3(&a.offSetPos);
 			XMVECTOR rotB = XMLoadFloat3(&b.offSetPos);
