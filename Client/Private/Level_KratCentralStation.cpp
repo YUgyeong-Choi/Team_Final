@@ -87,16 +87,21 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	Reset();
 
 #pragma region 영웅 테스트
-	//CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-	//Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-	//Desc.iPartModelCount = 2;
-	//Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	//lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Main"));
-	//Desc.PartModelNames.push_back(TEXT("Part1"));
+	CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	Desc.iPartModelCount = 1;
+	Desc.ModelName = TEXT("Main");
+	Desc.PartModelNames.push_back(TEXT("Part1"));
 	//Desc.PartModelNames.push_back(TEXT("Part2"));
-	//if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-	//	Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-	//	return E_FAIL;
+	Desc.WorldMatrix = _float4x4(
+		1.f, 0.f, 0.f, 0.f,
+		0.f, 1.f, 0.f, 0.f,
+		0.f, 0.f, 1.f, 0.f,
+		0.f, 10.f, 0.f, 1.f
+	);
+	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+		Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+		return E_FAIL;
 #pragma endregion
 
 	return S_OK;
