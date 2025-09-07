@@ -12,6 +12,7 @@
 #include "Static_Decal.h"
 #include "Stargazer.h"
 #include "ErgoItem.h"
+#include "BreakableMesh.h"
 #pragma endregion
 
 #include "SlideDoor.h"
@@ -85,12 +86,16 @@ HRESULT CLevel_KratCentralStation::Initialize()
 
 	Reset();
 
-#pragma region 영웅 아이템 테스트
-	//CGameObject::GAMEOBJECT_DESC Desc{};
+#pragma region 영웅 테스트
+	//CBreakableMesh::BREAKABLEMESH_DESC Desc{};
 	//Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-
-	//if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
-	//	Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))
+	//Desc.iPartModelCount = 2;
+	//Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	//lstrcpy(Desc.szModelPrototypeTag, TEXT("Prototype_Component_Model_Main"));
+	//Desc.PartModelNames.push_back(TEXT("Part1"));
+	//Desc.PartModelNames.push_back(TEXT("Part2"));
+	//if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+	//	Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
 	//	return E_FAIL;
 #pragma endregion
 
@@ -261,12 +266,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;

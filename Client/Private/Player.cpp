@@ -651,12 +651,14 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 void CPlayer::TriggerStateEffects(_float fTimeDelta)
 {
 	string stateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-	//printf("Current State: %s\n", stateName.c_str());
+	m_eCategory = GetAnimCategoryFromName(stateName);
 
 	// 상태가 바뀌었으면 초기화
-	if (m_strPrevStateName != stateName)
+	//if (m_strPrevStateName != stateName)
+	if (m_eCategory != m_ePreCategory)
 	{
-		m_strPrevStateName = stateName;
+		printf("Current State: %s\n", stateName.c_str());
+		m_ePreCategory = m_eCategory;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
 		m_iMoveStep = 0;
@@ -1360,8 +1362,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		{
 			if (!m_bSetSound)
 			{
-				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 				m_bSetSound = true;
+				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 
 				LimActive(true, 10.5f, { 0.1f ,0.15f, 1.f, 1.f });
 

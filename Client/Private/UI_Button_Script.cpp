@@ -17,6 +17,11 @@ _float2 CUI_Button_Script::Get_ButtonPos()
     return m_PartObjects[0]->Get_Pos();
 }
 
+_wstring CUI_Button_Script::Get_Caption()
+{
+    return _wstring();
+}
+
 void CUI_Button_Script::Set_isSelect(_bool isSelect)
 {
     m_isSelect = isSelect;

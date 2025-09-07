@@ -172,10 +172,10 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_bDebugMode = !m_bDebugMode;
 	}
 
-	//if (KEY_DOWN(DIK_V))
-	//{
-	//	Reset();
-	//}
+	if (KEY_DOWN(DIK_V))
+	{
+		Reset();
+	}
 
 	if (KEY_PRESSING(DIK_LCONTROL))
 	{
@@ -859,7 +859,7 @@ void CFuoco::SetupAttackByType(_int iPattern)
 	{
 		m_bRootMotionClamped = false;
 	}
-	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
+	ApplyAttackTypeToPlayer(m_eAttackType);
 }
 
 void CFuoco::Register_Events()

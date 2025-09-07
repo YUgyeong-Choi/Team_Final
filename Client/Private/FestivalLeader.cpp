@@ -30,10 +30,11 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
-	/* [ 데미지 설정 ] */
+	m_fMaxHp = 850.f;
+	m_fPhase2HPThreshold = 0.65f;
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
-	m_fChasingDistance = 4.f;
+	m_fChasingDistance = 2.5f;
 	m_iPatternLimit = 1;
 	m_fMinimumTurnAngle = 50.f;
 	m_fChangeMoveDirCooldown = 2.f;
@@ -402,16 +403,13 @@ HRESULT CFestivalLeader::Ready_Actor()
 {
 	if (FAILED(__super::Ready_Actor()))
 		return E_FAIL;
-	_vector S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
 
 	// 해머
 	if (m_pHammerBone)
 	{
 		const PxTransform hammerPose = GetBonePose(m_pHammerBone);
 
-		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.f,1.f,1.f));
+		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.5f,0.7f,0.7f));
 		//PxSphereGeometry hammerGeom = m_pGameInstance->CookSphereGeometry(1.5f);
 		m_pPhysXActorComForHammer->Create_Collision(
 			m_pGameInstance->GetPhysics(),
@@ -422,8 +420,8 @@ HRESULT CFestivalLeader::Ready_Actor()
 		m_pPhysXActorComForHammer->Set_ShapeFlag(false, true, true);
 
 		PxFilterData hammerFilter{};
-		hammerFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
-		hammerFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MONSTERWEAPON;
+		hammerFilter.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+		hammerFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForHammer->Set_SimulationFilterData(hammerFilter);
 		m_pPhysXActorComForHammer->Set_QueryFilterData(hammerFilter);
 
@@ -449,7 +447,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 		m_pPhysXActorComForBasket->Set_ShapeFlag(false, true, true);
 
 		PxFilterData basketFilter{};
-		basketFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		basketFilter.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
 		basketFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForBasket->Set_SimulationFilterData(basketFilter);
 		m_pPhysXActorComForBasket->Set_QueryFilterData(basketFilter);
@@ -466,17 +464,17 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
 
-		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForLeftHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			leftGeom,
 			leftPose,
 			m_pGameInstance->GetMaterial(L"Default")
 		);
-		m_pPhysXActorComForBasket->Set_ShapeFlag(false, true, true);
+		m_pPhysXActorComForLeftHand->Set_ShapeFlag(false, true, true);
 
 		PxFilterData leftFilter{};
-		leftFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		leftFilter.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
 		leftFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForLeftHand->Set_SimulationFilterData(leftFilter);
 		m_pPhysXActorComForLeftHand->Set_QueryFilterData(leftFilter);
@@ -491,7 +489,8 @@ HRESULT CFestivalLeader::Ready_Actor()
 	if (m_pRightHandBone)
 	{
 		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
-		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(1.f);
 		m_pPhysXActorComForRightHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			rightGeom,
@@ -500,7 +499,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 		);
 		m_pPhysXActorComForRightHand->Set_ShapeFlag(false, true, true);
 		PxFilterData rightFilter{};
-		rightFilter.word0 = WORLDFILTER::FILTER_MONSTERBODY;
+		rightFilter.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
 		rightFilter.word1 = WORLDFILTER::FILTER_PLAYERBODY;
 		m_pPhysXActorComForRightHand->Set_SimulationFilterData(rightFilter);
 		m_pPhysXActorComForRightHand->Set_QueryFilterData(rightFilter);
@@ -657,8 +656,13 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	m_iPrevNodeID = m_iCurNodeID;
 	m_iCurNodeID = iNodeID;
 	m_ePrevState = m_eCurrentState;
+	m_bRootMotionClamped = false;
 	switch (iNodeID)
 	{
+	case ENUM_CLASS(BossStateID::CutScene_Start):
+	case ENUM_CLASS(BossStateID::CutScene_End):
+		m_eCurrentState = EEliteState::CUTSCENE;
+		break;
 	case ENUM_CLASS(BossStateID::Idle):
 		m_eCurrentState = EEliteState::IDLE;
 		break;
@@ -703,16 +707,47 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::Atk_HalfSpin_Start):
 		break;
+	case ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Start):
+		m_eAttackType = EAttackType::FURY_STAMP;	
+		break;
+	case ENUM_CLASS(BossStateID::Atk_FurySwing_Start):
+		m_eAttackType = EAttackType::STRONG_KNOCKBACK;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_HammerSlam_Start):
+		m_eAttackType = EAttackType::STAMP;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_AlternateSmash_Start):
+	case ENUM_CLASS(BossStateID::Atk_AlternateSmash_Start2):
+	case ENUM_CLASS(BossStateID::Atk_AlternateSmash_Start3):
+		m_eAttackType = EAttackType::NORMAL;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_HammerSlam_Loop):
+		m_eAttackType = EAttackType::STAMP;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_HammerSlam_End):
+		m_pAnimator->SetFloat("Distance", Get_DistanceToPlayer());
+		break;
+	case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_Start):
+		m_eAttackType = EAttackType::FURY_STAMP;
+		break;
+	case ENUM_CLASS(BossStateID::Atk_Strike_Start):
+	case ENUM_CLASS(BossStateID::Atk_Strike_Loop):
+	case ENUM_CLASS(BossStateID::Atk_Strike_End):
+	case ENUM_CLASS(BossStateID::Atk_Jump_Start):
+	case ENUM_CLASS(BossStateID::Atk_Jump_Loop):
+	case ENUM_CLASS(BossStateID::Atk_Jump_End):
+		m_bRootMotionClamped = true;
+		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	}
+	ApplyAttackTypeToPlayer(m_eAttackType);
 	if (m_ePrevState == EEliteState::FATAL && m_eCurrentState != EEliteState::FATAL)
 	{
 		m_fMaxRootMotionSpeed = 18.f;
 		m_fRootMotionAddtiveScale = 1.2f;
 	}
-
 }
 
 void CFestivalLeader::UpdateSpecificBehavior(_float fTimeDelta)
@@ -884,7 +919,8 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	default:
 		break;
 	}
-	if (iPattern == Client::CFestivalLeader::Strike)
+	if (iPattern == Client::CFestivalLeader::Strike
+		||iPattern ==Client::CFestivalLeader::JumpAttack )
 	{
 		m_bRootMotionClamped = true;
 	}
@@ -905,17 +941,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
-			_bool bIsFront = IsTargetInFront(180.f);
-
-			if (bIsFront == false)
-			{
-				SetTurnTimeDuringAttack(2.5f, 1.4f);
-			}
-			else
-			{
-				SetTurnTimeDuringAttack(1.3f);
-			}
-
+			SetTurnTimeDuringAttack(0.7f,1.15f);
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
@@ -1095,6 +1121,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 		return;
 	if(m_bStartPhase2 == false)
 	m_pAnimator->SetTrigger("Phase2Start");
+	m_pAnimator->SetBool("Phase2Combo", true);
+	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::STRONG_KNOCKBACK); // 바스켓에 충돌했을 때를 생각해서 
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
@@ -1290,45 +1318,23 @@ void CFestivalLeader::UpdatePatternWeight(_int iPattern)
 
 void CFestivalLeader::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = true;
-		}
-	}
+	
 }
 
 void CFestivalLeader::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = true;
-		}
-	}
+
 }
 
 void CFestivalLeader::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = false;
-		}
-	}
 }
 
 void CFestivalLeader::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		cout << "플레이어 충돌" << endl;
-	}
+
 }
 
 void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

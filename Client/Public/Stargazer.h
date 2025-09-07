@@ -36,6 +36,7 @@ public:
 	}STARGAZER_DESC;
 
 	STARGAZER_STATE Get_State() { return m_eState; }
+	STARGAZER_TAG Get_Tag() { return m_eStargazerTag; }
 
 protected:
 	CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -50,6 +51,16 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+
+	//이제 버튼 에서 만든 ui에서 특정 행동을 안하고 다시 돌아오면, 버튼이랑 스크립트 다시 키기, 
+	//만든 ui에서 이제 부르면 될듯?
+	void Script_Activate();
+
+	// 특정 행동을 하면, 버튼이랑 스크립트를 지운다.
+	void Delete_Script();
+
+	void Teleport_Stargazer(STARGAZER_TAG eTag);
+
 private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
@@ -59,6 +70,12 @@ private:
 
 	// 필요한 데이터를 로드함
 	void LoadScriptData();
+	// 키 입력에 따라 선택하는 버튼을 바꿈
+	void Update_Button();
+	// 선택한 버튼이 가지고 있는 이벤트에 따라 만들 ui를 정하고 만들어준다.
+	void Button_Interaction();
+
+	HRESULT Ready_Script();
 
 private:
 
@@ -86,9 +103,16 @@ private:    /* [ 컴포넌트 ] */
 	_bool m_bTalkActive = { false };
 	_bool m_bAutoTalk = {};
 
+	// 대화가 없으면 스크립트를 띄운다.
 	class CUI_Script_StarGazer* m_pScript = { nullptr };
+	// 스크립트와 같이 띄울 버튼과, 선택 되 있는 버튼 인덱스
 	vector<class CUI_Button_Script*> m_pSelectButtons;
+	_int m_iSelectButtonIndex = {};
 
+	vector<string> m_ButtonEvents = {};
+
+	//vector<CUIObject*> m_
+	
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

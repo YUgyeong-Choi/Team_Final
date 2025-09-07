@@ -26,7 +26,7 @@ HRESULT CUI_Script_StarGazer::Initialize(void* pArg)
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Script/Sciprt_Stargazer_Background.json");
 
 	// 백그라운드
-	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(__super::Initialize(&eDesc)))
 		return E_FAIL;
 
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Script/Sciprt_Stargazer_Button.json");

@@ -267,6 +267,7 @@ private: /* [ 상태 변수 ] */
 	EPlayerState  m_pPreviousState = { EPlayerState::END };
 	EPlayerState  m_eCurrentState = { EPlayerState::IDLE };
 	eAnimCategory m_eCategory = { eAnimCategory::NONE };
+	eAnimCategory m_ePreCategory = { eAnimCategory::NONE };
 
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
