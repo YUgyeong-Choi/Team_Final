@@ -459,7 +459,7 @@ private: // 그라인더용 변수
 private:
 	STAT_DESC m_eStat = {};
 	_float m_fArmor = {};
-	_float m_fDamgaeReduction = {};
+	_float m_fDamageReduction = {};
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

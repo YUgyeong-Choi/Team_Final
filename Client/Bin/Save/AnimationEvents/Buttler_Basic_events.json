@@ -447,7 +447,7 @@
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },
@@ -503,7 +503,7 @@
         {
             "ClipName": "AS_Idle_Spawn_05_Loop",
             "Duration": 264.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },

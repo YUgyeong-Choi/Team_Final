@@ -51,6 +51,13 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 
 	m_pWeapon->Collider_FilterOff();
 
+	if (m_eSpawnType != SPAWN_TYPE::IDLE)
+	{
+		m_pAnimator->SetTrigger("ChangeSpawnPattern");
+		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
+
+	}
+
 	return S_OK;
 }
 

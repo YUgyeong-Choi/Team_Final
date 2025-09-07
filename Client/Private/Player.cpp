@@ -2424,8 +2424,12 @@ void CPlayer::Apply_Stat()
 
 	}
 	
-	// 방어력, 저항은 일단 냅둬...
+	// 방어력 수치 계산은 나중에? 
+
+	m_fDamageReduction = m_fArmor * 0.6f / (100 + m_fArmor);
 	
+
+	// 저항은 일단 나중에? 잘 모르겟음
 
 	// 값 동기화
 	Callback_HP();
