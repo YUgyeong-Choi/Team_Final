@@ -39,18 +39,18 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-	{
-		_int a = 0;
-	}
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 	{
 		_int a = 0;
 	}
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 	{
-		_int a = 0;
+ 		_int a = 0;
 	}
+
+private:
+	void Break();
 
 private:
 	HRESULT Render_Model();
@@ -63,7 +63,8 @@ private:
 	//파트 모델 갯수
 	_uint m_iPartModelCount = 0;
 
-	_bool m_bBreak = { false };
+	_bool m_bBreakTriggered = { false }; //무너진다는 트리거
+	_bool m_bIsBroken = { false }; //이미 무너진 상태인지 확인하는 코드
 
 
 	class CPlayer* m_pPlayer = { nullptr };

@@ -67,28 +67,9 @@ void CBreakableMesh::Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_pGameInstance->Key_Down(DIK_L))
+	if (m_bBreakTriggered)
 	{
-		m_bBreak = true;
-
-		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
-
-		for (CPhysXDynamicActor* pPartActor : m_pPartPhysXActorComs)
-		{
-			CPhysXDynamicActor* pActorCom = pPartActor;
-			PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
-
-			pActorCom->Set_Kinematic(false);
-
-			IgnorePlayerCollider(pPartActor);
-
-			//pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
-			// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
-			// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
-			pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
-			pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bBreak);
-			pRigid->wakeUp();
-		}
+		Break();
 	}
 
 }
@@ -103,14 +84,16 @@ HRESULT CBreakableMesh::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_bBreak == false)
+	if (m_bIsBroken == false)
 	{
 		if (FAILED(Render_Model()))
 			return E_FAIL;
 	}
-
-	if (FAILED(Render_PartModels()))
-		return E_FAIL;
+	else
+	{
+		if (FAILED(Render_PartModels()))
+			return E_FAIL;
+	}
 
 
 #ifdef _DEBUG
@@ -131,6 +114,41 @@ HRESULT CBreakableMesh::Render()
 
 
 	return S_OK;
+}
+
+void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	if (m_bBreakTriggered == false)
+	{
+		m_bBreakTriggered = true;
+	}
+}
+
+void CBreakableMesh::Break()
+{
+	if (m_bIsBroken == true)
+		return;
+
+	m_bIsBroken = true;
+
+	m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
+
+	for (CPhysXDynamicActor* pPartActor : m_pPartPhysXActorComs)
+	{
+		CPhysXDynamicActor* pActorCom = pPartActor;
+		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+
+		pActorCom->Set_Kinematic(false);
+
+		IgnorePlayerCollider(pPartActor);
+
+		//pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
+		// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
+		// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
+		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
+		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bIsBroken);
+		pRigid->wakeUp();
+	}
 }
 
 HRESULT CBreakableMesh::Render_Model()
@@ -285,6 +303,7 @@ HRESULT CBreakableMesh::Ready_Collider()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MAP;
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
 
 	// ──────────────────────────────
 	// Convex는 버텍스 제한 있음 (255개)
