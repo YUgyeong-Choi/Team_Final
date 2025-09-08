@@ -57,6 +57,7 @@ HRESULT	CNavTool::Render_ImGui()
 {
 	Render_CellList();
 	Render_Settings();
+	Render_Detail();
 
 	return S_OK;
 }
@@ -186,6 +187,27 @@ void CNavTool::Render_Settings()
 	}
 	ImGui::End();
 
+}
+
+void CNavTool::Render_Detail()
+{
+	if (ImGui::Begin("Detail"))
+	{
+
+		ImGui::Text("Active");
+		if (m_pNavigationCom->Get_Index() != -1)
+		{
+			CCell* pCell = m_pNavigationCom->Get_Cell();
+
+			if (pCell)
+			{
+				ImGui::Checkbox("Active", pCell->Get_Active_Ptr());
+			}
+			
+		}
+
+	}
+	ImGui::End();
 }
 
 void CNavTool::Add_Point()
