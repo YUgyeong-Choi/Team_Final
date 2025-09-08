@@ -144,6 +144,8 @@ namespace Client
 		_int iKeyFrame;
 		_matrix WorldMatrix;
 		INTERPOLATION_CAMERA interpMatrixPos;
+		_int   curveType = 0; 
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f }; 
 	};
 
 	struct CAMERA_POSFRAME
@@ -151,18 +153,24 @@ namespace Client
 		_int iKeyFrame;
 		XMFLOAT3 offSetPos;
 		INTERPOLATION_CAMERA interpOffSetPos;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 	struct CAMERA_ROTFRAME
 	{
 		_int iKeyFrame;
 		XMFLOAT3 offSetRot;
 		INTERPOLATION_CAMERA interpOffSetRot;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 	struct CAMERA_FOVFRAME
 	{
 		_int iKeyFrame;
 		_float fFov;
 		INTERPOLATION_CAMERA interpFov;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 
 	struct CAMERA_TARGETFRAME
@@ -172,6 +180,9 @@ namespace Client
 		_float fPitch;
 		_float fYaw;
 		_float fDistance;
+		INTERPOLATION_CAMERA interpTarget;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 
 	struct CAMERA_FRAMEDATA

@@ -34,6 +34,8 @@ public:
 	_vector GetUpVector();
 	_vector GetLookVector();
 
+	void Set_Fov(_float fov) { m_fFov = fov; }
+
 protected:
 	_float				m_fFov = { };
 	_float				m_fNear = { };

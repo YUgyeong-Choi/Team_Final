@@ -33,6 +33,7 @@ public:
         _float fPitch;
         _float fYaw;
         _float fDistance;
+        INTERPOLATION_CAMERA interpTarget;
 
         //_bool bLookAt = false;
         //_vector lookAtTarget;

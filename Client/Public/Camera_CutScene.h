@@ -35,13 +35,12 @@ public:
 	// ======================================
 	// 오비탈 초기 위치 : 플레이어 등 뒤에 위치하며 플레이어랑 같은 Look을 가진 위치
 
-	/* [ 컷씬 키프레임 설정 ] */
-	void Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData);
-
 	_int Get_CurrentFrame() { return m_iCurrentFrame; }
 
-	/* [ 컷씬 종류 ] */
+	/* [ 컷씬 - E눌러서 실행할 때 ] */
 	void Set_CutSceneData(CUTSCENE_TYPE cutSceneType);
+	/* [ 컷씬 - Tool에서 실행할 때 ] */
+	void Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData, _int start, _int end);
 
 	/* [ 컷씬 활성화 ] */
 	void PlayCutScene() { m_bActive = true; }
@@ -104,6 +103,11 @@ private:
 	_bool m_bReadyCutSceneOrbital = false;
 
 	_bool m_bStopCamera = false;
+
+	// Tool용
+	_int m_iStaratFrame;
+	_int m_iEndFrame;
+	_bool m_bShowSpecial = false;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

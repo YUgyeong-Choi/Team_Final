@@ -36,8 +36,6 @@ using namespace ImGui;
 // 로딩 비율 설정하기 위한?
 #include <atomic>
 
-
-
 namespace Client
 {
 

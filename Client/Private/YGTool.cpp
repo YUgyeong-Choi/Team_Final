@@ -47,7 +47,10 @@ void CYGTool::Priority_Update(_float fTimeDelta)
 	if (bStopCamera)
 	{
 		if (CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame() == iStopFrame)
+		{
 			m_pGameInstance->Set_GameTimeScale(0.f);
+			PrintMatrix("CameraWold", XMLoadFloat4x4(CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_WorldMatrix_Ptr()));
+		}
 	}
 	else {
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -99,8 +102,10 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 		j["vecMatrixPosData"].push_back({
 			{ "keyFrame", matrixPos.iKeyFrame },
 			{ "worldMatrix", matValues },
-			{ "interpMatrixPosition", matrixPos.interpMatrixPos }
-			});
+			{ "interpMatrixPosition", matrixPos.interpMatrixPos },
+			{ "curveType", matrixPos.curveType },
+			{ "curveY", std::vector<float>(std::begin(matrixPos.curveY), std::end(matrixPos.curveY)) }
+		});
 	}
 
 	// 2. Offset Position Frame
@@ -109,7 +114,9 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 		j["vecPosData"].push_back({
 			{ "keyFrame", pos.iKeyFrame },
 			{ "position", { pos.offSetPos.x, pos.offSetPos.y, pos.offSetPos.z } },
-			{ "interpPosition", pos.interpOffSetPos }
+			{ "interpPosition", pos.interpOffSetPos },
+			{ "curveType", pos.curveType },
+			{ "curveY", std::vector<float>(std::begin(pos.curveY), std::end(pos.curveY)) }
 			});
 	}
 
@@ -119,7 +126,9 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 		j["vecRotData"].push_back({
 			{ "keyFrame", rot.iKeyFrame },
 			{ "rotation", { rot.offSetRot.x, rot.offSetRot.y, rot.offSetRot.z } },
-			{ "interpRotation", rot.interpOffSetRot }
+			{ "interpRotation", rot.interpOffSetRot },
+			{ "curveType", rot.curveType },
+			{ "curveY", std::vector<float>(std::begin(rot.curveY), std::end(rot.curveY)) }
 			});
 	}
 
@@ -129,7 +138,9 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 		j["vecFovData"].push_back({
 			{ "keyFrame", fov.iKeyFrame },
 			{ "fFov", fov.fFov },
-			{ "interpFov", fov.interpFov }
+			{ "interpFov", fov.interpFov },
+			{ "curveType", fov.curveType },
+			{ "curveY", std::vector<float>(std::begin(fov.curveY), std::end(fov.curveY)) }
 			});
 	}
 
@@ -141,7 +152,10 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 			{ "targetType", static_cast<_int>(target.eTarget)},
 			{ "pitch", target.fPitch },
 			{ "yaw", target.fYaw },
-			{ "distance", target.fDistance }
+			{ "distance", target.fDistance },
+			{ "interpFov", target.interpTarget },
+			{ "curveType", target.curveType },
+			{ "curveY", std::vector<float>(std::begin(target.curveY), std::end(target.curveY)) }
 			});
 	}
 
@@ -178,34 +192,55 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 	// 1. vecMatrixPosData
 	if (j.contains("vecMatrixPosData"))
 	{
-		for (const auto& posJson : j["vecMatrixPosData"])
+		for (const auto& worldJson : j["vecMatrixPosData"])
 		{
-			CAMERA_WORLDFRAME posFrame;
-			posFrame.iKeyFrame = posJson["keyFrame"];
-			posFrame.interpMatrixPos = posJson["interpMatrixPosition"];
+			CAMERA_WORLDFRAME worldFrame;
+			worldFrame.iKeyFrame = worldJson["keyFrame"];
+			worldFrame.interpMatrixPos = worldJson["interpMatrixPosition"];
 
-			const std::vector<float>& matValues = posJson["worldMatrix"];
+			const std::vector<float>& matValues = worldJson["worldMatrix"];
 			XMFLOAT4X4 mat;
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
-			posFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+			worldFrame.WorldMatrix = XMLoadFloat4x4(&mat);
 
-			data.vecWorldMatrixData.push_back(posFrame);
+			worldFrame.curveType = worldJson.value("curveType", 0); // 0=Linear
+
+			if (worldJson.contains("curveY") && worldJson["curveY"].is_array())
+			{
+				auto arr = worldJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					worldFrame.curveY[k] = arr[k].get<float>();
+			}
+
+			data.vecWorldMatrixData.push_back(worldFrame);
 		}
 	}
 
 	// 2. vecPosData
 	if (j.contains("vecPosData"))
 	{
-		for (const auto& rotJson : j["vecPosData"])
+		for (const auto& posJson : j["vecPosData"])
 		{
 			CAMERA_POSFRAME posFrame;
-			posFrame.iKeyFrame = rotJson["keyFrame"];
+			posFrame.iKeyFrame = posJson["keyFrame"];
 			posFrame.offSetPos = XMFLOAT3(
-				rotJson["position"][0],
-				rotJson["position"][1],
-				rotJson["position"][2]
+				posJson["position"][0],
+				posJson["position"][1],
+				posJson["position"][2]
 			);
-			posFrame.interpOffSetPos = rotJson["interpPosition"];
+			posFrame.interpOffSetPos = posJson["interpPosition"];
+
+
+			posFrame.curveType = posJson.value("curveType", 0); // 0=Linear
+
+			if (posJson.contains("curveY") && posJson["curveY"].is_array())
+			{
+				auto arr = posJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					posFrame.curveY[k] = arr[k].get<float>();
+			}
 
 			data.vecOffSetPosData.push_back(posFrame);
 		}
@@ -225,6 +260,16 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			);
 			rotFrame.interpOffSetRot = rotJson["interpRotation"];
 
+			rotFrame.curveType = rotJson.value("curveType", 0); // 0=Linear
+
+			if (rotJson.contains("curveY") && rotJson["curveY"].is_array())
+			{
+				auto arr = rotJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					rotFrame.curveY[k] = arr[k].get<float>();
+			}
+
 			data.vecOffSetRotData.push_back(rotFrame);
 		}
 	}
@@ -239,6 +284,16 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			fovFrame.fFov = fovJson["fFov"];
 			fovFrame.interpFov = fovJson["interpFov"];
 
+			fovFrame.curveType = fovJson.value("curveType", 0); // 0=Linear
+
+			if (fovJson.contains("curveY") && fovJson["curveY"].is_array())
+			{
+				auto arr = fovJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					fovFrame.curveY[k] = arr[k].get<float>();
+			}
+
 			data.vecFovData.push_back(fovFrame);
 		}
 	}
@@ -246,14 +301,24 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 	// 5. vecTargetData
 	if (j.contains("vecTargetData"))
 	{
-		for (const auto& fovJson : j["vecTargetData"])
+		for (const auto& targetJson : j["vecTargetData"])
 		{
 			CAMERA_TARGETFRAME targetFrame;
-			targetFrame.iKeyFrame = fovJson["keyFrame"];
-			targetFrame.eTarget = static_cast<TARGET_CAMERA>(fovJson["targetType"]);
-			targetFrame.fPitch = fovJson["pitch"];
-			targetFrame.fYaw = fovJson["yaw"];
-			targetFrame.fDistance = fovJson["distance"];
+			targetFrame.iKeyFrame = targetJson["keyFrame"];
+			targetFrame.eTarget = static_cast<TARGET_CAMERA>(targetJson["targetType"]);
+			targetFrame.fPitch = targetJson["pitch"];
+			targetFrame.fYaw = targetJson["yaw"];
+			targetFrame.fDistance = targetJson["distance"];
+
+			targetFrame.curveType = targetJson.value("curveType", 0); // 0=Linear
+
+			if (targetJson.contains("curveY") && targetJson["curveY"].is_array())
+			{
+				auto arr = targetJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					targetFrame.curveY[k] = arr[k].get<float>();
+			}
 
 			data.vecTargetData.push_back(targetFrame);
 		}
@@ -437,6 +502,11 @@ HRESULT CYGTool::Render_CameraTool()
 				m_pSelectedKey->fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
 				m_pSelectedKey->fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
 			}
+
+			_int interpFov = static_cast<int>(m_pSelectedKey->interpTarget);
+
+			if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
 		}
 	}
 
@@ -623,18 +693,16 @@ HRESULT CYGTool::Render_CameraTool()
 	ImGui::Text("Pitch: %f", CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch());
 	ImGui::Text("Yaw: %f", CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw());
 
+
+	ImGui::SeparatorText("Play Range");
+	static _int sPlayStart = 0;
+	static _int sPlayEnd = 0;
+	ImGui::DragInt("PStart Frame", &sPlayStart, 1, 0, m_CameraDatas.iEndFrame);
+	ImGui::DragInt("PEnd Frame", &sPlayEnd, 1, 0, m_CameraDatas.iEndFrame);
 	if (ImGui::Button("Play CutScene"))
 	{
-		CCamera_Orbital* pCamera_Orbital = CCamera_Manager::Get_Instance()->GetOrbitalCam();
-		CCamera_CutScene* pCamera_CutScene = CCamera_Manager::Get_Instance()->GetCutScene();
-
-		pCamera_CutScene->Set_InitOrbitalWorldMatrix(pCamera_Orbital->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw));
-		_matrix oribtalMatrix = pCamera_Orbital->Get_TransfomCom()->Get_WorldMatrix();
-		pCamera_CutScene->Get_TransfomCom()->Set_WorldMatrix(oribtalMatrix);
-
 		CCamera_Manager::Get_Instance()->SetCutSceneCam();
-		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_eCutSceneType,m_CameraDatas);
-		CCamera_Manager::Get_Instance()->GetCutScene()->PlayCutScene();
+		CCamera_Manager::Get_Instance()->GetCutScene()->Set_CameraFrame(m_eCutSceneType, m_CameraDatas, sPlayStart, sPlayEnd);
 	}
 
 	ImGui::SameLine();
@@ -643,6 +711,13 @@ HRESULT CYGTool::Render_CameraTool()
 	ImGui::SeparatorText("Stop Camera");
 	ImGui::Checkbox("Enable Stop Camera", &bStopCamera);
 	ImGui::InputInt("Stop Frame", &iStopFrame);
+	
+
+	static _float fCurFov = 60.0f; // 초기값 (기본 FOV)
+	if (ImGui::DragFloat("FreeCam FOV", &fCurFov, 0.1f, 30.0f, 120.0f))
+	{
+		CCamera_Manager::Get_Instance()->GetFreeCam()->Set_Fov(XMConvertToRadians(fCurFov));
+	}
 
 	ImGui::SeparatorText("Cutscene Type");
 	const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "OutDoor", "FuocoDoor", "FestivalDoor" };
@@ -746,10 +821,77 @@ void CYGTool::Render_SetInfos()
 
 			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetCamPos);
 			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->LookAt(vtargetPos);
+
+			if (KEY_DOWN(DIK_CAPSLOCK))
+				PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->Get_WorldMatrix_Ptr()));
 		}
 	}
 	
 }
+
+#pragma region help
+// ===== Speed-curve helpers =====
+// preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
+inline float SpeedLinear(float t) { return 1.0f; }                // F=t
+inline float SpeedEaseIn(float t) { return 2.0f * t; }            // F=t^2
+inline float SpeedEaseOut(float t) { return 2.0f * (1.0f - t); }   // F=1-(1-t)^2
+inline float SpeedEaseInOut(float t) { return (t < 0.5f) ? 12.0f * t * t : 12.0f * (1.0f - t) * (1.0f - t); } // F=4t^3 / 1-4(1-t)^3
+
+// 균등 노드 Hermite (네가 쓰던 것 그대로)
+inline float Hermite01(float y0, float y1, float y2, float y3, float u) {
+	const float m1 = 0.5f * (y2 - y0), m2 = 0.5f * (y3 - y1);
+	const float u2 = u * u, u3 = u2 * u;
+	return (2 * u3 - 3 * u2 + 1) * y1 + (u3 - 2 * u2 + u) * m1 + (-2 * u3 + 3 * u2) * y2 + (u3 - u2) * m2;
+}
+
+// Custom5를 "속도 s(t)"로 샘플링 (음수 방지)
+inline float SampleCustom5Speed(const float y[5], float t) {
+	t = std::clamp(t, 0.0f, 1.0f);
+	constexpr float xs[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
+	int i = 0; while (i < 4 && t > xs[i + 1]) ++i;
+	const float x0 = xs[i], x1 = xs[i + 1];
+	const float u = (x1 > x0) ? (t - x0) / (x1 - x0) : 0.0f;
+
+	const int i0 = max(0, i - 1), i1 = i, i2 = i + 1, i3 = std::min(4, i + 2);
+	float s = Hermite01(y[i0], y[i1], y[i2], y[i3], u);
+	return (s < 0.0f) ? 0.0f : s; // 속도는 음수 금지
+}
+
+// 0..t까지 속도 적분 / 0..1까지 속도 적분  → t'  (Trapezoidal integration)
+inline float RemapBySpeed(int curveType, const float curveY[5], float t) {
+	t = std::clamp(t, 0.0f, 1.0f);
+
+	auto speed = [&](float u)->float {
+		switch (curveType) {
+		case 0:  return SpeedLinear(u);
+		case 1:  return SpeedEaseIn(u);
+		case 2:  return SpeedEaseOut(u);
+		case 3:  return SpeedEaseInOut(u);
+		case 4:  return SampleCustom5Speed(curveY, u);
+		default: return 1.0f;
+		}
+		};
+
+	auto integrate = [&](float a, float b)->float {
+		if (b <= a) return 0.0f;
+		const int N = 64; // 분할 수(필요시 올려도 됨)
+		float sum = 0.0f;
+		float prevX = a, prevY = speed(a);
+		for (int k = 1; k <= N; ++k) {
+			float x = a + (b - a) * (k / float(N));
+			float y = speed(x);
+			sum += (prevY + y) * 0.5f * (x - prevX);
+			prevX = x; prevY = y;
+		}
+		return sum;
+		};
+
+	const float total = integrate(0.0f, 1.0f);
+	if (total <= 1e-6f) return t;              // 안전 폴백
+	const float part = integrate(0.0f, t);
+	return std::clamp(part / total, 0.0f, 1.0f);
+}
+#pragma endregion
 
 HRESULT CYGTool::Render_CameraFrame()
 {
@@ -839,6 +981,58 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_CameraDatas.vecWorldMatrixData[m_iEditKey].iKeyFrame = m_EditMatrixPosKey.iKeyFrame;
 		}
 
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditMatrixPosKey.interpMatrixPos == INTERPOLATION_CAMERA::LERP
+				|| m_EditMatrixPosKey.interpMatrixPos == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecWorldMatrixData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecWorldMatrixData[iStart];
+				const auto& keyB = m_CameraDatas.vecWorldMatrixData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditMatrixPosKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditMatrixPosKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditMatrixPosKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditMatrixPosKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditMatrixPosKey.curveType, m_EditMatrixPosKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
 		if (ImGui::Button("WorldPosRot Apply"))
 		{
 			m_CameraDatas.vecWorldMatrixData[m_iEditKey] = m_EditMatrixPosKey;
@@ -901,6 +1095,60 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_CameraDatas.vecOffSetPosData[m_iEditKey].iKeyFrame = m_EditOffSetPosKey.iKeyFrame;
 		}
 
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditOffSetPosKey.interpOffSetPos == INTERPOLATION_CAMERA::LERP
+				|| m_EditOffSetPosKey.interpOffSetPos == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecOffSetPosData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecOffSetPosData[iStart];
+				const auto& keyB = m_CameraDatas.vecOffSetPosData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditOffSetPosKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditOffSetPosKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditOffSetPosKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditOffSetPosKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditOffSetPosKey.curveType, m_EditOffSetPosKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
+
+
 		if (ImGui::Button("OffsetPos Apply"))
 		{
 			m_CameraDatas.vecOffSetPosData[m_iEditKey] = m_EditOffSetPosKey;
@@ -962,6 +1210,58 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_CameraDatas.vecOffSetRotData[m_iEditKey].iKeyFrame = m_EditOffSetRotKey.iKeyFrame;
 		}
 
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditOffSetRotKey.interpOffSetRot == INTERPOLATION_CAMERA::LERP
+				|| m_EditOffSetRotKey.interpOffSetRot == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecOffSetRotData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecOffSetRotData[iStart];
+				const auto& keyB = m_CameraDatas.vecOffSetRotData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditOffSetRotKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditOffSetRotKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditOffSetRotKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditOffSetRotKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditOffSetRotKey.curveType, m_EditOffSetRotKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
 		if (ImGui::Button("OffsetRot Apply"))
 		{
 			m_CameraDatas.vecOffSetRotData[m_iEditKey] = m_EditOffSetRotKey;
@@ -1021,6 +1321,58 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_CameraSequence->Change_KeyFrame(3, m_EditFovKey.iKeyFrame, m_iChangeKeyFrame);
 			m_EditFovKey.iKeyFrame = m_iChangeKeyFrame;
 			m_CameraDatas.vecFovData[m_iEditKey].iKeyFrame = m_EditFovKey.iKeyFrame;
+		}
+
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditFovKey.interpFov == INTERPOLATION_CAMERA::LERP
+				|| m_EditFovKey.interpFov == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecFovData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecFovData[iStart];
+				const auto& keyB = m_CameraDatas.vecFovData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditFovKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditFovKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditFovKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditFovKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditFovKey.curveType, m_EditFovKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
 		}
 
 		if (ImGui::Button("Fov Apply"))
@@ -1092,6 +1444,64 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_EditTargetKey.iKeyFrame = m_iChangeKeyFrame;
 			m_CameraDatas.vecTargetData[m_iEditKey].iKeyFrame = m_EditTargetKey.iKeyFrame;
 		}
+
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		int interpFov = static_cast<int>(m_EditTargetKey.interpTarget);
+		if (ImGui::Combo("Fov Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_EditTargetKey.interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditTargetKey.interpTarget == INTERPOLATION_CAMERA::LERP
+				|| m_EditTargetKey.interpTarget == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecTargetData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecTargetData[iStart];
+				const auto& keyB = m_CameraDatas.vecTargetData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditTargetKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditTargetKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditTargetKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditTargetKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditTargetKey.curveType, m_EditTargetKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
 
 		if (ImGui::Button("Target Apply"))
 		{
