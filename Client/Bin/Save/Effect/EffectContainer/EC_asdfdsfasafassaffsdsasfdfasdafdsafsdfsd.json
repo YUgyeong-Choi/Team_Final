@@ -1,0 +1,330 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -10.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.0,
+                0.0,
+                0.0,
+                0.2408376932144165
+            ],
+            "Color": [
+                0.18324607610702515,
+                0.1761133372783661,
+                0.16405801475048065,
+                0.47120416164398193
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 124,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 124,
+            "FlipUV": false,
+            "Gravity": -0.4000000059604645,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.18324607610702515,
+                        0.1761133372783661,
+                        0.16405801475048065,
+                        0.47120416164398193
+                    ],
+                    "Intensity": 0.6700000166893005,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2893.839599609375,
+            "LifeTime_Particle": [
+                0.8999999761581421,
+                0.8999999761581421
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 0.800000011920929,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.5,
+            "Name": "Fes_Falling_SmokeParticle1",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -30.0,
+                30.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                1.0,
+                0.009999999776482582,
+                1.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                2.0,
+                3.5
+            ],
+            "Speed": [
+                4.0,
+                5.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Smoke_04_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 123,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.75,
+            "EndTrack": 123,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.2200000286102295,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 120.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 120.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2455.72705078125,
+            "LifeTime_Particle": [
+                0.8999999761581421,
+                0.8999999761581421
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 0.8999999761581421,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fes_DefaultSlam_Stone1",
+            "NumInstance": 1,
+            "NumKeyFrames": 3,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "RenderGroup": 9,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 4,
+            "Size": [
+                0.5,
+                1.0
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_SubUV_Explosion_08_8x8_SC_KMH",
+                "T_SubUV_Explosion_03_8x8_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 120
+}

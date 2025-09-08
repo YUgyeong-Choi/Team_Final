@@ -2079,7 +2079,7 @@ public:
                 //그 외의 방향을 맞으면 피격당한다.
 
                /* [ 이펙트를 생성한다. ] */
-
+                m_pOwner->Create_HitEffect();
                 m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
@@ -3032,7 +3032,7 @@ public:
 
         m_pOwner->m_fMaxRootMotionSpeed = 18.f;
         /* [ 이펙트를 생성한다. ] */
-
+        m_pOwner->Create_HitEffect();
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 

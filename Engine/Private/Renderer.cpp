@@ -230,8 +230,8 @@ HRESULT CRenderer::Initialize()
 
 	// downscale 배율
 	//m_fDownscaledRatio = 0.0625f; // 1/16
-	//m_fDownscaledRatio = 0.125f;	// 1/8
-	m_fDownscaledRatio = 0.25f;		// 1/4
+	m_fDownscaledRatio = 0.125f;	// 1/8
+	//m_fDownscaledRatio = 0.25f;		// 1/4
 
 	_uint iDownscaledWidth = static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio);
 	_uint iDownscaledHeight = static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio);
@@ -279,15 +279,14 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Distortion"))))
 		return E_FAIL;
 
-	// Weighted Blend 연산이 끝난 결과물 담는 렌더타겟.
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Composite"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend_Composite"), TEXT("Target_Effect_WB_Composite"))))
-		return E_FAIL;
-
 	// 디스토션 이후의 처리도 있을 수 있으므로 일단 적어둠
 	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AfterDistortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
 	//	return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_Nonlight_Emissive"), TEXT("Target_Final"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_Nonlight_Emissive"), TEXT("Target_Effect_WB_Emissive"))))
+		return E_FAIL;
 
 #pragma endregion
 
@@ -379,21 +378,15 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 #pragma region CY Debug
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Composite"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_WBGlow"), GetTargetX(1), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Accumulation"), GetTargetX(0), GetTargetY(0), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Revealage"), GetTargetX(0), GetTargetY(1), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Emissive"), GetTargetX(0), GetTargetY(2), fSizeX, fSizeY)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Distortion"), GetTargetX(0), GetTargetY(4), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Diffuse"), GetTargetX(4), GetTargetY(0), fSizeX, fSizeY)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_EffectBlend_Glow"), GetTargetX(4), GetTargetY(1), fSizeX, fSizeY)))
+	if (FAILED(m_pGameInstance->Ready_RT_Debug(TEXT("Target_Effect_WB_Distortion"), GetTargetX(0), GetTargetY(3), fSizeX, fSizeY)))
 		return E_FAIL;
 
 #pragma endregion
@@ -509,18 +502,6 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Emissive"))))
-	{
-		MSG_BOX("Render_Blur - Target_Effect_WB_Emissive Failed");
-		return E_FAIL;
-	}
-
-	if (FAILED(Render_Effect_WBGlow()))
-	{
-		MSG_BOX("Render_Effect_WBGlow Failed");
-		return E_FAIL;
-	}
-
 	if (FAILED(Render_BackBuffer()))
 	{
 		MSG_BOX("Render_BackBuffer Failed");
@@ -549,6 +530,24 @@ HRESULT CRenderer::Draw()
 	if (FAILED(Render_NonLight()))
 	{
 		MSG_BOX("Render_NonLight Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Effect_NonLight())) // 위에서 분리했어요
+	{
+		MSG_BOX("Render_Effect_NonLight Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Blur(TEXT("Target_Effect_WB_Emissive"))))
+	{
+		MSG_BOX("Render_Blur - Target_Effect_WB_Emissive Failed");
+		return E_FAIL;
+	}
+
+	if (FAILED(Render_Effect_WBGlow()))
+	{
+		MSG_BOX("Render_Effect_WBGlow Failed");
 		return E_FAIL;
 	}
 
@@ -1011,17 +1010,6 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_WaterPuddle"), m_pShader, "g_PBR_WaterPuddle")))
 		return E_FAIL;
 
-	///* [ Effect 렌더링용 ]*/
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Diffuse"), m_pShader, "g_EffectBlend_Diffuse")))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Composite"), m_pShader, "g_EffectBlend_WBComposite")))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_Glow"), m_pShader, "g_EffectBlend_Glow")))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_EffectBlend_WBGlow"), m_pShader, "g_EffectBlend_WBGlow")))
-	//	return E_FAIL;
-
-
 	/* [ 볼륨메트릭 포그 ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Volumetric"), m_pShader, "g_VolumetricTexture")))
 		return E_FAIL;
@@ -1079,16 +1067,6 @@ HRESULT CRenderer::Render_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_NONLIGHT)].clear();
-
-
-	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Render();
-
-		Safe_Release(pGameObject);
-	}
-	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
 
 	m_pGameInstance->End_MRT();
 
@@ -1318,8 +1296,7 @@ HRESULT CRenderer::Render_PBR_Glow()
 
 HRESULT CRenderer::Render_Effect_NonLight()
 {
-	// 당장 안 쓰고 상황 봐서 사용할 것
-	// 예상가는사용처: 블렌드 필요 없는 SubUV SE/PE
+	m_pGameInstance->Begin_MRT(TEXT("MRT_Effect_Nonlight_Emissive"), nullptr, false, false);
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)])
 	{
 		if (nullptr != pGameObject)
@@ -1328,6 +1305,8 @@ HRESULT CRenderer::Render_Effect_NonLight()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_EFFECT_NL)].clear();
+
+	m_pGameInstance->End_MRT();
 
 	return S_OK;
 }

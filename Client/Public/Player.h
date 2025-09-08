@@ -146,7 +146,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_UIParameters();
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
-	//HRESULT Ready_Effect();
+	HRESULT Ready_Effect();
 
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
