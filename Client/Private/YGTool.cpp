@@ -714,9 +714,9 @@ HRESULT CYGTool::Render_CameraTool()
 	
 
 	static _float fCurFov = 60.0f; // 초기값 (기본 FOV)
-	if (ImGui::DragFloat("FOV", &fCurFov, 0.1f, 30.0f, 120.0f))
+	if (ImGui::DragFloat("FreeCam FOV", &fCurFov, 0.1f, 30.0f, 120.0f))
 	{
-		CCamera_Manager::Get_Instance()->GetFreeCam()->Set_Fov(fCurFov);
+		CCamera_Manager::Get_Instance()->GetFreeCam()->Set_Fov(XMConvertToRadians(fCurFov));
 	}
 
 	ImGui::SeparatorText("Cutscene Type");
