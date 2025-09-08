@@ -93,6 +93,7 @@ public:
     void ResetParameters();
 
     void RegisterEventListener(const string& eventName, AnimEventCallback&& cb);
+
     void RegisterAnimController(const string& name, class CAnimController* pController);
     void UnregisterAnimController(const string& name);
     void RenameAnimController(const string& oldName, const string& newName);

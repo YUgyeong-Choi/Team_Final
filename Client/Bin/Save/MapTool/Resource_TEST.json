@@ -28,6 +28,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Factory_BasePipe_07",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
         "NoInstancing": false,

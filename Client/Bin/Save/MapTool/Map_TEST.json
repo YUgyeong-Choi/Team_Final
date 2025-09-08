@@ -1,5 +1,5 @@
 {
-    "ModelCount": 6,
+    "ModelCount": 7,
     "Models": [
         {
             "Collision": false,
@@ -15,6 +15,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         1.0,
@@ -49,6 +50,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -79,6 +81,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -109,6 +112,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -139,6 +143,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -169,6 +174,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -186,7 +192,7 @@
                         [
                             0.0,
                             0.0,
-                            12202.7734375,
+                            4.219134330749512,
                             0.0
                         ],
                         [
@@ -199,6 +205,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -237,6 +244,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -275,6 +283,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -305,6 +314,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -335,6 +345,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -365,6 +376,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -395,6 +407,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -425,6 +438,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -455,6 +469,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -485,6 +500,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -515,6 +531,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -546,6 +563,12 @@
             ]
         },
         {
+            "Collision": false,
+            "ModelName": "SM_Factory_BasePipe_07",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
             "Collision": true,
             "ModelName": "SM_Station_TicketOffice_01",
             "NoInstancing": false,
@@ -553,6 +576,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -583,6 +607,7 @@
                 },
                 {
                     "ColliderType": 2,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -613,6 +638,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -643,6 +669,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -673,6 +700,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [
@@ -703,6 +731,7 @@
                 },
                 {
                     "ColliderType": 0,
+                    "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
                         [

@@ -350,6 +350,8 @@ HRESULT CMapTool::Save(const _char* Map)
 	string StargazerPath = string("../Bin/Save/MapTool/Stargazer_") + Map + ".json";
 	//에르고아이템
 	string ErgoItemPath = string("../Bin/Save/MapTool/ErgoItem_") + Map + ".json";
+	//부서질수 있는 모델
+	string BreakablePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
 
 	ofstream MapDataFile(MapPath); //맵별로 데이터를 저장해야지, Map_Station; Map_Hotel; Map_Test;
 	ofstream ReadyModelFile(ResourcePath);//맵별로도 리소스 저장, Resource_Station; Resource_Hotel; Resoucce_Test;
@@ -358,6 +360,8 @@ HRESULT CMapTool::Save(const _char* Map)
 	ofstream StargazerFile(StargazerPath);
 	//에르고 아이템
 	ofstream ErgoItemFile(ErgoItemPath);
+	//부서질수 있는 모델
+	ofstream BreakableFile(BreakablePath);
 
 	json ReadyModelJsonArray = json::array();
 	json MapDataJson; // 모델과 오브젝트 정보 저장용
@@ -366,6 +370,8 @@ HRESULT CMapTool::Save(const _char* Map)
 	json StargazerJsonArray = json::array();
 	//에르고 아이템
 	json ErgoItemJsonArray = json::array();
+	//부서질수 있는 모델
+	json BreakableJsonArray = json::array();
 
 	//현재 필드에 존재하는 모델들의 레이어 이름들을 가져온다.
 	vector<wstring> LayerNames = m_pGameInstance->Find_LayerNamesContaining(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MapToolObject_"));
@@ -457,6 +463,9 @@ HRESULT CMapTool::Save(const _char* Map)
 				//라이트 모양
 				ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
 
+				//바닥여부
+				ObjectJson["IsFloor"] = pMapToolObject->m_bisFloor;
+
 				//인스턴싱 제외
 				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
@@ -501,6 +510,25 @@ HRESULT CMapTool::Save(const _char* Map)
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
+			else if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::BREAKABLE) // 부서질 수 있는 모델이라면
+			{
+				//부서질 수 있는 모델 제이슨에 저장
+				json BreakableJson;
+
+				// 위치 행렬 저장
+				BreakableJson["WorldMatrix"] = MatrixJson;
+
+				//이름 저장
+				BreakableJson["ModelName"] = pMapToolObject->m_ModelName;
+
+				BreakableJsonArray.push_back(BreakableJson);
+
+				// ReadyModelJson은 별도로 유지 (충돌 체크 등)
+				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
+					ReadyModelJson["Collision"] = true;
+
+				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
+			}
 		}
 
 		ModelJson["ObjectCount"] = iObjectCount;
@@ -514,6 +542,7 @@ HRESULT CMapTool::Save(const _char* Map)
 	MapDataFile << MapDataJson.dump(4);
 	StargazerFile << StargazerJsonArray.dump(4);
 	ErgoItemFile << ErgoItemJsonArray.dump(4);
+	BreakableFile << BreakableJsonArray.dump(4);
 
 	MapDataFile.close();
 	ReadyModelFile.close();
@@ -599,6 +628,18 @@ HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 
 			//라이트 모양
 			MapToolObjDesc.iLightShape = Objects[j].value("LightShape", 0);
+
+			//바닥여부
+			if (Objects[j].contains("IsFloor"))
+			{
+				MapToolObjDesc.bIsFloor = Objects[j].value("IsFloor", false);
+			}
+			else
+			{
+				MapToolObjDesc.bIsFloor = false;
+			}
+
+
 
 			//인스턴싱 제외 여부
 			if (Models[i].contains("NoInstancing"))
@@ -746,6 +787,76 @@ HRESULT CMapTool::Load_ErgoItem(const _char* Map)
 	return S_OK;
 }
 
+HRESULT CMapTool::Load_Breakable(const _char* Map)
+{
+	//JSON 경로
+	string Path = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
+
+	ifstream inFile(Path);
+	if (!inFile.is_open())
+	{
+		//wstring ErrorMessage = L"Breakable_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json DataJson;
+	inFile >> DataJson;
+	inFile.close();
+
+	// 배열이니까 바로 순회
+	for (const auto& Obj : DataJson)
+	{
+		const json& WorldMatrixJson = Obj["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		// 아이템 디스크립터 생성
+		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+		MapToolObjDesc.WorldMatrix = WorldMatrix;
+		MapToolObjDesc.iID = ++m_iID;
+		MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::BREAKABLE;
+
+		wstring ModelName = {};
+
+		if (Obj.contains("ModelName") && Obj["ModelName"].is_string())
+		{
+			ModelName = StringToWString(Obj["ModelName"].get<string>());
+			lstrcpy(MapToolObjDesc.szModelName, ModelName.c_str());
+
+			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_") + ModelName;
+			lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+		}
+		else
+		{
+			return E_FAIL;
+		}
+
+		wstring LayerTag = TEXT("Layer_MapToolObject_") + ModelName;
+
+		// 게임 오브젝트 생성
+		if (FAILED(m_pGameInstance->Add_GameObject(
+			ENUM_CLASS(LEVEL::YW),
+			TEXT("Prototype_GameObject_MapToolObject"),
+			ENUM_CLASS(LEVEL::YW),
+			LayerTag,
+			&MapToolObjDesc)))
+		{
+			return E_FAIL;
+		}
+
+		//방금 추가한것을 모델 그룹에 분류해서 저장
+		Add_ModelGroup(WStringToString(ModelName).c_str(), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
+
+	}
+
+	return S_OK;
+}
+
+
 HRESULT CMapTool::Load(const _char* Map)
 {
 	//현재 맵에 배치된 오브젝트를 모두 삭제하자
@@ -761,6 +872,9 @@ HRESULT CMapTool::Load(const _char* Map)
 		return E_FAIL;
 
 	if (FAILED(Load_ErgoItem(Map)))
+		return E_FAIL;
+
+	if (FAILED(Load_Breakable(Map)))
 		return E_FAIL;
 
 	return S_OK;
@@ -1251,6 +1365,10 @@ void CMapTool::Render_Detail()
 		ImGui::Separator();
 
 		Detail_NoInstancing();
+
+		ImGui::Separator();
+
+		Detail_IsFloor();
 	}
 	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
 	{
@@ -2222,11 +2340,22 @@ void CMapTool::Detail_NoInstancing()
 				//치명적 오류
 				MSG_BOX("Detail_No Instancing Error : 모델 그룹을 찾을 수 없음");
 			}
-			
+
 		}
 	}
 
 }
+
+void CMapTool::Detail_IsFloor()
+{
+	ImGui::Text("Is Floor");
+	if (m_pFocusObject)
+	{
+		ImGui::Checkbox("Is Floor", &m_pFocusObject->m_bisFloor);
+	}
+
+}
+
 
 void CMapTool::Detail_StargazerTag()
 {

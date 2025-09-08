@@ -544,7 +544,7 @@
     <Filter Include="02.GameObjects\03. Item\ErgoItem">
       <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\13. DynamicMesh\01.BreakableMesh">
+    <Filter Include="02.GameObjects\17.BreakableMesh">
       <UniqueIdentifier>{a8dc9d78-dfec-4a6e-b3b0-6f4ebac7416f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1124,7 +1124,7 @@
       <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BreakableMesh.h">
-      <Filter>02.GameObjects\13. DynamicMesh\01.BreakableMesh</Filter>
+      <Filter>02.GameObjects\17.BreakableMesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1677,7 +1677,7 @@
       <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BreakableMesh.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh\01.BreakableMesh</Filter>
+      <Filter>02.GameObjects\17.BreakableMesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -35,7 +35,7 @@ public:
 		_float2		vTileDensity = { 1.f, 1.f };
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 };
-
+		_bool		bIsFloor = { false }; //바닥 여부
 	}STATICMESH_DESC;
 
 protected:
@@ -88,6 +88,10 @@ protected:
 	_int m_iLightShape = { 0 };
 
 	unordered_set<_int> m_mapVisibleLight = { 1, 3, 4, 6 };
+
+private:
+	//바닥 여부
+	_bool m_bIsFloor = { false };
 
 private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태

@@ -28,6 +28,7 @@ private:
 	HRESULT Load_StaticMesh(const _char* Map);
 	HRESULT Load_Stargazer(const _char* Map);
 	HRESULT Load_ErgoItem(const _char* Map);
+	HRESULT Load_Breakable(const _char* Map);
 
 private:
 	//맵툴 조작
@@ -99,6 +100,7 @@ private:
 	void Detail_Collider();
 	void Detail_LightShape();
 	void Detail_NoInstancing();
+	void Detail_IsFloor();
 
 	//별 바라기 태그
 	void Detail_StargazerTag();

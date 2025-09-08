@@ -770,7 +770,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Part1"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
 		return E_FAIL;
-
+	//SM_Interior_Table_07_3of8
 	//본 모델
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Main"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
@@ -816,7 +816,16 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
+
 #ifdef TESTMAP
+
+	#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	#endif // TEST_FIRE_EATER_MAP
+
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
@@ -1910,6 +1919,17 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 
 #pragma region 라이트모양
 		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
+#pragma endregion
+
+#pragma region 바닥여부
+		if (objects[j].contains("IsFloor"))
+		{
+			StaticMeshDesc.bIsFloor = objects[j].value("IsFloor", false);
+		}
+		else
+		{
+			StaticMeshDesc.bIsFloor = false;
+		}
 #pragma endregion
 
 		StaticMeshDesc.iRender = 0;

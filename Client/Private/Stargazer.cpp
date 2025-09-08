@@ -55,7 +55,6 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
@@ -669,8 +668,12 @@ HRESULT CStargazer::Ready_Collider()
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::A);
-	//m_pPhysXActorCom->Set_Kinematic(true);
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	PxActor* pActor = m_pPhysXActorCom->Get_Actor();
+	if (!pActor->getScene()) // nullptr이면 씬에 없음
+	{
+		m_pGameInstance->Get_Scene()->addActor(*pActor);
+	}
 
 	return S_OK;
 }

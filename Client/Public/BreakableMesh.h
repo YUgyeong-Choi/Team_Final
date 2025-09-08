@@ -11,18 +11,18 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CBreakableMesh : public CDynamicMesh
+class CBreakableMesh : public CGameObject
 {
 public:
-	typedef struct tagBreakableMeshDesc : public CDynamicMesh::DYNAMICMESH_DESC
+	typedef struct tagBreakableMeshDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		//본 메쉬
-		//wstring ModelName = {};
-
+		wstring ModelName = {};
 		//파트 메쉬 갯수
 		_uint iPartModelCount = { 0 };
 		//파트 메쉬 이름들
 		vector<wstring> PartModelNames = {};
+		vector<_float3> vOffsets = {};
 	}BREAKABLEMESH_DESC;
 
 protected:
@@ -37,25 +37,57 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual void Reset() override;
+
+public:
+	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
+
+private:
+	void Break();
 
 private:
 	HRESULT Render_Model();
 	HRESULT Render_PartModels();
 
+	HRESULT Find_Player();
+	void IgnorePlayerCollider(CPhysXDynamicActor* pActor);
+
+private:
+	void Invisible();
+
+private:
+	//조각들 초기행렬 저장
+	vector<_float4x4> m_PartInitWorldMatrixs = {};
+
 private:
 	//파트 모델 갯수
 	_uint m_iPartModelCount = 0;
 
-private:    /* [ 컴포넌트 ] */
-	vector<CModel*> m_pPartModelComs = {};
+	_bool m_bBreakTriggered = { false }; //무너진다는 트리거
+	_bool m_bIsBroken = { false }; //이미 무너진 상태인지 확인하는 코드
 
-	//CModel* m_pModelCom = { nullptr };
+	//몇초뒤 렌더링과, 콜라이더도 빼주자
+	const _float m_fTime_Invisible = { 8.f };
+	_float m_fTimeAcc = { 0.f };
+	_bool m_bInvisible = { false };
+
+
+	class CPlayer* m_pPlayer = { nullptr };
+private:    
+
+	/* [ 컴포넌트 ] */
+	vector<CModel*> m_pPartModelComs = {};
+	vector<CPhysXDynamicActor*> m_pPartPhysXActorComs = {};
+	vector<CTransform*> m_pPartTransformComs = {};
+
+	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Collider();
+	HRESULT Ready_PartColliders();
 
 public:
 	static CBreakableMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

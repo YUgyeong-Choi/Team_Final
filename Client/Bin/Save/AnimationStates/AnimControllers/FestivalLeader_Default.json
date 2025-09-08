@@ -1013,7 +1013,7 @@
         "Phase2Combo": {
             "Type": 0,
             "bTriggered": false,
-            "bValue": false,
+            "bValue": true,
             "fValue": 0.0,
             "iValue": 0
         },
@@ -4473,23 +4473,30 @@
             "Conditions": [
                 {
                     "Op": "IsTrue",
-                    "ParamName": "",
+                    "ParamName": "Phase2Combo",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                },
+                {
+                    "Op": "IsTrue",
+                    "ParamName": "IsCombo",
                     "Type": "Bool",
                     "fThreshold": 0.0,
                     "iThreshold": 0
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 100040,
-            "HasExitTime": true,
+            "FromNodeId": 100079,
+            "HasExitTime": false,
             "Link": {
-                "FromNodeId": 1000402,
-                "LinkId": 100043,
-                "ToNodeId": 1000411
+                "FromNodeId": 1000792,
+                "LinkId": 100265,
+                "ToNodeId": 1000331
             },
             "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100041
+            "MinTime": 0.3659999966621399,
+            "ToNodeId": 100033
         },
         {
             "Conditions": [
@@ -5000,7 +5007,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -5008,16 +5015,16 @@
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 100097,
+            "FromNodeId": 100040,
             "HasExitTime": true,
             "Link": {
-                "FromNodeId": 1000972,
-                "LinkId": 100100,
-                "ToNodeId": 1000981
+                "FromNodeId": 1000402,
+                "LinkId": 100043,
+                "ToNodeId": 1000411
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 100098
+            "ToNodeId": 100041
         },
         {
             "Conditions": [
@@ -5514,16 +5521,16 @@
                 }
             ],
             "Duration": 0.20000000298023224,
-            "FromNodeId": 100026,
+            "FromNodeId": 100097,
             "HasExitTime": true,
             "Link": {
-                "FromNodeId": 1000262,
-                "LinkId": 100029,
-                "ToNodeId": 1000271
+                "FromNodeId": 1000972,
+                "LinkId": 100100,
+                "ToNodeId": 1000981
             },
             "MaxTime": 1.0,
             "MinTime": 0.0,
-            "ToNodeId": 100027
+            "ToNodeId": 100098
         },
         {
             "Conditions": [
@@ -6008,6 +6015,50 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100026,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1000262,
+                "LinkId": 100029,
+                "ToNodeId": 1000271
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100027
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100167,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1001672,
+                "LinkId": 100267,
+                "ToNodeId": 1002661
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100266
         }
     ]
 }
