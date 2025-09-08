@@ -47,7 +47,10 @@ void CYGTool::Priority_Update(_float fTimeDelta)
 	if (bStopCamera)
 	{
 		if (CCamera_Manager::Get_Instance()->GetCutScene()->Get_CurrentFrame() == iStopFrame)
+		{
 			m_pGameInstance->Set_GameTimeScale(0.f);
+			PrintMatrix("CameraWold", XMLoadFloat4x4(CCamera_Manager::Get_Instance()->GetCurCam()->Get_TransfomCom()->Get_WorldMatrix_Ptr()));
+		}
 	}
 	else {
 		m_pGameInstance->Set_GameTimeScale(1.f);
@@ -486,6 +489,11 @@ HRESULT CYGTool::Render_CameraTool()
 				m_pSelectedKey->fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
 				m_pSelectedKey->fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
 			}
+
+			_int interpFov = static_cast<int>(m_pSelectedKey->interpTarget);
+
+			if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
 		}
 	}
 
@@ -690,6 +698,13 @@ HRESULT CYGTool::Render_CameraTool()
 	ImGui::SeparatorText("Stop Camera");
 	ImGui::Checkbox("Enable Stop Camera", &bStopCamera);
 	ImGui::InputInt("Stop Frame", &iStopFrame);
+	
+
+	static _float fCurFov = 60.0f; // 초기값 (기본 FOV)
+	if (ImGui::DragFloat("FOV", &fCurFov, 0.1f, 30.0f, 120.0f))
+	{
+		CCamera_Manager::Get_Instance()->GetFreeCam()->Set_Fov(fCurFov);
+	}
 
 	ImGui::SeparatorText("Cutscene Type");
 	const char* CutsceneTypeNames[] = { "WakeUp", "TutorialDoor", "OutDoor", "FuocoDoor", "FestivalDoor" };
@@ -793,6 +808,9 @@ void CYGTool::Render_SetInfos()
 
 			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetCamPos);
 			CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->LookAt(vtargetPos);
+
+			if (KEY_DOWN(DIK_CAPSLOCK))
+				PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(CCamera_Manager::Get_Instance()->GetFreeCam()->Get_TransfomCom()->Get_WorldMatrix_Ptr()));
 		}
 	}
 	
@@ -1413,6 +1431,64 @@ HRESULT CYGTool::Render_CameraFrame()
 			m_EditTargetKey.iKeyFrame = m_iChangeKeyFrame;
 			m_CameraDatas.vecTargetData[m_iEditKey].iKeyFrame = m_EditTargetKey.iKeyFrame;
 		}
+
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		int interpFov = static_cast<int>(m_EditTargetKey.interpTarget);
+		if (ImGui::Combo("Fov Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+			m_EditTargetKey.interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditTargetKey.interpTarget == INTERPOLATION_CAMERA::LERP
+				|| m_EditTargetKey.interpTarget == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecTargetData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecTargetData[iStart];
+				const auto& keyB = m_CameraDatas.vecTargetData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditTargetKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditTargetKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditTargetKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditTargetKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditTargetKey.curveType, m_EditTargetKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
 
 		if (ImGui::Button("Target Apply"))
 		{

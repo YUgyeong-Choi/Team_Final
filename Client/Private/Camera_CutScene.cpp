@@ -631,6 +631,7 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 		}
 	}
 }
+
 XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 {
 	XMVECTOR scale, rot, trans;

@@ -180,6 +180,9 @@ namespace Client
 		_float fPitch;
 		_float fYaw;
 		_float fDistance;
+		INTERPOLATION_CAMERA interpTarget;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 
 	struct CAMERA_FRAMEDATA
