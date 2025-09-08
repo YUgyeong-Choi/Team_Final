@@ -194,6 +194,12 @@
         {
             "ClipName": "AS_Down_Dead_B",
             "Duration": 408.0,
+            "Events": [
+                {
+                    "EventName": "AddErgo",
+                    "Time": 300.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
@@ -378,6 +384,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AddErgo",
+                    "Time": 250.0
                 }
             ],
             "IsLoop": false,
@@ -391,6 +401,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AddErgo",
+                    "Time": 186.0
                 }
             ],
             "IsLoop": false,
@@ -447,7 +461,7 @@
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 59.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },
@@ -503,7 +517,7 @@
         {
             "ClipName": "AS_Idle_Spawn_05_Loop",
             "Duration": 264.0,
-            "IsLoop": false,
+            "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
         },

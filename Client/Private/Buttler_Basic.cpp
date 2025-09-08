@@ -51,6 +51,13 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 
 	m_pWeapon->Collider_FilterOff();
 
+	if (m_eSpawnType != SPAWN_TYPE::IDLE)
+	{
+		m_pAnimator->SetTrigger("ChangeSpawnPattern");
+		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
+
+	}
+
 	return S_OK;
 }
 
@@ -62,7 +69,9 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
+		
 		m_fEmissive = 0.f;
+		// µ·À» Ãß°¡?
 
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
@@ -71,6 +80,8 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 			//Set_bDead();
 			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 			m_pWeapon->SetbIsActive(false);
+
+			//
 		}
 	}
 
@@ -459,6 +470,8 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Basic::Register_Events()
 {
+	__super::Register_Events();
+
 	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
@@ -471,17 +484,7 @@ void CButtler_Basic::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
-
-		});
+	
 
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
@@ -494,6 +497,8 @@ void CButtler_Basic::Register_Events()
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
 		});
+
+	
 }
 
 void CButtler_Basic::Block_Reaction()

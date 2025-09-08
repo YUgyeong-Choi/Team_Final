@@ -35,8 +35,16 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual void Active_Update(_bool isActive);
+
 
 	void Set_String(_int iTriggerType);
+
+private:
+	_bool m_isChange = { false };
+	_bool m_bDoOnce = {};
+
+	_float2 m_vOriginPos = {};
 	
 
 public:

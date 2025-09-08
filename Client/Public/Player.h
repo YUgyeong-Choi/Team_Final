@@ -174,6 +174,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_UIParameters();
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
+	HRESULT Ready_Stat();
 	HRESULT Ready_Effect();
 
 private: /* [ 옵저버 관련 ] */
@@ -296,6 +297,18 @@ public: /* [ 부여 속성 관련 ] */
 	
 
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
+
+public:/*[스탯 관련]*/
+	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }
+	STAT_DESC& Get_Stat() { return m_eStat; }
+
+	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
+	void Apply_Stat();
+
+	// 죽을 때 몬스터가 부르기.
+	void Add_Ergo(_float fErgo);
+	// 레벨 업 하면 레벨에 맞춰서 값이 증가하게
+	void Compute_MaxErgo(_int iLevel);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -437,9 +450,7 @@ private: /* [ 플레이어 변수 ] */
 	
 	_float	m_fMaxMana = { 300.f };
 	_float	m_fMana = { 300.f };
-	
-	_float	m_fMaxErgo = { 100.f };
-	_float	m_fErgo = { 0.f };
+
 
 private: /* [ 특수키 ] */
 	_bool   m_bPulseReservation = {};
@@ -458,6 +469,11 @@ private: /* [ 현재 상태 ] */
 
 private: /* [ 현재 플레이어 레벨 ] */
 	_int	m_iLevel = { 0 };
+
+	// 다음 레벨까지 필요한 에르고, 현재 가지고 있는 에르고
+	// 레벨 업 하면 필요한 에르고 필요치를 높힌다. 
+	_float	m_fMaxErgo = { 100.f };
+	_float	m_fErgo = { 0.f };
 
 private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bItemSwitch = {};
@@ -492,6 +508,11 @@ private: /* [ 공격한 적 ] */
 
 private: // 그라인더용 변수
 	CSoundController* m_pGrinderSound = { nullptr };
+
+private:
+	STAT_DESC m_eStat = {};
+	_float m_fArmor = {};
+	_float m_fDamageReduction = {};
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

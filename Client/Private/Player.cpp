@@ -36,6 +36,7 @@
 #include <Elite_Police.h>
 #include <KeyDoor.h>
 #include "Bullet.h"
+#include "Client_Calculation.h"
 
 #include "Client_Calculation.h"
 #include "Bone.h"
@@ -135,6 +136,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pGameInstance->Notify(TEXT("Weapon_Status"), TEXT("EquipWeapon"), nullptr);
 
 	InitializeSpringBones();
+
+	if (FAILED(Ready_Stat()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -462,7 +466,7 @@ void CPlayer::Reset()
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
 
-	m_fHp = 100.f;
+	m_fHp = m_fMaxHp;
 	Callback_HP();
 	m_fStamina = m_fMaxStamina;
 	Callback_Stamina();
@@ -2732,6 +2736,73 @@ void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const 
 	}
 }
 
+void CPlayer::Apply_Stat()
+{
+	m_fMaxHp = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
+	m_fHp = m_fMaxHp;
+
+	m_fMaxStamina = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
+	m_fStamina = m_fMaxStamina;
+
+	// 무기에 스탯이랑, 무기 기본공격력 이용해서 실제 주는 데미지를 계산해놓는다.
+	// 효율? 이것도 만들어서 나중에 고쳐놓기
+	if (nullptr != m_pWeapon)
+	{
+		_float fBaseDamage = m_pWeapon->GetBaseDamage();
+		
+		fBaseDamage += floorf(fBaseDamage *  (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.2f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.2f);
+
+
+		m_pWeapon->SetDamage(fBaseDamage);
+	
+	}
+
+	if (nullptr != m_pLegionArm)
+	{
+		_float fBaseDamage = m_pLegionArm->GetBaseDamage();
+
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
+
+		m_pLegionArm->SetDamage(fBaseDamage);
+
+	}
+	
+	// 방어력 수치 계산은 나중에? 
+
+	m_fDamageReduction = m_fArmor * 0.6f / (100 + m_fArmor);
+	
+
+	// 저항은 일단 나중에? 잘 모르겟음
+
+	// 값 동기화
+	Callback_HP();
+	Callback_Stamina();
+
+}
+
+void CPlayer::Add_Ergo(_float fErgo)
+{
+	m_fErgo += fErgo;
+	
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
+void CPlayer::Compute_MaxErgo(_int iLevel)
+{
+	if (iLevel == 0)
+	{
+		m_fMaxErgo = 100;
+		return;
+	}
+
+
+	m_fMaxErgo = powf(1.2f, _float(iLevel)) * 100.f;
+	
+}
+
 
 
 HRESULT CPlayer::Ready_Weapon()
@@ -3004,6 +3075,20 @@ void CPlayer::LoadPlayerFromJson()
 	}
 }
 
+HRESULT CPlayer::Ready_Stat()
+{
+	// 기본 값? 나중에 바꾸기.
+	m_eStat.iVitality = 12;
+	m_eStat.iStamina = 10;
+	m_eStat.iCapacity = 8;
+	m_eStat.iMotivity = 13;
+	m_eStat.iTechnique = 7;
+	m_eStat.iAdvance = 6;
+
+	Apply_Stat();
+
+	return S_OK;
+}
 HRESULT CPlayer::Ready_Effect()
 {
 	CEffectContainer::DESC desc = {};

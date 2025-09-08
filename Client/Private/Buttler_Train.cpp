@@ -207,7 +207,7 @@ void CButtler_Train::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 void CButtler_Train::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	ReceiveDamage(pOther, eColliderType);
+ 	ReceiveDamage(pOther, eColliderType);
 }
 
 void CButtler_Train::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -512,6 +512,8 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Train::Register_Events()
 {
+	__super::Register_Events();
+
 	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
@@ -521,18 +523,6 @@ void CButtler_Train::Register_Events()
 	m_pAnimator->RegisterEventListener("BackMoveEnd", [this]() {
 
 		m_pAnimator->SetBool("IsBack", false);
-
-		});
-
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
 
 		});
 
@@ -549,10 +539,13 @@ void CButtler_Train::Register_Events()
 		});
 
 	m_pAnimator->RegisterEventListener("Turn", [this]() {
-
-		m_pWeapon->SetisAttack(true);
-		m_pWeapon->Clear_CollisionObj();
+	
+		// 없어도 될듯? 
+		
 		});
+
+
+	
 
 
 }

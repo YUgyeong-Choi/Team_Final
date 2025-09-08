@@ -273,3 +273,9 @@ static inline XMVECTOR FromToQ(XMVECTOR a, XMVECTOR b)
     XMVECTOR q = XMVectorSet(XMVectorGetX(c), XMVectorGetY(c), XMVectorGetZ(c), 1.f + d);
     return XMQuaternionNormalize(q);
 }
+
+// 계산할 값, 밑을 줘서 로그 값 계산
+static _float ComputeLog(_float fValue, _float fBase)
+{
+    return logf(fValue) / logf(fBase);
+}

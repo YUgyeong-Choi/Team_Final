@@ -415,7 +415,8 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 void CWatchDog::Register_Events()
 {
-	
+	__super::Register_Events();
+
 	m_pAnimator->RegisterEventListener("UpdateJumpCount", [this]() {
 
 		m_iJumpConut = (++m_iAttackCount) % 4;
@@ -444,17 +445,6 @@ void CWatchDog::Register_Events()
 
 
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
-
-		});
 
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 

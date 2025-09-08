@@ -102,6 +102,9 @@ void CUI_SelectLocation::Update(_float fTimeDelta)
 
 void CUI_SelectLocation::Late_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	__super::Late_Update(fTimeDelta);
 
 	m_pLocationImg->Late_Update(fTimeDelta);
@@ -131,7 +134,7 @@ HRESULT CUI_SelectLocation::Ready_Button()
 	CUI_Button::BUTTON_UI_DESC eButtonDesc = {};
 	eButtonDesc.strTextureTag = L"";
 	eButtonDesc.fOffset = 0.f;
-	eButtonDesc.fX = g_iWinSizeX * 0.175f;
+	eButtonDesc.fX = g_iWinSizeX * 0.125f;
 	eButtonDesc.iTextureIndex = 0;
 	eButtonDesc.vColor = { 0.8f,0.f,0.f,0.8f };
 	eButtonDesc.fPadding = {};
@@ -179,7 +182,7 @@ HRESULT CUI_SelectLocation::Ready_Button()
 
 			m_pButtons.push_back(static_cast<CUI_Button*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_SelectLocation_Button"))));
 
-			eButtonDesc.fY += g_iWinSizeY * 0.1f;
+			eButtonDesc.fY += g_iWinSizeY * 0.05f;
 		}
 	}
 
@@ -190,7 +193,7 @@ HRESULT CUI_SelectLocation::Ready_Button()
 	eSelectDesc.fDuration = 0.033f;
 	eSelectDesc.fSizeX = g_iWinSizeX * 0.02f;
 	eSelectDesc.fSizeY = g_iWinSizeY * 0.04f;
-	eSelectDesc.fX = g_iWinSizeX * 0.2f;
+	eSelectDesc.fX = g_iWinSizeX * 0.1f;
 	eSelectDesc.fY = 0;//  g_iWinSizeY * -0.15f;
 	eSelectDesc.iPassIndex = D_UI_SPRITE;
 	eSelectDesc.iTextureIndex = 0;
@@ -279,7 +282,7 @@ void CUI_SelectLocation::Update_Button()
 
 	m_pButtons[m_iButtonIndex]->Set_isMouseHover(true);
 	if (nullptr != m_pSelectUI)
-		m_pSelectUI->Set_Position(g_iWinSizeX * 0.1f, g_iWinSizeY * (0.3f + 0.1f * m_iButtonIndex));
+		m_pSelectUI->Set_Position(g_iWinSizeX * 0.059f, g_iWinSizeY * (0.3f + 0.05f * m_iButtonIndex));
 
 	static_cast<CDynamic_UI*>(m_pLocationImg->Get_PartUI()[0])->Set_iTextureIndex(ENUM_CLASS(m_StargazerTag[m_iButtonIndex]));
 

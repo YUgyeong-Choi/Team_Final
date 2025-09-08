@@ -31,6 +31,8 @@ HRESULT CBayonet::Initialize(void* pArg)
 	/* [ 데미지 설정 ] */
 	m_fDamage = 100.f;
 
+	m_fBaseDamage = m_fDamage;
+
 	BAYONET_DESC* pDesc = static_cast<BAYONET_DESC*>(pArg);
 
 	if (FAILED(__super::Initialize(pArg)))

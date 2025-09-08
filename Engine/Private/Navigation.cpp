@@ -186,8 +186,28 @@ _vector CNavigation::GetSlideDirection(_fvector vPosition, _fvector vDir)
 
 	_float fDot = XMVectorGetX(XMVector3Dot(vLineNormal, vMyDirection));
 
-	/* 내 이동 벡터 - 법선벡터 * 스칼라 값 */
-	return vMyDirection - vLineNormal * fDot;
+	_vector vSlide = vMyDirection - vLineNormal * fDot;
+
+	/* 슬라이딩 벡터가 너무 작으면 보정 */
+	if (XMVectorGetX(XMVector3Length(vSlide)) < 0.01f)
+	{
+		// 외적으로 좌 우 판정
+		float sign = XMVectorGetX(XMVector3Dot(
+			XMVector3Cross(vMyDirection, vLineNormal),
+			{ 0.f, 1.f, 0.f }
+		));
+
+		_vector side;
+		if (sign >= 0.f)
+			side = XMVector3Cross(vLineNormal, { 0.f, 1.f, 0.f }); // 왼쪽
+		else
+			side = XMVector3Cross({ 0.f, 1.f, 0.f }, vLineNormal); // 오른쪽
+
+		// 적당히 보정? 
+		vSlide = XMVector3Normalize(side);
+	}
+
+	return XMVector3Normalize(vSlide);
 }
 
 //이거 업데이트 하지마시오 전체 셀 순회함

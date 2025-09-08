@@ -450,6 +450,8 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Range::Register_Events()
 {
+	__super::Register_Events();
+
 	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
@@ -496,17 +498,7 @@ void CButtler_Range::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
 
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
-
-		});
 }
 
 void CButtler_Range::Start_Fatal_Reaction()

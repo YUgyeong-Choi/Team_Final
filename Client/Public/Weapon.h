@@ -66,7 +66,8 @@ public: /* [ 활성화 , 비활성화 ] */
 	_bool GetbIsActive() const { return m_bIsActive; }
 
 	// 레벨 업이나 강화 시 공격력을 바꾸도록
-	void SetBasicDamage(_float fDamage) { m_fDamage = fDamage; }
+	void SetDamage(_float fDamage) { m_fDamage = fDamage; }
+	_float GetBaseDamage() { return m_fBaseDamage; }
 
 	// 상태에 따라 공격 할 수 있는지 없는지
 	// 데미지 배율을 줘서 공격할 수 있도록
@@ -110,6 +111,9 @@ protected:
 	_float4x4			m_CombinedWorldMatrix = {};
 
 protected:				/* [ 기본 속성 ] */
+	// 이제 강화, 스탯 영향 안받는 순수한 데미지
+	_float				m_fBaseDamage = {};
+	// 강화, 스탯 계산 다 해서 나오는 최종 데미지, 몬스터는 그대로 둘듯?
 	_float				m_fDamage = {};
 	_bool				m_bIsActive = {};
 	_bool				m_isAttack = {};

@@ -179,6 +179,10 @@
                 {
                     "EventName": "NotLootAt",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "AddErgo",
+                    "Time": 250.0
                 }
             ],
             "IsLoop": false,
