@@ -38,7 +38,8 @@ namespace Engine
 		FILTER_DYNAMICOBJ = 1 << 5,
 		FILTER_NPC = 1 << 6,
 		FILTER_MAP = 1 << 7,
-		FILTER_INTERACT = 1 << 8
+		FILTER_INTERACT = 1 << 8,
+		FILTER_FLOOR = 1 << 9, //중력받는 것들이 FILTER_MAP과 모두 충돌검사하니 렉걸린다. 그래서 바닥이라는 필터를 만듬
 	};
 
 	enum class COLLIDERTYPE 
