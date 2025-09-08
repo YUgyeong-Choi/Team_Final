@@ -22,9 +22,9 @@ class CFestivalLeader final : public CBossUnit
 		// 부모의 직전 로컬 회전
 		_matrix parentPrevRotC;   // 3x3 회전만 사용
 		// 파라미터 (강성, 최대 각도, 중력)
-		_float stiffness = 0.02f;
+		_float stiffness = 0.015f;
 		_float maxDeg = 160.f;
-		_float gravity = 30.f;
+		_float gravity = 40.f;
 	};
 
 	// 주요 상태들의 NodeID
@@ -233,6 +233,7 @@ private:
 	_float4 m_vCenterPos{ -0.195f, 0.f,-213.f ,1.f };
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
+	_int    m_iSwingComboCount = 0;
 	_int    m_iSwingComboLimit = 3;
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
