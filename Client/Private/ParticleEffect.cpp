@@ -218,9 +218,7 @@ HRESULT CParticleEffect::Bind_ShaderResources()
 	if (FAILED(__super::Bind_ShaderResources()))
 		return E_FAIL;
 	
-
 	return S_OK;
-
 }
 
 CParticleEffect* CParticleEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -495,9 +495,9 @@ HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
 
-	ImGui::Text("Select Pass\n4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
+	ImGui::Text("Select Pass\n3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
 
-	for (_uint i = SE_UVSPRITE_COLOR_WB; i < SE_END; i++)
+	for (_uint i = SE_UVSPRITE_COLOR; i < SE_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
 			*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;

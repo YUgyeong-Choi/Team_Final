@@ -55,16 +55,16 @@ HRESULT CLevel_CY::Initialize()
 void CLevel_CY::Priority_Update(_float fTimeDelta)
 {
 	ShowCursor(TRUE);
-	if (m_pGameInstance->Key_Down(DIK_F1))
-	{
-		m_pGameInstance->Set_IsChangeLevel(true);
-		CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
-		m_pGameInstance->ClearRenderObjects();
-		m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::CY));
-		m_pGameInstance->Reset_All();
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
-			return;
-	}
+	//if (m_pGameInstance->Key_Down(DIK_F1))
+	//{
+	//	m_pGameInstance->Set_IsChangeLevel(true);
+	//	CCamera_Manager::Get_Instance()->SetPlayer(nullptr);
+	//	m_pGameInstance->ClearRenderObjects();
+	//	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::CY));
+	//	m_pGameInstance->Reset_All();
+	//	if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+	//		return;
+	//}
 
 	if (KEY_DOWN(DIK_BACKSLASH))
 	{
@@ -72,13 +72,10 @@ void CLevel_CY::Priority_Update(_float fTimeDelta)
 		Active = !Active;
 		CCamera_Manager::Get_Instance()->SetbMoveable(Active);
 	}
-
-
 }
 
 void CLevel_CY::Update(_float fTimeDelta)
 {
-
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 	//__super::Update(fTimeDelta);

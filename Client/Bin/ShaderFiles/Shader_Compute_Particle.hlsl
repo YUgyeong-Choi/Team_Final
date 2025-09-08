@@ -96,9 +96,9 @@ float Safe(float v)
 float Random_Normal(uint iSeed)
 {
     float s = (float) iSeed * 12.9898 + (float) EffectSeed * 78.233 + fAccTime;
-    s = Safe(s); // µð¹ö±ë¿ë
+    //s = Safe(s); // µð¹ö±ë¿ë
     float r = sin(s);
-    r = Safe(r);
+    //r = Safe(r);
     return frac(r * 43758.5453);
 }
 
@@ -256,7 +256,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
                     0.f
                 );
             }
-            pp.RotationAngle = Random(pp.RotationSpeed, 0.f, 3.14f);
+            if (pp.RotationSpeed < 0.0001f)
+                pp.RotationAngle = 0.f;
+            else
+                pp.RotationAngle = Random(pp.RotationSpeed, 0.f, 3.14f);
             
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
             float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);

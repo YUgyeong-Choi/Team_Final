@@ -2,7 +2,7 @@
 
 vector g_vCamPosition;
 bool g_bLocal;
-float g_fStretchFactor = 0.0015f;
+float g_fStretchFactor = 0.015f;
 
 struct ParticleParam
 {
@@ -46,7 +46,7 @@ struct VS_OUT
 };
 
 //float2 RotateSubUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
-//{
+//{                                                                                                   1
 //    // (1) 아틀라스 절대UV → 타일 로컬UV(0~1)
 //    float2 uvLocal = (baseUV - tileOffset) / tileSize;
 
@@ -227,7 +227,7 @@ void GS_MAIN_VSTRETCH(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
     // === 속도 방향 Stretch (길이만 늘림) ===
     float3 vDir = normalize(In[0].vDir.xyz);
-    float stretchFactor = 0.015f * In[0].vSpeedRotation.x; // 튜닝값
+    float stretchFactor = g_fStretchFactor * In[0].vSpeedRotation.x; // 튜닝값
     float3 vStretch = vDir * stretchFactor;
     if (In[0].vDir.w < 0.0001f)
         vStretch = float3(0.f, 0.f, 0.f);
@@ -472,9 +472,15 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
+struct PS_OUT_NONLIGHT
 {
-    PS_OUT Out = (PS_OUT) 0;
+    vector vColor : SV_TARGET0;
+    vector vEmissive : SV_TARGET1;
+};
+
+PS_OUT_NONLIGHT PS_MAIN_NONLIGHT(PS_IN In)
+{
+    PS_OUT_NONLIGHT Out = (PS_OUT_NONLIGHT) 0;
 
     // In.vTexcoord: 기본(0~1) UV
     float2 rotUV = MakeRotatedAtlasUV(In.vTexcoord, g_fTileSize, In.vTileOffset, In.fRotAngle);
@@ -495,6 +501,9 @@ PS_OUT PS_MAIN_NONLIGHT(PS_IN In)
     vColor = SoftEffect(vColor, In.vProjPos);
 
     Out.vColor = vColor;
+    Out.vEmissive = float4(vColor.rgb * g_fEmissiveIntensity, 0.f);
+
+
     return Out;
 }
 

@@ -163,17 +163,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_F8))
 		m_pGameInstance->ToggleDebugArea();
 
-	if (KEY_PRESSING(DIK_LCONTROL))
-	{
-		if (KEY_DOWN(DIK_Z))
-		{
-			static _bool bEfActv = { true };
-			bEfActv = !bEfActv;
-
-			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_1"), bEfActv);
-			EFFECT_MANAGER->Set_Active_Effect(TEXT("StationRain_2"), bEfActv);
-		}
-	}
 	//	if (KEY_DOWN(DIK_X))
 	//	{
 		//_float3 pos = {};

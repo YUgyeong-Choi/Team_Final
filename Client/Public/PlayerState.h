@@ -22,6 +22,8 @@
 #include "UI_Manager.h"
 #include "Static_UI.h"
 
+#include "Client_Calculation.h"
+
 
 NS_BEGIN(Client)
 
@@ -2037,22 +2039,7 @@ public:
                     }
 
                     /* [ 이펙트를 생성한다. ] */
-                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
-
-                    vPos += vDir * 1.5f;
-                    _float3 vEffPos = {};
-                    XMStoreFloat3(&vEffPos, vPos);
-                    vEffPos.y += 0.5f;
-                    
-                    CEffectContainer::DESC desc = {};
-
-                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-
-                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardPerfect_P3S6pls"), &desc);
-
-                    if (pEffect == nullptr)
-                        MSG_BOX("이펙트 생성 실패함");
+                    m_pOwner->Create_GuardEffect(true);
                     /*********************************************************/
 
 					_vector vRot = { -2.f, 0.f, 0.f, 0.f };
@@ -2070,22 +2057,7 @@ public:
                     m_pOwner->m_pWeapon->Calc_Durability(3);
 
                     /* [ 이펙트를 생성한다. ] */
-                    _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-                    _vector vDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK));
-
-                    vPos += vDir * 1.5f;
-                    _float3 vEffPos = {};
-                    XMStoreFloat3(&vEffPos, vPos);
-                    vEffPos.y += 0.5f;
-
-                    CEffectContainer::DESC desc = {};
-
-                    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-
-                    CGameObject* pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerGuardNormal_P2"), &desc);
-
-                    if (pEffect == nullptr)
-                        MSG_BOX("이펙트 생성 실패함");
+                    m_pOwner->Create_GuardEffect(false);
 
                     /* [ HP 를 감소시키고 사망을 확인한다. ] */
                     m_pOwner->HPSubtract();
@@ -2107,22 +2079,7 @@ public:
                 //그 외의 방향을 맞으면 피격당한다.
 
                /* [ 이펙트를 생성한다. ] */
-                _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-
-                vPos += m_pOwner->m_vHitNormal * 0.5f;
-                _float3 vEffPos = {};
-                XMStoreFloat3(&vEffPos, vPos);
-                vEffPos.y += 1.7f;
-
-                CEffectContainer::DESC desc = {};
-
-                XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-                CGameObject* pEffect = { nullptr };
-                pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
-
-                if (pEffect == nullptr)
-                    MSG_BOX("이펙트 생성 실패함");
-
+                m_pOwner->Create_HitEffect();
                 m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
                 /* [ HP 를 감소시키고 사망을 확인한다. ] */
@@ -3075,21 +3032,7 @@ public:
 
         m_pOwner->m_fMaxRootMotionSpeed = 18.f;
         /* [ 이펙트를 생성한다. ] */
-        _vector vPos = m_pOwner->m_pTransformCom->Get_State(STATE::POSITION);
-
-        vPos += m_pOwner->m_vHitNormal * 0.5f;
-        _float3 vEffPos = {};
-        XMStoreFloat3(&vEffPos, vPos);
-        vEffPos.y += 1.7f;
-
-        CEffectContainer::DESC desc = {};
-
-        XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
-        CGameObject* pEffect = { nullptr };
-        pEffect = MAKE_EFFECT(ENUM_CLASS(m_pOwner->m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
-
-        if (pEffect == nullptr)
-            MSG_BOX("이펙트 생성 실패함");
+        m_pOwner->Create_HitEffect();
 
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 

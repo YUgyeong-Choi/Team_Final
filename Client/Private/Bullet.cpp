@@ -8,7 +8,7 @@ CBullet::CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CBullet::CBullet(const CBullet& Prototype)
-    :CProjectile{Prototype}
+    :CProjectile(Prototype)
 {
 }
 

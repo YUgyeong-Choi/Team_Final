@@ -174,7 +174,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_UIParameters();
 	HRESULT Ready_Arm();
 	void LoadPlayerFromJson();
-	//HRESULT Ready_Effect();
+	HRESULT Ready_Effect();
 
 private: /* [ 옵저버 관련 ] */
 	void Callback_HP();
@@ -226,6 +226,8 @@ public: /* [ 슬룻 함수 ] */
 
 private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
+	void Create_HitEffect();
+	void Create_GuardEffect(_bool isPerfect);
 
 public: /* [ 페이탈 함수 ] */
 	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }

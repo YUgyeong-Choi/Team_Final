@@ -76,19 +76,35 @@ void CEffectBase::Update(_float fTimeDelta)
 
 	Update_Keyframes();
 
+	//if (m_pSocketMatrix != nullptr)
+	//{
+	//	_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+
+	//	//for (size_t i = 0; i < 3; i++)
+	//	//	SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+
+	//	XMStoreFloat4x4(&m_CombinedWorldMatrix,
+	//		m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
+	//}
+	//if (m_bBillboard)
+	//	//XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+	//	XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard_WithOffset(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+
+
 	if (m_pSocketMatrix != nullptr)
 	{
-		_matrix SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
-
-		//for (size_t i = 0; i < 3; i++)
-		//	SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
-
 		XMStoreFloat4x4(&m_CombinedWorldMatrix,
-			m_pTransformCom->Get_WorldMatrix() * SocketMatrix);
+			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
+		);
+		if (m_bBillboard)
+			XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard_WithOffset(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 	}
-	if (m_bBillboard)
-		//XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
-		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard_WithOffset(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+	else
+	{
+		if (m_bBillboard)
+			m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+	}
+
 
 	if (m_bAnimation)
 		m_iTileIdx = static_cast<_int>(m_fTileIdx);
@@ -130,11 +146,14 @@ void CEffectBase::Update_Tool(_float fTimeDelta, _float fCurFrame)
 		XMStoreFloat4x4(&m_CombinedWorldMatrix,
 			XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()) * XMLoadFloat4x4(m_pSocketMatrix)
 		);
+		if (m_bBillboard)
+			XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
 	}
-
-	if (m_bBillboard)
-		//m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
-		XMStoreFloat4x4(&m_CombinedWorldMatrix, Compute_Billboard(XMLoadFloat4x4(&m_CombinedWorldMatrix)));
+	else
+	{
+		if (m_bBillboard)
+			m_pTransformCom->BillboardToCameraFull(CCamera_Manager::Get_Instance()->GetPureCamPos());
+	}
 
 
 	if (m_bAnimation)
