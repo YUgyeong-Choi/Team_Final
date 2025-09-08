@@ -251,6 +251,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AddErgo",
+                    "Time": 200.0
                 }
             ],
             "IsLoop": false,
@@ -278,6 +282,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "AddErgo",
+                    "Time": 199.0
                 }
             ],
             "IsLoop": false,

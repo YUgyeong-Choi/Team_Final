@@ -86,6 +86,8 @@ public: /* [ Setup ÇÔ¼ö ] */
 
 	virtual void Start_Fatal_Reaction() {};
 
+	virtual void Register_Events();
+
 
 #ifdef _DEBUG
 	void SetLocalOffset();

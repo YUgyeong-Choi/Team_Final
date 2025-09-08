@@ -5,6 +5,7 @@
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Camera_Orbital.h"
 #include "Player.h"
+#include "Client_Calculation.h"
 
 CMonster_Base::CMonster_Base(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUnit{pDevice, pContext}
@@ -565,6 +566,37 @@ void CMonster_Base::Push_Other(_vector vHitPos, _vector vNormal)
 	m_vPushDir -= vNormal;
 
 	
+}
+
+void CMonster_Base::Register_Events()
+{
+	m_pAnimator->RegisterEventListener("AddErgo", [this]() {
+
+		// 플레이어에게 에르고를 추가함, 이펙트도 이때?
+
+		if (m_pPlayer)
+		{ 
+			_float fErgo = {};
+
+			fErgo = GetRandomFloat(30.f, 50.f);
+
+			static_cast<CPlayer*>(m_pPlayer)->Add_Ergo(fErgo);
+		}
+
+		});
+
+	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
+
+		m_isLookAt = false;
+
+		});
+
+	m_pAnimator->RegisterEventListener("LookAt", [this]() {
+
+		m_isLookAt = true;
+
+		});
+
 }
 
 CMonster_Base* CMonster_Base::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

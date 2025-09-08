@@ -329,7 +329,13 @@ void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CPhysXContro
 			{
 				// 네비 밖 → 슬라이딩 방향 계산
 				_vector vSlideDir = pNavigation->GetSlideDirection(vNewPos, XMVector3Normalize(vMoveDir));
-				_vector vSlidePos = Get_State(STATE::POSITION) + vSlideDir * m_fSpeedPerSec * fTimeDelta;
+
+				
+
+				
+
+
+				_vector vSlidePos = Get_State(STATE::POSITION) + vSlideDir * 0.5f  * m_fSpeedPerSec * fTimeDelta;
 
 				if (pNavigation->isMove(vSlidePos))
 					Set_State(STATE::POSITION, vSlidePos);

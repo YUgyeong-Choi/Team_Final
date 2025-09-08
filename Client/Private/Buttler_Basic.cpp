@@ -470,6 +470,8 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 void CButtler_Basic::Register_Events()
 {
+	__super::Register_Events();
+
 	m_pAnimator->RegisterEventListener("AddAttackCount", [this]() {
 
 		++m_iAttackCount;
@@ -482,17 +484,7 @@ void CButtler_Basic::Register_Events()
 
 		});
 
-	m_pAnimator->RegisterEventListener("NotLookAt", [this]() {
-
-		m_isLookAt = false;
-
-		});
-
-	m_pAnimator->RegisterEventListener("LookAt", [this]() {
-
-		m_isLookAt = true;
-
-		});
+	
 
 	m_pAnimator->RegisterEventListener("AttackOn", [this]() {
 
@@ -505,6 +497,8 @@ void CButtler_Basic::Register_Events()
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
 		});
+
+	
 }
 
 void CButtler_Basic::Block_Reaction()
