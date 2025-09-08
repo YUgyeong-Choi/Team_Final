@@ -67,6 +67,10 @@ inline float RemapBySpeed(int curveType, const float curveY[5], float t) {
 	const float part = integrate(0.0f, t);
 	return std::clamp(part / total, 0.0f, 1.0f);
 }
+
+static inline bool IsNearlyZero3(FXMVECTOR v, float eps = 1e-8f) {
+	return XMVectorGetX(XMVector3LengthSq(v)) < eps;
+}
 #pragma endregion
 
 
@@ -315,13 +319,13 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 {
-	const auto& vec = m_CameraDatas.vecWorldMatrixData;
+	auto& vec = m_CameraDatas.vecWorldMatrixData;
 	if (vec.size() < 1)
 		return;
 
 	for (size_t i = 0; i < vec.size() - 1; ++i)
 	{
-		const auto& a = vec[i];
+		auto& a = vec[i];
 		const auto& b = vec[i + 1];
 
 		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
@@ -340,6 +344,12 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 			// Decompose B
 			XMVECTOR sB, rB, tB;
 			XMMatrixDecompose(&sB, &rB, &tB, b.WorldMatrix);
+
+			if (IsNearlyZero3(tA))
+			{
+				a.WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+				XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+			}
 
 			XMVECTOR finalT = tA;
 			XMVECTOR finalR = rA;
