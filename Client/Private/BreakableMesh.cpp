@@ -1,5 +1,6 @@
 #include "BreakableMesh.h"
 #include "GameInstance.h"
+#include "Client_Calculation.h"
 
 CBreakableMesh::CBreakableMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -34,7 +35,7 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartColliders()))
 		return E_FAIL;
-
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 10.f, 0.f, 1.f));
 	return S_OK;
 }
 
@@ -46,6 +47,13 @@ void CBreakableMesh::Priority_Update(_float fTimeDelta)
 
 void CBreakableMesh::Update(_float fTimeDelta)
 {
+	if (auto pActor = m_pPartPhysXActorComs[0]->Get_Actor())
+	{
+		PxTransform pose = pActor->getGlobalPose();
+		PxMat44 mat44(pose);
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&mat44)));
+	}
+
 	static _bool bTest = false;
 
 	if (m_pGameInstance->Key_Down(DIK_L))
@@ -54,6 +62,13 @@ void CBreakableMesh::Update(_float fTimeDelta)
 
 		CPhysXDynamicActor* pActorCom = m_pPartPhysXActorComs[0];
 		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+		if (bTest == false)
+		{
+		//	pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
+			// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
+			// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
+			pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-2, 2), GetRandomFloat(-2, 2), GetRandomFloat(-2, 2)));
+		}
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, bTest);
 		pRigid->wakeUp();
 	}
@@ -62,15 +77,6 @@ void CBreakableMesh::Update(_float fTimeDelta)
 
 void CBreakableMesh::Late_Update(_float fTimeDelta)
 {
-	if (auto pActor = m_pPartPhysXActorComs[0]->Get_Actor())
-	{
-		PxTransform pose = pActor->getGlobalPose();
-		PxMat44 mat(pose);
-		_matrix world = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&mat));
-
-		m_pTransformCom->Set_WorldMatrix(world);
-	}
-
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -303,16 +309,16 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 
 		// 5) Kinematic 끄기, 중력 적용, 질량/관성, CCD, wakeUp
 		pActorCom->Set_Kinematic(false);
-		PxRigidBodyExt::updateMassAndInertia(*pRigid, 5.f);
-		//pRigid->setMass(10.0f);
+		//pRigid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);     // 확실히 Kinematic 끄기
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);        // 중력 켜기
-		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);     // CCD 활성화
-		//pRigid->wakeUp();
+		PxRigidBodyExt::updateMassAndInertia(*pRigid, 0.5f);              // 질량/관성 적용
+		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
+		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
 		// 6) 필터 설정
 		PxFilterData fd{};
-		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
-		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_PLAYERBODY;
+		fd.word0 = WORLDFILTER::FILTER_MAP;
+		fd.word1 = WORLDFILTER::FILTER_MAP;
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);

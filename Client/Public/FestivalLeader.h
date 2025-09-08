@@ -7,6 +7,26 @@
 NS_BEGIN(Client)
 class CFestivalLeader final : public CBossUnit
 {
+	struct SpringBone
+	{
+		CBone* pBone = nullptr;
+		CBone* pParent = nullptr;
+		// 레스트 로컬 기준들
+		_vector restLocalPos;     // 로컬 위치
+		_vector restDirLocal;     // 로컬 방향
+		_vector restUpLocal;      // 로컬 업 벡터
+		_vector restRotQ;         // child 로컬의 레스트 회전(quat)
+		_float    length{};         // 부모랑의 길이
+		// 부모 로컬에서 끝점 위치를 적분
+		_vector curTipLocal;
+		// 부모의 직전 로컬 회전
+		_matrix parentPrevRotC;   // 3x3 회전만 사용
+		// 파라미터 (강성, 최대 각도, 중력)
+		_float stiffness = 0.02f;
+		_float maxDeg = 160.f;
+		_float gravity = 30.f;
+	};
+
 	// 주요 상태들의 NodeID
 	enum class BossStateID : _uint
 	{
@@ -139,6 +159,9 @@ private:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 
+	void InitializeSpringBones();
+	void Update_HairSpring();
+
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
@@ -187,6 +210,7 @@ private:
 	CBone* m_pRightWeaponBone{ nullptr };
 	CBone* m_pLeftHandBone{ nullptr };
 	CBone* m_pRightHandBone{ nullptr };
+	vector<SpringBone> m_SpringBones;
 	class CWeapon_Monster* m_pHammer{ nullptr };
 	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
 	_int m_iOriginBoneIndex = -1;

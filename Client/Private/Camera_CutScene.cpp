@@ -44,10 +44,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	if (CCamera_Manager::Get_Instance()->GetCurCam() != this)
 		return;
 
-	/*if (KEY_DOWN(DIK_C))
+	if (KEY_DOWN(DIK_C))
 	{
 		m_bStopCamera = !m_bStopCamera;
-	}*/
+	}
 	
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
@@ -196,6 +196,7 @@ void CCamera_CutScene::Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 
 	m_iCurrentFrame = -1;
+
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)

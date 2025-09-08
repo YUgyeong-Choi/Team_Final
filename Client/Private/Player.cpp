@@ -198,7 +198,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
-	if (KEY_PRESSING(DIK_LCONTROL))
+	if (KEY_PRESSING(DIK_LALT))
 	{
 		if (KEY_DOWN(DIK_R))
 		{
@@ -207,6 +207,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_T))
 		{
 			m_fTimeScale = 1.f;
+		}
+		if (KEY_DOWN(DIK_E))
+		{
+			CEffectContainer::DESC Lightdesc = {};
+			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+				MSG_BOX("이펙트 생성 실패함");
 		}
 	}
 	/* [ 플레이어가 속한 구역탐색 ] */
@@ -642,12 +651,14 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 void CPlayer::TriggerStateEffects(_float fTimeDelta)
 {
 	string stateName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
-	//printf("Current State: %s\n", stateName.c_str());
+	m_eCategory = GetAnimCategoryFromName(stateName);
 
 	// 상태가 바뀌었으면 초기화
-	if (m_strPrevStateName != stateName)
+	//if (m_strPrevStateName != stateName)
+	if (m_eCategory != m_ePreCategory)
 	{
-		m_strPrevStateName = stateName;
+		printf("Current State: %s\n", stateName.c_str());
+		m_ePreCategory = m_eCategory;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;
 		m_iMoveStep = 0;
@@ -1351,10 +1362,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		{
 			if (!m_bSetSound)
 			{
-				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 				m_bSetSound = true;
+				m_pSoundCom->Play("SE_PC_FX_Item_Heal");
 
-				LimActive(true, 0.5f, { 0.1f ,0.15f, 1.f, 1.f });
+				LimActive(true, 10.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
 				// 이펙트 임시로 한번에 몰아둠 
 				CEffectContainer::DESC desc = {};

@@ -6,6 +6,7 @@
 #include "Camera_Manager.h"
 #include "UI_Script_StarGazer.h"
 #include "UI_Button_Script.h"
+#include "UI_SelectLocation.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -80,12 +81,13 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	{
 		if (m_eState == STARGAZER_STATE::DESTROYED)
 		{
+
 			CUI_Manager::Get_Instance()->Activate_Popup(true);
 			CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
 		}
 		else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
 		{
-			if (!m_bTalkActive)
+			if (!m_bTalkActive && (nullptr == m_pScript))
 			{
 				CUI_Manager::Get_Instance()->Activate_Popup(true);
 				CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
@@ -112,10 +114,15 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 					if (nullptr == m_pScript)
 					{
-					/*	m_pScript = static_cast<CUI_Script_StarGazer*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
-							ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"), nullptr));*/
+						
+						Ready_Script();
+						
 
-						// 파일 찾아서 
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+						CCamera_Manager::Get_Instance()->SetbMoveable(false);
+						CUI_Manager::Get_Instance()->Off_Panel();
+						CUI_Manager::Get_Instance()->Activate_Popup(false);
+						
 
 						return;
 					}
@@ -159,11 +166,9 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 					m_bTalkActive = false;
 					m_eScriptDatas.clear();
 					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-					// 일단...
-					CCamera_Manager::Get_Instance()->SetbMoveable(true);
-
 					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-					CUI_Manager::Get_Instance()->On_Panel();
+
+					Ready_Script();
 					return;
 				}
 
@@ -174,23 +179,33 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
 			if (nullptr != m_pScript)
 			{
+				Button_Interaction();
 
 			}
 
 		}
+		else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+			CUI_Manager::Get_Instance()->On_Panel();
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+			Delete_Script();
+			return;
+		}
 
 
 	}
-	else
-	{
-		CUI_Manager::Get_Instance()->Activate_Popup(false);
-	}
+	
 
 	if (nullptr != m_pScript)
 	{
-		m_pScript->Update(fTimeDelta);
+		m_pScript->Priority_Update(fTimeDelta);
 	}
 
+	Update_Button();
 
 
 	//상태변경
@@ -261,8 +276,16 @@ void CStargazer::Update(_float fTimeDelta)
 
 	if (nullptr != m_pScript)
 	{
+		m_pScript->Update(fTimeDelta);
+
+		for (auto& pButton : m_pSelectButtons)
+			if (nullptr != pButton)
+				pButton->Update(fTimeDelta);
 
 	}
+
+	
+
 }
 
 void CStargazer::Late_Update(_float fTimeDelta)
@@ -270,7 +293,14 @@ void CStargazer::Late_Update(_float fTimeDelta)
 	if (nullptr != m_pScript)
 	{
 		m_pScript->Late_Update(fTimeDelta);
+
+		for (auto& pButton : m_pSelectButtons)
+			if (nullptr != pButton)
+				pButton->Late_Update(fTimeDelta);
 	}
+
+
+
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
@@ -304,6 +334,30 @@ HRESULT CStargazer::Render()
 	}
 
 	return S_OK;
+}
+
+void CStargazer::Script_Activate()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	m_pScript->Active_Update(true);
+	for (auto& pButton : m_pSelectButtons)
+		if (nullptr != pButton)
+			pButton->Active_Update(true);
+}
+
+void CStargazer::Delete_Script()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	Safe_Release(m_pScript);
+
+	for (auto& pButton : m_pSelectButtons)
+		Safe_Release(pButton);
+
+	m_pSelectButtons.clear();
 }
 
 void CStargazer::LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator)
@@ -389,7 +443,15 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 		}
 	}
 
+	
 
+	CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+	CCamera_Manager::Get_Instance()->SetbMoveable(true);
+	CUI_Manager::Get_Instance()->On_Panel();
+	CUI_Manager::Get_Instance()->Activate_Popup(false);
+	CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+	Delete_Script();
 }
 
 _bool CStargazer::Check_Player_Close()
@@ -431,6 +493,122 @@ void CStargazer::LoadScriptData()
 	}
 
 	
+}
+
+void CStargazer::Update_Button()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	if (m_pGameInstance->Key_Down(DIK_W))
+	{
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+		--m_iSelectButtonIndex;
+		if (m_iSelectButtonIndex < 0)
+			m_iSelectButtonIndex = 0;
+
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+	}
+	else if (m_pGameInstance->Key_Down(DIK_S))
+	{
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+		++m_iSelectButtonIndex;
+		if (m_iSelectButtonIndex >= m_pSelectButtons.size())
+			m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+	}
+}
+
+void CStargazer::Button_Interaction()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	// 각 이벤트 이름에 맞는 ui를 생성
+	// add object로 만들고, target을 넣어줘서 지우게 한다.
+
+	if ("SelectLocation" == m_ButtonEvents[m_iSelectButtonIndex])
+	{
+		// 장소 선택 ui 만들기
+
+		CUI_SelectLocation::UI_SELECT_LOCATION_DESC eDesc = {};
+		eDesc.pTarget = this;
+
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_SelectLocation"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_SelectLocation"), &eDesc);
+
+		m_pScript->Active_Update(false);
+		for (auto& pButton : m_pSelectButtons)
+			if (nullptr != pButton)
+				pButton->Active_Update(false);
+	}
+	else if ("LevelUp" == m_ButtonEvents[m_iSelectButtonIndex])
+	{
+		// 레벨업 ui 만들기
+	}
+
+	
+
+}
+
+HRESULT CStargazer::Ready_Script()
+{
+	m_pScript = static_cast<CUI_Script_StarGazer*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Script_Stargazer"), nullptr));
+
+	// 파일 찾아서
+	string strFilePath = ("../Bin/Save/Stargazer/Stargazer_Select.json");
+	json j;
+
+	ifstream file(strFilePath);
+
+	file >> j;
+
+	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Stargazer"));
+
+
+
+	size_t iSize = {};
+
+	for (CGameObject* pObj : ObjList)
+	{
+		if (static_cast<CStargazer*>(pObj)->m_eState == STARGAZER_STATE::FUNCTIONAL)
+		{
+			++iSize;
+		}
+	}
+
+	for (auto& button : j["Buttons"])
+	{
+		if (button["RequiredSize"].get<_int>() > iSize)
+			continue;
+
+		auto pObj = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button_Script"));
+
+		m_pSelectButtons.push_back(static_cast<CUI_Button_Script*>(pObj));
+
+		string strCaption = button["Label"].get<string>();
+
+		m_pSelectButtons.back()->Update_Script((strCaption));
+
+		m_ButtonEvents.push_back(button["Event"].get<string>());
+
+	}
+
+	// 위치 잡아주기
+
+	_float2 vSize = m_pSelectButtons.back()->Get_ButtonPos();
+
+	size_t iNum = m_pSelectButtons.size();
+
+	for (size_t i = 0; i < iNum; ++i)
+	{
+		m_pSelectButtons[i]->Update_Position(vSize.x, vSize.y - g_iWinSizeY * 0.07f * (iNum - 1 - i));
+	}
+
+	m_pSelectButtons[0]->Set_isSelect(true);
+
+
+	return S_OK;
 }
 
 HRESULT CStargazer::Bind_ShaderResources()
@@ -566,6 +744,9 @@ void CStargazer::Free()
 	Safe_Release(m_pPlayer);
 	Safe_Release(m_pShaderCom);
 
-	Safe_Release(m_pScript);
 	Safe_Release(m_pPhysXActorCom);
+
+	Safe_Release(m_pScript);
+	for (auto& pButton : m_pSelectButtons)
+		Safe_Release(pButton);
 }

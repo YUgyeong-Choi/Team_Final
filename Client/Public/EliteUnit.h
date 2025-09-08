@@ -120,7 +120,7 @@ protected:
 	// 이펙트 출력 관련
 	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) { return S_OK; }
 	virtual HRESULT Spawn_Effect() { return S_OK; }
-
+	
 	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready
 	_bool CanGroggyActive() const { return m_bGroggyActive; } // 그로기를 만들 수 있는 상태인지
 	virtual void Reset() override;
@@ -129,6 +129,8 @@ protected:
 
 	PxTransform ToPxPose(const _fmatrix& W);
 	PxTransform GetBonePose(CBone* pBone, const _matrix* pLocalOffset = nullptr) ;
+
+	void ApplyAttackTypeToPlayer(EAttackType type);
 
 public:
 	EEliteState GetCurrentState() const { return m_eCurrentState; }

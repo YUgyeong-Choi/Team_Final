@@ -1,0 +1,81 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 106,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 106,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.699999988079071,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_SubUV_DieBlood_01_7x7_SC_KMH",
+                "T_SubUV_DieBlood_01_7x7_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 7,
+            "TileY": 7
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 100
+}

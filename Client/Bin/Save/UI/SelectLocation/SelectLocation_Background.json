@@ -22,7 +22,7 @@
                 "Texturetag": "Prototype_Component_Texture_Location_BackGround",
                 "fAlpha": 1.0,
                 "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
+                "fOffset": 0.1,
                 "fX": 0.5,
                 "fY": 0.5,
                 "iPassIndex": 1,
