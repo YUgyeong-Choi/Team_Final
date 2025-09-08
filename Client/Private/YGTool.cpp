@@ -152,7 +152,10 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 			{ "targetType", static_cast<_int>(target.eTarget)},
 			{ "pitch", target.fPitch },
 			{ "yaw", target.fYaw },
-			{ "distance", target.fDistance }
+			{ "distance", target.fDistance },
+			{ "interpFov", target.interpTarget },
+			{ "curveType", target.curveType },
+			{ "curveY", std::vector<float>(std::begin(target.curveY), std::end(target.curveY)) }
 			});
 	}
 
@@ -298,14 +301,24 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 	// 5. vecTargetData
 	if (j.contains("vecTargetData"))
 	{
-		for (const auto& fovJson : j["vecTargetData"])
+		for (const auto& targetJson : j["vecTargetData"])
 		{
 			CAMERA_TARGETFRAME targetFrame;
-			targetFrame.iKeyFrame = fovJson["keyFrame"];
-			targetFrame.eTarget = static_cast<TARGET_CAMERA>(fovJson["targetType"]);
-			targetFrame.fPitch = fovJson["pitch"];
-			targetFrame.fYaw = fovJson["yaw"];
-			targetFrame.fDistance = fovJson["distance"];
+			targetFrame.iKeyFrame = targetJson["keyFrame"];
+			targetFrame.eTarget = static_cast<TARGET_CAMERA>(targetJson["targetType"]);
+			targetFrame.fPitch = targetJson["pitch"];
+			targetFrame.fYaw = targetJson["yaw"];
+			targetFrame.fDistance = targetJson["distance"];
+
+			targetFrame.curveType = targetJson.value("curveType", 0); // 0=Linear
+
+			if (targetJson.contains("curveY") && targetJson["curveY"].is_array())
+			{
+				auto arr = targetJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					targetFrame.curveY[k] = arr[k].get<float>();
+			}
 
 			data.vecTargetData.push_back(targetFrame);
 		}

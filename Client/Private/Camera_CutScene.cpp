@@ -573,62 +573,55 @@ inline _float LerpAngle(_float from, _float to, _float t) {
 void CCamera_CutScene::Interp_Target(_int curFrame)
 {
 	const auto& vec = m_CameraDatas.vecTargetData;
-	if (vec.size() < 1) return;
+	if (vec.size() < 2) return;
 
-	for (size_t i = 0; i < vec.size() - 1; ++i)
+	for (size_t i = 0; i + 1 < vec.size(); ++i)
 	{
 		const auto& a = vec[i];
 		const auto& b = vec[i + 1];
-
 		if (curFrame < a.iKeyFrame || curFrame > b.iKeyFrame)
 			continue;
 
+		if (a.eTarget == TARGET_CAMERA::NONE)
+			return; // 필요시 continue
+
 		CGameObject* pTargetObj = nullptr;
-		if (a.eTarget != TARGET_CAMERA::NONE)
+		switch (a.eTarget)
 		{
-			switch (a.eTarget)
-			{
-			case TARGET_CAMERA::PLAYER:
-				pTargetObj = m_pGameInstance->Get_LastObject(
-					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
-				break;
-			default:
-				break;
-			}
-			if (!pTargetObj) return;
-
-			const float denom = float(max(1, b.iKeyFrame - a.iKeyFrame));
-			const float t = float(curFrame - a.iKeyFrame) / denom;
-
-			_float fPitch = LerpFloat(a.fPitch, b.fPitch, t);      // Pitch는 범위가 좁으면 일반 Lerp로 충분
-			_float fYaw = LerpAngle(a.fYaw, b.fYaw, t);        //  Yaw는 짧은 경로로 보간
-
-			_float fDistance = LerpFloat(a.fDistance, b.fDistance, t);
-
-			// 기준점(플레이어 머리 위 약간 + 뒤로 약간)
-			_vector vtargetPos = pTargetObj->Get_TransfomCom()->Get_State(STATE::POSITION);
-			vtargetPos += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-			vtargetPos += XMVector3Normalize(
-				pTargetObj->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
-
-			// 구면좌표 → 오프셋
-			const _float x = fDistance * cosf(fPitch) * sinf(fYaw);
-			const _float y = fDistance * sinf(fPitch);
-			const _float z = fDistance * cosf(fPitch) * cosf(fYaw);
-			const _vector vOffset = XMVectorSet(x, y, z, 0.f);
-
-			const _vector vTargetCamPos = vtargetPos + vOffset;
-
-			// 위치 보간 + 스냅
-			const _vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
-			_vector vNewPos = XMVectorLerp(vCurPos, vTargetCamPos, t);
-			if (XMVectorGetX(XMVector3LengthSq(vNewPos - vTargetCamPos)) < 1e-6f)
-				vNewPos = vTargetCamPos;
-
-			m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
-			m_pTransformCom->LookAt(vtargetPos);
-			return;
+		case TARGET_CAMERA::PLAYER:
+			pTargetObj = m_pGameInstance->Get_LastObject(
+				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
+			break;
+		default: break;
 		}
+		if (!pTargetObj) return;
+
+		// 진행률 → 속도 커브 기반 t'
+		const int   span = max(1, b.iKeyFrame - a.iKeyFrame);
+		const float t = float(curFrame - a.iKeyFrame) / float(span);   // 0..1
+		const float tp = RemapBySpeed(a.curveType, a.curveY, t);       
+
+		// 스칼라 보간 (Yaw는 최단 경로)
+		const float fPitch = LerpFloat(a.fPitch, b.fPitch, tp);
+		const float fYaw = LerpAngle(a.fYaw, b.fYaw, tp);
+		const float fDistance = max(0.f, LerpFloat(a.fDistance, b.fDistance, tp));
+
+		// 타깃 피벗(머리 위 + 살짝 뒤)
+		_vector pivot = pTargetObj->Get_TransfomCom()->Get_State(STATE::POSITION);
+		pivot += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		pivot += XMVector3Normalize(pTargetObj->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+
+		// 구면좌표 → 카메라 오프셋
+		const float x = fDistance * cosf(fPitch) * sinf(fYaw);
+		const float y = fDistance * sinf(fPitch);
+		const float z = fDistance * cosf(fPitch) * cosf(fYaw);
+		const _vector offset = XMVectorSet(x, y, z, 0.f);
+
+		const _vector desiredPos = pivot + offset;
+
+		m_pTransformCom->Set_State(STATE::POSITION, desiredPos);
+		m_pTransformCom->LookAt(pivot);
+		return;
 	}
 }
 
@@ -818,14 +811,24 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 	// 5. vecTargetData
 	if (j.contains("vecTargetData"))
 	{
-		for (const auto& fovJson : j["vecTargetData"])
+		for (const auto& targetJson : j["vecTargetData"])
 		{
 			CAMERA_TARGETFRAME targetFrame;
-			targetFrame.iKeyFrame = fovJson["keyFrame"];
-			targetFrame.eTarget = static_cast<TARGET_CAMERA>(fovJson["targetType"]);
-			targetFrame.fPitch = fovJson["pitch"];
-			targetFrame.fYaw = fovJson["yaw"];
-			targetFrame.fDistance = fovJson["distance"];
+			targetFrame.iKeyFrame = targetJson["keyFrame"];
+			targetFrame.eTarget = static_cast<TARGET_CAMERA>(targetJson["targetType"]);
+			targetFrame.fPitch = targetJson["pitch"];
+			targetFrame.fYaw = targetJson["yaw"];
+			targetFrame.fDistance = targetJson["distance"];
+
+			targetFrame.curveType = targetJson.value("curveType", 0); // 0=Linear
+
+			if (targetJson.contains("curveY") && targetJson["curveY"].is_array())
+			{
+				auto arr = targetJson["curveY"];
+				const int n = std::min<int>(5, (int)arr.size());
+				for (int k = 0; k < n; ++k)
+					targetFrame.curveY[k] = arr[k].get<float>();
+			}
 
 			data.vecTargetData.push_back(targetFrame);
 		}
