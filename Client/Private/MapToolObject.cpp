@@ -49,6 +49,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//인스턴싱 제외 여부
 	m_bNoInstancing = pDesc->bNoInstancing;
 
+	//바닥인지 여부
+	m_bisFloor = pDesc->bIsFloor;
+
 	//오브젝트 타입
 	m_eObjType = pDesc->eObjType;
 

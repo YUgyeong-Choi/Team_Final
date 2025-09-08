@@ -42,6 +42,8 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	//라이트 모양
 	m_iLightShape = StaicMeshDESC->iLightShape;
 
+	m_bIsFloor = StaicMeshDESC->bIsFloor;
+
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
@@ -436,9 +438,20 @@ HRESULT CStaticMesh::Ready_Collider()
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
+	
+
 	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_MAP;
-	filterData.word1 = WORLDFILTER::FILTER_DYNAMICOBJ;;
+	//바닥이면 FILTER_FLOOR 필터 추가
+	if (m_bIsFloor == true)
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_FLOOR;
+	}
+	else
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+	}
+
+	//filterData.word1 = WORLDFILTER::FILTER_DYNAMICOBJ;
 
 	// ──────────────────────────────
 	if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)

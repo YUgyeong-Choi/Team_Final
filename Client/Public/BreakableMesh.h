@@ -53,6 +53,9 @@ private:
 	void IgnorePlayerCollider(CPhysXDynamicActor* pActor);
 
 private:
+	void Invisible();
+
+private:
 	//조각들 초기행렬 저장
 	vector<_float4x4> m_PartInitWorldMatrixs = {};
 
@@ -62,6 +65,11 @@ private:
 
 	_bool m_bBreakTriggered = { false }; //무너진다는 트리거
 	_bool m_bIsBroken = { false }; //이미 무너진 상태인지 확인하는 코드
+
+	//몇초뒤 렌더링과, 콜라이더도 빼주자
+	const _float m_fTime_Invisible = { 8.f };
+	_float m_fTimeAcc = { 0.f };
+	_bool m_bInvisible = { false };
 
 
 	class CPlayer* m_pPlayer = { nullptr };

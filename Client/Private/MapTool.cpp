@@ -463,6 +463,9 @@ HRESULT CMapTool::Save(const _char* Map)
 				//라이트 모양
 				ObjectJson["LightShape"] = pMapToolObject->m_iLightShape;
 
+				//바닥여부
+				ObjectJson["IsFloor"] = pMapToolObject->m_bisFloor;
+
 				//인스턴싱 제외
 				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
@@ -625,6 +628,18 @@ HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 
 			//라이트 모양
 			MapToolObjDesc.iLightShape = Objects[j].value("LightShape", 0);
+
+			//바닥여부
+			if (Objects[j].contains("IsFloor"))
+			{
+				MapToolObjDesc.bIsFloor = Objects[j].value("IsFloor", false);
+			}
+			else
+			{
+				MapToolObjDesc.bIsFloor = false;
+			}
+
+
 
 			//인스턴싱 제외 여부
 			if (Models[i].contains("NoInstancing"))
@@ -1350,6 +1365,10 @@ void CMapTool::Render_Detail()
 		ImGui::Separator();
 
 		Detail_NoInstancing();
+
+		ImGui::Separator();
+
+		Detail_IsFloor();
 	}
 	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
 	{
@@ -2321,11 +2340,22 @@ void CMapTool::Detail_NoInstancing()
 				//치명적 오류
 				MSG_BOX("Detail_No Instancing Error : 모델 그룹을 찾을 수 없음");
 			}
-			
+
 		}
 	}
 
 }
+
+void CMapTool::Detail_IsFloor()
+{
+	ImGui::Text("Is Floor");
+	if (m_pFocusObject)
+	{
+		ImGui::Checkbox("Is Floor", &m_pFocusObject->m_bisFloor);
+	}
+
+}
+
 
 void CMapTool::Detail_StargazerTag()
 {

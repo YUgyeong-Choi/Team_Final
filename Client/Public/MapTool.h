@@ -100,6 +100,7 @@ private:
 	void Detail_Collider();
 	void Detail_LightShape();
 	void Detail_NoInstancing();
+	void Detail_IsFloor();
 
 	//별 바라기 태그
 	void Detail_StargazerTag();

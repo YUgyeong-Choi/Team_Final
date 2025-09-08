@@ -1921,6 +1921,17 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
 #pragma endregion
 
+#pragma region 바닥여부
+		if (objects[j].contains("IsFloor"))
+		{
+			StaticMeshDesc.bIsFloor = objects[j].value("IsFloor", false);
+		}
+		else
+		{
+			StaticMeshDesc.bIsFloor = false;
+		}
+#pragma endregion
+
 		StaticMeshDesc.iRender = 0;
 		StaticMeshDesc.iLevelID = iLevelIndex;
 

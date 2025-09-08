@@ -76,6 +76,18 @@ void CBreakableMesh::Update(_float fTimeDelta)
 		Break();
 	}
 
+	if (m_bIsBroken)
+	{
+		if (m_fTimeAcc > m_fTime_Invisible)
+		{
+			Invisible();
+		}
+		else
+		{
+			m_fTimeAcc += fTimeDelta;
+		}
+	}
+
 }
 
 void CBreakableMesh::Late_Update(_float fTimeDelta)
@@ -95,8 +107,11 @@ HRESULT CBreakableMesh::Render()
 	}
 	else
 	{
-		if (FAILED(Render_PartModels()))
-			return E_FAIL;
+		if (m_bInvisible == false)
+		{
+			if (FAILED(Render_PartModels()))
+				return E_FAIL;
+		}		
 	}
 
 
@@ -122,6 +137,9 @@ HRESULT CBreakableMesh::Render()
 
 void CBreakableMesh::Reset()
 {
+	m_bInvisible = false;
+	m_fTimeAcc = 0.f;
+
 	m_bBreakTriggered = false;
 	m_bIsBroken = false;
 
@@ -200,6 +218,8 @@ void CBreakableMesh::Break()
 		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bIsBroken);
 		pRigid->wakeUp();
+
+		m_pGameInstance->Get_Scene()->addActor(*pPartActor->Get_Actor());
 	}
 }
 
@@ -282,6 +302,16 @@ void CBreakableMesh::IgnorePlayerCollider(CPhysXDynamicActor* pActor)
 		{
 			pController->Add_IngoreActors(pActor->Get_Actor());
 		}
+	}
+}
+
+void CBreakableMesh::Invisible()
+{
+	m_bInvisible = true;
+
+	for (CPhysXDynamicActor* pActor : m_pPartPhysXActorComs)
+	{
+		m_pGameInstance->Get_Scene()->removeActor(*pActor->Get_Actor());
 	}
 }
 
@@ -450,14 +480,14 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		// 6) 필터 설정
 		PxFilterData fd{};
 		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
-		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_DYNAMICOBJ; //WORLDFILTER::FILTER_MAP를 FILTER_FLOOR 로 바꿀 예정
+		fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY; //WORLDFILTER::FILTER_MAP를 FILTER_FLOOR 로 바꿀 예정
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
 		pActorCom->Set_Owner(this);
 		pActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
 		// 7) 씬에 등록
-		m_pGameInstance->Get_Scene()->addActor(*pRigid);
+		//m_pGameInstance->Get_Scene()->addActor(*pRigid);
 	}
 
 	return S_OK;
