@@ -287,30 +287,6 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Breakable()))
 		return E_FAIL;
-
-#pragma region 영웅 테스트
-	/*CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-	Desc.iPartModelCount = 3;
-	Desc.ModelName = TEXT("Main");
-	Desc.vOffsets.push_back(_float3(4.09f, -8.75f, 1.21f));
-	Desc.vOffsets.push_back(_float3(4.09f, -5.82f, 1.21f));
-	Desc.vOffsets.push_back(_float3(4.09f, -2.89f, 1.21f));
-	Desc.PartModelNames.push_back(TEXT("Part2"));
-	Desc.PartModelNames.push_back(TEXT("Part1"));
-	Desc.PartModelNames.push_back(TEXT("Part1"));
-	Desc.WorldMatrix = _float4x4(
-		1.f, 0.f, 0.f, 0.f,
-		0.f, 1.f, 0.f, 0.f,
-		0.f, 0.f, 1.f, 0.f,
-		0.f, 10.f, 0.f, 1.f
-	);
-	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-		Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-		return E_FAIL;*/
-#pragma endregion
-
-
 	if (FAILED(Ready_Stargazer()))
 		return E_FAIL;
 

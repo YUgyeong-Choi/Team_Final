@@ -33,6 +33,7 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
@@ -144,7 +145,11 @@ void CBreakableMesh::Reset()
 	m_bIsBroken = false;
 
 	//본 모델 설정 초기화
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	PxActor* pActor = m_pPhysXActorCom->Get_Actor();
+	if (!pActor->getScene()) // nullptr이면 씬에 없음
+	{
+		m_pGameInstance->Get_Scene()->addActor(*pActor);
+	}
 
 	//파트 모델 설정 초기화
 	//파트 모델 위치 되돌리기
@@ -152,6 +157,9 @@ void CBreakableMesh::Reset()
 	{
 		CPhysXDynamicActor* pActorCom = m_pPartPhysXActorComs[i];
 		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+
+		if (!pRigid)
+			continue;
 
 		// 1) 다시 Kinematic 상태로
 		m_pPartPhysXActorComs[i]->Set_Kinematic(true);
@@ -173,9 +181,9 @@ void CBreakableMesh::Reset()
 		pRigid->setGlobalPose(pose);
 
 		// 3) 힘 초기화
-		pRigid->setLinearVelocity(PxVec3(0.f, 0.f, 0.f));
+		/*pRigid->setLinearVelocity(PxVec3(0.f, 0.f, 0.f));
 		pRigid->setAngularVelocity(PxVec3(0.f, 0.f, 0.f));
-		pRigid->clearForce();
+		pRigid->clearForce();*/
 
 		// 4) 중력 끄기
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
@@ -207,6 +215,8 @@ void CBreakableMesh::Break()
 	{
 		CPhysXDynamicActor* pActorCom = pPartActor;
 		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+		if (!pRigid)
+			continue;
 
 		pActorCom->Set_Kinematic(false);
 
@@ -217,9 +227,15 @@ void CBreakableMesh::Break()
 		// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
 		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bIsBroken);
-		pRigid->wakeUp();
 
-		m_pGameInstance->Get_Scene()->addActor(*pPartActor->Get_Actor());
+		PxActor* pActor = pPartActor->Get_Actor();
+		if (!pActor->getScene()) // nullptr이면 씬에 없음
+		{
+			m_pGameInstance->Get_Scene()->addActor(*pActor);
+		}
+
+		//AddActor 이후 웨이크업해야한다
+		pRigid->wakeUp();
 	}
 }
 
@@ -255,21 +271,21 @@ HRESULT CBreakableMesh::Render_PartModels()
 			return E_FAIL;
 
 		_uint		iNumMesh = m_pPartModelComs[i]->Get_NumMeshes();
-		for (_uint i = 0; i < iNumMesh; i++)
+		for (_uint j = 0; j < iNumMesh; j++)
 		{
-			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", j, aiTextureType_DIFFUSE, 0)))
 				return E_FAIL;
 
-			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_NormalTexture", j, aiTextureType_NORMALS, 0)))
 				return E_FAIL;
 
-			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_ARMTexture", j, aiTextureType_SPECULAR, 0)))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Begin(0)))
 				return E_FAIL;
 
-			if (FAILED(m_pPartModelComs[i]->Render(i)))
+			if (FAILED(m_pPartModelComs[i]->Render(j)))
 				return E_FAIL;
 		}
 	}
@@ -307,6 +323,9 @@ void CBreakableMesh::IgnorePlayerCollider(CPhysXDynamicActor* pActor)
 
 void CBreakableMesh::Invisible()
 {
+	if (m_bInvisible == true)
+		return;
+
 	m_bInvisible = true;
 
 	for (CPhysXDynamicActor* pActor : m_pPartPhysXActorComs)
@@ -412,10 +431,12 @@ HRESULT CBreakableMesh::Ready_Collider()
 	m_pPhysXActorCom->Set_Owner(this);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
 
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+	//리셋으로 호출되버린다
+	//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
 	return S_OK;
 }
+
 HRESULT CBreakableMesh::Ready_PartColliders()
 {
 	// 각 파트 모델을 ConvexMesh로 쿠킹해서 Dynamic Actor 생성
