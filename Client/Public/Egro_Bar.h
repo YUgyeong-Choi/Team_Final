@@ -45,7 +45,7 @@ private:
 private:
 
 
-	_float m_fRatio = {0.33f};
+	_float m_fRatio = {0.f};
 
 	_bool m_isReadyLevelUp = {false};
 

@@ -1,6 +1,9 @@
 #include "Panel_Player_RU.h"
 #include "GameInstance.h"
 #include "Observer_Player_Status.h"
+#include "UI_Text.h"
+#include "Dynamic_Text_UI.h"
+#include "Egro_Bar.h"
 
 CPanel_Player_RU::CPanel_Player_RU(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -39,17 +42,46 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 		if (L"CurrentErgo" == eventType)
 		{
 
+			// 증가된 값을 넣어준다.
 			m_fErgo = *static_cast<_float*>(data);
 
-		}
+			m_isChange = true;
+			
+			m_PartObjects[0]->Set_Color({ 1.f,1.f,1.f,1.f });
+
+			_wstring strAdd = L"+" + to_wstring(static_cast<_int>((m_fErgo - m_fPreErgo)));
+
+			static_cast<CUI_Text*>(m_PartObjects[0])->Set_Caption(strAdd);
+			static_cast<CDynamic_Text_UI*>(m_PartObjects[1])->Set_Caption(to_wstring(static_cast<_int>(m_fErgo)));
+
+			_float fRatio = m_fErgo / m_fMaxErgo;
+
+			if (fRatio > 1.f)
+			{
+				fRatio = 1.f;
+				m_PartObjects[1]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+				m_PartObjects[2]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			}
+			else
+			{
+				m_PartObjects[1]->Set_Color({ 1.f,1.f,1.f,1.f });
+				m_PartObjects[2]->Set_Color({ 1.f,1.f,1.f,1.f });
+			}
 		
+			static_cast<CErgo_Bar*>(m_PartObjects[2])->Set_Ratio(fRatio);
+
+
+		}
 		else if (L"LevelUp" == eventType)
 		{
 
 			m_fMaxErgo = *static_cast<_float*>(data);
 
 		}
+		else if (L"UseErgo" == eventType)
+		{
 
+		}
 		
 
 		});
@@ -62,6 +94,23 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 void CPanel_Player_RU::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_isChange)
+	{
+		m_fRenderTime -= fTimeDelta;
+
+		if (m_fRenderTime < 0.f)
+		{
+			m_fRenderTime = 2.f;
+			m_isChange = false;
+		}
+		m_PartObjects[0]->Set_Color({ 1.f,1.f,1.f,1.f });
+	}
+	else
+	{
+		m_fPreErgo = m_fErgo;
+		m_PartObjects[0]->Set_Color({ 0.f,0.f,0.f,0.f });
+	}
 }
 
 void CPanel_Player_RU::Update(_float fTimeDelta)
