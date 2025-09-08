@@ -18,11 +18,11 @@ public:
 	{
 		//본 메쉬
 		wstring ModelName = {};
-
 		//파트 메쉬 갯수
 		_uint iPartModelCount = { 0 };
 		//파트 메쉬 이름들
 		vector<wstring> PartModelNames = {};
+		vector<_float3> vOffsets = {};
 	}BREAKABLEMESH_DESC;
 
 protected:
@@ -52,38 +52,27 @@ public:
 		_int a = 0;
 	}
 
-	// Ray로 인항 충돌을 하면 On_Hit를 호출함 (HitPos & HitNormal을 가지고 올 수 있음)
-	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-	{
- 		_int a = 0;
-	}
-
-	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
-	{
-		_int a = 0;
-	}
-	virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
-	{
-		_int a = 0;
-	}
-	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-	{
-		_int a = 0;
-	}
-
-
-
 private:
 	HRESULT Render_Model();
 	HRESULT Render_PartModels();
+
+	HRESULT Find_Player();
+	void IgnorePlayerCollider(CPhysXDynamicActor* pActor);
 
 private:
 	//파트 모델 갯수
 	_uint m_iPartModelCount = 0;
 
-private:    /* [ 컴포넌트 ] */
+	_bool m_bBreak = { false };
+
+
+	class CPlayer* m_pPlayer = { nullptr };
+private:    
+
+	/* [ 컴포넌트 ] */
 	vector<CModel*> m_pPartModelComs = {};
 	vector<CPhysXDynamicActor*> m_pPartPhysXActorComs = {};
+	vector<CTransform*> m_pPartTransformComs = {};
 
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };

@@ -130,6 +130,12 @@ HRESULT CMainApp::Ready_Fonts()
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+	//Æ®·£½ºÆû ¿©·¯°³ ¸¸µé°í ½Í¾î¼­ ¸¸µë(¿µ¿õ)
+	/* For.Prototype_Component_Transform */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Transform"),
+		CTransform::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma region µ¥Ä®
 	/* For.Prototype_Component_VIBuffer_VolumeMesh */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_VolumeMesh"),

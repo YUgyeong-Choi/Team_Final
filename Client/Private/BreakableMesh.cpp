@@ -1,6 +1,7 @@
 #include "BreakableMesh.h"
 #include "GameInstance.h"
 #include "Client_Calculation.h"
+#include "Player.h"
 
 CBreakableMesh::CBreakableMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -21,6 +22,9 @@ HRESULT CBreakableMesh::Initialize_Prototype()
 
 HRESULT CBreakableMesh::Initialize(void* pArg)
 {
+	if (FAILED(Find_Player()))
+		return E_FAIL;
+	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -29,48 +33,62 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 10.f, 0.f, 1.f));
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
 
-	//if (FAILED(Ready_Collider()))
-	//	return E_FAIL;
+	//파트오브젝트 시작 위치 오프셋 설정
+	_vector vMainPos =  m_pTransformCom->Get_State(STATE::POSITION);
+	for (_uint i = 0; i < m_iPartModelCount; ++i)
+	{
+		m_pPartTransformComs[i]->Set_State(STATE::POSITION, vMainPos + XMLoadFloat3(&pDesc->vOffsets[i]));
+	}
 
 	if (FAILED(Ready_PartColliders()))
 		return E_FAIL;
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 10.f, 0.f, 1.f));
+
 	return S_OK;
 }
 
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
-	
 
 }
 
 void CBreakableMesh::Update(_float fTimeDelta)
 {
-	if (auto pActor = m_pPartPhysXActorComs[0]->Get_Actor())
+	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
-		PxTransform pose = pActor->getGlobalPose();
-		PxMat44 mat44(pose);
-		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&mat44)));
+		if (auto pActor = m_pPartPhysXActorComs[i]->Get_Actor())
+		{
+			PxTransform pose = pActor->getGlobalPose();
+			PxMat44 mat44(pose);
+			m_pPartTransformComs[i]->Set_WorldMatrix(XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&mat44)));
+		}
 	}
-
-	static _bool bTest = false;
 
 	if (m_pGameInstance->Key_Down(DIK_L))
 	{
-		bTest = !bTest;
+		m_bBreak = true;
 
-		CPhysXDynamicActor* pActorCom = m_pPartPhysXActorComs[0];
-		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
-		if (bTest == false)
+		m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
+
+		for (CPhysXDynamicActor* pPartActor : m_pPartPhysXActorComs)
 		{
-		//	pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
+			CPhysXDynamicActor* pActorCom = pPartActor;
+			PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+
+			pActorCom->Set_Kinematic(false);
+
+			IgnorePlayerCollider(pPartActor);
+
+			//pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
 			// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
 			// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
-			pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-2, 2), GetRandomFloat(-2, 2), GetRandomFloat(-2, 2)));
+			pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
+			pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bBreak);
+			pRigid->wakeUp();
 		}
-		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, bTest);
-		pRigid->wakeUp();
 	}
 
 }
@@ -85,23 +103,21 @@ HRESULT CBreakableMesh::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-	if (m_pGameInstance->Key_Pressing(DIK_K))
+	if (m_bBreak == false)
 	{
-		/*if (FAILED(Render_Model()))
-			return E_FAIL;*/
-	}
-	else
-	{
-		if (FAILED(Render_PartModels()))
+		if (FAILED(Render_Model()))
 			return E_FAIL;
 	}
+
+	if (FAILED(Render_PartModels()))
+		return E_FAIL;
 
 
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderMapCollider())
 	{
-		/*if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
-			return E_FAIL;*/
+		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
+			return E_FAIL;
 
 		for (CPhysXDynamicActor* pPartActor : m_pPartPhysXActorComs)
 		{
@@ -142,29 +158,61 @@ HRESULT CBreakableMesh::Render_Model()
 
 HRESULT CBreakableMesh::Render_PartModels()
 {
-	for (CModel* pPartModel : m_pPartModelComs)
+	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
-		_uint		iNumMesh = pPartModel->Get_NumMeshes();
+		/* [ 월드 스페이스 넘기기 ] */
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pPartTransformComs[i]->Get_WorldMatrix_Ptr())))
+			return E_FAIL;
+
+		_uint		iNumMesh = m_pPartModelComs[i]->Get_NumMeshes();
 		for (_uint i = 0; i < iNumMesh; i++)
 		{
-			if (FAILED(pPartModel->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
 				return E_FAIL;
 
-			if (FAILED(pPartModel->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
 				return E_FAIL;
 
-			if (FAILED(pPartModel->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Begin(0)))
 				return E_FAIL;
 
-			if (FAILED(pPartModel->Render(i)))
+			if (FAILED(m_pPartModelComs[i]->Render(i)))
 				return E_FAIL;
 		}
 	}
 	
 	return S_OK;
+}
+
+HRESULT CBreakableMesh::Find_Player()
+{
+	CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
+
+	if (nullptr != pObj)
+	{
+		m_pPlayer = static_cast<CPlayer*>(pObj);
+		Safe_AddRef(m_pPlayer);
+	}
+
+	if (m_pPlayer == nullptr)
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CBreakableMesh::IgnorePlayerCollider(CPhysXDynamicActor* pActor)
+{
+	//pActor->Init_SimulationFilterData();
+	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+	{
+		if (auto pController = pPlayer->Get_Controller())
+		{
+			pController->Add_IngoreActors(pActor->Get_Actor());
+		}
+	}
 }
 
 HRESULT CBreakableMesh::Bind_ShaderResources()
@@ -283,7 +331,7 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 
 		// 2) 스케일/포즈 설정 (본체 트랜스폼 기준)
 		_vector S, R, T;
-		XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+		XMMatrixDecompose(&S, &R, &T, m_pPartTransformComs[i]->Get_WorldMatrix());
 		PxMeshScale scale(PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S)));
 		PxTransform pose(
 			PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T)),
@@ -308,7 +356,7 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 			continue;
 
 		// 5) Kinematic 끄기, 중력 적용, 질량/관성, CCD, wakeUp
-		pActorCom->Set_Kinematic(false);
+		pActorCom->Set_Kinematic(true);
 		//pRigid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);     // 확실히 Kinematic 끄기
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);        // 중력 켜기
 		PxRigidBodyExt::updateMassAndInertia(*pRigid, 0.5f);              // 질량/관성 적용
@@ -317,8 +365,8 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 
 		// 6) 필터 설정
 		PxFilterData fd{};
-		fd.word0 = WORLDFILTER::FILTER_MAP;
-		fd.word1 = WORLDFILTER::FILTER_MAP;
+		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ; //조각 파편
+		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_DYNAMICOBJ;//조각 파편
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
@@ -340,19 +388,30 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 	m_iPartModelCount = pDesc->iPartModelCount;
 	m_pPartModelComs.resize(m_iPartModelCount);
 	m_pPartPhysXActorComs.resize(m_iPartModelCount);
+	m_pPartTransformComs.resize(m_iPartModelCount);
 
 	wstring BaseTag = TEXT("Prototype_Component_Model_");
 
 	wstring MainTag = BaseTag + pDesc->ModelName;
 
 	/* Com_Model */ //본 모델
-	//if (FAILED(__super::Add_Component(m_iLevelID, MainTag,
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+	if (FAILED(__super::Add_Component(m_iLevelID, MainTag,
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
 
-	//파트모델
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
+		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	//파트 피직스
 	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
+#pragma region 파트 모델
 		//Com_PartModel0...1...2...
 		wstring ComTag = TEXT("Com_PartModel") + to_wstring(i);
 
@@ -361,20 +420,8 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 		if (FAILED(__super::Add_Component(m_iLevelID, PartTag,
 			ComTag.c_str(), reinterpret_cast<CComponent**>(&m_pPartModelComs[i]))))
 			return E_FAIL;
-	}
-
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
-		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
-	/* For.Com_PhysX */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-	//	TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
-	//	return E_FAIL;
-
-	//파트 모델
-	for (_uint i = 0; i < m_iPartModelCount; ++i)
-	{
+#pragma endregion
+#pragma region 파트 피직스
 		////Com_PhysX_Part0...1...2...
 		wstring PartPhysXTag = TEXT("Com_PhysX_Part") + to_wstring(i);
 
@@ -382,6 +429,16 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
 			TEXT("Prototype_Component_PhysX_Dynamic"), PartPhysXTag, reinterpret_cast<CComponent**>(&m_pPartPhysXActorComs[i]))))
 			return E_FAIL;
+#pragma endregion
+#pragma region 파트 트랜스폼
+		////Com_Transform_Part0...1...2...
+		wstring PartTransformTag = TEXT("Com_Transform_Part") + to_wstring(i);
+
+		/* For.Com_Transform */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+			TEXT("Prototype_Component_Transform"), PartTransformTag, reinterpret_cast<CComponent**>(&m_pPartTransformComs[i]))))
+			return E_FAIL;
+#pragma endregion
 	}
 
 
@@ -416,19 +473,17 @@ void CBreakableMesh::Free()
 {
 	__super::Free();
 
-	for (CModel* pPartModel : m_pPartModelComs)
+	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
-		Safe_Release(pPartModel);
-	}
-
-	for (CPhysXDynamicActor* pPartActor : m_pPartPhysXActorComs)
-	{
-		Safe_Release(pPartActor);
+		Safe_Release(m_pPartModelComs[i]);
+		Safe_Release(m_pPartPhysXActorComs[i]);
+		Safe_Release(m_pPartTransformComs[i]);
 	}
 
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPhysXActorCom);
 
 	Safe_Release(m_pShaderCom);
 
-	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pPlayer);
 }

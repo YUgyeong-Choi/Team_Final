@@ -38,7 +38,8 @@ namespace Engine
 		FILTER_DYNAMICOBJ = 1 << 5,
 		FILTER_NPC = 1 << 6,
 		FILTER_MAP = 1 << 7,
-		FILTER_INTERACT = 1 << 8
+		FILTER_INTERACT = 1 << 8,
+		//FILTER_FRAGMENT = 1 << 9 //부서진 조각들은 플레이어랑 안부딫힘
 	};
 
 	enum class COLLIDERTYPE 
