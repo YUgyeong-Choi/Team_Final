@@ -33,15 +33,16 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 10.f, 0.f, 1.f));
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
-	//파트오브젝트 시작 위치 오프셋 설정
+	//파트오브젝트 초기 월드행렬 저장
+	m_PartInitWorldMatrixs.resize(pDesc->iPartModelCount);
 	_vector vMainPos =  m_pTransformCom->Get_State(STATE::POSITION);
 	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
 		m_pPartTransformComs[i]->Set_State(STATE::POSITION, vMainPos + XMLoadFloat3(&pDesc->vOffsets[i]));
+		m_PartInitWorldMatrixs[i] = m_pPartTransformComs[i]->Get_World4x4();
 	}
 
 	if (FAILED(Ready_PartColliders()))
@@ -52,7 +53,10 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
-
+	//if (m_pGameInstance->Key_Down(DIK_L))
+	//{
+	//	Reset();
+	//}
 }
 
 void CBreakableMesh::Update(_float fTimeDelta)
@@ -114,6 +118,54 @@ HRESULT CBreakableMesh::Render()
 
 
 	return S_OK;
+}
+
+void CBreakableMesh::Reset()
+{
+	m_bBreakTriggered = false;
+	m_bIsBroken = false;
+
+	//본 모델 설정 초기화
+	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	//파트 모델 설정 초기화
+	//파트 모델 위치 되돌리기
+	for (_uint i = 0; i < m_iPartModelCount; ++i)
+	{
+		CPhysXDynamicActor* pActorCom = m_pPartPhysXActorComs[i];
+		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
+
+		// 1) 다시 Kinematic 상태로
+		m_pPartPhysXActorComs[i]->Set_Kinematic(true);
+
+
+		// 2) 위치 초기화
+		// m_PartInitWorldMatrixs[i] : XMFLOAT4X4 또는 XMMATRIX
+		_matrix world = XMLoadFloat4x4(&m_PartInitWorldMatrixs[i]); // 또는 XMLoadFloat4x4(&m_PartInitWorldMatrixs[i])
+		_vector S, R, T;
+		XMMatrixDecompose(&S, &R, &T, world);
+
+		// PhysX용 Transform 생성
+		PxTransform pose(
+			PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T)),
+			PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R))
+		);
+
+		// 파편 Actor 위치/회전 초기화
+		pRigid->setGlobalPose(pose);
+
+		// 3) 힘 초기화
+		pRigid->setLinearVelocity(PxVec3(0.f, 0.f, 0.f));
+		pRigid->setAngularVelocity(PxVec3(0.f, 0.f, 0.f));
+		pRigid->clearForce();
+
+		// 4) 중력 끄기
+		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
+
+		// 6) Transform 업데이트
+		m_pPartTransformComs[i]->Set_WorldMatrix(m_PartInitWorldMatrixs[i]);
+	}
+
 }
 
 void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -246,6 +298,16 @@ HRESULT CBreakableMesh::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	//이미시브 끄기
+	_float fEmissive = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+		return E_FAIL;
+
+	//글래스 끄기
+	_float fGlass = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -382,10 +444,13 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
 		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
+		//플레이어 무시
+		IgnorePlayerCollider(pActorCom);
+
 		// 6) 필터 설정
 		PxFilterData fd{};
-		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ; //조각 파편
-		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_DYNAMICOBJ;//조각 파편
+		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
+		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_DYNAMICOBJ; //WORLDFILTER::FILTER_MAP를 FILTER_FLOOR 로 바꿀 예정
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);

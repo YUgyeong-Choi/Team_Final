@@ -233,6 +233,11 @@ HRESULT CLevel_KratCentralStation::Reset()
 	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
 	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
 
+	//부서지는 메쉬 리셋
+	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_BreakableMesh");
+	for (auto& obj : objList)
+		obj->Reset();
+
 	return S_OK;
 }
 
@@ -280,14 +285,11 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_ErgoItem()))
 		return E_FAIL;
+	if (FAILED(Ready_Breakable()))
+		return E_FAIL;
 
 #pragma region 영웅 테스트
-	_vector vOffset1 = XMVectorSet(4.09f, -8.75f, 1.21f, 1.f);
-	_vector vOffset2 = XMVectorSet(4.09f, -5.82f, 1.21f, 1.f);
-	_vector vOffset3 = XMVectorSet(4.09f, -2.89f, 1.21f, 1.f);
-
-
-	CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+	/*CBreakableMesh::BREAKABLEMESH_DESC Desc{};
 	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 	Desc.iPartModelCount = 3;
 	Desc.ModelName = TEXT("Main");
@@ -305,7 +307,7 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	);
 	if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
 		Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-		return E_FAIL;
+		return E_FAIL;*/
 #pragma endregion
 
 
@@ -978,6 +980,12 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 #ifdef TESTMAP
 	if (FAILED(Ready_Monster("TEST")))
 		return E_FAIL;
+
+#ifdef TEST_FIRE_EATERMAP
+	if (FAILED(Ready_Monster("FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATERMAP
+
 #endif // TESTMAP
 
 #ifndef TESTMAP
@@ -1036,6 +1044,7 @@ HRESULT CLevel_KratCentralStation::Ready_Stargazer()
 #ifdef TESTMAP
 	if (FAILED(Ready_Stargazer("TEST")))
 		return E_FAIL;
+
 #endif // TESTMAP
 
 #ifndef TESTMAP
@@ -1165,6 +1174,81 @@ HRESULT CLevel_KratCentralStation::Ready_ErgoItem(const _char* Map)
 
 		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
 			Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Breakable()
+{
+	//아직 푸오코 기둥을 위한 것으로만
+
+#ifdef TESTMAP
+	if (FAILED(Ready_Breakable("TEST")))
+		return E_FAIL;
+
+#ifdef TEST_FIRE_EATERMAP
+	if (FAILED(Ready_Breakable("FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATERMAP
+
+#endif // TESTMAP
+
+#ifndef TESTMAP
+	if (FAILED(Ready_Breakable("STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_Breakable("HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Breakable("OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_Breakable("FIRE_EATER")))
+		return E_FAIL;
+#endif // !TESTMAP
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
+{
+	//아직 푸오코 기둥을 위한 것으로만
+
+	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
+	ifstream inFile(FilePath);
+	if (!inFile.is_open())
+	{
+		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json Json;
+	inFile >> Json;
+	inFile.close();
+
+	// 배열 순회
+	for (auto& Data : Json)
+	{
+		// 월드 행렬
+		const json& WorldMatrixJson = Data["WorldMatrix"];
+		_float4x4 WorldMatrix = {};
+		for (_int row = 0; row < 4; ++row)
+			for (_int col = 0; col < 4; ++col)
+				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+		CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		Desc.iPartModelCount = 3;
+		Desc.ModelName = TEXT("Main");
+		Desc.vOffsets.push_back(_float3(4.09f, -8.75f, 1.21f));
+		Desc.vOffsets.push_back(_float3(4.09f, -5.82f, 1.21f));
+		Desc.vOffsets.push_back(_float3(4.09f, -2.89f, 1.21f));
+		Desc.PartModelNames.push_back(TEXT("Part2"));
+		Desc.PartModelNames.push_back(TEXT("Part1"));
+		Desc.PartModelNames.push_back(TEXT("Part1"));
+		Desc.WorldMatrix = WorldMatrix;
+		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
 			return E_FAIL;
 	}
 

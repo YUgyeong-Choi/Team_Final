@@ -24,7 +24,7 @@
         "Collision": true,
         "ModelName": "SM_Factory_BasePipe_07",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin"
     },
     {

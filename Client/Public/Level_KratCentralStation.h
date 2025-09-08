@@ -48,6 +48,9 @@ private:
 	HRESULT Ready_ErgoItem();
 	HRESULT Ready_ErgoItem(const _char* Map);
 
+	HRESULT Ready_Breakable();
+	HRESULT Ready_Breakable(const _char* Map);
+
 	HRESULT Ready_Effect();
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();

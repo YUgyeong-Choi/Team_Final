@@ -37,17 +37,10 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual void Reset() override;
 
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-	{
-		_int a = 0;
-	}
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-	{
- 		_int a = 0;
-	}
 
 private:
 	void Break();
@@ -58,6 +51,10 @@ private:
 
 	HRESULT Find_Player();
 	void IgnorePlayerCollider(CPhysXDynamicActor* pActor);
+
+private:
+	//조각들 초기행렬 저장
+	vector<_float4x4> m_PartInitWorldMatrixs = {};
 
 private:
 	//파트 모델 갯수

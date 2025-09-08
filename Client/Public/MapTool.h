@@ -28,6 +28,7 @@ private:
 	HRESULT Load_StaticMesh(const _char* Map);
 	HRESULT Load_Stargazer(const _char* Map);
 	HRESULT Load_ErgoItem(const _char* Map);
+	HRESULT Load_Breakable(const _char* Map);
 
 private:
 	//∏ ≈¯ ¡∂¿€

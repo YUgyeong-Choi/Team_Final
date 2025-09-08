@@ -1,5 +1,5 @@
 {
-    "ModelCount": 6,
+    "ModelCount": 7,
     "Models": [
         {
             "Collision": false,
@@ -544,6 +544,12 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Factory_BasePipe_07",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": true,
