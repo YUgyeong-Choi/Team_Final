@@ -646,6 +646,13 @@ void CEliteUnit::Register_Events()
 	m_pAnimator->RegisterEventListener("OffFury", [this]() {
 		SwitchFury(false, 1.f);
 		});
+
+    m_pAnimator->RegisterEventListener("OnEmissive", [this]() {
+        SwitchEmissive(true, 1.f);
+        });
+    m_pAnimator->RegisterEventListener("OffEmissive", [this]() {
+        SwitchEmissive(false, 1.f);
+        });
 }
 
 PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
@@ -661,19 +668,22 @@ PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
         PxQuat(q.x, q.y, q.z, q.w));
 }
 
-PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pLocalOffset) 
+PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pOffset) 
 {
     if (!pBone) 
         return PxTransform(PxIdentity);
 
-    _matrix W = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) *
+
+
+    _matrix mat = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) *
         m_pTransformCom->Get_WorldMatrix();
 
+    if (pOffset)
+    {
+        mat = XMMatrixMultiply(mat, *pOffset); // 월드 공간에서 적용
+    }
 
-    if (pLocalOffset)
-        W = W * (*pLocalOffset);
-
-    return ToPxPose(W);
+    return ToPxPose(mat);
 }
 
 void CEliteUnit::ApplyAttackTypeToPlayer(EAttackType type)

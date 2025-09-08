@@ -128,7 +128,7 @@ protected:
 	virtual void Ready_SoundEvents() {};
 
 	PxTransform ToPxPose(const _fmatrix& W);
-	PxTransform GetBonePose(CBone* pBone, const _matrix* pLocalOffset = nullptr) ;
+	PxTransform GetBonePose(CBone* pBone, const _matrix* pOffset = nullptr) ;
 
 	void ApplyAttackTypeToPlayer(EAttackType type);
 

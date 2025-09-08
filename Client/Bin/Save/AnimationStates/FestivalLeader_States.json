@@ -393,7 +393,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_08_Start",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_FuryBodySlam_Start",
@@ -401,7 +401,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_08_Attack",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_FuryBodySlam_Loop",
@@ -409,7 +409,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_08_End",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_FuryBodySlam_End",

@@ -878,11 +878,19 @@
                 {
                     "EventName": "StartPhase1Sound",
                     "Time": 351.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 260.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 250.0
                 }
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 25.0
+            "TickPerSecond": 28.0
         },
         {
             "ClipName": "AS_Groggy_End",
