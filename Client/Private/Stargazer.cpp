@@ -327,11 +327,13 @@ HRESULT CStargazer::Render()
 			return E_FAIL;
 	}
 
+#ifdef DEBUG
 	if (m_pGameInstance->Get_RenderMapCollider())
 	{
 		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 			return E_FAIL;
 	}
+#endif
 
 	return S_OK;
 }

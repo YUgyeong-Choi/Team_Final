@@ -41,8 +41,8 @@ using namespace ImGui;
 namespace Client
 {
 
-	const unsigned int			g_iWinSizeX = 1920; //1920 1600
-	const unsigned int			g_iWinSizeY = 1080; //1080 900
+	const unsigned int			g_iWinSizeX = 1600; //1920 1600
+	const unsigned int			g_iWinSizeY = 900; //1080 900
 
 
 	const float g_fBGMSoundVolume = 1.f; // BGM º¼·ý
@@ -55,7 +55,7 @@ extern HINSTANCE g_hInst;
 
 using namespace Client;
 
-#define TESTMAP //Å×½ºÆ®¸Ê ÇÏ±â ½ÈÀ¸¸é ÁÖ¼®ÇÏ½Ã¿À (¿µ¿õ)
+//#define TESTMAP //Å×½ºÆ®¸Ê ÇÏ±â ½ÈÀ¸¸é ÁÖ¼®ÇÏ½Ã¿À (¿µ¿õ)
 
 #pragma region ÇÑ¿µ¿õ
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
