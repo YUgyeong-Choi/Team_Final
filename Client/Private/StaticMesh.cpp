@@ -438,7 +438,7 @@ HRESULT CStaticMesh::Ready_Collider()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_MAP;
-	//filterData.word1 = WORLDFILTER::FILTER_MAP;
+	filterData.word1 = WORLDFILTER::FILTER_DYNAMICOBJ;
 
 	// 式式式式式式式式式式式式式式式式式式式式式式式式式式式式式式
 	if (m_eColliderType == COLLIDER_TYPE::CONVEX || m_eColliderType == COLLIDER_TYPE::NONE)

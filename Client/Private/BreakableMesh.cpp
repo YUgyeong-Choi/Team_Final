@@ -46,13 +46,6 @@ void CBreakableMesh::Priority_Update(_float fTimeDelta)
 
 void CBreakableMesh::Update(_float fTimeDelta)
 {
-	if (auto pActor = m_pPartPhysXActorComs[0]->Get_Actor())
-	{
-		PxTransform pose = pActor->getGlobalPose();
-		_vector vPos = XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f);
-		m_pTransformCom->Set_State(STATE::POSITION, vPos);
-	}
-
 	static _bool bTest = false;
 
 	if (m_pGameInstance->Key_Down(DIK_L))
@@ -62,12 +55,22 @@ void CBreakableMesh::Update(_float fTimeDelta)
 		CPhysXDynamicActor* pActorCom = m_pPartPhysXActorComs[0];
 		PxRigidDynamic* pRigid = static_cast<PxRigidDynamic*>(pActorCom->Get_Actor());
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, bTest);
+		pRigid->wakeUp();
 	}
 
 }
 
 void CBreakableMesh::Late_Update(_float fTimeDelta)
 {
+	if (auto pActor = m_pPartPhysXActorComs[0]->Get_Actor())
+	{
+		PxTransform pose = pActor->getGlobalPose();
+		PxMat44 mat(pose);
+		_matrix world = XMLoadFloat4x4(reinterpret_cast<const _float4x4*>(&mat));
+
+		m_pTransformCom->Set_WorldMatrix(world);
+	}
+
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
@@ -300,16 +303,16 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 
 		// 5) Kinematic 끄기, 중력 적용, 질량/관성, CCD, wakeUp
 		pActorCom->Set_Kinematic(false);
-		//pRigid->setRigidBodyFlag(PxRigidBodyFlag::eKINEMATIC, false);     // 확실히 Kinematic 끄기
-		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);        // 중력 켜기
-		//PxRigidBodyExt::updateMassAndInertia(*pRigid, 1.f);              // 질량/관성 적용
-		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
-		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
+		PxRigidBodyExt::updateMassAndInertia(*pRigid, 5.f);
+		//pRigid->setMass(10.0f);
+		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);        // 중력 켜기
+		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true);     // CCD 활성화
+		//pRigid->wakeUp();
 
 		// 6) 필터 설정
 		PxFilterData fd{};
-		fd.word0 = WORLDFILTER::FILTER_MAP;
-		fd.word1 = WORLDFILTER::FILTER_MAP;
+		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
+		fd.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_PLAYERBODY;
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
