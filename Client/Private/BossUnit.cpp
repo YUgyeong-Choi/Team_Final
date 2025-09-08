@@ -42,9 +42,9 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 
 void CBossUnit::EnterCutScene()
 {
-	SwitchEmissive(true, 1.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+	SwitchEmissive(true, 0.9f);
 }
 
 void CBossUnit::Reset()

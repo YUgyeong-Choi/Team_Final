@@ -869,11 +869,6 @@ void CFuoco::Register_Events()
 
 	CEliteUnit::Register_Events();
 
-	//m_pAnimator->RegisterEventListener("CameraShake",
-	//	[this]()
-	//	{
-	//		CCamera_Manager::Get_Instance()->Shake_Camera(0.15f, 0.2f);
-	//	});
 	m_pAnimator->RegisterEventListener("IsFront",
 		[this]()
 		{
@@ -917,22 +912,6 @@ void CFuoco::Register_Events()
 				ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 
 		});
-
-	//m_pAnimator->RegisterEventListener("ResetAnim", [this]()
-	//	{
-	//		m_pAnimator->GetCurrentAnim()->ResetTrack();
-	//	});
-
-	//m_pAnimator->RegisterEventListener("SlowAnimSpeed", [this]() {
-	//	m_pAnimator->SetPlayRate(0.4f);
-	//	});
-	//m_pAnimator->RegisterEventListener("ResetAnimSpeed", [this]() {
-	//	m_pAnimator->SetPlayRate(1.f);
-	//	});
-
-	//m_pAnimator->RegisterEventListener("FastAnimSpeed", [this]() {
-	//	m_pAnimator->SetPlayRate(1.3f);
-	//	});
 
 
 	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
