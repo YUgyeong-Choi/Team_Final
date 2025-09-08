@@ -976,7 +976,7 @@
         "Collision": true,
         "ModelName": "SM_Station_FenceB_06",
         "NoInstancing": false,
-        "ObjectCount": 24,
+        "ObjectCount": 23,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_FenceB_06.bin"
     },
     {
@@ -1095,7 +1095,7 @@
         "Collision": true,
         "ModelName": "SM_Station_Light_01",
         "NoInstancing": false,
-        "ObjectCount": 18,
+        "ObjectCount": 17,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Light_01.bin"
     },
     {

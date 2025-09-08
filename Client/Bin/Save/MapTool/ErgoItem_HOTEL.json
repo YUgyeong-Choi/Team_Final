@@ -1,5 +1,6 @@
 [
     {
+        "Tag": 4,
         "WorldMatrix": [
             [
                 1.0,
@@ -28,6 +29,7 @@
         ]
     },
     {
+        "Tag": 4,
         "WorldMatrix": [
             [
                 1.0,

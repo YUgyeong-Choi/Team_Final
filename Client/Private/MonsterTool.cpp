@@ -586,7 +586,7 @@ void CMonsterTool::Detail_SpawnType()
 	if (m_pFocusObject)
 	{
 		//스폰 타입 콤보 박스
-		if (ImGui::BeginCombo("##SpawnType", m_SpawnType[ENUM_CLASS(m_pFocusObject->m_eSpawnType)].c_str()))
+		if (ImGui::BeginCombo("##Spawn Type", m_SpawnType[ENUM_CLASS(m_pFocusObject->m_eSpawnType)].c_str()))
 		{
 			for (_int i = 0; i < IM_ARRAYSIZE(m_SpawnType); i++)
 			{

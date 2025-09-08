@@ -75,6 +75,7 @@ private:
 #pragma region 스폰 타입
 	const string m_SpawnType[static_cast<_int>(SPAWN_TYPE::END)] = {
 	"IDLE",
+	"PATROL"
 	"STAND",
 	"WALK",
 	};

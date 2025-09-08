@@ -957,10 +957,10 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	if (FAILED(Ready_Monster("TEST")))
 		return E_FAIL;
 
-#ifdef TEST_FIRE_EATERMAP
+#ifdef TEST_FIRE_EATER_MAP
 	if (FAILED(Ready_Monster("FIRE_EATER")))
 		return E_FAIL;
-#endif // TEST_FIRE_EATERMAP
+#endif // TEST_FIRE_EATER_MAP
 
 #endif // TESTMAP
 
@@ -1164,10 +1164,10 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable()
 	if (FAILED(Ready_Breakable("TEST")))
 		return E_FAIL;
 
-#ifdef TEST_FIRE_EATERMAP
+#ifdef TEST_FIRE_EATER_MAP
 	if (FAILED(Ready_Breakable("FIRE_EATER")))
 		return E_FAIL;
-#endif // TEST_FIRE_EATERMAP
+#endif // TEST_FIRE_EATER_MAP
 
 #endif // TESTMAP
 
