@@ -61,8 +61,6 @@ namespace Client
 
 	enum class TEXTALIGN{ LEFT, CENTER, RIGHT, END };
 	
-	enum class UI_TYPE {STATIC, DYNAMIC, TEXT , END};
-	
 	enum class SPAWN_TYPE {IDLE, PATROL, STAND, SIT, END};
 
 	

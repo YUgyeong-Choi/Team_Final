@@ -1,4 +1,6 @@
 #include "Panel_Player_RU.h"
+#include "GameInstance.h"
+#include "Observer_Player_Status.h"
 
 CPanel_Player_RU::CPanel_Player_RU(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -24,6 +26,35 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 		return E_FAIL;
 
 	// 콜백 등록
+	// 에르고만 가져오면 될듯?
+
+	if (nullptr == m_pGameInstance->Find_Observer(TEXT("Player_Status")))
+	{
+
+		m_pGameInstance->Add_Observer(TEXT("Player_Status"), new CObserver_Player_Status);
+
+	}
+
+	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
+		if (L"CurrentErgo" == eventType)
+		{
+
+			m_fErgo = *static_cast<_float*>(data);
+
+		}
+		
+		else if (L"LevelUp" == eventType)
+		{
+
+			m_fMaxErgo = *static_cast<_float*>(data);
+
+		}
+
+		
+
+		});
+
+
 
 	return S_OK;
 }

@@ -2437,6 +2437,26 @@ void CPlayer::Apply_Stat()
 
 }
 
+void CPlayer::Add_Ergo(_float fErgo)
+{
+	m_fErgo += fErgo;
+	
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
+void CPlayer::Compute_MaxErgo(_int iLevel)
+{
+	if (iLevel == 0)
+	{
+		m_fMaxErgo = 100;
+		return;
+	}
+
+
+	m_fMaxErgo = powf(1.2f, _float(iLevel)) * 100.f;
+	
+}
+
 
 
 HRESULT CPlayer::Ready_Weapon()

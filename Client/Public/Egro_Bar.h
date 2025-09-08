@@ -31,6 +31,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	void Set_Ratio(_float fRatio) { m_fRatio = fRatio; }
+
 private:
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Component(const wstring& strTextureTag);
@@ -41,8 +43,7 @@ private:
 	CTexture* m_pGradationCom = { nullptr };
 
 private:
-	_int m_iErgo = {};
-	_int m_iMaxErgo = {};
+
 
 	_float m_fRatio = {0.33f};
 

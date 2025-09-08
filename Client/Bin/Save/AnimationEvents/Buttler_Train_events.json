@@ -831,6 +831,12 @@
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "LookAt",
+                    "Time": 0.10000000149011612
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 70.0
