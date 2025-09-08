@@ -11,20 +11,29 @@ class CFestivalLeader final : public CBossUnit
 	{
 		CBone* pBone = nullptr;
 		CBone* pParent = nullptr;
+		_int  parentIdx = -1;
+		_int  childIdx = -1;
 		// 레스트 로컬 기준들
 		_vector restLocalPos;     // 로컬 위치
 		_vector restDirLocal;     // 로컬 방향
 		_vector restUpLocal;      // 로컬 업 벡터
 		_vector restRotQ;         // child 로컬의 레스트 회전(quat)
-		_float    length{};         // 부모랑의 길이
+		_float  length{};         // 부모랑의 길이
 		// 부모 로컬에서 끝점 위치를 적분
 		_vector curTipLocal;
+		_vector prevTipLocal;
 		// 부모의 직전 로컬 회전
-		_matrix parentPrevRotC;   // 3x3 회전만 사용
+		_matrix parentPrevRotC = XMMatrixIdentity();
 		// 파라미터 (강성, 최대 각도, 중력)
+		_int   depth = 0;
+		_int   chainLen = 0;
+		_float follow = 0.7f;
 		_float stiffness = 0.015f;
 		_float maxDeg = 160.f;
-		_float gravity = 40.f;
+		_float gravity = 20.f; //과하게 주기
+		_float gScale = 1.0f;     
+		_float downBias = 0.0f;
+		_float damping = 0.1f;
 	};
 
 	// 주요 상태들의 NodeID
@@ -161,7 +170,7 @@ private:
 
 	void InitializeSpringBones();
 	void Update_HairSpring();
-
+	void Build_SpringBoneHierarchy();
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
@@ -211,6 +220,11 @@ private:
 	CBone* m_pLeftHandBone{ nullptr };
 	CBone* m_pRightHandBone{ nullptr };
 	vector<SpringBone> m_SpringBones;
+	vector<_int>           m_SBRoots;        // 루트 인덱스들
+	vector<vector<_int>>   m_SBChildren;     // 인접 리스트
+	vector<_int>           m_SBParentIdx;    // 각 노드의 부모 스프링본 인덱스
+	vector<vector<_int>>   m_SBLayers;       // depth별 노드 리스트(순회용)
+
 	class CWeapon_Monster* m_pHammer{ nullptr };
 	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
 	_int m_iOriginBoneIndex = -1;
