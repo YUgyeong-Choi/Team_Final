@@ -552,6 +552,8 @@ void CStargazer::Button_Interaction()
 				pButton->Active_Update(false);
 
 		m_iSelectButtonIndex = -1;
+
+		m_bUseScript = false;
 	}
 	else if ("LevelUp" == m_ButtonEvents[m_iSelectButtonIndex])
 	{
