@@ -465,7 +465,7 @@ void CButtler_Range::Register_Events()
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
+		_vector vDir = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
 
 		desc.bUseDistTrigger = false;
 		desc.bUseTimeTrigger = false;
