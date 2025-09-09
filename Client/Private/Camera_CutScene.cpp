@@ -3,7 +3,9 @@
 #include "Client_Calculation.h"
 #include "BossUnit.h"
 #include "Camera_Manager.h"
-
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+#include "Player.h"
 
 #pragma region help
 // ===== Speed-curve helpers =====
@@ -853,6 +855,12 @@ void CCamera_CutScene::Event()
 	case Client::CUTSCENE_TYPE::WAKEUP:
 		break;
 	case Client::CUTSCENE_TYPE::TUTORIALDOOR:
+	{
+		if (m_iCurrentFrame == 20)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+		}
+	}
 		break;
 	case Client::CUTSCENE_TYPE::OUTDOOOR:
 		break;
