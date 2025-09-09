@@ -298,6 +298,8 @@ void CButtler_Range::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
+		static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 

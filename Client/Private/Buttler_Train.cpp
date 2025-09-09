@@ -336,6 +336,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 
+		static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
 		m_isDetect = true;
 
 		if (m_fHp <= 0 && !m_isFatal)

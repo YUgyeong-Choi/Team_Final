@@ -2915,6 +2915,15 @@ void CPlayer::Callback_Mana()
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
 
+void CPlayer::Add_Mana(_float fMana)
+{
+	m_fMana += fMana;
+	if (m_fMana > m_fMaxMana)
+		m_fMana = m_fMaxMana;
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
+}
+
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 {
 	m_pInterectionStuff = pObj;
