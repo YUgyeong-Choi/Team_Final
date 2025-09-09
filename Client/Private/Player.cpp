@@ -146,7 +146,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 #ifdef _DEBUG
 	Add_Ergo(10000.f);
 #endif
-
+	Add_Ergo(10000.f);
 	return S_OK;
 }
 
