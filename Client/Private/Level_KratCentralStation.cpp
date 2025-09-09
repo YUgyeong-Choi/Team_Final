@@ -234,8 +234,8 @@ HRESULT CLevel_KratCentralStation::Reset()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	if (FAILED(Ready_Dummy()))
-		return E_FAIL;
+	//if (FAILED(Ready_Dummy()))
+	//	return E_FAIL;
 	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
@@ -947,6 +947,21 @@ HRESULT CLevel_KratCentralStation::Ready_Monster()
 	if (FAILED(Ready_Monster("TEST")))
 		return E_FAIL;
 
+#ifdef TEST_STATION_MAP
+	if (FAILED(Ready_Monster("STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Ready_Monster("HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Ready_Monster("OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
 #ifdef TEST_FIRE_EATER_MAP
 	if (FAILED(Ready_Monster("FIRE_EATER")))
 		return E_FAIL;
@@ -1010,6 +1025,26 @@ HRESULT CLevel_KratCentralStation::Ready_Stargazer()
 #ifdef TESTMAP
 	if (FAILED(Ready_Stargazer("TEST")))
 		return E_FAIL;
+
+#ifdef TEST_STATION_MAP
+	if (FAILED(Ready_Stargazer("STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Ready_Stargazer("HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Ready_Stargazer("OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(Ready_Stargazer("FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
 
 #endif // TESTMAP
 
@@ -1079,6 +1114,28 @@ HRESULT CLevel_KratCentralStation::Ready_ErgoItem()
 #ifdef TESTMAP
 	if (FAILED(Ready_ErgoItem("TEST")))
 		return E_FAIL;
+
+#ifdef TEST_STATION_MAP
+	if (FAILED(Ready_ErgoItem("STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Ready_ErgoItem("HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Ready_ErgoItem("OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(Ready_ErgoItem("FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
+
+
 #endif // TESTMAP
 
 #ifndef TESTMAP
@@ -1154,6 +1211,21 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable()
 	if (FAILED(Ready_Breakable("TEST")))
 		return E_FAIL;
 
+#ifdef TEST_STATION_MAP
+	if (FAILED(Ready_Breakable("STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Ready_Breakable("HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Ready_Breakable("OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
 #ifdef TEST_FIRE_EATER_MAP
 	if (FAILED(Ready_Breakable("FIRE_EATER")))
 		return E_FAIL;
@@ -1213,7 +1285,7 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 		Desc.PartModelNames.push_back(TEXT("Part1"));
 		Desc.PartModelNames.push_back(TEXT("Part1"));
 		Desc.WorldMatrix = WorldMatrix;
-		Desc.wsNavName = TEXT("FIRE_EATER");
+		Desc.wsNavName = StringToWString(Map);
 		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
 			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
 			return E_FAIL;
