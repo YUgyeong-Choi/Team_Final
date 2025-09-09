@@ -28,7 +28,7 @@
             "Duration": 32,
             "EffectType": 1,
             "EmissiveIntensity": 3.5999999046325684,
-            "EndTrack": 33,
+            "EndTrack": 34,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
@@ -115,7 +115,7 @@
                 0.0
             ],
             "Spin": false,
-            "StartTrack": 1,
+            "StartTrack": 2,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
@@ -1053,81 +1053,6 @@
             "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
-        },
-        {
-            "Animation": true,
-            "Billboard": true,
-            "CenterColor": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "DistortionStrength": 10.0,
-            "Duration": 10,
-            "EffectType": 0,
-            "EmissiveIntensity": 0.0,
-            "EndTrack": 20,
-            "FlipUV": false,
-            "KeyFrames": [
-                {
-                    "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Intensity": 1.0,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            ],
-            "LifeTime": 0.0,
-            "Loop": true,
-            "Name": "Sprite",
-            "NumKeyFrames": 1,
-            "RenderGroup": 0,
-            "ShaderPass": 3,
-            "StartTrack": 0,
-            "TextureTags": [
-                "",
-                "",
-                "",
-                ""
-            ],
-            "TextureUsage": [
-                true,
-                false,
-                false,
-                false
-            ],
-            "Threshold": 0.0,
-            "TickPerSecond": 60.0,
-            "TileTickPerSec": 60.0,
-            "TileX": 8,
-            "TileY": 8
         }
     ],
     "Loop": false,

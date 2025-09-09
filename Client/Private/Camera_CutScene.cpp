@@ -1,7 +1,7 @@
 #include "Camera_CutScene.h"
 #include "GameInstance.h"
 #include "Client_Calculation.h"
-#include "BossUnit.h"
+#include "Fuoco.h"
 #include "Camera_Manager.h"
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
@@ -880,6 +880,11 @@ void CCamera_CutScene::Event()
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
+		}
+		if (m_iCurrentFrame == 1400)
+		{
+			CFuoco* unit = static_cast<CFuoco*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			unit->Create_CutsceneEffect();
 		}
 		break;
 	}
