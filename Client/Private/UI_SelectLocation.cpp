@@ -88,6 +88,9 @@ void CUI_SelectLocation::Priority_Update(_float fTimeDelta)
 
 void CUI_SelectLocation::Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		return;
+
 	__super::Update(fTimeDelta);
 
 	m_pLocationImg->Update(fTimeDelta);

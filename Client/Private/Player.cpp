@@ -137,8 +137,12 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	InitializeSpringBones();
 
-	if (FAILED(Ready_Stat()))
-		return E_FAIL;
+	//if (FAILED(Ready_Stat()))
+	//	return E_FAIL;
+
+#ifdef _DEBUG
+	Add_Ergo(10000.f);
+#endif
 
 	return S_OK;
 }
@@ -2801,6 +2805,16 @@ void CPlayer::Compute_MaxErgo(_int iLevel)
 
 	m_fMaxErgo = powf(1.2f, _float(iLevel)) * 100.f;
 	
+}
+
+_bool CPlayer::Check_LevelUp(_int iLevel)
+{
+	_float fRequireErgo = powf(1.2f, _float(iLevel)) * 100.f;
+
+	if (m_fErgo >= fRequireErgo)
+		return true;
+
+	return false;
 }
 
 

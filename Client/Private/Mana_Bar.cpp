@@ -59,7 +59,7 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return S_OK;
 
-
+	
 
 	return S_OK;
 }

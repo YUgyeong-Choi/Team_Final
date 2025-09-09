@@ -547,6 +547,9 @@
     <Filter Include="02.GameObjects\17.BreakableMesh">
       <UniqueIdentifier>{a8dc9d78-dfec-4a6e-b3b0-6f4ebac7416f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Levelup">
+      <UniqueIdentifier>{7bf9b3f5-fb99-4899-8ac0-6c24a28a127c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1126,6 +1129,9 @@
     <ClInclude Include="..\public\BreakableMesh.h">
       <Filter>02.GameObjects\17.BreakableMesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Levelup.h">
+      <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1678,6 +1684,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BreakableMesh.cpp">
       <Filter>02.GameObjects\17.BreakableMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Levelup.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
