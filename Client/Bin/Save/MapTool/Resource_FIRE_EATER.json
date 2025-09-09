@@ -171,7 +171,7 @@
         "Collision": false,
         "ModelName": "SM_Factory_Pipe_01_PipePillar_6_f1",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f1.bin"
     },
     {

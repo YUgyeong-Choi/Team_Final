@@ -1212,6 +1212,7 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 		Desc.PartModelNames.push_back(TEXT("Part1"));
 		Desc.PartModelNames.push_back(TEXT("Part1"));
 		Desc.WorldMatrix = WorldMatrix;
+		Desc.wsNavName = TEXT("FIRE_EATER");
 		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
 			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
 			return E_FAIL;

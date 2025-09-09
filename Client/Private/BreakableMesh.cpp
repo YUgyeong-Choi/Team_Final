@@ -2,6 +2,8 @@
 #include "GameInstance.h"
 #include "Client_Calculation.h"
 #include "Player.h"
+#include "Navigation.h"
+#include "Cell.h"
 
 CBreakableMesh::CBreakableMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -48,6 +50,12 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartColliders()))
 		return E_FAIL;
+
+	if (pDesc->wsNavName.empty() == false)
+	{
+		//자신의 aabb 만큼의 네브 인덱스를 가져온다.
+		Store_NavIndices();
+	}
 
 	return S_OK;
 }
@@ -144,6 +152,8 @@ void CBreakableMesh::Reset()
 	m_bBreakTriggered = false;
 	m_bIsBroken = false;
 
+	Set_Active_StoreCells(false);
+
 	//본 모델 설정 초기화
 	PxActor* pActor = m_pPhysXActorCom->Get_Actor();
 	if (!pActor->getScene()) // nullptr이면 씬에 없음
@@ -196,6 +206,9 @@ void CBreakableMesh::Reset()
 
 void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	//푸오코가 퓨리상태일 때
+	//pOther->퓨리일 때 트리거 트루
+
 	if (m_bBreakTriggered == false)
 	{
 		m_bBreakTriggered = true;
@@ -208,6 +221,8 @@ void CBreakableMesh::Break()
 		return;
 
 	m_bIsBroken = true;
+
+	Set_Active_StoreCells(true);
 
 	m_pGameInstance->Get_Scene()->removeActor(*m_pPhysXActorCom->Get_Actor());
 
@@ -331,6 +346,83 @@ void CBreakableMesh::Invisible()
 	for (CPhysXDynamicActor* pActor : m_pPartPhysXActorComs)
 	{
 		m_pGameInstance->Get_Scene()->removeActor(*pActor->Get_Actor());
+	}
+}
+
+bool CBreakableMesh::IsPointInsideXZ(const PxVec3& point, const PxBounds3& bounds)
+{
+	return (point.x >= bounds.minimum.x && point.x <= bounds.maximum.x) &&
+		(point.z >= bounds.minimum.z && point.z <= bounds.maximum.z);
+}
+
+void CBreakableMesh::Store_NavIndices()
+{
+	PxRigidActor* pActor = m_pPhysXActorCom->Get_Actor();
+	if (pActor)
+	{
+		PxShape* pShapes[8];
+		PxU32 shapeCount = pActor->getShapes(pShapes, 8);
+
+		for (PxU32 i = 0; i < shapeCount; ++i)
+		{
+			PxShape* pShape = pShapes[i];
+
+			// 월드 포즈 계산
+			PxTransform localPose = pShape->getLocalPose();
+			PxTransform actorPose = pActor->getGlobalPose();
+			PxTransform worldPose = actorPose.transform(localPose);
+
+			// Shape Geometry
+			const PxGeometry& geom = pShape->getGeometry();
+
+			PxBounds3 bounds;
+			PxGeometryQuery::computeGeomBounds(bounds, geom, worldPose, 0.0f);
+
+			vector<CCell*>& Cells = m_pNaviCom->Get_Cells();
+
+			//셀 검사
+			for (CCell* pCell : Cells)
+			{
+				_bool isIn = true;
+
+				//셀의 세점에 대해서 검사
+				for (_uint i = 0; i < CCell::POINT::POINT_END; ++i)
+				{
+					_vector vPoint = pCell->Get_Point(static_cast<CCell::POINT>(i));
+
+					_float3 Point = {};
+					XMStoreFloat3(&Point, vPoint);
+
+					isIn = IsPointInsideXZ(PxVec3(Point.x, 0, Point.z), bounds);
+
+					//하나라도 안들어와 있으면 그만
+					if (isIn == false)
+						break;
+				}
+				
+				//세점이 모두 들어왔다면 인덱스 저장
+				if (isIn)
+				{
+					m_NavIndices.push_back(pCell->Get_Index());
+				}
+
+			}
+		}
+	}
+
+}
+
+void CBreakableMesh::Set_Active_StoreCells(_bool bActive)
+{
+	for (_int iIndex : m_NavIndices)
+	{
+		CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
+
+		if (pCell)
+		{
+			pCell->Set_Active(bActive);
+		}
+
 	}
 }
 
@@ -576,6 +668,16 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 #pragma endregion
 	}
 
+	if (pDesc->wsNavName.empty() == false)
+	{
+		//영향을 줄 네비게이션
+		wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
+		if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
+			return E_FAIL;
+
+		
+	}
 
 	return S_OK;
 }
@@ -621,4 +723,6 @@ void CBreakableMesh::Free()
 	Safe_Release(m_pShaderCom);
 
 	Safe_Release(m_pPlayer);
+
+	Safe_Release(m_pNaviCom);
 }
