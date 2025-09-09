@@ -32,31 +32,6 @@ CNavigation::CNavigation(const CNavigation& Prototype)
 
 HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 {
-	/*_ulong	dwByte = {};
-	HANDLE	hFile = CreateFile(pNavigationDataFile, GENERIC_READ, 0, nullptr,
-		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-
-	if (0 == hFile)
-		return E_FAIL;
-
-	while (true)
-	{
-		_float3		vPoints[3] = {};
-
-		ReadFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
-		if (nullptr == pCell)
-			return E_FAIL;
-
-		m_Cells.push_back(pCell);
-	}
-
-	CloseHandle(hFile);*/
-
 	ifstream ifs(pNavigationDataFile);
 	if (!ifs.is_open())
 		return E_FAIL;
@@ -94,6 +69,11 @@ HRESULT CNavigation::Initialize_Prototype(const _tchar* pNavigationDataFile)
 		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoints, static_cast<_int>(m_Cells.size()));
 		if (nullptr == pCell)
 			return E_FAIL;
+
+		if (cellJson.contains("Active"))
+		{
+			pCell->Set_Active(cellJson["Active"]);
+		}
 
 		m_Cells.push_back(pCell);
 	}
@@ -138,29 +118,27 @@ _bool CNavigation::isMove(_fvector vWorldPos)
 	if (true == m_Cells[m_iIndex]->isIn(vLocalPos, &iNeighborIndex))
 		return true;
 
-	else
-	{
-		if(-1 == iNeighborIndex)
+	if (-1 == iNeighborIndex)
 		/* 이웃이 없다면 */
+		return false;
+
+	while (true)
+	{
+		//비활성화된 셀이라면 무시
+		if (m_Cells[iNeighborIndex]->Get_Active() == false)
 			return false;
 
-		else
-		{
-			while (true)
-			{
-				if (true == m_Cells[iNeighborIndex]->isIn(vLocalPos, &iNeighborIndex))
-					break;
+		if (true == m_Cells[iNeighborIndex]->isIn(vLocalPos, &iNeighborIndex))
+			break;
 
-				if (-1 == iNeighborIndex)
-					return false;
-			}
+		if (-1 == iNeighborIndex)
+			return false;
+	}
 
-			m_iIndex = iNeighborIndex;
+	m_iIndex = iNeighborIndex;
 
-			/* 이웃이 있다면 */
-			return true;
-		}
-	}	
+	/* 이웃이 있다면 */
+	return true;
 }
 
 _vector CNavigation::SetUp_Height(_fvector vWorldPos)
@@ -343,6 +321,9 @@ HRESULT CNavigation::Save(const _char* Map)
 							  XMVectorGetZ(pCell->Get_Point(static_cast<CCell::POINT>(i))) };
 			CellJson["points"].push_back({ {"x", Point.x}, {"y", Point.y}, {"z", Point.z} });
 		}
+
+		CellJson["Active"] = pCell->Get_Active();
+
 		Json["cells"].push_back(CellJson);
 	}
 
@@ -356,6 +337,21 @@ HRESULT CNavigation::Save(const _char* Map)
 	ofs.close();
 
 	return S_OK;
+}
+
+vector<_int> CNavigation::Get_Inactive_Index()
+{
+	vector<_int> Indexis;
+
+	for (CCell* pCell : m_Cells)
+	{
+		if (pCell->Get_Active() == false)
+		{
+			Indexis.push_back(pCell->Get_Index());
+		}
+	}
+
+	return Indexis;
 }
 
 #ifdef _DEBUG
