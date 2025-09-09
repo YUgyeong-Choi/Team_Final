@@ -72,6 +72,27 @@ public:
 		m_iIndex = iIndex;
 	}
 
+	CCell* Get_Cell() {
+		if (m_iIndex == -1)
+			return nullptr;
+
+		return m_Cells[m_iIndex];
+	}
+
+	CCell* Get_Cell(_int iIndex) {
+
+		if (m_Cells.size() <= iIndex)
+			return nullptr;
+
+		if (iIndex == -1)
+			return nullptr;
+
+		return m_Cells[iIndex];
+	}
+
+	//비활성화된 인덱스들을 가져오는함수
+	vector<_int> Get_Inactive_Index();
+
 #ifdef _DEBUG
 public:
 	virtual HRESULT Render() override;

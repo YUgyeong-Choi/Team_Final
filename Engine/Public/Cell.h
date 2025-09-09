@@ -51,6 +51,18 @@ public:
 	//	return m_pNeighbors;
 	//}
 
+	void Set_Active(_bool bActive) {
+		m_bActive = bActive;
+	}
+
+	_bool Get_Active() {
+		return m_bActive;
+	}
+
+	_bool* Get_Active_Ptr() {
+		return &m_bActive;
+	}
+
 public:
 	HRESULT Initialize(const _float3* pPoints, _int iIndex);
 	_bool isIn(_fvector vLocalPos, _int* pNeighborIndex, _float* pDist = nullptr);
@@ -73,6 +85,10 @@ private:
 	_int			m_iNeighborIndices[LINE_END] = { -1, -1, -1 };
 	//CCell*			m_pNeighbors[LINE_END] = { nullptr, nullptr, nullptr };
 	_int			m_iIndex = {};
+
+	//셀의 활성화 여부
+	_bool			m_bActive = { true };
+
 
 	NavigationEdge m_LastEdge;
 
