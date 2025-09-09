@@ -60,7 +60,7 @@ private:
 		END
 	};
 
-	const string m_Monsters[ENUM_CLASS(Monster::END)] = {
+	const string m_strMonsters[ENUM_CLASS(Monster::END)] = {
 	"Buttler_Basic",
 	"Buttler_Train",
 	"Buttler_Range",
@@ -72,12 +72,14 @@ private:
 
 #pragma endregion
 
+	//enum class SPAWN_TYPE {IDLE, PATROL, STAND, SIT, END};
+
 #pragma region 스폰 타입
-	const string m_SpawnType[static_cast<_int>(SPAWN_TYPE::END)] = {
+	const string m_strSpawnTypes[static_cast<_int>(SPAWN_TYPE::END)] = {
 	"IDLE",
-	"PATROL"
+	"PATROL",
 	"STAND",
-	"WALK",
+	"SIT",
 	};
 
 #pragma endregion

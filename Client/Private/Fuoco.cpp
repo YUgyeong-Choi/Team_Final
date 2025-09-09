@@ -70,7 +70,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 
 	//처음에 비활성화 되어있던 인덱스들을 받아온다.
-	m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
+	//m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
 
 	return S_OK;
 }
@@ -79,19 +79,19 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_L))
-	{
-		//저장해둔 인덱스의 셀들을 활성/비활성화 한다.
-		for (_int iIndex : m_NavInactiveIndecies)
-		{
-			CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
-			if (pCell)
-			{
-				_bool bActive = pCell->Get_Active();
-				pCell->Set_Active(!bActive);
-			}
-		}
-	}
+	//if (m_pGameInstance->Key_Down(DIK_L))
+	//{
+	//	//저장해둔 인덱스의 셀들을 활성/비활성화 한다.
+	//	for (_int iIndex : m_NavInactiveIndecies)
+	//	{
+	//		CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
+	//		if (pCell)
+	//		{
+	//			_bool bActive = pCell->Get_Active();
+	//			pCell->Set_Active(!bActive);
+	//		}
+	//	}
+	//}
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
