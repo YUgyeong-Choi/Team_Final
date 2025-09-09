@@ -179,20 +179,20 @@
             "interpMatrixPosition": 1,
             "keyFrame": 350,
             "worldMatrix": [
-                0.5940122604370117,
+                0.6605101227760315,
+                -2.3283056038714278e-10,
+                0.750826895236969,
                 0.0,
-                0.8044670820236206,
+                -0.015291904099285603,
+                0.9998126029968262,
+                0.013452445156872272,
                 0.0,
-                0.06341200321912766,
-                0.9969172477722168,
-                -0.0468229278922081,
-                0.0,
-                -0.8019909858703613,
-                0.07882664352655411,
-                0.5921839475631714,
+                -0.750695526599884,
+                -0.020367302000522614,
+                0.660394549369812,
                 0.0,
                 0.7717724442481995,
-                1.8517544269561768,
+                1.850000023841858,
                 -237.71755981445313,
                 1.0
             ]
@@ -1003,960 +1003,960 @@
             ]
         }
     ],
-  "vecRotData": [
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 0,
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 50,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 60,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 65,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 70,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 75,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 80,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 85,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 90,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 95,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 100,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 105,
-      "rotation": [
-        -10.0,
-        0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 110,
-      "rotation": [
-        -10.0,
-        -0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 115,
-      "rotation": [
-        -10.0,
-        0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 120,
-      "rotation": [
-        -10.0,
-        -0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 125,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 140,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 145,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 150,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 155,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 160,
-      "rotation": [
-        -10.0,
-        0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 165,
-      "rotation": [
-        -10.0,
-        -0.3,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 170,
-      "rotation": [
-        -10.0,
-        0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 175,
-      "rotation": [
-        -10.0,
-        -0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 180,
-      "rotation": [
-        -10.0,
-        0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 185,
-      "rotation": [
-        -10.0,
-        -0.2,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 190,
-      "rotation": [
-        -10.0,
-        0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 195,
-      "rotation": [
-        -10.0,
-        -0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 200,
-      "rotation": [
-        -10.0,
-        0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 205,
-      "rotation": [
-        -10.0,
-        -0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 210,
-      "rotation": [
-        -10.0,
-        0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 215,
-      "rotation": [
-        -10.0,
-        -0.1,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 220,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 250,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 256,
-      "rotation": [
-        -10.0,
-        -3.0,
-        5.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 262,
-      "rotation": [
-        -10.0,
-        3.0,
-        -5.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 268,
-      "rotation": [
-        -10.0,
-        -1.0,
-        3.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 274,
-      "rotation": [
-        -10.0,
-        1.0,
-        -3.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 280,
-      "rotation": [
-        -10.0,
-        0.0,
-        1.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 286,
-      "rotation": [
-        -10.0,
-        0.0,
-        -1.0
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 292,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.5
-      ]
-    },
-    {
-      "curveType": 1,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 298,
-      "rotation": [
-        -10.0,
-        0.0,
-        -0.5
-      ]
-    },
-    {
-      "curveType": 2,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 350,
-      "rotation": [
-        -10.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 0,
-      "keyFrame": 749,
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 0,
-      "keyFrame": 1400,
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1405,
-      "rotation": [
-        0.0,
-        8.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1410,
-      "rotation": [
-        0.0,
-        -8.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1415,
-      "rotation": [
-        0.0,
-        5.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1420,
-      "rotation": [
-        0.0,
-        -5.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1425,
-      "rotation": [
-        0.0,
-        3.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1430,
-      "rotation": [
-        0.0,
-        -3.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1433,
-      "rotation": [
-        0.0,
-        1.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1436,
-      "rotation": [
-        0.0,
-        -1.0,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1439,
-      "rotation": [
-        0.0,
-        0.5,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 1,
-      "keyFrame": 1442,
-      "rotation": [
-        0.0,
-        -0.5,
-        0.0
-      ]
-    },
-    {
-      "curveType": 0,
-      "curveY": [
-        0.0,
-        0.25,
-        0.5,
-        0.75,
-        1.0
-      ],
-      "interpRotation": 0,
-      "keyFrame": 1445,
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    }
-  ],
+    "vecRotData": [
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 0,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 50,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 60,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 65,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 70,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 75,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 80,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 85,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 90,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 95,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 100,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 105,
+            "rotation": [
+                -10.0,
+                0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 110,
+            "rotation": [
+                -10.0,
+                -0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 115,
+            "rotation": [
+                -10.0,
+                0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 120,
+            "rotation": [
+                -10.0,
+                -0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 125,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 140,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 145,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 150,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 155,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 160,
+            "rotation": [
+                -10.0,
+                0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 165,
+            "rotation": [
+                -10.0,
+                -0.30000001192092896,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 170,
+            "rotation": [
+                -10.0,
+                0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 175,
+            "rotation": [
+                -10.0,
+                -0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 180,
+            "rotation": [
+                -10.0,
+                0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 185,
+            "rotation": [
+                -10.0,
+                -0.20000000298023224,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 190,
+            "rotation": [
+                -10.0,
+                0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 195,
+            "rotation": [
+                -10.0,
+                -0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 200,
+            "rotation": [
+                -10.0,
+                0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 205,
+            "rotation": [
+                -10.0,
+                -0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 210,
+            "rotation": [
+                -10.0,
+                0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 215,
+            "rotation": [
+                -10.0,
+                -0.10000000149011612,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 220,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 250,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 256,
+            "rotation": [
+                -10.0,
+                -3.0,
+                5.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 262,
+            "rotation": [
+                -10.0,
+                3.0,
+                -5.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 268,
+            "rotation": [
+                -10.0,
+                -1.0,
+                3.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 274,
+            "rotation": [
+                -10.0,
+                1.0,
+                -3.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 280,
+            "rotation": [
+                -10.0,
+                0.0,
+                1.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 286,
+            "rotation": [
+                -10.0,
+                0.0,
+                -1.0
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 292,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.5
+            ]
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 298,
+            "rotation": [
+                -10.0,
+                0.0,
+                -0.5
+            ]
+        },
+        {
+            "curveType": 2,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 350,
+            "rotation": [
+                -10.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 0,
+            "keyFrame": 749,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 0,
+            "keyFrame": 1400,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1405,
+            "rotation": [
+                0.0,
+                8.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1410,
+            "rotation": [
+                0.0,
+                -8.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1415,
+            "rotation": [
+                0.0,
+                5.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1420,
+            "rotation": [
+                0.0,
+                -5.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1425,
+            "rotation": [
+                0.0,
+                3.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1430,
+            "rotation": [
+                0.0,
+                -3.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1433,
+            "rotation": [
+                0.0,
+                1.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1436,
+            "rotation": [
+                0.0,
+                -1.0,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1439,
+            "rotation": [
+                0.0,
+                0.5,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 1,
+            "keyFrame": 1442,
+            "rotation": [
+                0.0,
+                -0.5,
+                0.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpRotation": 0,
+            "keyFrame": 1445,
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
     "vecTargetData": [
         {
             "curveType": 2,
