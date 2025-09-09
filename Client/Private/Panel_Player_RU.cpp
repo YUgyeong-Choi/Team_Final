@@ -49,7 +49,13 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 			
 			m_PartObjects[0]->Set_Color({ 1.f,1.f,1.f,1.f });
 
-			_wstring strAdd = L"+" + to_wstring(static_cast<_int>((m_fErgo - m_fPreErgo)));
+			_int iDelat = static_cast<_int>((m_fErgo - m_fPreErgo));
+			_wstring strAdd = {};
+
+			if(iDelat> 0)
+				strAdd = L"+" + to_wstring(static_cast<_int>((iDelat)));
+			else
+				strAdd = to_wstring(static_cast<_int>((iDelat)));
 
 			static_cast<CUI_Text*>(m_PartObjects[0])->Set_Caption(strAdd);
 			static_cast<CDynamic_Text_UI*>(m_PartObjects[1])->Set_Caption(to_wstring(static_cast<_int>(m_fErgo)));

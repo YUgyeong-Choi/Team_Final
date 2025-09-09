@@ -59,6 +59,8 @@ public:
 	// 특정 행동을 하면, 버튼이랑 스크립트를 지운다.
 	void Delete_Script();
 
+	void End_Script();
+
 	void Teleport_Stargazer(STARGAZER_TAG eTag);
 
 private:
@@ -75,6 +77,8 @@ private:
 	void Button_Interaction();
 
 	HRESULT Ready_Script();
+
+
 
 private:
 
@@ -118,6 +122,7 @@ private:    /* [ 컴포넌트 ] */
 	_bool m_bUseTeleport = {};
 
 	_bool m_bUseOtherUI = {};
+	_bool m_bCheckPopup = {};
 
 	//vector<CUIObject*> m_
 	

@@ -272,6 +272,7 @@ public:/*[스탯 관련]*/
 	STAT_DESC& Get_Stat() { return m_eStat; }
 
 	_float Get_Ergo() { return m_fErgo; }
+	void Set_Ergo(_float fErgo);
 	_int Get_Player_Level() { return m_iLevel; }
 
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
@@ -281,6 +282,7 @@ public:/*[스탯 관련]*/
 	void Add_Ergo(_float fErgo);
 	// 레벨 업 하면 레벨에 맞춰서 값이 증가하게
 	void Compute_MaxErgo(_int iLevel);
+
 
 	_bool Check_LevelUp(_int iLevel);
 
