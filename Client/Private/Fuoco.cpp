@@ -69,6 +69,13 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 
 	m_fMaxRootMotionSpeed = 18.f;
+
+
+	// 플레이어 카메라 레이충돌 무시하기 위한
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
+
 	return S_OK;
 }
 
