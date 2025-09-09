@@ -448,7 +448,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (CheckConditionFlameField())
 	{
-		m_fAttackCooldown = 10.f;
+		m_fAttackCooldown = m_fAttckDleay;
 		return;
 	}
 
@@ -1185,10 +1185,11 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	if (m_eCurrentState == EEliteState::FATAL)
 		return;
 	m_pAnimator->SetTrigger("Paralyzation");
+	m_pAnimator->SetPlayRate(1.f);
 	//m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
-		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
+		SlamCombo,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
 		SlamAtk,StrikeFury,P2_FireOil,P2_FireBall,P2_FireFlame,
 		P2_FireBall_B
 	};
@@ -1922,9 +1923,11 @@ _bool CFuoco::CheckConditionFlameField()
 			m_pAnimator->SetInt("SkillType", P2_FlameField);
 			m_bUsedFlameFiledOnLowHp = true;
 			m_pAnimator->SetTrigger("Attack");
+			m_pAnimator->SetPlayRate(1.f);
 		}
 		else
 		{
+			m_pAnimator->SetPlayRate(1.f);
 			m_bWaitPhase2Rotate = true;
 			//m_pAnimator->SetInt("SkillType", StrikeFury);
 			//m_fAttackCooldown = m_fAttckDleay;

@@ -805,6 +805,8 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             m_fGroggyGauge += m_fGroggyScale_Charge;
             if (m_bGroggyActive)
             {
+                if (m_eCurrentState == EEliteState::FATAL || m_eCurrentState == EEliteState::PARALYZATION)
+                    break;
                 SwitchEmissive(false, 1.f);
                 m_pAnimator->SetTrigger("Groggy");
 				m_eCurrentState = EEliteState::GROGGY;
