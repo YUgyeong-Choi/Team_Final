@@ -2750,13 +2750,13 @@ void CPlayer::Set_Ergo(_float fErgo)
 void CPlayer::Apply_Stat()
 {
 
-	if (m_eStat.iVitality > 0)
+	if (m_eStat.iVitality > 1)
 	{
 		m_fMaxHp = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
 		m_fHp = m_fMaxHp;
 	}
 
-	if (m_eStat.iStamina > 0)
+	if (m_eStat.iStamina > 1)
 	{
 		m_fMaxStamina = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
 		m_fStamina = m_fMaxStamina;
@@ -2768,11 +2768,11 @@ void CPlayer::Apply_Stat()
 	{
 		_float fBaseDamage = m_pWeapon->GetBaseDamage();
 		
-		if (m_eStat.iMotivity > 0)
+		if (m_eStat.iMotivity > 1)
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) );
 		}
-		if (m_eStat.iTechnique > 0)
+		if (m_eStat.iTechnique > 1)
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) );
 		}
@@ -2786,15 +2786,15 @@ void CPlayer::Apply_Stat()
 	{
 		_float fBaseDamage = m_pLegionArm->GetBaseDamage();
 
-		if (m_eStat.iMotivity > 0)
+		if (m_eStat.iMotivity > 1)
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f);
 		}
-		if (m_eStat.iTechnique > 0)
+		if (m_eStat.iTechnique > 1)
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
 		}
-		if (m_eStat.iAdvance > 0)
+		if (m_eStat.iAdvance > 1)
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
 		}
