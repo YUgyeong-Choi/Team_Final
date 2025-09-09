@@ -171,39 +171,31 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
 		{
-			// 누적
-			m_Accumulate += static_cast<double>(fTimeDelta);
+			m_fElapsedTime += fTimeDelta;
 
-			// 스텝(프레임) 길이: 1 / 재생 프레임속도
-			const double step = 1.0 / static_cast<double>(m_fFrameSpeed);
+			// 시간 누적 → 프레임 단위 변환
+			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
 
-			// (선택) 한 틱에서 과도한 catch-up 방지
-			const int kMaxSubsteps = 8;
-			int substeps = 0;
-
-			// 재생 종료 경계
-			const _int endBound = (m_iEndFrame >= 0) ? m_iEndFrame : m_CameraDatas.iEndFrame;
-
-			// 고정 스텝으로 1프레임씩 전진
-			while (m_Accumulate >= step && substeps++ < kMaxSubsteps)
+			if (iNewFrame != m_iCurrentFrame)
 			{
-				m_Accumulate -= step;
-				++m_iCurrentFrame;                 // ★ 한 번에 정확히 1씩 증가
+				m_iCurrentFrame = iNewFrame;
 
-				// 보간/이벤트 처리 (프레임 누락 없음)
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
+				//printf("%d CurrentFrame\n", m_iCurrentFrame);
+
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
 				Interp_OffsetRot(m_iCurrentFrame);
 				Interp_OffsetPos(m_iCurrentFrame);
 				Interp_Target(m_iCurrentFrame);
+
 				Event();
 
-				// 종료 조건 체크 (endBound 도달 시 바로 멈춤)
-				if (m_iCurrentFrame >= endBound)
+				// 종료 조건
+				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
-					// 필요하면 m_bReadyCutScene=false; 등으로 재생 비활성화
-					break;
 				}
 			}
 		}
