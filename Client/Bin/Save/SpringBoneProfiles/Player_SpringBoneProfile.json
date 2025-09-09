@@ -12,9 +12,14 @@
       "stiffness": [ 0.01, 0.007 ]
     },
     "Cloth": {
-      "stiffness": [ 0.12, 0.22 ], 
-      "gScale": [ 0.05, 0.1 ], 
-      "downBias": [ 0.05, 0.1 ] 
+      "stiffness": [ 0.12, 0.22 ],
+      "gScale": [ 0.05, 0.1 ],
+      "downBias": [ 0.05, 0.1 ]
+    },
+    "Lamp": {
+      "stiffness": [ 0.25, 0.3 ],
+      "gScale": [ 0.05, 0.1 ],
+      "downBias": [ 0.05, 0.1 ]
     },
     "Other": {
       "downBias": [ 0.26, 0.44 ],

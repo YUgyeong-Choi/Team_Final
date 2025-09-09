@@ -66,16 +66,7 @@ HRESULT CFuoco::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-	// 체력 일단 각 객체에 
-
-
 	m_fMaxRootMotionSpeed = 18.f;
-
-
-	// 플레이어 카메라 레이충돌 무시하기 위한
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 
 
 	//처음에 비활성화 되어있던 인덱스들을 받아온다.
@@ -352,6 +343,10 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForFoot->Get_Actor());
 	}
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 
 	return S_OK;
 }
