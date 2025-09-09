@@ -128,14 +128,16 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 
 _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents,vector<_float4x4>* outLocalMatrices)
 {
+	constexpr _float fTargetTimeDelta = 1.f / 60.f;
+	_float fTimeScale = fTimeDelta / fTargetTimeDelta;
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
 	m_fPrevTrackPosition = prevPos;
 
 	if (m_bReverse)
-		m_fCurrentTrackPosition -= m_fTickPerSecond * fTimeDelta; // 역 재생
+		m_fCurrentTrackPosition -= m_fTickPerSecond * fTargetTimeDelta * fTimeScale; // 역 재생
 	else
-		m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+		m_fCurrentTrackPosition += m_fTickPerSecond * fTargetTimeDelta * fTimeScale;
 	_bool bIsReverse = (m_fPrevTrackPosition > m_fCurrentTrackPosition); // 이전이 더 크다면 지금 역 재생중
 
 	if (m_bReverse)
