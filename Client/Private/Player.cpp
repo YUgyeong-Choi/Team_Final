@@ -136,7 +136,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	CSpringBoneSys::SpringInitParams springParams;
 	springParams.restDirBiasEnable = false;
-	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth"}, springParams);
+	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Lamp"}, springParams);
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
@@ -1726,6 +1726,23 @@ void CPlayer::Register_Events()
 			if (m_pWeapon)
 			{
 				m_pWeapon->Set_WeaponTrail_Active(true);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("OnSwordSkillTrail", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("OffSwordSkillTrail", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(false, TRAIL_SKILL_BLUE);
 			}
 		});
 

@@ -10,15 +10,13 @@ HRESULT CSpringBoneSys::InitializeSpringBones(CModel* pModel, const vector<strin
 		return E_FAIL;
 
 	m_pModelCom = pModel;
-	m_SpringBoneNames = vecSpringBoneNames;
-	m_InitParams = initParam;
 	const auto& pBones = m_pModelCom->Get_Bones();
-
+	m_SpringBoneNames = move(vecSpringBoneNames);
 	for (const auto& child : pBones)
 	{
-		string boneName = child->Get_Name();
+		string boneName = string(child->Get_Name());
 
-		if (IsCorrectBoneName(boneName, m_SpringBoneNames) == false)
+		if (IsCorrectBoneName(child, m_SpringBoneNames) == false)
 			continue;
 
 		_int iParentIdx = child->Get_ParentBoneIndex();
@@ -83,6 +81,9 @@ HRESULT CSpringBoneSys::InitializeSpringBones(CModel* pModel, const vector<strin
 		vSpringBone.curTipLocal = restBiasDir * vSpringBone.length;
 		vSpringBone.prevTipLocal = vSpringBone.curTipLocal;
 
+		_matrix parentMat = XMLoadFloat4x4(pParent->Get_CombinedTransformationMatrix());
+		vSpringBone.prevParentPos = parentMat.r[3];  // 초기 부모 위치 저장
+
 		m_SpringBones.push_back(vSpringBone);
 	}
 	Build_SpringBoneHierarchy();
@@ -138,7 +139,7 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 
 			_vector oldTipLocal = vSpringBone.curTipLocal;
 
-			// Verlet 적분 (관성) 
+			// Verlet 적분 (관성) 현재 상태 유지하려고 하는 힘
 			_vector velocity = (vSpringBone.curTipLocal - vSpringBone.prevTipLocal) * vParam.damping; // 현재와 이전 위치 차이에 얼마나 감쇠할지를 적용해서 속도를 계산
 			vSpringBone.curTipLocal += velocity;
 			vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft); // 현재 위치에 부모 회전 변화에 따른 관성 적용
@@ -166,7 +167,7 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			_vector dirL = XMVector3Normalize(vSpringBone.curTipLocal);
 			vSpringBone.curTipLocal = dirL * vSpringBone.length;
 
-			//  콘 제한
+			//  콘 제한 (원뿔 각도 제한) 약간 손목이 움직이는 범위를 생각하면 편하다
 			_float fMaxRad = XMConvertToRadians(vParam.maxDeg);
 			_float fAng = acosf(std::clamp(XMVectorGetX(XMVector3Dot(restBiasDir, dirL)), -1.f, 1.f));
 
@@ -318,8 +319,10 @@ void CSpringBoneSys::SetupSpringBoneParameters()
 			auto& sb = m_SpringBones[i];
 			SpringBoneProfile profile = m_Profiles[ReturnPartString(sb.part)];
 
+			// 깊이 기준으로 t를 0~1 사이로
 			_float t = (sb.chainLen > 1) ? static_cast<_float>(sb.depth) / (sb.chainLen - 1) : 0.f;
-			_float t2 = powf(t, profile.fExp);
+			_float t2 = powf(t, profile.fExp); // 제곱하면 곡선 형태로 바뀜
+
 			auto stiffnessRange = profile.stiffnessRange;
 			auto gScaleRange = profile.gScaleRange;
 			auto downBiasRange = profile.downBiasRange;
@@ -349,12 +352,20 @@ void CSpringBoneSys::SetupSpringBoneParameters()
 	}
 }
 
-_bool CSpringBoneSys::IsCorrectBoneName(const string& boneName, const vector<string>& vecSpringBoneNames)
+_bool CSpringBoneSys::IsCorrectBoneName(CBone* pBone, const vector<string>& vecSpringBoneNames)
 {
+	const char* rawBoneName = pBone->Get_Name();  // 원본 C 문자열
+	string boneName = string(rawBoneName);        // string 변환
 	for (const auto& name : vecSpringBoneNames)
 	{
 		if (boneName.find(name) != string::npos)
+		{
+			//cout << "[CASE-INSENSITIVE MATCH] BoneName: " << boneName
+			//	<< " (matched with keyword: " << name << ")" << std::endl;
+			//if (boneName.find("Lamp") != string::npos)
+			//	cout << "  -> Lamp Pendulum Enabled!" << std::endl;
 			return true;
+		}
 	}
 	return false;
 }
@@ -367,6 +378,8 @@ CSpringBoneSys::SpringBonePart CSpringBoneSys::SetBonePart(const string& boneNam
 		return SpringBonePart::Back;
 	else if (boneName.find("Cloth") != string::npos)
 		return SpringBonePart::Cloth;
+	else if (boneName.find("Lamp") != string::npos)
+		return SpringBonePart::Lamp;
 	else
 		return SpringBonePart::Other;
 }
@@ -433,6 +446,8 @@ string CSpringBoneSys::ReturnPartString(SpringBonePart part)
 		return "Other";
 	case SpringBonePart::Cloth: 
 		return "Cloth";
+	case SpringBonePart::Lamp:
+		return "Lamp";
 	default:
 		return "Other";
 	}

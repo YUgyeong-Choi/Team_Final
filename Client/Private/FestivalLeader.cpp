@@ -104,12 +104,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 2,3번은 바스켓
 
 
-	// 플레이어 카메라 레이충돌 무시하기 위한
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForHammer->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForBasket->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForLeftHand->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForRightHand->Get_Actor());
+
 	//m_pPhysXActorCom->Add_IngoreActors(static_cast<CWeapon_Monster*>(m_pHammer)->Get_PhysXActor()->Get_Actor());
 	
 	return S_OK;
@@ -121,7 +116,10 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
-
+	if (KEY_DOWN(DIK_B))
+	{
+		EnterCutScene();
+	}
 #ifdef _DEBUG
 
 	if (KEY_DOWN(DIK_X))
@@ -432,6 +430,11 @@ HRESULT CFestivalLeader::Ready_Actor()
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForRightHand->Get_Actor());
 	}
 
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForHammer->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForBasket->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForLeftHand->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForRightHand->Get_Actor());
 	return S_OK;
 }
 
@@ -504,7 +507,13 @@ void CFestivalLeader::Update_Collider()
 	if (m_pPhysXActorComForHammer && m_pHammerBone)
 	{
 		_vector vWorldOffset = XMVectorSet(0.f, 0.f, -2.5f, 1.f);
+		_vector S, R, T;
+		XMMatrixDecompose(&S, &R, &T, XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()));
+
+		R = XMQuaternionNormalize(R);
 		_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
+
+
 		m_pPhysXActorComForHammer->Set_Transform(GetBonePose(m_pHammerBone, &matWorldOffset));
 	}
 
