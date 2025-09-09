@@ -2770,11 +2770,11 @@ void CPlayer::Apply_Stat()
 		
 		if (m_eStat.iMotivity > 0)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f);
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) );
 		}
 		if (m_eStat.iTechnique > 0)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.5f);
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) );
 		}
 
 
