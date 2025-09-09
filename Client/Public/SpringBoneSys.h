@@ -25,7 +25,7 @@ public:
 private:
 	enum class SpringBonePart // 머리카락 앞,뒤, 다른 부위, 옷
 	{
-		Front,Back, Other, Cloth
+		Front, Back, Other, Cloth
 	};
 	struct SpringBoneParm
 	{
@@ -92,7 +92,7 @@ private:
 private:
 	vector<SpringBone> m_SpringBones;
 	vector<_int>           m_SBRoots;        // 루트 인덱스들
-	vector<vector<_int>>   m_SBChildren;     // 인접 리스트
+	vector<vector<_int>>   m_SBChildren;     // 뼈들의 자식 인덱스들
 	vector<_int>           m_SBParentIdx;    // 각 노드의 부모 스프링본 인덱스
 	vector<vector<_int>>   m_SBLayers;       // depth별 노드 리스트(순회용)
 

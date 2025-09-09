@@ -32,7 +32,7 @@ HRESULT CSpringBoneSys::InitializeSpringBones(CModel* pModel, const vector<strin
 		vSpringBone.childIdx = child->Get_BoneIndex();
 
 		_matrix childL = XMLoadFloat4x4(child->Get_TransformationMatrix());
-		vSpringBone.restLocalPos = childL.r[3];
+		vSpringBone.restLocalPos = childL.r[3]; // 자기가 돌아갈 로컬 위치
 		vSpringBone.length = XMVectorGetX(XMVector3Length(vSpringBone.restLocalPos));
 		vSpringBone.restDirLocal = XMVector3Normalize(vSpringBone.restLocalPos);
 		vSpringBone.part = SetBonePart(boneName);
@@ -113,7 +113,8 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			_vector S, Rq, T;
 			_matrix parentC;
 
-			if (iParentIdx >= 0)
+			
+			if (iParentIdx >= 0) // 스프링 본이라면 
 			{
 				parentC = XMLoadFloat4x4(m_SpringBones[iParentIdx].pBone->Get_CombinedTransformationMatrix());
 			}
@@ -127,6 +128,7 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			Rq = XMQuaternionNormalize(Rq);
 			_matrix parentR = XMMatrixRotationQuaternion(Rq);
 			_matrix parentRInv = XMMatrixTranspose(parentR);
+			// 관성 + 복원력 + 감쇠 + 중력 + 길이제한 + 콘 제한을 다 해야지 됨
 
 			// 부모 회전 변화에 따른 관성 처리
 			_matrix toCurr = parentRInv * vSpringBone.parentPrevRotC;
@@ -136,15 +138,16 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 
 			_vector oldTipLocal = vSpringBone.curTipLocal;
 
-			// Verlet 적분 (관성)
-			_vector velocity = (vSpringBone.curTipLocal - vSpringBone.prevTipLocal) * vParam.damping;
-			vSpringBone.curTipLocal = vSpringBone.curTipLocal + velocity;
-			vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft);
+			// Verlet 적분 (관성) 
+			_vector velocity = (vSpringBone.curTipLocal - vSpringBone.prevTipLocal) * vParam.damping; // 현재와 이전 위치 차이에 얼마나 감쇠할지를 적용해서 속도를 계산
+			vSpringBone.curTipLocal += velocity;
+			vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft); // 현재 위치에 부모 회전 변화에 따른 관성 적용
 
 			// 중력 처리
 			_vector gDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 			_vector gGravityDir = XMVector3TransformNormal(gDir, parentRInv);
 
+			// 뼈의 원래 방향과 중력 방향을 적용해 얼마나 내릴지
 			_vector restBiasDir = XMVector3Normalize(
 				vSpringBone.restDirLocal * (1.f - vParam.downBias) + gGravityDir * vParam.downBias);
 
@@ -153,13 +156,13 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			vSpringBone.curTipLocal += gravityForce;
 
 
-			// 복원력
+			// 복원력(stiffness는 탄성으로 생각하면 됨)
 			_vector targetPos = restBiasDir * vSpringBone.length;
 			_vector restoreForce = (targetPos - vSpringBone.curTipLocal) * vParam.stiffness;
 			vSpringBone.curTipLocal += restoreForce;
 
 
-			// 길이 
+			// 길이(이걸 해야지 진짜 스프링처럼 길이가 늘어났다 줄어났다 안함) 뼈는 늘어날 수 없으니까
 			_vector dirL = XMVector3Normalize(vSpringBone.curTipLocal);
 			vSpringBone.curTipLocal = dirL * vSpringBone.length;
 
