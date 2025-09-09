@@ -105,8 +105,20 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
             m_fDamage = 0.f;
         }
     }
-   
+    else
+    {
+        if (m_fDamageRenderTime > 0.f)
+        {
+            m_fDamageRenderTime -= fTimeDelta;
+        }
+        else
+        {
+            m_fDamageRenderTime = 0.f;
+            m_fDamage = 0.f;
+        }
 
+    }
+    
 
     _float fRatio = *m_pHP / (m_fMaxHp);
     
