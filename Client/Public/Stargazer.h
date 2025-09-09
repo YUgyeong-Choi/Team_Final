@@ -117,6 +117,8 @@ private:    /* [ ÄÄÆ÷³ÍÆ® ] */
 
 	_bool m_bUseTeleport = {};
 
+	_bool m_bUseOtherUI = {};
+
 	//vector<CUIObject*> m_
 	
 protected:
