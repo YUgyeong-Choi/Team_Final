@@ -39,8 +39,8 @@ using namespace ImGui;
 namespace Client
 {
 
-	const unsigned int			g_iWinSizeX = 1920; //1920 1600
-	const unsigned int			g_iWinSizeY = 1080; //1080 900
+	const unsigned int			g_iWinSizeX = 1600; //1920 1600
+	const unsigned int			g_iWinSizeY = 900; //1080 900
 
 
 	const float g_fBGMSoundVolume = 1.f; // BGM 볼륨
@@ -53,8 +53,8 @@ extern HINSTANCE g_hInst;
 
 using namespace Client;
 
-#define TEST_FIRE_EATER_MAP //푸오코맵만 만들기
-#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+//#define TEST_FIRE_EATER_MAP //푸오코맵만 만들기
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #pragma region 한영웅
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
