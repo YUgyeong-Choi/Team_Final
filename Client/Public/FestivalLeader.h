@@ -242,6 +242,10 @@ private:
 	const _float DAMAGE_HEAVY = 15.f;
 	const _float DAMAGE_FURY = 17.f;
 
+	// ÀÌÆåÆ®¿ë
+	CBone* m_pRightForearmBone{ nullptr };
+	CBone* m_pLeftForearmBone{ nullptr };
+
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

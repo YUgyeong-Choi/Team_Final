@@ -16,6 +16,8 @@
 #include <PhysX_IgnoreSelfCallback.h>
 #include "Weapon_Monster.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -187,14 +189,21 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		m_bDebugMode = !m_bDebugMode;
 	}
 
-	if (KEY_PRESSING(DIK_LCONTROL))
+	if (KEY_PRESSING(DIK_LALT))
 	{
-		if (KEY_DOWN(DIK_A))
+		if (KEY_DOWN(DIK_Q))
 		{
+			CEffectContainer::DESC desc = {};
 
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			desc.pSocketMatrix = m_pLeftForearmBone->Get_CombinedTransformationMatrix();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OldSparkDrop_P1"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
-		if (KEY_DOWN(DIK_S))
+		if (KEY_DOWN(DIK_2))
 		{
 
 		}
@@ -469,6 +478,22 @@ void CFestivalLeader::Ready_BoneInformation()
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pRightHandBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Ref_Bip001-L-Forearm"); }); // 왼쪽 팔꿈치
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pLeftForearmBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Skin_Bip001-R-Forearm"); }); // 오른쪽 팔꿈치 이름 통일 안시키는거 진짜 깨  빢 치네 
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRightForearmBone = *it;
 	}
 }
 

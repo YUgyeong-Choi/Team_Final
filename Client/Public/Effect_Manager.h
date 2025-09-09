@@ -38,6 +38,7 @@ public:
     void Release_EffectContainer(const _wstring& strECTag);
     void Set_Dead_EffectContainer(const _wstring& strECTag);
     void Set_Active_Effect(const _wstring& strECTag, _bool bActive);
+    void Remove_AllStoredECs();
 
 private:
     HRESULT Ready_Prototypes();

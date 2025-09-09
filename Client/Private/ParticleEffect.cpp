@@ -263,7 +263,7 @@ json CParticleEffect::Serialize()
 	j["PType"] = m_ePType;
 	j["Loop"] = m_isLoop;
 	j["Local"] = true;
-	
+	j["StretchFactor"] = m_fStretchFactor;
 
 	return j;
 }
@@ -292,5 +292,8 @@ void CParticleEffect::Deserialize(const json& j)
 		m_strBufferTag = StringToWString(j["Name"].get<std::string>());
 	}
 	m_bBillboard = false;
+
+	if (j.contains("StretchFactor"))
+		m_fStretchFactor = j["StretchFactor"].get<_float>();
 
 }
