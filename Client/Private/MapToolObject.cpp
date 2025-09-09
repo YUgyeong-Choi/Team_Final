@@ -478,7 +478,7 @@ HRESULT CMapToolObject::Ready_Effect()
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
-	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(LEVEL::YW), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
 	if (nullptr == m_pEffect)
 		MSG_BOX("이펙트 생성 실패함");
 

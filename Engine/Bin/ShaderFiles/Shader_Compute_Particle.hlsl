@@ -315,6 +315,11 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         const bool lifeEnded = pp.LifeTime.y >= pp.LifeTime.x;
         const bool tileEnded = pp.fTileIdx >= vTileCnt.x * vTileCnt.y;
         
+        float3 velocity = pos - prevPos;
+        if (isFirst)
+            pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
+        else
+            pp.VelocityDir = float4(normalize(velocity), length(velocity));
         
         //bool needReset = firstLoop ? lifeEnded 
         //                : ((isTileLoop != 0) ? tileEnded
@@ -387,7 +392,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             //float3 localDir = gInitInst[i].Direction.xyz;
             float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
             pp.Direction.xyz = normalize(worldDir);
-            
+            pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
         }
         pp.RotationAngle += pp.RotationSpeed;
 
@@ -400,11 +405,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         pp.vTileOffset = float2((iTileIdx % uint(vTileCnt.x)) * fTileSizeX, (iTileIdx / uint(vTileCnt.x)) * fTileSizeY);
 
         pp.Translation = float4(pos, 1.0f);
-        float3 velocity = pos - prevPos;
-        if (isFirst)
-            pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
-        else
-            pp.VelocityDir = float4(normalize(velocity), length(velocity));
+
         gInst[i] = pp;
         return;
     }

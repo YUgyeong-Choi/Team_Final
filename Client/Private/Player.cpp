@@ -3699,6 +3699,7 @@ void CPlayer::Create_HitEffect()
 	_vector vTo = XMVector3Normalize(-m_vHitNormal);         // 원하는 방향
 
 	_vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
+	rand() % 4 == 0 ? qRot = XMQuaternionIdentity() : qRot; // 위로 피 나오는 것도 넣어야하는데 당장 조건이 뭔지 모르겠어서 일단 랜덤으로 함
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(qRot) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
 	// 피 이펙트
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TEST_BLOOD_UP"), &desc) == nullptr)
@@ -3954,5 +3955,4 @@ void CPlayer::Free()
 	Safe_Release(m_pBelt_Up);
 
 	Safe_Delete(m_pHitReport);
-
 }

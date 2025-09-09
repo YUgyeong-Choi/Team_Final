@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -200.0,
-                -190.0
+                -100.0,
+                -80.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -25,12 +25,12 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 14,
+            "Duration": 22,
             "EffectType": 1,
             "EmissiveIntensity": 3.0999999046325684,
-            "EndTrack": 14,
+            "EndTrack": 22,
             "FlipUV": false,
-            "Gravity": 11.0,
+            "Gravity": 9.800000190734863,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -61,16 +61,16 @@
                     ]
                 }
             ],
-            "LifeTime": 4362.8896484375,
+            "LifeTime": 5549.53466796875,
             "LifeTime_Particle": [
                 0.019999999552965164,
-                0.6000000238418579
+                0.8999999761581421
             ],
             "Local": true,
             "Loop": false,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 1.0,
+            "MinSpeed": 0.800000011920929,
             "Name": "OldParticleDrops1",
             "NumInstance": 80,
             "NumKeyFrames": 1,
@@ -81,13 +81,13 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -45.0,
-                45.0
+                0.0,
+                0.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                0.0,
+                -0.009999999776482582,
                 0.0
             ],
             "Range": [
@@ -107,8 +107,8 @@
             ],
             "ShaderPass": 3,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.0020000000949949026,
+                0.004999999888241291
             ],
             "Speed": [
                 3.0,
@@ -116,6 +116,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.08100000023841858,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -137,5 +138,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 12
+    "MaxFrame": 20
 }

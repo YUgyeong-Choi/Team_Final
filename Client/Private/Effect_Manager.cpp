@@ -236,6 +236,15 @@ void CEffect_Manager::Set_Active_Effect(const _wstring& strECTag, _bool bActive)
     pEC->Set_isActive(bActive);
 }
 
+void CEffect_Manager::Remove_AllStoredECs()
+{
+    for (auto iter = m_ECs.begin(); iter != m_ECs.end(); iter++)
+    {
+        Safe_Release(iter->second);
+    }
+    m_ECs.clear();
+}
+
 HRESULT CEffect_Manager::Ready_Prototypes()
 {
     /* For.Prototype_GameObject_SpriteEffect */
