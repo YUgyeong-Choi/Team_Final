@@ -171,31 +171,39 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
 		{
-			m_fElapsedTime += fTimeDelta;
+			// 누적
+			m_Accumulate += static_cast<double>(fTimeDelta);
 
-			// 시간 누적 → 프레임 단위 변환
-			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
+			// 스텝(프레임) 길이: 1 / 재생 프레임속도
+			const double step = 1.0 / static_cast<double>(m_fFrameSpeed);
 
-			if (iNewFrame != m_iCurrentFrame)
-			{ 
-				m_iCurrentFrame = iNewFrame;
+			// (선택) 한 틱에서 과도한 catch-up 방지
+			const int kMaxSubsteps = 8;
+			int substeps = 0;
 
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("%d CurrentFrame\n", m_iCurrentFrame);
+			// 재생 종료 경계
+			const _int endBound = (m_iEndFrame >= 0) ? m_iEndFrame : m_CameraDatas.iEndFrame;
 
+			// 고정 스텝으로 1프레임씩 전진
+			while (m_Accumulate >= step && substeps++ < kMaxSubsteps)
+			{
+				m_Accumulate -= step;
+				++m_iCurrentFrame;                 // ★ 한 번에 정확히 1씩 증가
+
+				// 보간/이벤트 처리 (프레임 누락 없음)
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
 				Interp_OffsetRot(m_iCurrentFrame);
 				Interp_OffsetPos(m_iCurrentFrame);
 				Interp_Target(m_iCurrentFrame);
-
 				Event();
-				
-				// 종료 조건
-				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
+
+				// 종료 조건 체크 (endBound 도달 시 바로 멈춤)
+				if (m_iCurrentFrame >= endBound)
 				{
 					m_bReadyCutSceneOrbital = true;
+					// 필요하면 m_bReadyCutScene=false; 등으로 재생 비활성화
+					break;
 				}
 			}
 		}
@@ -228,13 +236,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 	// Tool 용
 	if (m_bShowSpecial)
 	{
-		m_fElapsedTime += fTimeDelta;
 
 		const bool useRange = (m_iStaratFrame >= 0 && m_iEndFrame >= 0 && m_iStaratFrame <= m_iEndFrame);
 		const _int baseFrame = useRange ? m_iStaratFrame : 0;
 		const _int endBound = useRange ? m_iEndFrame : m_CameraDatas.iEndFrame;
 
 		// 경과시간 -> "베이스 기준" 프레임
+		m_fElapsedTime += fTimeDelta;
 		const _int relFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed); // 0,1,2...
 		const _int iNewFrame = baseFrame + relFrame;
 
@@ -299,6 +307,7 @@ void CCamera_CutScene::Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_
 	m_iStaratFrame = start;
 	m_iEndFrame = end;
 	m_bShowSpecial = true;
+	m_Accumulate = 0.f;
 }
 
 void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
@@ -315,6 +324,7 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 	m_iCurrentFrame = -1;
 	m_fElapsedTime = 0.f;
+	m_Accumulate = 0.f;
 }
 
 void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)

@@ -230,8 +230,8 @@ HRESULT CRenderer::Initialize()
 
 	// downscale πË¿≤
 	//m_fDownscaledRatio = 0.0625f; // 1/16
-	m_fDownscaledRatio = 0.125f;	// 1/8
-	//m_fDownscaledRatio = 0.25f;		// 1/4
+	//m_fDownscaledRatio = 0.125f;	// 1/8
+	m_fDownscaledRatio = 0.25f;		// 1/4
 
 	_uint iDownscaledWidth = static_cast<_uint>(ViewportDesc.Width * m_fDownscaledRatio);
 	_uint iDownscaledHeight = static_cast<_uint>(ViewportDesc.Height * m_fDownscaledRatio);

@@ -9,10 +9,10 @@
             "States": [
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
+                    "ClipName": "AS_ATHBoss0_Skill_12_Start",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "AnyState",
+                    "Name": "Atk_FuryHammerSlam_Start",
                     "UpperClipName": ""
                 },
                 {
@@ -25,18 +25,10 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_12_Start",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Atk_FuryHammerSlam_Start",
-                    "UpperClipName": ""
-                },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "Atk_Slam_Start",
+                    "Name": "AnyState",
                     "UpperClipName": ""
                 },
                 {
@@ -49,10 +41,18 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
+                    "ClipName": "AS_ATHBoss0_Skill_01_Start_1",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Atk_Slam_Loop",
+                    "Name": "Atk_Slam_Start",
+                    "UpperClipName": ""
+                },
+                {
+                    "BlendWeight": 1.0,
+                    "ClipName": "AS_ATHBoss0_Skill_10_Start",
+                    "LowerClipName": "",
+                    "MaskBoneName": "",
+                    "Name": "Atk_SwingCom_Start",
                     "UpperClipName": ""
                 },
                 {
@@ -65,10 +65,10 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_10_Start",
+                    "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
                     "LowerClipName": "",
                     "MaskBoneName": "",
-                    "Name": "Atk_SwingCom_Start",
+                    "Name": "Atk_Slam_Loop",
                     "UpperClipName": ""
                 },
                 {

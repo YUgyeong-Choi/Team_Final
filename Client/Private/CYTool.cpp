@@ -507,7 +507,6 @@ HRESULT CCYTool::Window_Sprite()
 	}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
-
 	return S_OK;
 }
 
@@ -560,7 +559,7 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_tPCB.vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
-	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.01f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.001f, 0.001f, 1000.f, "%.3f");
 	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");	
 	ImGui::DragFloat("##Gravity Power", reinterpret_cast<_float*>(&m_tPCB.fGravity), 0.1f, 0.f, 200.f, "%.1f"); ImGui::SameLine();
 
