@@ -835,7 +835,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 
 
-	/*if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
@@ -853,79 +853,79 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
 		return E_FAIL;
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;*/
+		return E_FAIL;
 
 #ifndef TESTMAP
 
-#pragma region 멀티 스레드로 소환
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
-
-	auto futureStation = async(launch::async, [&]
-		{
-			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
-	auto futureHotel = async(launch::async, [&]
-		{
-			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
-	auto futureOuter = async(launch::async, [&]
-		{
-			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
-	auto futureFireEater = async(launch::async, [&]
-		{
-			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-
-	if (FAILED(futureStation.get()))
-		return E_FAIL;
-
-	if (FAILED(futureHotel.get()))
-		return E_FAIL;
-
-	if (FAILED(futureOuter.get()))
-		return E_FAIL;
-
-	if (FAILED(futureFireEater.get()))
-		return E_FAIL;
-#pragma endregion
+//#pragma region 멀티 스레드로 소환
+//	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+//
+//	auto futureStation = async(launch::async, [&]
+//		{
+//			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
+//
+//			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+//				return E_FAIL;
+//			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+//				return E_FAIL;
+//
+//			return S_OK;
+//		});
+//
+//	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
+//	auto futureHotel = async(launch::async, [&]
+//		{
+//			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
+//
+//			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+//				return E_FAIL;
+//			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+//				return E_FAIL;
+//
+//			return S_OK;
+//		});
+//
+//	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
+//	auto futureOuter = async(launch::async, [&]
+//		{
+//			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
+//
+//			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+//				return E_FAIL;
+//			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+//				return E_FAIL;
+//
+//			return S_OK;
+//		});
+//
+//	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
+//	auto futureFireEater = async(launch::async, [&]
+//		{
+//			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
+//
+//			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+//				return E_FAIL;
+//			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+//				return E_FAIL;
+//
+//			return S_OK;
+//		});
+//
+//
+//	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
+//
+//	if (FAILED(futureStation.get()))
+//		return E_FAIL;
+//
+//	if (FAILED(futureHotel.get()))
+//		return E_FAIL;
+//
+//	if (FAILED(futureOuter.get()))
+//		return E_FAIL;
+//
+//	if (FAILED(futureFireEater.get()))
+//		return E_FAIL;
+//#pragma endregion
 
 #endif // !TESTMAP
 

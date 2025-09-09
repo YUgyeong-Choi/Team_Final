@@ -97,7 +97,7 @@ HRESULT CObject_Manager::Add_GameObjectReturn
 HRESULT CObject_Manager::Add_GameObject_And_PushOctoTree(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, _uint iLevelIndex, const _wstring& strLayerTag, void* pArg)
 {
 	//¶ô °É±â
-	lock_guard<mutex> lock(m_mtx);
+	//lock_guard<mutex> lock(m_mtx);
 
 	CGameObject* pGameObject = nullptr;
 
