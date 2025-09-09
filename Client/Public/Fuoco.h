@@ -166,6 +166,10 @@ private:
 
     virtual void Ready_SoundEvents() override;
 
+public:
+    void Create_CutsceneEffect();
+
+
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   
     //    cout << "=== Attack Pattern Weights ===" << endl;

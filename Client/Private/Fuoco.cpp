@@ -1880,6 +1880,18 @@ void CFuoco::Ready_SoundEvents()
 		});
 }
 
+void CFuoco::Create_CutsceneEffect()
+{
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+
+	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Cutscene_Slam"), &desc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+}
+
 void CFuoco::UpdatePatternWeight(_int iPattern)
 {
 	m_PatternCountMap[iPattern]++;
