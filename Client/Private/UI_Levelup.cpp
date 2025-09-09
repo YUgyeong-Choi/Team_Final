@@ -94,6 +94,13 @@ HRESULT CUI_Levelup::Initialize(void* pArg)
 
 void CUI_Levelup::Priority_Update(_float fTimeDelta)
 {
+	if (!m_bInit)
+	{
+		m_bInit = true;
+		return;
+	}
+
+
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
 		Set_bDead();
@@ -101,6 +108,24 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 		CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
 
 		pStar->Script_Activate();
+
+
+		return;
+	}
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	{
+		Set_bDead();
+
+		CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
+
+		pStar->End_Script();
+
+
+		m_pPlayer->Set_Stat(m_eStat);
+  		m_pPlayer->Apply_Stat();
+
+		m_pPlayer->Set_Ergo(m_fCurrentErgo);
 
 		return;
 	}

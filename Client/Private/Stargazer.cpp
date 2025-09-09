@@ -97,9 +97,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				}
 				else
 				{
+					if (!m_bCheckPopup)
+					{
+						CUI_Manager::Get_Instance()->Activate_Popup(true);
+						CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
 
-					CUI_Manager::Get_Instance()->Activate_Popup(true);
-					CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
+						m_bCheckPopup = true;
+					}
+				
 
 
 				}
@@ -234,6 +239,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		m_bTalkActive = false;
 		m_bUseScript = false;
 		m_bUseOtherUI = false;
+		m_bCheckPopup = false;
 	}
 	
 
@@ -365,6 +371,28 @@ void CStargazer::Delete_Script()
 
 	m_iSelectButtonIndex = -1;
 	m_iScriptIndex = 0;
+}
+
+void CStargazer::End_Script()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	Safe_Release(m_pScript);
+	m_pScript = nullptr;
+
+	for (auto& pButton : m_pSelectButtons)
+		Safe_Release(pButton);
+
+	m_pSelectButtons.clear();
+	m_ButtonEvents.clear();
+
+	m_iSelectButtonIndex = -1;
+	m_iScriptIndex = 0;
+
+	m_bUseTeleport = true;
+	m_bUseOtherUI = false;
+	m_iSelectButtonIndex = -1;
 }
 
 void CStargazer::LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator)
