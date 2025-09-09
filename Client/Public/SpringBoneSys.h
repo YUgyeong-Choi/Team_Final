@@ -25,7 +25,7 @@ public:
 private:
 	enum class SpringBonePart // 머리카락 앞,뒤, 다른 부위, 옷
 	{
-		Front, Back, Other, Cloth
+		Front, Back, Other, Cloth, Lamp
 	};
 	struct SpringBoneParm
 	{
@@ -55,6 +55,7 @@ private:
 		_vector prevTipLocal = XMVectorZero();
 		// 부모의 직전 로컬 회전
 		_matrix parentPrevRotC = XMMatrixIdentity();
+		_vector prevParentPos = XMVectorZero();  // 부모의 이전 프레임 위치
 		// 파라미터 (강성, 최대 각도, 중력)
 		_int   depth = 0;
 		_int   chainLen = 0;
@@ -82,8 +83,8 @@ private:
 	HRESULT InitializeSpringBones(CModel* pModel, const vector<string>& vecSpringBoneNames, const SpringInitParams& initParam);
 	void Build_SpringBoneHierarchy();
 	void SetupSpringBoneParameters();
-	_bool IsCorrectBoneName(const string& boneName, const vector<string>& vecSpringBoneNames);
-
+	_bool IsCorrectBoneName(CBone* pBone, const vector<string>& vecSpringBoneNames);
+	void Pendulum(SpringBone& sb, _float fTimeDelta);
 	SpringBonePart SetBonePart(const string& boneName);
 	string ReturnPartString(SpringBonePart part);
 

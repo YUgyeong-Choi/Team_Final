@@ -23,6 +23,9 @@ public:
 		//파트 메쉬 이름들
 		vector<wstring> PartModelNames = {};
 		vector<_float3> vOffsets = {};
+
+		//영향을 줄 네브메쉬 이름
+		wstring wsNavName = {};
 	}BREAKABLEMESH_DESC;
 
 protected:
@@ -55,6 +58,20 @@ private:
 private:
 	void Invisible();
 
+
+private:
+	//한 점이 xz 평면상에서 AABB에 포함되어있는지
+	bool IsPointInsideXZ(const PxVec3& point, const PxBounds3& bounds);
+
+	//자신의 aabb 만큼의 네브 인덱스를 가져온다.
+	void Store_NavIndices();
+
+	void Set_Active_StoreCells(_bool bActive);
+
+private:
+	//자신이 가지고 있는 네비 셀 인덱스들, 자신이 부서지면 활성화 시킨다.
+	vector<_int> m_NavIndices = {};
+
 private:
 	//조각들 초기행렬 저장
 	vector<_float4x4> m_PartInitWorldMatrixs = {};
@@ -82,6 +99,9 @@ private:
 
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
+
+	//영향을 줄 네비게이션
+	CNavigation* m_pNaviCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);

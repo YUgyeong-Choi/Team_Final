@@ -1,0 +1,136 @@
+{
+    "Accel": [
+        0.0,
+        0.0
+    ],
+    "Animation": true,
+    "Billboard": false,
+    "Center": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        0.8115183115005493,
+        0.6969345211982727,
+        0.5948301553726196,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 112,
+    "EffectType": 1,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 112,
+    "FlipUV": false,
+    "Gravity": 6.300000190734863,
+    "IsGravity": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.8115183115005493,
+                0.6969345211982727,
+                0.5948301553726196,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 1437.47509765625,
+    "LifeTime_Particle": [
+        2.0,
+        3.0
+    ],
+    "Local": true,
+    "Loop": false,
+    "MaxLifeTime": 4.0,
+    "MaxSpeed": 1000.0,
+    "MinSpeed": 0.0,
+    "Name": "Fuoco_Spin3_Floor_Stone11",
+    "NumInstance": 5,
+    "NumKeyFrames": 1,
+    "Orbit": false,
+    "OrbitAxis": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "OrbitSpeed": [
+        0.0,
+        0.0
+    ],
+    "PType": 0,
+    "Pivot": [
+        0.0,
+        -0.10000000149011612,
+        0.0
+    ],
+    "Range": [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612
+    ],
+    "RenderGroup": 9,
+    "RotationAxis": [
+        0.0,
+        0.0,
+        0.0
+    ],
+    "RotationSpeed": [
+        1.0,
+        4.0
+    ],
+    "ShaderPass": 4,
+    "Size": [
+        0.10000000149011612,
+        0.15000000596046448
+    ],
+    "Speed": [
+        3.0,
+        6.0
+    ],
+    "Spin": false,
+    "StartTrack": 0,
+    "StretchFactor": 0.014999999664723873,
+    "TextureTags": [
+        "T_Stone4",
+        "",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        false,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 0.0,
+    "TileX": 1,
+    "TileY": 1,
+    "isTileLoop": false
+}

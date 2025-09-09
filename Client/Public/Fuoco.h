@@ -119,9 +119,9 @@ private:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-private:
-    //비활성화 되어있던 인덱스 이것들을 페이탈상타에 따라 껏다 켰다.
-    vector<_int> m_NavInactiveIndecies = {};
+//private:
+//    //비활성화 되어있던 인덱스 이것들을 페이탈상타에 따라 껏다 켰다.
+//    vector<_int> m_NavInactiveIndecies = {};
 
 
 
@@ -165,6 +165,10 @@ private:
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
     virtual void Ready_SoundEvents() override;
+
+public:
+    void Create_CutsceneEffect();
+
 
 #ifdef _DEBUG
     function<void()> PatterDebugFunc = [this]() {   

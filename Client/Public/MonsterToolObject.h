@@ -33,7 +33,7 @@ public:
 		);
 		_int iID = { 0 };
 
-		SPAWN_TYPE eSpawnType = { SPAWN_TYPE::END };
+		SPAWN_TYPE eSpawnType = { SPAWN_TYPE::IDLE };
 
 	}MONSTERTOOLOBJECT_DESC;
 

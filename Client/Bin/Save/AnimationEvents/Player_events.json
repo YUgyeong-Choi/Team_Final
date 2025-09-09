@@ -1479,6 +1479,14 @@
                 {
                     "EventName": "ResetRootStep",
                     "Time": 95.0
+                },
+                {
+                    "EventName": "OnSwordSkillTrail",
+                    "Time": 80.0
+                },
+                {
+                    "EventName": "OffSwordSkillTrail",
+                    "Time": 94.0
                 }
             ],
             "IsLoop": false,
@@ -1550,16 +1558,16 @@
             "Duration": 147.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTrail",
+                    "EventName": "OnSwordSkillTrail",
                     "Time": 35.0
                 },
                 {
-                    "EventName": "OffSwordTrail",
+                    "EventName": "OffSwordSkillTrail",
                     "Time": 71.0
                 },
                 {
                     "EventName": "OnWeaponCollider",
-                    "Time": 37.0
+                    "Time": 35.0
                 },
                 {
                     "EventName": "OffWeaponCollider",
@@ -1734,12 +1742,12 @@
             "Duration": 160.0,
             "Events": [
                 {
-                    "EventName": "OnSwordTrail",
-                    "Time": 35.0
+                    "EventName": "OnSwordSkillTrail",
+                    "Time": 32.0
                 },
                 {
-                    "EventName": "OffSwordTrail",
-                    "Time": 46.0
+                    "EventName": "OffSwordSkillTrail",
+                    "Time": 50.0
                 },
                 {
                     "EventName": "OnWeaponCollider",

@@ -149,7 +149,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Stat();
 	HRESULT Ready_Effect();
 
-private: /* [ 옵저버 관련 ] */
+public: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
@@ -201,6 +201,8 @@ private: /* [ 이펙트 관리 함수 ]*/
 	void Set_GrinderEffect_Active(_bool bActive);
 	void Create_HitEffect();
 	void Create_GuardEffect(_bool isPerfect);
+public:
+	void Create_LeftArm_Lightning();
 
 public: /* [ 페이탈 함수 ] */
 	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -269,6 +271,10 @@ public:/*[스탯 관련]*/
 	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }
 	STAT_DESC& Get_Stat() { return m_eStat; }
 
+	_float Get_Ergo() { return m_fErgo; }
+	void Set_Ergo(_float fErgo);
+	_int Get_Player_Level() { return m_iLevel; }
+
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
 
@@ -276,6 +282,9 @@ public:/*[스탯 관련]*/
 	void Add_Ergo(_float fErgo);
 	// 레벨 업 하면 레벨에 맞춰서 값이 증가하게
 	void Compute_MaxErgo(_int iLevel);
+
+
+	_bool Check_LevelUp(_int iLevel);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;

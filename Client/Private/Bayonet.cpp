@@ -305,8 +305,6 @@ void CBayonet::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
 	}
 }
 
-
-
 HRESULT CBayonet::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
@@ -367,15 +365,15 @@ HRESULT CBayonet::Ready_Effect()
 	else
 		MSG_BOX("무기 트레일 사망");
 
-	desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
-	//desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
-	desc.bHasEmitter = true;
-	// 타격 피 트레일
-	m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (m_pTrailEffect[TRAIL_BLOOD])
-		m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
-	else
-		MSG_BOX("무기 스킬 트레일 사망");
+	//desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
+	////desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
+	//desc.bHasEmitter = true;
+	//// 타격 피 트레일
+	//m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (m_pTrailEffect[TRAIL_BLOOD])
+	//	m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
+	//else
+	//	MSG_BOX("무기 스킬 트레일 사망");
 
 	desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
 	//desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
@@ -552,7 +550,10 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 
 	if (pEffect == nullptr)
 		return E_FAIL;
-
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Attack_Blood"), &desc);
+	if (pEffect == nullptr)
+		return E_FAIL;
 	return S_OK;
 }
 

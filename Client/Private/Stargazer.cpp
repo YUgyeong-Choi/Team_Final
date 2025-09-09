@@ -7,6 +7,7 @@
 #include "UI_Script_StarGazer.h"
 #include "UI_Button_Script.h"
 #include "UI_SelectLocation.h"
+#include "UI_Levelup.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -66,154 +67,165 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 	if (Check_Player_Close())
 	{
-		Update_Button();
-
-		m_bDoOnce = true;
-		if (m_eState == STARGAZER_STATE::DESTROYED)
+		if (!m_bUseOtherUI)
 		{
-			if (!m_bChange)
-			{
-				CUI_Manager::Get_Instance()->Activate_Popup(true);
-				CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
-			}
-			else
-			{
-				CUI_Manager::Get_Instance()->Activate_Popup(false);
-			}
-		
-			
-			
-		}
-		else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
-		{
-			if (m_bTalkActive || m_bUseScript)
-			{
-				CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			}
-			else
+			Update_Button();
+
+			m_bDoOnce = true;
+			if (m_eState == STARGAZER_STATE::DESTROYED)
 			{
-				CUI_Manager::Get_Instance()->Activate_Popup(true);
-				CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
-			}
-		
-			
-		}
-
-		if (m_pGameInstance->Key_Down(DIK_SPACE))
-		{
-			// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
-			if (nullptr != m_pScript)
-			{
-				Button_Interaction();
-
-			}
-
-			if (m_bTalkActive)
-			{
-				++m_iScriptIndex;
-
-				// 대화 끝 인 경우.
-				if (m_iScriptIndex >= m_eScriptDatas.size())
+				if (!m_bChange)
 				{
-
-					m_iScriptIndex = 0;
-					m_bTalkActive = false;
-					m_eScriptDatas.clear();
-					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
-					Ready_Script();
-					return;
+					CUI_Manager::Get_Instance()->Activate_Popup(true);
+					CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
+				}
+				else
+				{
+					CUI_Manager::Get_Instance()->Activate_Popup(false);
 				}
 
 
-				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
-			}
 
-		}
-		else if (m_pGameInstance->Key_Down(DIK_E))
-		{
-			if (m_eState == STARGAZER_STATE::DESTROYED)
-			{
-				// 나중에 트리거로 바꾸기
-				m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
-				m_bChange = true;
-				//m_eState = STARGAZER_STATE::FUNCTIONAL;
-				CUI_Manager::Get_Instance()->Activate_Popup(false);
-				return;
 			}
 			else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
 			{
-				if (m_eScriptDatas.empty())
+				if (m_bTalkActive || m_bUseScript)
 				{
-					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
-
-					if (nullptr == m_pScript)
-					{
-						
-						Ready_Script();
-						
-
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
-						CCamera_Manager::Get_Instance()->SetbMoveable(false);
-						CUI_Manager::Get_Instance()->Off_Panel();
-						CUI_Manager::Get_Instance()->Activate_Popup(false);
-						
-						m_pPlayer->Reset();
-						m_pGameInstance->Get_CurrentLevel()->Reset();
-						return;
-					}
-					else
-					{
-						Script_Activate();
-						m_pPlayer->Reset();
-						return;
-					}
+					CUI_Manager::Get_Instance()->Activate_Popup(false);
 
 				}
 				else
 				{
-					// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
-					if (!m_bTalkActive)
+					if (!m_bCheckPopup)
 					{
-						m_bTalkActive = true;
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
-						CCamera_Manager::Get_Instance()->SetbMoveable(false);
+						CUI_Manager::Get_Instance()->Activate_Popup(true);
+						CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
 
-						//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
-
-
-						CUI_Manager::Get_Instance()->Off_Panel();
-						CUI_Manager::Get_Instance()->Activate_Popup(false);
-						CUI_Manager::Get_Instance()->Activate_TalkScript(true);
-						CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
-
-					
+						m_bCheckPopup = true;
 					}
 				
+
+
 				}
+
+
+			}
+
+			if (m_pGameInstance->Key_Down(DIK_SPACE))
+			{
+				// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
+				if (nullptr != m_pScript)
+				{
+					Button_Interaction();
+
+				}
+
+				if (m_bTalkActive)
+				{
+					++m_iScriptIndex;
+
+					// 대화 끝 인 경우.
+					if (m_iScriptIndex >= m_eScriptDatas.size())
+					{
+
+						m_iScriptIndex = 0;
+						m_bTalkActive = false;
+						m_eScriptDatas.clear();
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+						Ready_Script();
+						return;
+					}
+
+
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+				}
+
+			}
+			else if (m_pGameInstance->Key_Down(DIK_E))
+			{
+				if (m_eState == STARGAZER_STATE::DESTROYED)
+				{
+					// 나중에 트리거로 바꾸기
+					m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+					m_bChange = true;
+					//m_eState = STARGAZER_STATE::FUNCTIONAL;
+					CUI_Manager::Get_Instance()->Activate_Popup(false);
+					return;
+				}
+				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
+				{
+					if (m_eScriptDatas.empty())
+					{
+						// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
+
+						if (nullptr == m_pScript)
+						{
+
+							Ready_Script();
+
+
+							CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+							CCamera_Manager::Get_Instance()->SetbMoveable(false);
+							CUI_Manager::Get_Instance()->Off_Panel();
+							CUI_Manager::Get_Instance()->Activate_Popup(false);
+
+							m_pPlayer->Reset();
+							m_pGameInstance->Get_CurrentLevel()->Reset();
+							return;
+						}
+						else
+						{
+							Script_Activate();
+							m_pPlayer->Reset();
+							return;
+						}
+
+					}
+					else
+					{
+						// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
+						if (!m_bTalkActive)
+						{
+							m_bTalkActive = true;
+							CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+							CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+							//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
+
+
+							CUI_Manager::Get_Instance()->Off_Panel();
+							CUI_Manager::Get_Instance()->Activate_Popup(false);
+							CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+							CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+
+
+						}
+
+					}
+				}
+
+			}
+
+			else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+			{
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+				CCamera_Manager::Get_Instance()->SetbMoveable(true);
+				CUI_Manager::Get_Instance()->On_Panel();
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+				m_bTalkActive = false;
+				m_bUseScript = false;
+				m_bUseOtherUI = false;
+
+				Delete_Script();
+				return;
 			}
 
 		}
-
-		else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
-		{
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-			CCamera_Manager::Get_Instance()->SetbMoveable(false);
-			CUI_Manager::Get_Instance()->On_Panel();
-			CUI_Manager::Get_Instance()->Activate_Popup(false);
-			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
-			m_bTalkActive = false;
-			m_bUseScript = false;
-
-		
-			Delete_Script();
-			return;
-		}
-
-		
 	}
 	else
 	{
@@ -226,6 +238,8 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 		m_bTalkActive = false;
 		m_bUseScript = false;
+		m_bUseOtherUI = false;
+		m_bCheckPopup = false;
 	}
 	
 
@@ -237,6 +251,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	if (m_bUseTeleport)
 	{
 		m_bUseTeleport = false;
+		m_bUseOtherUI = false;
 
 		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
@@ -335,6 +350,9 @@ void CStargazer::Script_Activate()
 			pButton->Active_Update(true);
 
 	m_iSelectButtonIndex = -1;
+
+	m_bUseScript = true;
+	m_bUseOtherUI = false;
 }
 
 void CStargazer::Delete_Script()
@@ -353,6 +371,28 @@ void CStargazer::Delete_Script()
 
 	m_iSelectButtonIndex = -1;
 	m_iScriptIndex = 0;
+}
+
+void CStargazer::End_Script()
+{
+	if (m_pSelectButtons.empty())
+		return;
+
+	Safe_Release(m_pScript);
+	m_pScript = nullptr;
+
+	for (auto& pButton : m_pSelectButtons)
+		Safe_Release(pButton);
+
+	m_pSelectButtons.clear();
+	m_ButtonEvents.clear();
+
+	m_iSelectButtonIndex = -1;
+	m_iScriptIndex = 0;
+
+	m_bUseTeleport = true;
+	m_bUseOtherUI = false;
+	m_iSelectButtonIndex = -1;
 }
 
 void CStargazer::LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator)
@@ -443,7 +483,7 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 	Delete_Script();
 
 	m_bUseTeleport = true;
-
+	m_bUseOtherUI = false;
 	m_iSelectButtonIndex = -1;
 }
 
@@ -554,10 +594,29 @@ void CStargazer::Button_Interaction()
 		m_iSelectButtonIndex = -1;
 
 		m_bUseScript = false;
+
+		m_bUseOtherUI = true;
 	}
 	else if ("LevelUp" == m_ButtonEvents[m_iSelectButtonIndex])
 	{
 		// 레벨업 ui 만들기
+		CUI_Levelup::UI_LEVELUP_DESC eDesc = {};
+
+		eDesc.pTarget = this;
+
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Levelup"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Levelup"), &eDesc);
+
+		m_pScript->Active_Update(false);
+		for (auto& pButton : m_pSelectButtons)
+			if (nullptr != pButton)
+				pButton->Active_Update(false);
+
+		m_iSelectButtonIndex = -1;
+
+		m_bUseScript = false;
+
+
+		m_bUseOtherUI = true;
 	}
 
 	
@@ -624,7 +683,7 @@ HRESULT CStargazer::Ready_Script()
 	m_iSelectButtonIndex = 0;
 
 	m_bUseScript = true;
-
+	m_bUseOtherUI = false;
 	return S_OK;
 }
 

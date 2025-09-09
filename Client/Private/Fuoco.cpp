@@ -66,20 +66,11 @@ HRESULT CFuoco::Initialize(void* pArg)
 			return E_FAIL;
 	}
 
-	// 체력 일단 각 객체에 
-
-
 	m_fMaxRootMotionSpeed = 18.f;
 
 
-	// 플레이어 카메라 레이충돌 무시하기 위한
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
-
-
 	//처음에 비활성화 되어있던 인덱스들을 받아온다.
-	m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
+	//m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
 
 	return S_OK;
 }
@@ -88,19 +79,19 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_pGameInstance->Key_Down(DIK_L))
-	{
-		//저장해둔 인덱스의 셀들을 활성/비활성화 한다.
-		for (_int iIndex : m_NavInactiveIndecies)
-		{
-			CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
-			if (pCell)
-			{
-				_bool bActive = pCell->Get_Active();
-				pCell->Set_Active(!bActive);
-			}
-		}
-	}
+	//if (m_pGameInstance->Key_Down(DIK_L))
+	//{
+	//	//저장해둔 인덱스의 셀들을 활성/비활성화 한다.
+	//	for (_int iIndex : m_NavInactiveIndecies)
+	//	{
+	//		CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
+	//		if (pCell)
+	//		{
+	//			_bool bActive = pCell->Get_Active();
+	//			pCell->Set_Active(!bActive);
+	//		}
+	//	}
+	//}
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
@@ -352,6 +343,10 @@ HRESULT CFuoco::Ready_Actor()
 		m_pPhysXActorComForFoot->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorComForFoot->Get_Actor());
 	}
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 
 	return S_OK;
 }
@@ -1883,6 +1878,18 @@ void CFuoco::Ready_SoundEvents()
 			}
 			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Growl_", 3);
 		});
+}
+
+void CFuoco::Create_CutsceneEffect()
+{
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+
+	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Cutscene_Slam"), &desc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 void CFuoco::UpdatePatternWeight(_int iPattern)

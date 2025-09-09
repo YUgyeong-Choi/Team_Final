@@ -21,12 +21,24 @@ namespace Client
 	// 플레이어 스텟 용
 
 	typedef struct tagPlayerStat {
-		_int iVitality; // 체력
-		_int iStamina; // 지구력
-		_int iCapacity; // 적재력
-		_int iMotivity; //동력
-		_int iTechnique; // 기술
-		_int iAdvance; // 진화
+		
+
+		_int stat[6];
+
+		_int& iVitality = stat[0]; // 체력
+		_int& iStamina = stat[1]; // 지구력
+		_int& iCapacity = stat[2]; // 적재력
+		_int& iMotivity = stat[3]; //동력
+		_int& iTechnique = stat[4]; // 기술
+		_int& iAdvance = stat[5]; // 진화
+
+		// 연산자 = 다시 정의
+		tagPlayerStat& operator=(const tagPlayerStat& other) {
+			for (int i = 0; i < 6; ++i)
+				stat[i] = other.stat[i];
+			return *this;
+		}
+
 	}STAT_DESC;
 
 	// 각 ui 기능에 필요한 정보를 담아서 저장하고, json으로 불러오기 위해
