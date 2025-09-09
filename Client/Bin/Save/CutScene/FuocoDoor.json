@@ -757,7 +757,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 990,
+            "keyFrame": 985,
             "position": [
                 0.0,
                 0.0,
@@ -774,7 +774,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 995,
+            "keyFrame": 990,
             "position": [
                 0.20000000298023224,
                 -0.30000001192092896,
@@ -791,7 +791,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1000,
+            "keyFrame": 995,
             "position": [
                 -0.20000000298023224,
                 0.30000001192092896,
@@ -808,7 +808,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1005,
+            "keyFrame": 1000,
             "position": [
                 0.07000000029802322,
                 -0.10000000149011612,
@@ -825,7 +825,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1010,
+            "keyFrame": 1005,
             "position": [
                 -0.07000000029802322,
                 0.10000000149011612,
@@ -842,7 +842,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1015,
+            "keyFrame": 1010,
             "position": [
                 0.07000000029802322,
                 -0.04500000178813934,
@@ -859,7 +859,7 @@
                 1.0
             ],
             "interpPosition": 0,
-            "keyFrame": 1020,
+            "keyFrame": 1015,
             "position": [
                 0.0,
                 0.0,
@@ -1003,76 +1003,280 @@
             ]
         }
     ],
-    "vecRotData": [
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "interpRotation": 1,
-            "keyFrame": 0,
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "interpRotation": 1,
-            "keyFrame": 50,
-            "rotation": [
-                -10.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "curveType": 2,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "interpRotation": 1,
-            "keyFrame": 350,
-            "rotation": [
-                -10.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "interpRotation": 0,
-            "keyFrame": 749,
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        }
-    ],
+  "vecRotData": [
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 0,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 50,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 2,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 350,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 0,
+      "keyFrame": 749,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 0,
+      "keyFrame": 1400,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1405,
+      "rotation": [
+        0.0,
+        8.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1410,
+      "rotation": [
+        0.0,
+        -8.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1415,
+      "rotation": [
+        0.0,
+        5.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1420,
+      "rotation": [
+        0.0,
+        -5.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1425,
+      "rotation": [
+        0.0,
+        3.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1430,
+      "rotation": [
+        0.0,
+        -3.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1433,
+      "rotation": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1436,
+      "rotation": [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1439,
+      "rotation": [
+        0.0,
+        0.5,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 1442,
+      "rotation": [
+        0.0,
+        -0.5,
+        0.0
+      ]
+    },
+    {
+      "curveType": 0,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 0,
+      "keyFrame": 1445,
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
     "vecTargetData": [
         {
             "curveType": 2,
