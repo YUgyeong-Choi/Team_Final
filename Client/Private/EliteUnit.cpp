@@ -680,7 +680,16 @@ PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pOffset)
 
     if (pOffset)
     {
-        mat = XMMatrixMultiply(mat, *pOffset); // 월드 공간에서 적용
+        _vector S, R, T;
+        XMMatrixDecompose(&S, &R, &T, mat);
+
+        _vector Sw, Rw, Tw;
+        XMMatrixDecompose(&Sw, &Rw, &Tw, *pOffset);
+
+        T = XMVectorAdd(T, XMVectorSet(XMVectorGetX(Tw), XMVectorGetY(Tw), XMVectorGetZ(Tw), 0.f));
+
+        // 원래 스케일/회전 유지하고 새 위치로 재합성
+        mat = XMMatrixAffineTransformation(S, XMVectorZero(), R, T);
     }
 
     return ToPxPose(mat);

@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "UI_Manager.h"
+#include "Camera_Manager.h"
 
 CKeyDoor::CKeyDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
@@ -57,6 +58,7 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			}
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 		}
 	}
@@ -71,10 +73,6 @@ void CKeyDoor::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	if (m_eInteractType == Client::OUTDOOR)
-	{
-
-	}
 	if (m_pAnimator)
 		m_pAnimator->Update(fTimeDelta);
 
@@ -215,7 +213,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
-			vTargetPos = _vector({ 183.38f, 8.85f, -8.f, 1.f });
+			vTargetPos = _vector({ 183.05f, 8.85f, -8.f, 1.f });
 			break;
 		default:
 			break;
@@ -245,22 +243,18 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bRotationStart = false;
 			m_bStartCutScene = true;
-
-			// 여기서 키 여는 애니메이션 활성화
-
-			// 장원햄이 키 여는 애니메이션 끝났으면 
-			// m_bMoveSecondStart = true;
-			// 무기 집어넣는거 애니메이션 실행
 		}
 	}
 
-	// m_bFinishPos && m_bPutWeapon 면
-	// m_pPlayer->Interaction_Door(m_eInteractType, this);
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
+
+
+
+		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
 }
 

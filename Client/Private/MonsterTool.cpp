@@ -59,12 +59,12 @@ HRESULT	CMonsterTool::Render_ImGui()
 	}
 
 	//몬스터 종류 나열 콤보 박스
-	if (ImGui::BeginCombo("##MonsterCombo", m_Monsters[m_iMonsterIndex].c_str()))
+	if (ImGui::BeginCombo("##MonsterCombo", m_strMonsters[m_iMonsterIndex].c_str()))
 	{
-		for (_int i = 0; i < IM_ARRAYSIZE(m_Monsters); i++)
+		for (_int i = 0; i < IM_ARRAYSIZE(m_strMonsters); i++)
 		{
 			_bool bSelected = (m_iMonsterIndex == i);
-			if (ImGui::Selectable(m_Monsters[i].c_str(), bSelected))
+			if (ImGui::Selectable(m_strMonsters[i].c_str(), bSelected))
 			{
 				m_iMonsterIndex = i;
 			}
@@ -433,7 +433,7 @@ HRESULT CMonsterTool::Spawn_MonsterToolObject()
 	// 오브젝트 월드 행렬에 적용
 	XMStoreFloat4x4(&Desc.WorldMatrix, SpawnWorldMatrix);
 	Desc.eMeshLevelID = LEVEL::YW;
-	lstrcpy(Desc.szMeshID, StringToWString(m_Monsters[m_iMonsterIndex]).c_str());
+	lstrcpy(Desc.szMeshID, StringToWString(m_strMonsters[m_iMonsterIndex]).c_str());
 
 
 
@@ -586,13 +586,13 @@ void CMonsterTool::Detail_SpawnType()
 	if (m_pFocusObject)
 	{
 		//스폰 타입 콤보 박스
-		if (ImGui::BeginCombo("##Spawn Type", m_SpawnType[ENUM_CLASS(m_pFocusObject->m_eSpawnType)].c_str()))
+		if (ImGui::BeginCombo("##Spawn Type", m_strSpawnTypes[ENUM_CLASS(m_pFocusObject->m_eSpawnType)].c_str()))
 		{
-			for (_int i = 0; i < IM_ARRAYSIZE(m_SpawnType); i++)
+			for (_int i = 0; i < IM_ARRAYSIZE(m_strSpawnTypes); i++)
 			{
 				_bool bSelected = ENUM_CLASS(m_pFocusObject->m_eSpawnType) == i;
 
-				if (ImGui::Selectable(m_SpawnType[i].c_str(), bSelected))
+				if (ImGui::Selectable(m_strSpawnTypes[i].c_str(), bSelected))
 				{
 					m_pFocusObject->m_eSpawnType = static_cast<SPAWN_TYPE>(i);
 				}

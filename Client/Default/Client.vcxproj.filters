@@ -550,6 +550,9 @@
     <Filter Include="04.Utility">
       <UniqueIdentifier>{ff4bfb0c-59c5-4206-9eeb-f96e14f04d51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Levelup">
+      <UniqueIdentifier>{7bf9b3f5-fb99-4899-8ac0-6c24a28a127c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1132,6 +1135,9 @@
     <ClInclude Include="..\public\SpringBoneSys.h">
       <Filter>04.Utility</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI_Levelup.h">
+      <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1687,6 +1693,9 @@
     </ClCompile>
     <ClCompile Include="..\private\SpringBoneSys.cpp">
       <Filter>04.Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Levelup.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

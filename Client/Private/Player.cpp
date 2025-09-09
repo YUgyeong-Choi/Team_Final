@@ -136,13 +136,17 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	CSpringBoneSys::SpringInitParams springParams;
 	springParams.restDirBiasEnable = false;
-	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth"}, springParams);
+	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Lamp"}, springParams);
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
-	if (FAILED(Ready_Stat()))
-		return E_FAIL;
+	//if (FAILED(Ready_Stat()))
+	//	return E_FAIL;
 
+#ifdef _DEBUG
+	Add_Ergo(10000.f);
+#endif
+	Add_Ergo(10000.f);
 	return S_OK;
 }
 
@@ -1729,6 +1733,23 @@ void CPlayer::Register_Events()
 			}
 		});
 
+	m_pAnimator->RegisterEventListener("OnSwordSkillTrail", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("OffSwordSkillTrail", [this]()
+		{
+			if (m_pWeapon)
+			{
+				m_pWeapon->Set_WeaponTrail_Active(false, TRAIL_SKILL_BLUE);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("OffSwordTrail", [this]()
 		{
 			if (m_pWeapon)
@@ -2417,13 +2438,27 @@ void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const 
 	}
 }
 
+void CPlayer::Set_Ergo(_float fErgo)
+{
+	m_fErgo = fErgo;
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
 void CPlayer::Apply_Stat()
 {
-	m_fMaxHp = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
-	m_fHp = m_fMaxHp;
 
-	m_fMaxStamina = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
-	m_fStamina = m_fMaxStamina;
+	if (m_eStat.iVitality > 1)
+	{
+		m_fMaxHp = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
+		m_fHp = m_fMaxHp;
+	}
+
+	if (m_eStat.iStamina > 1)
+	{
+		m_fMaxStamina = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
+		m_fStamina = m_fMaxStamina;
+	}
 
 	// 무기에 스탯이랑, 무기 기본공격력 이용해서 실제 주는 데미지를 계산해놓는다.
 	// 효율? 이것도 만들어서 나중에 고쳐놓기
@@ -2431,8 +2466,14 @@ void CPlayer::Apply_Stat()
 	{
 		_float fBaseDamage = m_pWeapon->GetBaseDamage();
 		
-		fBaseDamage += floorf(fBaseDamage *  (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.2f);
-		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.2f);
+		if (m_eStat.iMotivity > 1)
+		{
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) );
+		}
+		if (m_eStat.iTechnique > 1)
+		{
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) );
+		}
 
 
 		m_pWeapon->SetDamage(fBaseDamage);
@@ -2443,9 +2484,19 @@ void CPlayer::Apply_Stat()
 	{
 		_float fBaseDamage = m_pLegionArm->GetBaseDamage();
 
-		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f);
-		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
-		fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
+		if (m_eStat.iMotivity > 1)
+		{
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f);
+		}
+		if (m_eStat.iTechnique > 1)
+		{
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+		}
+		if (m_eStat.iAdvance > 1)
+		{
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
+		}
+	
 
 		m_pLegionArm->SetDamage(fBaseDamage);
 
@@ -2482,6 +2533,16 @@ void CPlayer::Compute_MaxErgo(_int iLevel)
 
 	m_fMaxErgo = powf(1.2f, _float(iLevel)) * 100.f;
 	
+}
+
+_bool CPlayer::Check_LevelUp(_int iLevel)
+{
+	_float fRequireErgo = powf(1.2f, _float(iLevel)) * 100.f;
+
+	if (m_fErgo >= fRequireErgo)
+		return true;
+
+	return false;
 }
 
 
@@ -3413,12 +3474,12 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 
 void CPlayer::Create_LeftArm_Lightning()
 {
-	CEffectContainer::DESC Lightdesc = {};
-	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
-		MSG_BOX("이펙트 생성 실패함");
+	//CEffectContainer::DESC Lightdesc = {};
+	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+	//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
 }
 
 void CPlayer::Movement(_float fTimeDelta)
