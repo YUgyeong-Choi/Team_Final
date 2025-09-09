@@ -1,0 +1,28 @@
+{
+  "exp": 1.35,
+  "parts": {
+    "Front": {
+      "downBias": [ 0.28, 0.42 ],
+      "gScale": [ 0.8, 1.0 ],
+      "stiffness": [ 0.01, 0.007 ]
+    },
+    "Back": {
+      "downBias": [ 0.22, 0.38 ],
+      "gScale": [ 0.8, 1.0 ],
+      "stiffness": [ 0.01, 0.007 ]
+    },
+    "Cloth": {
+      "stiffness": [ 0.12, 0.22 ], 
+      "gScale": [ 0.05, 0.1 ], 
+      "downBias": [ 0.05, 0.1 ] 
+    },
+    "Other": {
+      "downBias": [ 0.26, 0.44 ],
+      "gScale": [ 0.8, 1.0 ],
+      "stiffness": [ 0.01, 0.007 ]
+    }
+  },
+  "follow": [ 0.55, 0.85 ],
+  "maxDeg": [ 120.0, 170.0 ],
+  "damping": [ 0.98, 0.94 ]
+}

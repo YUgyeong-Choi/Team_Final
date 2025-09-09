@@ -40,6 +40,7 @@ private:
 private:
 	void Render_CellList();
 	void Render_Settings();
+	void Render_Detail();
 
 private:
 	//포인트 추가

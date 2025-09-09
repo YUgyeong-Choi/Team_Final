@@ -6,6 +6,7 @@
 #include "Projectile.h"
 #include "FlameField.h"
 #include "Static_Decal.h"
+#include "SpringBoneSys.h"
 #include "GameInstance.h"
 #include "Effect_Manager.h"
 #include "LockOn_Manager.h"
@@ -15,6 +16,8 @@
 #include <PhysX_IgnoreSelfCallback.h>
 #include "Weapon_Monster.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -79,7 +82,12 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 		m_pAnimator->PlayClip(m_pModelCom->GetAnimationClipByName("AS_Idle_C_1"), false);
 		m_pAnimator->Update(0.016f);
 		m_pModelCom->Update_Bones();
-		InitializeSpringBones();
+
+		CSpringBoneSys::SpringInitParams springParams;
+		springParams.restDirBiasEnable = true;
+		m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair", "Head_Rope"}, springParams);
+		if (m_pSpringBoneSys == nullptr)
+			return E_FAIL;
 		if (m_pHammerBone)
 		{
 			_matrix cmHead = XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()); // 머리 컴바인드
@@ -181,14 +189,21 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		m_bDebugMode = !m_bDebugMode;
 	}
 
-	if (KEY_PRESSING(DIK_LCONTROL))
+	if (KEY_PRESSING(DIK_LALT))
 	{
-		if (KEY_DOWN(DIK_A))
+		if (KEY_DOWN(DIK_Q))
 		{
+			CEffectContainer::DESC desc = {};
 
+			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			desc.pSocketMatrix = m_pLeftForearmBone->Get_CombinedTransformationMatrix();
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OldSparkDrop_P1"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
-		if (KEY_DOWN(DIK_S))
+		if (KEY_DOWN(DIK_2))
 		{
 
 		}
@@ -221,8 +236,8 @@ void CFestivalLeader::Update(_float fTimeDelta)
 		ApplyHeadSpaceSwitch(fTimeDelta);
 		Update_Collider(); 
 	}
-
-	Update_HairSpring();
+	m_pSpringBoneSys->Update(fTimeDelta);
+	//Update_HairSpring(fTimeDelta);
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
@@ -463,6 +478,22 @@ void CFestivalLeader::Ready_BoneInformation()
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pRightHandBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Ref_Bip001-L-Forearm"); }); // 왼쪽 팔꿈치
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pLeftForearmBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Skin_Bip001-R-Forearm"); }); // 오른쪽 팔꿈치 이름 통일 안시키는거 진짜 깨  빢 치네 
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRightForearmBone = *it;
 	}
 }
 
@@ -1294,335 +1325,6 @@ void CFestivalLeader::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eCollider
 {
 }
 
-void CFestivalLeader::InitializeSpringBones()
-{
-for (auto* child : m_pModelCom->Get_Bones())
-{
-	string boneName = child->Get_Name();
-
-	if (boneName.find("Hair") == string::npos&&boneName.find("Head_Rope") == string::npos)
-		continue;
-
-	_int iParentIdx = child->Get_ParentBoneIndex();
-	if (iParentIdx < 0)
-		continue;
-
-	auto* pParent = m_pModelCom->Get_Bones()[iParentIdx];
-	SpringBone vSpringBone{};
-	vSpringBone.pBone = child;
-	vSpringBone.pParent = pParent;
-	vSpringBone.parentIdx = iParentIdx;
-	vSpringBone.childIdx = child->Get_BoneIndex();
-
-
-	_matrix childL = XMLoadFloat4x4(child->Get_TransformationMatrix());
-	vSpringBone.restLocalPos = childL.r[3];
-	vSpringBone.length = XMVectorGetX(XMVector3Length(vSpringBone.restLocalPos));
-	vSpringBone.restDirLocal = XMVector3Normalize(vSpringBone.restLocalPos);
-
-	// 부위 판별
-	_bool isFront = (boneName.find("FL_") != string::npos || boneName.find("FR_") != string::npos);
-	_bool isBack = (boneName.find("BL_") != string::npos || boneName.find("BR_") != string::npos);
-	_bool isLeft = (boneName.find("_L") != string::npos || boneName.find("BL_") != string::npos ||
-		boneName.find("FL_") != string::npos || boneName.find("LL_") != string::npos);
-	_bool isRight = (boneName.find("_R") != string::npos || boneName.find("BR_") != string::npos ||
-		boneName.find("FR_") != string::npos|| boneName.find("RR_") != string::npos);
-
-
-	_float fY = XMVectorGetY(vSpringBone.restDirLocal);
-
-	// RestDir 보정
-	_vector correctedRestDir = vSpringBone.restDirLocal;
-	_vector idealDir = XMVectorSet(0.f, -1.f, 0., 0.f);
-
-
-	idealDir = XMVector3Normalize(idealDir);
-
-	// 현재 방향과 이상적 방향의 차이 확인
-	_float fAngleFromIdeal = acosf(clamp(XMVectorGetX(XMVector3Dot(vSpringBone.restDirLocal, idealDir)), -1.f, 1.f));
-	_float fMaxAngle = XMConvertToRadians(70.f);
-
-	if (fAngleFromIdeal > fMaxAngle || fY > 0.1f) // Y가 양수면 위쪽을 향함
-	{
-		_float fBlendFactor = 0.6f; //60%는 내가 쓸 방향, 30% 원래 방향
-		correctedRestDir = XMVector3Normalize(
-			vSpringBone.restDirLocal * (1.f - fBlendFactor) + idealDir * fBlendFactor
-		);
-	}
-
-	vSpringBone.restDirLocal = correctedRestDir;
-
-	vSpringBone.restUpLocal = XMVector3Normalize(childL.r[1]);
-	vSpringBone.restRotQ = XMQuaternionRotationMatrix(childL);
-
-	// 부위별 처짐 정도 설정
-	_float fDownBiasAmount = 0.4f;
-	_vector gravityDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
-
-	if (isFront)
-	{
-		fDownBiasAmount = 0.5f;
-	}
-	else if (isBack) 
-	{
-		fDownBiasAmount = 0.3f;
-	}
-
-	_vector restBiasDir = XMVector3Normalize(
-		vSpringBone.restDirLocal * (1.f - fDownBiasAmount) + gravityDir * fDownBiasAmount
-	);
-
-	vSpringBone.curTipLocal = restBiasDir * vSpringBone.length;
-	vSpringBone.prevTipLocal = vSpringBone.curTipLocal;
-
-	m_SpringBones.push_back(vSpringBone);
-}
-
-Build_SpringBoneHierarchy();
-
-for (_int layer = 0; layer < static_cast<_int>(m_SBLayers.size()); layer ++)
-{
-	for (int i : m_SBLayers[layer])
-	{
-		auto& sb = m_SpringBones[i];
-
-		// 깊이 기반 보간 인자
-		_float t = (sb.chainLen > 1) ? static_cast<_float>(sb.depth) / (sb.chainLen - 1) : 0.f;
-		_float t2 = powf(t, 1.35f);
-
-	
-		const string& name = sb.pBone->Get_Name();
-		_bool isFront = (name.find("FL_") != string::npos || name.find("FR_") != string::npos);
-		_bool isBack = (name.find("BL_") != string::npos || name.find("BR_") != string::npos);
-
-		// 물리 파라미터
-		if (isFront)
-		{
-			sb.stiffness = LerpFloat(0.02f, 0.01f, t2);
-			sb.gScale = LerpFloat(1.50f, 2.10f, t2);
-			sb.downBias = LerpFloat(0.25f, 0.52f, t2);
-
-		}
-		else if (isBack) 
-		{
-			sb.stiffness = LerpFloat(0.03f, 0.018f, t2);
-			sb.gScale = LerpFloat(1.40f, 2.00f, t2);
-			sb.downBias = LerpFloat(0.28f, 0.50f, t2);
-		}
-		else
-		{
-			sb.stiffness = LerpFloat(0.02f, 0.01f, t2);
-			sb.gScale = LerpFloat(1.60f, 2.30f, t2);
-			sb.downBias = LerpFloat(0.25f, 0.52f, t2);
-		}
-
-		sb.follow = LerpFloat(0.1f, 0.5f, t2);
-		sb.maxDeg = LerpFloat(140.f, 90.f, t2);
-		sb.damping = LerpFloat(1.f, 0.7f, t2);
-		_matrix parentLocal = XMMatrixIdentity();
-		if (sb.pParent)
-		{
-			_vector S, Rq, T;
-			parentLocal = XMLoadFloat4x4(sb.pParent->Get_CombinedTransformationMatrix());
-			XMMatrixDecompose(&S, &Rq, &T, parentLocal);
-			Rq = XMQuaternionNormalize(Rq);
-			parentLocal = XMMatrixRotationQuaternion(Rq); // 순수 회전만
-		}
-		sb.parentPrevRotC = parentLocal;
-	}
-}
-}
-
-
-void CFestivalLeader::Update_HairSpring()
-{
-	constexpr _float fTimeDelta = 1.f / 60.f; // 시간은 너무 튀거나 이상해지지 않게 고정값으로
-
-	for (_int layer = 0; layer < static_cast<_int>(m_SBLayers.size()); layer++)
-	{
-		for (_int i : m_SBLayers[layer])
-		{
-			auto& vSpringBone = m_SpringBones[i];
-			_int iParentIdx = m_SBParentIdx[i];
-
-			// 부모나 본이 없으면 패스
-			if (!vSpringBone.pBone || !vSpringBone.pParent)
-				continue;
-
-			_vector S, Rq, T;
-			_matrix parentC;
-
-			if (iParentIdx >= 0)
-			{
-				parentC = XMLoadFloat4x4(m_SpringBones[iParentIdx].pBone->Get_CombinedTransformationMatrix());
-			}
-			else
-			{
-				parentC = XMLoadFloat4x4(vSpringBone.pParent->Get_CombinedTransformationMatrix());
-			}
-
-
-			XMMatrixDecompose(&S, &Rq, &T, parentC);
-			Rq = XMQuaternionNormalize(Rq);
-			_matrix parentR = XMMatrixRotationQuaternion(Rq);
-			_matrix parentRInv = XMMatrixTranspose(parentR);
-
-			// 부모 회전 변화에 따른 관성 처리
-			_matrix toCurr = parentRInv * vSpringBone.parentPrevRotC;
-			_vector qToCurr = XMQuaternionRotationMatrix(toCurr);
-			_vector qBlend = XMQuaternionSlerp(XMQuaternionIdentity(), qToCurr, vSpringBone.follow); // 부모를 따라가는 정도로 블렌드
-			_matrix toCurrSoft = XMMatrixRotationQuaternion(qBlend);
-
-			_vector oldTipLocal = vSpringBone.curTipLocal;
-
-			// Verlet 적분 (관성)
-			_vector velocity = (vSpringBone.curTipLocal - vSpringBone.prevTipLocal) * vSpringBone.damping;
-			vSpringBone.curTipLocal = vSpringBone.curTipLocal + velocity;
-			vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft);
-
-			// 중력 처리
-			_vector gDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
-			_vector gGravityDir = XMVector3TransformNormal(gDir, parentRInv);
-
-			_vector restBiasDir = XMVector3Normalize(
-				vSpringBone.restDirLocal * (1.f - vSpringBone.downBias) + gGravityDir * vSpringBone.downBias);
-
-			// 중력
-			_vector gravityForce = gGravityDir * (vSpringBone.gravity * vSpringBone.gScale * fTimeDelta * fTimeDelta);
-			vSpringBone.curTipLocal += gravityForce;
-
-
-			// 복원력
-			_vector targetPos = restBiasDir * vSpringBone.length;
-			_vector restoreForce = (targetPos - vSpringBone.curTipLocal) * vSpringBone.stiffness;
-			vSpringBone.curTipLocal += restoreForce;
-
-
-			// 길이 
-			_vector dirL = XMVector3Normalize(vSpringBone.curTipLocal);
-			vSpringBone.curTipLocal = dirL * vSpringBone.length;
-
-			//  콘 제한
-			_float fMaxRad = XMConvertToRadians(vSpringBone.maxDeg);
-			_float fAng = acosf(std::clamp(XMVectorGetX(XMVector3Dot(restBiasDir, dirL)), -1.f, 1.f));
-
-			if (fAng > fMaxRad)
-			{
-				_float falloffStart = fMaxRad * 0.8f; // 너무 딱 잘라서 각도 제한 안하게 80프로부터
-
-				if (fAng > falloffStart)
-				{
-					_float fExcess = fAng - falloffStart;
-					_float fMaxExcess = fMaxRad - falloffStart;
-					_float t = fExcess / fMaxExcess;
-					_float fEasedT = 1.f - powf(1.f - t, 3.f); // Cubic ease-out
-					_float targetAngle = falloffStart + fMaxExcess * fEasedT;
-
-					_vector vAxis = XMVector3Cross(restBiasDir, dirL);
-					_float fAxisLen = XMVectorGetX(XMVector3Length(vAxis));
-
-					if (fAxisLen > 0.001f) // 유요한 길이인지
-					{
-						vAxis = XMVector3Normalize(vAxis);
-						_matrix rot = XMMatrixRotationAxis(vAxis, targetAngle);
-						dirL = XMVector3TransformNormal(restBiasDir, rot);
-						vSpringBone.curTipLocal = dirL * vSpringBone.length;
-					}
-				}
-			}
-
-			// 회전 계산
-			_vector dq = FromToQ(vSpringBone.restDirLocal, dirL);
-			_vector newRotQ = XMQuaternionMultiply(dq, vSpringBone.restRotQ);
-			newRotQ = XMQuaternionNormalize(newRotQ);
-
-			_matrix R = XMMatrixRotationQuaternion(newRotQ);
-
-			// 최종 변환 행렬
-			_matrix L;
-			L.r[0] = R.r[0];
-			L.r[1] = R.r[1];
-			L.r[2] = R.r[2];
-			L.r[3] = XMVectorSetW(vSpringBone.restLocalPos, 1.f);
-
-			vSpringBone.pBone->Set_TransformationMatrix(L);
-
-			// 상태 업데이트
-			vSpringBone.prevTipLocal = oldTipLocal;
-			vSpringBone.parentPrevRotC = parentR;
-
-		}
-	}
-	m_pModelCom->Update_Bones();
-}
-
-void CFestivalLeader::Build_SpringBoneHierarchy()
-{
-	_int iMaxIdx = 0;
-	for (auto& sb : m_SpringBones)
-	{
-		if (sb.childIdx > iMaxIdx)
-			iMaxIdx = sb.childIdx;
-		if (sb.parentIdx > iMaxIdx)
-			iMaxIdx = sb.parentIdx;
-	}
-
-	vector<_int> boneIdxToSpringIdx(iMaxIdx + 1, -1);
-	for (_int i = 0; i < static_cast<_int>(m_SpringBones.size()); i++)
-		boneIdxToSpringIdx[m_SpringBones[i].childIdx] = i;
-
-	m_SBChildren.assign(m_SpringBones.size(), {});
-	m_SBParentIdx.assign(m_SpringBones.size(), -1);
-	m_SBRoots.clear();
-
-	for (_int i = 0; i < static_cast<_int>(m_SpringBones.size()); i++)
-	{
-		_int iParentBoneIdx = m_SpringBones[i].parentIdx;          
-		_int pSpr = (iParentBoneIdx >= 0 ? boneIdxToSpringIdx[iParentBoneIdx] : -1);
-		if (pSpr < 0) 
-			m_SBRoots.emplace_back(i);          
-		else 
-		{
-			m_SBParentIdx[i] = pSpr;
-			m_SBChildren[pSpr].emplace_back(i);
-		}
-	}
-
-	// depth 채우기, 레이어 구성
-	vector<_int> depth(m_SpringBones.size(), -1);
-	queue<_int> q;
-	for (_int r : m_SBRoots) 
-	{ 
-		depth[r] = 0; 
-		q.push(r); 
-	}
-
-	_int iMaxDepth = 0;
-	while (!q.empty()) 
-	{
-		_int u = q.front();
-		q.pop();
-		for (_int v : m_SBChildren[u]) // 현재 뼈의 자식들
-		{
-			if (depth[v] != -1) 
-				continue;
-			depth[v] = depth[u] + 1;
-			if (depth[v] > iMaxDepth) // 깊이 갱신
-				iMaxDepth = depth[v];
-			q.push(v);
-		}
-	}
-
-	m_SBLayers.assign(iMaxDepth + 1, {});
-	for (_int i = 0; i <static_cast<_int>(m_SpringBones.size()); i++)
-	{
-		m_SpringBones[i].depth = depth[i];
-		m_SBLayers[depth[i]].emplace_back(i);
-	}
-}
-
-
-
 
 CFestivalLeader* CFestivalLeader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -1649,6 +1351,7 @@ CGameObject* CFestivalLeader::Clone(void* pArg)
 void CFestivalLeader::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSpringBoneSys);
 	Safe_Release(m_pPhysXActorComForHammer);
 	Safe_Release(m_pPhysXActorComForBasket);
 	Safe_Release(m_pPhysXActorComForRightHand);

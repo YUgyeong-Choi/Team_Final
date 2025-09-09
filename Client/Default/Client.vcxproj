@@ -222,6 +222,7 @@
     <ClInclude Include="..\Public\PlayerLamp.h" />
     <ClInclude Include="..\Public\Oil.h" />
     <ClInclude Include="..\Public\Projectile.h" />
+    <ClInclude Include="..\public\SpringBoneSys.h" />
     <ClInclude Include="..\public\Stargazer.h" />
     <ClInclude Include="..\Public\TriggerBGM.h" />
     <ClInclude Include="..\Public\TriggerBox.h" />
@@ -457,6 +458,7 @@
     <ClCompile Include="..\private\Lamp.cpp" />
     <ClCompile Include="..\Private\Projectile.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\private\SpringBoneSys.cpp" />
     <ClCompile Include="..\Private\SpriteEffect.cpp" />
     <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Stamina_Bar.cpp" />

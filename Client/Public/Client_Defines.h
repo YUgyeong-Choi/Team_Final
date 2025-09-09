@@ -53,7 +53,7 @@ extern HINSTANCE g_hInst;
 
 using namespace Client;
 
-#define TEST_FIRE_EATER_MAP //푸오코맵만 만들기
+//#define TEST_FIRE_EATER_MAP //푸오코맵만 만들기
 //#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #pragma region 한영웅

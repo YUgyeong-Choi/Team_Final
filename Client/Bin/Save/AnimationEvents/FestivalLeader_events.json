@@ -277,14 +277,14 @@
             "ClipName": "AS_Idle_C_1",
             "Duration": 337.0,
             "Events": [
-              {
-                "EventName": "ResetRootStep",
-                "Time": 1.0
-              },
-              {
-                "EventName": "EndPhase2Change",
-                "Time": 5.0
-              }
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "EndPhase2Change",
+                    "Time": 5.0
+                }
             ],
             "IsLoop": true,
             "RootMotion": false,
@@ -335,17 +335,16 @@
         {
             "ClipName": "AS_Special_Die",
             "Duration": 240.0,
-          "Events": [
-
-            {
-              "EventName": "RestoreHeadBoneIndex",
-              "Time": 1.0
-            },
-            {
-              "EventName": "CollidersOff",
-              "Time": 1.0
-            }
-          ],
+            "Events": [
+                {
+                    "EventName": "RestoreHeadBoneIndex",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "CollidersOff",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -415,7 +414,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 35.0
         },
         {
             "ClipName": "AS_F_Guide_C04",

@@ -12,6 +12,7 @@
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_MonsterHP_Bar.h"
 #include "Static_Decal.h"
+#include "Cell.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -76,12 +77,30 @@ HRESULT CFuoco::Initialize(void* pArg)
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForArm->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorComForFoot->Get_Actor());
 
+
+	//처음에 비활성화 되어있던 인덱스들을 받아온다.
+	m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
+
 	return S_OK;
 }
 
 void CFuoco::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_pGameInstance->Key_Down(DIK_L))
+	{
+		//저장해둔 인덱스의 셀들을 활성/비활성화 한다.
+		for (_int iIndex : m_NavInactiveIndecies)
+		{
+			CCell* pCell = m_pNaviCom->Get_Cell(iIndex);
+			if (pCell)
+			{
+				_bool bActive = pCell->Get_Active();
+				pCell->Set_Active(!bActive);
+			}
+		}
+	}
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
@@ -184,48 +203,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		Reset();
 	}
 
-	if (KEY_PRESSING(DIK_LCONTROL))
-	{
-		if (KEY_DOWN(DIK_A))
-		{
-			// 마지막 돌 때 한번만 실행되면 됨
-			//CEffectContainer::DESC desc = {};
-			//desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger0"));
-			//desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationAxis(_vector{ 1.f, 0.f, 0.f, 0.f }, XMConvertToRadians(90.f)) *
-			//	XMMatrixTranslation(0.f, 0.f, 1.f));
-
-			//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameThrow_P1"), &desc) == nullptr)
-			//	MSG_BOX("이펙트 생성 실패함");
-
-			CEffectContainer::DESC BellyFireDesc = {};
-
-			_matrix combmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"))) * m_pTransformCom->Get_WorldMatrix();
-			_vector vPos = combmat.r[3];
-			_vector vLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
-			vPos += vLook * 0.6f;
-			XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
-
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
-
-		}
-		if (KEY_DOWN(DIK_S))
-		{
-			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
-			CEffectContainer::DESC Desc = {};
-
-			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-
-			XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Erupt_P1"), &Desc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-		}
-	}
 #endif
 
 	if (nullptr != m_pHPBar)
