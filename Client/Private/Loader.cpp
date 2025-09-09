@@ -289,6 +289,8 @@ HRESULT CLoader::Loading_For_Static()
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Skill.json"))))
 		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_BloodTest.json"))))
+		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/PE_Player_SkillWeaponParticle.json"))))
 		return E_FAIL;
 
