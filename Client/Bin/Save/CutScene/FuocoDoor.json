@@ -138,7 +138,7 @@
     ],
     "vecMatrixPosData": [
         {
-            "curveType": 1,
+            "curveType": 2,
             "curveY": [
                 0.0,
                 0.25,
@@ -1036,6 +1036,159 @@
         -10.0,
         0.0,
         0.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 250,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 256,
+      "rotation": [
+        -10.0,
+        -3.0,
+        5.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 262,
+      "rotation": [
+        -10.0,
+        3.0,
+        -5.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 268,
+      "rotation": [
+        -10.0,
+        -1.0,
+        3.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 274,
+      "rotation": [
+        -10.0,
+        1.0,
+        -3.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 280,
+      "rotation": [
+        -10.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 286,
+      "rotation": [
+        -10.0,
+        0.0,
+        -1.0
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 292,
+      "rotation": [
+        -10.0,
+        0.0,
+        0.5
+      ]
+    },
+    {
+      "curveType": 1,
+      "curveY": [
+        0.0,
+        0.25,
+        0.5,
+        0.75,
+        1.0
+      ],
+      "interpRotation": 1,
+      "keyFrame": 298,
+      "rotation": [
+        -10.0,
+        0.0,
+        -0.5
       ]
     },
     {
