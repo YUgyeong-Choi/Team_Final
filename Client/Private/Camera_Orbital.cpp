@@ -4,6 +4,7 @@
 #include "PhysX_IgnoreSelfCallback.h"
 #include "Camera_Manager.h"
 #include "Player.h"
+#include "LockOn_Manager.h"
 
 #include "Client_Calculation.h"
 #include "Unit.h"
@@ -397,6 +398,12 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
 
 	unordered_set<PxActor*> ignoreActors = pPlayer->Get_Controller()->Get_IngoreActors();
+	CUnit* pTarget = CLockOn_Manager::Get_Instance()->Get_Target();
+	if (pTarget)
+	{
+		const auto& targetIgnore = pTarget->Get_BodyActor()->Get_IngoreActors();
+		ignoreActors.insert(targetIgnore.begin(), targetIgnore.end());
+	}
 	CIgnoreSelfCallback callback(ignoreActors);
 
 	if (m_pGameInstance->Get_Scene()->raycast(origin, direction, m_fDistance, hit, hitFlags, filterData, &callback))

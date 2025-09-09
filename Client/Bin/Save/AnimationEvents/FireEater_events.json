@@ -884,7 +884,7 @@
                     "Time": 260.0
                 },
                 {
-                    "EventName": "SlowAnimSpeed",
+                    "EventName": "FastAnimSpeed",
                     "Time": 250.0
                 }
             ],

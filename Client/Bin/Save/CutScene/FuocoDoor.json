@@ -94,7 +94,7 @@
             ],
             "fFov": 30.0,
             "interpFov": 0,
-            "keyFrame": 1051
+            "keyFrame": 1041
         },
         {
             "curveType": 0,
@@ -107,7 +107,7 @@
             ],
             "fFov": 38.0,
             "interpFov": 0,
-            "keyFrame": 1130
+            "keyFrame": 1120
         },
         {
             "curveType": 4,
@@ -120,7 +120,7 @@
             ],
             "fFov": 38.0,
             "interpFov": 1,
-            "keyFrame": 1445
+            "keyFrame": 1355
         },
         {
             "curveType": 0,
@@ -133,7 +133,7 @@
             ],
             "fFov": 60.0,
             "interpFov": 0,
-            "keyFrame": 1470
+            "keyFrame": 1405
         }
     ],
     "vecMatrixPosData": [
@@ -417,7 +417,7 @@
                 1.0
             ],
             "interpMatrixPosition": 0,
-            "keyFrame": 1050,
+            "keyFrame": 1040,
             "worldMatrix": [
                 0.7669844627380371,
                 -0.33646342158317566,
@@ -447,7 +447,7 @@
                 1.0
             ],
             "interpMatrixPosition": 0,
-            "keyFrame": 1051,
+            "keyFrame": 1041,
             "worldMatrix": [
                 0.9999046325683594,
                 0.0001452919968869537,
@@ -468,7 +468,7 @@
             ]
         },
         {
-            "curveType": 1,
+            "curveType": 0,
             "curveY": [
                 0.0,
                 0.25,
@@ -477,7 +477,7 @@
                 1.0
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1130,
+            "keyFrame": 1120,
             "worldMatrix": [
                 0.999914824962616,
                 0.0001440052583348006,
@@ -493,7 +493,7 @@
                 0.0,
                 -0.24951672554016113,
                 0.5,
-                -201.68499755859375,
+                -202.18499755859375,
                 1.0
             ]
         },
@@ -528,7 +528,7 @@
             ]
         },
         {
-            "curveType": 1,
+            "curveType": 0,
             "curveY": [
                 0.0,
                 0.0,
@@ -537,7 +537,7 @@
                 0.44999998807907104
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1350,
+            "keyFrame": 1310,
             "worldMatrix": [
                 0.9998273253440857,
                 0.0002697233867365867,
@@ -567,7 +567,7 @@
                 1.0
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1445,
+            "keyFrame": 1355,
             "worldMatrix": [
                 0.9484122395515442,
                 -0.31703981757164,
@@ -597,7 +597,7 @@
                 0.7160000205039978
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1470,
+            "keyFrame": 1405,
             "worldMatrix": [
                 0.9958410859107971,
                 -0.08640532195568085,
@@ -627,7 +627,7 @@
                 1.0
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1550,
+            "keyFrame": 1540,
             "worldMatrix": [
                 0.996124804019928,
                 -0.08637826144695282,
@@ -757,7 +757,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1000,
+            "keyFrame": 990,
             "position": [
                 0.0,
                 0.0,
@@ -774,7 +774,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1005,
+            "keyFrame": 995,
             "position": [
                 0.20000000298023224,
                 -0.30000001192092896,
@@ -791,7 +791,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1010,
+            "keyFrame": 1000,
             "position": [
                 -0.20000000298023224,
                 0.30000001192092896,
@@ -808,7 +808,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1015,
+            "keyFrame": 1005,
             "position": [
                 0.07000000029802322,
                 -0.10000000149011612,
@@ -825,7 +825,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1020,
+            "keyFrame": 1010,
             "position": [
                 -0.07000000029802322,
                 0.10000000149011612,
@@ -842,7 +842,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1025,
+            "keyFrame": 1015,
             "position": [
                 0.07000000029802322,
                 -0.04500000178813934,
@@ -859,7 +859,7 @@
                 1.0
             ],
             "interpPosition": 0,
-            "keyFrame": 1030,
+            "keyFrame": 1020,
             "position": [
                 0.0,
                 0.0,
@@ -876,7 +876,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1460,
+            "keyFrame": 1410,
             "position": [
                 0.0,
                 0.0,
@@ -893,7 +893,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1465,
+            "keyFrame": 1415,
             "position": [
                 0.0,
                 0.699999988079071,
@@ -910,7 +910,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1470,
+            "keyFrame": 1420,
             "position": [
                 0.0,
                 -0.699999988079071,
@@ -927,7 +927,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1475,
+            "keyFrame": 1425,
             "position": [
                 0.0,
                 0.5,
@@ -944,7 +944,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1480,
+            "keyFrame": 1430,
             "position": [
                 0.0,
                 -0.5,
@@ -961,7 +961,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1485,
+            "keyFrame": 1435,
             "position": [
                 0.0,
                 0.30000001192092896,
@@ -978,7 +978,7 @@
                 1.0
             ],
             "interpPosition": 1,
-            "keyFrame": 1490,
+            "keyFrame": 1440,
             "position": [
                 0.0,
                 -0.30000001192092896,
@@ -995,7 +995,7 @@
                 1.0
             ],
             "interpPosition": 0,
-            "keyFrame": 1495,
+            "keyFrame": 1445,
             "position": [
                 0.0,
                 0.0,

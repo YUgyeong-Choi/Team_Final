@@ -108,6 +108,8 @@ private:
 	_int m_iStaratFrame;
 	_int m_iEndFrame;
 	_bool m_bShowSpecial = false;
+
+	_double m_Accumulate = 0.0;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
