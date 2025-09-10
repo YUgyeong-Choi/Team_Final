@@ -8,6 +8,7 @@
 #include "UI_Button_Script.h"
 #include "UI_SelectLocation.h"
 #include "UI_Levelup.h"
+#include "StargazerEffect.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -55,6 +56,9 @@ HRESULT CStargazer::Initialize(void* pArg)
 	LoadScriptData();
 
 	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
+	if (FAILED(Ready_EffectSet()))
 		return E_FAIL;
 
 	return S_OK;
@@ -684,6 +688,16 @@ HRESULT CStargazer::Ready_Script()
 
 	m_bUseScript = true;
 	m_bUseOtherUI = false;
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_EffectSet()
+{
+	CStargazerEffect::DESC desc = {};
+	desc.pOwner = this;
+	desc.iLevelID = m_iLevelID;
+	m_pGameInstance->Add_GameObject(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &desc);
+
 	return S_OK;
 }
 

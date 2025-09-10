@@ -553,6 +553,9 @@
     <Filter Include="02.GameObjects\17.BreakableMesh">
       <UniqueIdentifier>{a8dc9d78-dfec-4a6e-b3b0-6f4ebac7416f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffects">
+      <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1138,6 +1141,7 @@
     <ClInclude Include="..\public\UI_Levelup.h">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StargazerEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1697,6 +1701,7 @@
     <ClCompile Include="..\private\UI_Levelup.cpp">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\StargazerEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

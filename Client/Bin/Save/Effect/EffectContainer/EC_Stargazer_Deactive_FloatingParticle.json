@@ -3,7 +3,7 @@
         {
             "Accel": [
                 0.0,
-                3.0
+                0.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -19,15 +19,15 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
+                0.7591623067855835,
+                0.935692548751831,
                 1.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 1,
-            "EmissiveIntensity": 0.550000011920929,
+            "EmissiveIntensity": 0.6000000238418579,
             "EndTrack": 200,
             "FlipUV": false,
             "Gravity": 0.25,
@@ -35,12 +35,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        1.0,
-                        1.0,
+                        0.7591623067855835,
+                        0.935692548751831,
                         1.0,
                         1.0
                     ],
-                    "Intensity": 1.7300000190734863,
+                    "Intensity": 1.850000023841858,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,39 +61,39 @@
                     ]
                 }
             ],
-            "LifeTime": 4835.798828125,
+            "LifeTime": 5289.16845703125,
             "LifeTime_Particle": [
-                2.0,
-                3.0
+                1.0,
+                2.0
             ],
             "Local": true,
-            "Loop": false,
+            "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 4.0,
             "MinSpeed": 0.0,
             "Name": "Stargazer_Deactive_FloatingParticle1",
-            "NumInstance": 500,
+            "NumInstance": 30,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
                 0.0,
                 1.0,
                 0.0
             ],
             "OrbitSpeed": [
-                -20.0,
-                20.0
+                -5.0,
+                5.0
             ],
-            "PType": 0,
+            "PType": 2,
             "Pivot": [
                 0.0,
                 0.0,
                 0.0
             ],
             "Range": [
-                1.0,
-                1.0,
-                1.0
+                1.5,
+                1.5,
+                1.5
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -118,8 +118,8 @@
             "StartTrack": 0,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
-                "T_Shere_05_C_HJS",
-                "T_Shere_04_C_HJS",
+                "",
+                "T_Shere_03_C_HJS",
                 "",
                 ""
             ],
@@ -135,8 +135,83 @@
             "TileX": 1,
             "TileY": 1,
             "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                0.18324607610702515
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 62,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 62,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.3019607961177826,
+                        0.6823529601097107,
+                        1.0,
+                        0.18324607610702515
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        2.700000047683716,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 105.50346374511719,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Smoke_03_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
         }
     ],
-    "Loop": false,
-    "MaxFrame": 200
+    "Loop": true,
+    "MaxFrame": 60
 }

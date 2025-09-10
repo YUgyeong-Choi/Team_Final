@@ -399,10 +399,14 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             // 최근접 점과 pivot 거리
             float3 closest = prevPos + seg * t;
             float fDist = length(vCurPivot - closest);
-
             
-            if (isLoop != 0 && fDist < 0.01f)
-                needReset = true;
+            if (fDist < 0.01f)
+            {
+                if (isLoop != 0)
+                    needReset = true;
+                else
+                    pp.LifeTime.y = pp.LifeTime.x;
+            }
         }
 
         if (needReset)

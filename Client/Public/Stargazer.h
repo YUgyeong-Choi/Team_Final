@@ -78,6 +78,7 @@ private:
 
 	HRESULT Ready_Script();
 
+	HRESULT Ready_EffectSet();
 
 
 private:

@@ -14,6 +14,7 @@
 #include "Nav.h"
 #include "Static_Decal.h"
 #include "Stargazer.h"
+#include "StargazerEffect.h"
 #include "ErgoItem.h"
 #include "BreakableMesh.h"
 #pragma endregion
@@ -814,6 +815,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// 별바라기 전용 이펙트 세트
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StargazerEffect"),
+		CStargazerEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma region 맵 로딩
