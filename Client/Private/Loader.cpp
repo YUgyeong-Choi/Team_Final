@@ -823,17 +823,40 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #ifdef TESTMAP
 
-	#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	#endif // TEST_FIRE_EATER_MAP
-
 	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
 	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
+
+	#ifdef TEST_STATION_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
+
+
 #endif // TESTMAP
 
 
@@ -1934,6 +1957,13 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 		{
 			StaticMeshDesc.bIsFloor = false;
 		}
+#pragma endregion
+
+#pragma region 컬링 여부
+		if (objects[j].contains("bCullNone"))
+			StaticMeshDesc.bCullNone = true;
+		else
+			StaticMeshDesc.bCullNone = false;
 #pragma endregion
 
 		StaticMeshDesc.iRender = 0;

@@ -38,6 +38,8 @@ public:
 		_int		iLightShape = { 0 }; //라이트 모양
 		_bool		bNoInstancing = { false }; //인스턴싱 제외 여부
 		_bool		bIsFloor = { false }; //바닥여부 체크
+		_bool		bCullNone = { false };
+
 		OBJ_TYPE	eObjType = { OBJ_TYPE::STATIC_MESH };
 		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 		ITEM_TAG eItemTag = { ITEM_TAG::END };
@@ -103,6 +105,9 @@ private:
 
 private:
 	_bool	m_bisFloor = { false }; //바닥인지 아닌지
+
+private:
+	_bool	m_bCullNone = { false };//RS 컬링 여부
 
 private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태

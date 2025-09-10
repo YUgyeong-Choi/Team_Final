@@ -676,7 +676,7 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 			return E_FAIL;
 
-		
+		//테스트맵에 생성되는 부술수있는 애들이, 푸오코 네비를 찾아버려서 터진것임 ()
 	}
 
 	return S_OK;
