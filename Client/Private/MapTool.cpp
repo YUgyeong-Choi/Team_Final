@@ -371,7 +371,7 @@ HRESULT CMapTool::Save(const _char* Map)
 	//에르고 아이템
 	json ErgoItemJsonArray = json::array();
 	//부서질수 있는 모델
-	json BreakableJsonArray = json::array();
+	json BreakableJsonMap; // 모델별 누적용
 
 	//현재 필드에 존재하는 모델들의 레이어 이름들을 가져온다.
 	vector<wstring> LayerNames = m_pGameInstance->Find_LayerNamesContaining(ENUM_CLASS(LEVEL::YW), TEXT("Layer_MapToolObject_"));
@@ -514,25 +514,26 @@ HRESULT CMapTool::Save(const _char* Map)
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
-			else if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::BREAKABLE) // 부서질 수 있는 모델이라면
+			else if (pMapToolObject->m_eObjType == CMapToolObject::OBJ_TYPE::BREAKABLE)
 			{
-				//부서질 수 있는 모델 제이슨에 저장
-				json BreakableJson;
+				json ObjectJson;
+				ObjectJson["WorldMatrix"] = MatrixJson;
 
-				// 위치 행렬 저장
-				BreakableJson["WorldMatrix"] = MatrixJson;
+				// 모델 이름을 key로 접근 → 배열에 추가
+				BreakableJsonMap[pMapToolObject->m_ModelName].push_back(ObjectJson);
 
-				//이름 저장
-				BreakableJson["ModelName"] = pMapToolObject->m_ModelName;
+				if ("SM_Factory_BasePipe_07" == pMapToolObject->m_ModelName)
+				{
+					// 조각 갯수 직접 입력
+				}
 
-				BreakableJsonArray.push_back(BreakableJson);
-
-				// ReadyModelJson은 별도로 유지 (충돌 체크 등)
 				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
 					ReadyModelJson["Collision"] = true;
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
+
+
 		}
 
 		ModelJson["ObjectCount"] = iObjectCount;
@@ -546,7 +547,10 @@ HRESULT CMapTool::Save(const _char* Map)
 	MapDataFile << MapDataJson.dump(4);
 	StargazerFile << StargazerJsonArray.dump(4);
 	ErgoItemFile << ErgoItemJsonArray.dump(4);
-	BreakableFile << BreakableJsonArray.dump(4);
+
+	json BreakableRoot;
+	BreakableRoot["Breakables"] = BreakableJsonMap;
+	BreakableFile << BreakableRoot.dump(4);
 
 	MapDataFile.close();
 	ReadyModelFile.close();
@@ -797,68 +801,65 @@ HRESULT CMapTool::Load_ErgoItem(const _char* Map)
 
 HRESULT CMapTool::Load_Breakable(const _char* Map)
 {
-	//JSON 경로
+	// JSON 경로
 	string Path = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
 
 	ifstream inFile(Path);
 	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Breakable_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
-	}
 
 	json DataJson;
 	inFile >> DataJson;
 	inFile.close();
 
-	// 배열이니까 바로 순회
-	for (const auto& Obj : DataJson)
+	if (!DataJson.contains("Breakables"))
+		return S_OK;
+
+	const json& Breakables = DataJson["Breakables"];
+
+	// 모델별로 순회
+	for (auto it = Breakables.begin(); it != Breakables.end(); ++it)
 	{
-		const json& WorldMatrixJson = Obj["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
+		string strModelName = it.key();       // 모델 이름
+		const json& Instances = it.value();   // WorldMatrix 배열
 
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		// 아이템 디스크립터 생성
-		CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
-		MapToolObjDesc.WorldMatrix = WorldMatrix;
-		MapToolObjDesc.iID = ++m_iID;
-		MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::BREAKABLE;
-
-		wstring ModelName = {};
-
-		if (Obj.contains("ModelName") && Obj["ModelName"].is_string())
+		for (const auto& Obj : Instances)
 		{
-			ModelName = StringToWString(Obj["ModelName"].get<string>());
+			const json& WorldMatrixJson = Obj["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 아이템 디스크립터 생성
+			CMapToolObject::MAPTOOLOBJ_DESC MapToolObjDesc = {};
+			MapToolObjDesc.WorldMatrix = WorldMatrix;
+			MapToolObjDesc.iID = ++m_iID;
+			MapToolObjDesc.eObjType = CMapToolObject::OBJ_TYPE::BREAKABLE;
+
+			wstring ModelName = StringToWString(strModelName);
 			lstrcpy(MapToolObjDesc.szModelName, ModelName.c_str());
 
 			wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_") + ModelName;
 			lstrcpy(MapToolObjDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+			wstring LayerTag = TEXT("Layer_MapToolObject_") + ModelName;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				ENUM_CLASS(LEVEL::YW),
+				TEXT("Prototype_GameObject_MapToolObject"),
+				ENUM_CLASS(LEVEL::YW),
+				LayerTag,
+				&MapToolObjDesc)))
+			{
+				return E_FAIL;
+			}
+
+			// 방금 추가한 오브젝트를 모델 그룹에 분류
+			Add_ModelGroup(strModelName.c_str(),
+				m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
 		}
-		else
-		{
-			return E_FAIL;
-		}
-
-		wstring LayerTag = TEXT("Layer_MapToolObject_") + ModelName;
-
-		// 게임 오브젝트 생성
-		if (FAILED(m_pGameInstance->Add_GameObject(
-			ENUM_CLASS(LEVEL::YW),
-			TEXT("Prototype_GameObject_MapToolObject"),
-			ENUM_CLASS(LEVEL::YW),
-			LayerTag,
-			&MapToolObjDesc)))
-		{
-			return E_FAIL;
-		}
-
-		//방금 추가한것을 모델 그룹에 분류해서 저장
-		Add_ModelGroup(WStringToString(ModelName).c_str(), m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::YW), LayerTag));
-
 	}
 
 	return S_OK;

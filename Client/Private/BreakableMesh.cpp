@@ -24,8 +24,17 @@ HRESULT CBreakableMesh::Initialize_Prototype()
 
 HRESULT CBreakableMesh::Initialize(void* pArg)
 {
-	if (FAILED(Find_Player()))
-		return E_FAIL;
+	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
+
+	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
+	m_bFireEaterBossPipe = pDesc->bFireEaterBossPipe;
+
+	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
+	if (m_bFireEaterBossPipe)
+	{
+		if (FAILED(Find_Player()))
+			return E_FAIL;
+	}
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -33,7 +42,6 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	if (FAILED(Ready_Collider()))
@@ -51,10 +59,14 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 	if (FAILED(Ready_PartColliders()))
 		return E_FAIL;
 
-	if (pDesc->wsNavName.empty() == false)
+	//푸오코 기둥만 네비를 비활성화 시킨다.
+	if (m_bFireEaterBossPipe)
 	{
-		//자신의 aabb 만큼의 네브 인덱스를 가져온다.
-		Store_NavIndices();
+		if (pDesc->wsNavName.empty() == false)
+		{
+			//자신의 aabb 만큼의 네브 인덱스를 가져온다.
+			Store_NavIndices();
+		}
 	}
 
 	return S_OK;
@@ -516,8 +528,20 @@ HRESULT CBreakableMesh::Ready_Collider()
 	PxMeshScale meshScale(scaleVec);
 
 	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_MAP;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+
+	if (m_bFireEaterBossPipe)
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+		//푸오코에 의해서만 부서져야 한다.
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	}
+	else
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+		//몬스터, 플레이어, 무기(플레이어, 몬스터)에 의해서 부서져야한다.
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_PLAYERWEAPON | WORLDFILTER::FILTER_MONSTERWEAPON;
+	}
+
 
 	// ──────────────────────────────
 	// Convex는 버텍스 제한 있음 (255개)
@@ -598,20 +622,35 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
 		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
-		//플레이어 무시
-		IgnorePlayerCollider(pActorCom);
+		if (m_bFireEaterBossPipe)
+		{
+			//플레이어 무시
+			IgnorePlayerCollider(pActorCom);
+		}
+		else
+		{
+			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
+		}
 
 		// 6) 필터 설정
 		PxFilterData fd{};
 		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
-		fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY; //WORLDFILTER::FILTER_MAP를 FILTER_FLOOR 로 바꿀 예정
+
+		if (m_bFireEaterBossPipe)
+		{
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY;
+		}
+		else
+		{
+			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY;
+		}
+
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
 		pActorCom->Set_Owner(this);
 		pActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
-		// 7) 씬에 등록
-		//m_pGameInstance->Get_Scene()->addActor(*pRigid);
 	}
 
 	return S_OK;
@@ -679,15 +718,19 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 #pragma endregion
 	}
 
-	if (pDesc->wsNavName.empty() == false)
+	//푸오코만 네비가 필요하다. 셀을 비활성화/활성화 하기위해서
+	if (m_bFireEaterBossPipe)
 	{
-		//영향을 줄 네비게이션
-		wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
-		if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
-			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
-			return E_FAIL;
+		if (pDesc->wsNavName.empty() == false)
+		{
+			//영향을 줄 네비게이션
+			wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
+			if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+				TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
+				return E_FAIL;
 
-		//테스트맵에 생성되는 부술수있는 애들이, 푸오코 네비를 찾아버려서 터진것임 ()
+			//테스트맵에 생성되는 부술수있는 애들이, 푸오코 네비를 찾아버려서 터진것임 ()
+		}
 	}
 
 	return S_OK;

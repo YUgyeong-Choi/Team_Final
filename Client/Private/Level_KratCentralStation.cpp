@@ -1250,46 +1250,89 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable()
 
 HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 {
-	//아직 푸오코 기둥을 위한 것으로만
-
+	// JSON 경로
 	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
 	ifstream inFile(FilePath);
 	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
 		return S_OK;
-	}
 
 	json Json;
 	inFile >> Json;
 	inFile.close();
 
-	// 배열 순회
-	for (auto& Data : Json)
-	{
-		// 월드 행렬
-		const json& WorldMatrixJson = Data["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+	// "Breakables" 오브젝트 접근
+	if (!Json.contains("Breakables") || !Json["Breakables"].is_object())
+		return E_FAIL;
 
-		CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		Desc.iPartModelCount = 3;
-		Desc.ModelName = TEXT("Main");
-		Desc.vOffsets.push_back(_float3(4.09f, -8.75f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -5.82f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -2.89f, 1.21f));
-		Desc.PartModelNames.push_back(TEXT("Part2"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.WorldMatrix = WorldMatrix;
-		Desc.wsNavName = StringToWString(Map);
-		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-			return E_FAIL;
+	auto& Breakables = Json["Breakables"];
+
+	// 모델명(key) - 배열(value) 순회
+	for (auto& [ModelNameStr, ObjArray] : Breakables.items())
+	{
+		wstring ModelName = StringToWString(ModelNameStr);
+
+		for (auto& Obj : ObjArray)
+		{
+			// 월드 행렬 읽기
+			const json& WorldMatrixJson = Obj["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 푸오코 기둥 예외 처리
+			if (ModelNameStr == "SM_Factory_BasePipe_07")
+			{
+				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+				Desc.bFireEaterBossPipe = true;
+				Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+				Desc.iPartModelCount = 3;
+				Desc.ModelName = TEXT("Main");
+				Desc.vOffsets = {
+					_float3(4.09f, -8.75f, 1.21f),
+					_float3(4.09f, -5.82f, 1.21f),
+					_float3(4.09f, -2.89f, 1.21f)
+				};
+				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
+				Desc.WorldMatrix = WorldMatrix;
+				Desc.wsNavName = StringToWString(Map);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(
+					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+					return E_FAIL;
+			}
+			else
+			{
+				// 일반적인 부서짐
+				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+				Desc.bFireEaterBossPipe = false;
+				Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+				// TODO: JSON에 FragmentCount 넣어두면 여기서 불러오기
+				if (Obj.contains("FragmentCount"))
+					Desc.iPartModelCount = Obj["FragmentCount"];
+
+				Desc.ModelName = ModelName;
+
+				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
+				{
+					wstring PartName = ModelName + L'_' +
+						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
+
+					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
+					Desc.PartModelNames.push_back(PartName);
+				}
+
+				Desc.WorldMatrix = WorldMatrix;
+				Desc.wsNavName = StringToWString(Map);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(
+					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+					return E_FAIL;
+			}
+		}
 	}
 
 	return S_OK;
