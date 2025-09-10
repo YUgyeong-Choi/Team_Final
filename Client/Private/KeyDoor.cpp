@@ -67,6 +67,15 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 	{
 		m_pPlayer->Set_GetKey();
 	}
+
+#ifdef _DEBUG
+	if (KEY_DOWN(DIK_X))
+	{
+		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
+		m_bFinish = false;
+		m_bCanActive = false;
+	}
+#endif // _DEBUG
 }
 
 void CKeyDoor::Update(_float fTimeDelta)
@@ -213,7 +222,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
-			vTargetPos = _vector({ 183.05f, 8.85f, -8.f, 1.f });
+			vTargetPos = _vector({ 183.05f, 8.85f, -7.95f, 1.f });
 			break;
 		default:
 			break;
@@ -251,10 +260,10 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		m_bStartCutScene = false;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
-
-
-
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+		if(m_pPlayer->Get_HaveKey())
+			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::OUTDOOOR);
 	}
 }
 
