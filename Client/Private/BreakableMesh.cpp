@@ -209,6 +209,17 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	//푸오코가 퓨리상태일 때
 	//pOther->퓨리일 때 트리거 트루
 
+	/*if (m_bBreakTriggered == false)
+	{
+		m_bBreakTriggered = true;
+	}*/
+}
+
+void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	//푸오코가 퓨리상태일 때
+	//pOther->퓨리일 때 트리거 트루
+
 	if (m_bBreakTriggered == false)
 	{
 		m_bBreakTriggered = true;

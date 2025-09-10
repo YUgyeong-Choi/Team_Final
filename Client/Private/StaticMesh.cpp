@@ -178,7 +178,7 @@ HRESULT CStaticMesh::Render()
 		if(m_bCullNone == false)
 			m_pShaderCom->Begin(0);
 		else if(m_bCullNone)
-			m_pShaderCom->Begin(7);
+ 			m_pShaderCom->Begin(7);
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
 	}

@@ -1960,7 +1960,7 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 #pragma endregion
 
 #pragma region 컬링 여부
-		if (objects[j].contains("bCullNone"))
+		if (objects[j].contains("CullNone"))
 			StaticMeshDesc.bCullNone = true;
 		else
 			StaticMeshDesc.bCullNone = false;

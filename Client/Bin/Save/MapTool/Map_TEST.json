@@ -89,7 +89,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "IsCullNone": true,
+                    "CullNone": true,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [

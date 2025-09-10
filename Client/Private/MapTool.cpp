@@ -468,7 +468,7 @@ HRESULT CMapTool::Save(const _char* Map)
 
 				//컬링여부
 				if (pMapToolObject->m_bCullNone)
-					ObjectJson["IsCullNone"] = true; // true일 때만 저장 (진작 이렇게 할걸)
+					ObjectJson["CullNone"] = true; // true일 때만 저장 (진작 이렇게 할걸)
 
 				//인스턴싱 제외
 				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
@@ -644,7 +644,7 @@ HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 			}
 
 			//컬링 여부(진작 이렇게 할 걸) 컬링 태그가 있으면 true임
-			if (Objects[j].contains("IsCullNone"))
+			if (Objects[j].contains("CullNone"))
 				MapToolObjDesc.bCullNone = true;
 			else
 				MapToolObjDesc.bCullNone = false;
