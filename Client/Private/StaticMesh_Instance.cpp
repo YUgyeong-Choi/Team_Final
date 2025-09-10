@@ -98,7 +98,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 	}
 
 	//현재 활성화된 지역이 스테이션입니다.
-	if (eAreaMgr == AREAMGR::DEBUG)
+	if (eAreaMgr == AREAMGR::OUTER)
 	{
 		if (m_wsMap == TEXT("OUTER"))
 		{

@@ -292,6 +292,8 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     // 현재 활성화된 지역이 푸오코 방입니다.
     vector<_uint> vecFuocoIds = { 19 };
 
+    // 현재 활성화된 지역이 외부지역입니다.
+    vector<_uint> vecOuterIds = { 50, 51 };
 
     // 현재 활성화된 지역이 디버깅입니다.
     vector<_uint> vecDebugIds = { 98, 99 };
@@ -312,6 +314,11 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     else if (find(vecFuocoIds.begin(), vecFuocoIds.end(), m_iCurrentAreaId) != vecFuocoIds.end())
     {
         m_eAreaMgr = AREAMGR::FUOCO;
+    }
+
+    else if (find(vecOuterIds.begin(), vecOuterIds.end(), m_iCurrentAreaId) != vecOuterIds.end())
+    {
+        m_eAreaMgr = AREAMGR::OUTER;
     }
 
     else if (find(vecDebugIds.begin(), vecDebugIds.end(), m_iCurrentAreaId) != vecDebugIds.end())

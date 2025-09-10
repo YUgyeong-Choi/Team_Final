@@ -44,7 +44,10 @@ HRESULT CLevel_DH::Initialize()
 	
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
-	m_pGameInstance->SetPlayerPosition(_fvector{ 138.3f, 1.f, -3.1f, 1.f });
+
+	/* [ 플레이어가 속한 구역탐색 ] */
+	m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
+	m_pGameInstance->FindAreaContainingPoint();
 
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 	//	return E_FAIL;
@@ -64,8 +67,6 @@ void CLevel_DH::Priority_Update(_float fTimeDelta)
 
 void CLevel_DH::Update(_float fTimeDelta)
 {
-	m_pGameInstance->FindAreaContainingPoint();
-
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 	ShowCursor(true);
@@ -185,15 +186,17 @@ HRESULT CLevel_DH::Separate_Area()
 			};
 		};
 
-	_float3 a1p0 = _float3{ -10000.f, -10000.f,  -10000.f };
-	_float3 a1p1 = _float3{ 10000.f,  10000.f, 10000.f };
+	//_float3 a1p0 = _float3{ -10000.f, -10000.f,  -10000.f };
+	//_float3 a1p1 = _float3{ 10000.f,  10000.f, 10000.f };
+	_float3 a1p0 = _float3{ 180.65f, -47.92f, 63.37f };
+	_float3 a1p1 = _float3{ 457.66f, 133.33f, -116.79f };
 	_float3 a1Min, a1Max;
 	FnToAABB(a1p0, a1p1, a1Min, a1Max);
 
 	{
 		const vector<_uint> vecAdj1 = {  };
 		if (!m_pGameInstance->AddArea_AABB(
-			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			50, a1Min, a1Max, vecAdj1, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
 

@@ -1844,7 +1844,7 @@ public:
             }
         }
 
-        if (3.f < m_fStateTime)
+        if (2.4f < m_fStateTime)
         {
             if (input.bMove)
             {

@@ -3474,12 +3474,12 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 
 void CPlayer::Create_LeftArm_Lightning()
 {
-	//CEffectContainer::DESC Lightdesc = {};
-	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-	//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
-	//	MSG_BOX("이펙트 생성 실패함");
+	CEffectContainer::DESC Lightdesc = {};
+	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 void CPlayer::Movement(_float fTimeDelta)

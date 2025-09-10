@@ -526,7 +526,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 			};
 		};
 
-	// Area 1 (우선순위 최상)
+	// Area 1
 	_float3 a1p0 = _float3{ 35.73f, -2.87f,  4.97f };
 	_float3 a1p1 = _float3{ -10.57f,  9.92f, -4.62f };
 	_float3 a1Min, a1Max;

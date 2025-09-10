@@ -448,7 +448,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (CheckConditionFlameField())
 	{
-		m_fAttackCooldown = 10.f;
+		m_fAttackCooldown = m_fAttckDleay;
 		return;
 	}
 
