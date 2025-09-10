@@ -297,7 +297,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
+                    "ClipName": "AS_F_Guide_C03",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "CutScene_Start",
@@ -505,7 +505,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "",
+                    "ClipName": "AS_F_Guide_C04",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "CutScene_End",
