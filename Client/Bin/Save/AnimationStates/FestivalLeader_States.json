@@ -41,7 +41,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_06_Start",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_CrossSlam_Start",
@@ -57,7 +57,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_06_Attack",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_CrossSlam_Loop",
@@ -81,7 +81,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_06_End",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_CrossSlam_End",
@@ -225,7 +225,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Start1",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Start",
@@ -241,7 +241,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Attack1",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Loop",
@@ -249,7 +249,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Attack2",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Loop2",
@@ -265,7 +265,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Start2",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Start2",
@@ -273,7 +273,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Attack3",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Loop3",
@@ -281,7 +281,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_Start3",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_Start3",
@@ -289,7 +289,7 @@
                 },
                 {
                     "BlendWeight": 1.0,
-                    "ClipName": "AS_ATHBoss0_Skill_07_End",
+                    "ClipName": "",
                     "LowerClipName": "",
                     "MaskBoneName": "",
                     "Name": "Atk_AlternateSmash_End",

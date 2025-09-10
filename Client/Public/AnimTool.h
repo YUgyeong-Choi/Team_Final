@@ -46,7 +46,6 @@ private:
 	HRESULT Bind_Shader();
 
 	void UpdateCurrentModel(_float fTimeDelta);
-	void UpdateCurrentObject(_float fTimeDelta);
 	void CreateModel(const string& fileName,const string& filePath);
 	
 	void Setting_Sequence();
@@ -54,20 +53,12 @@ private:
 	void SelectAnimation();
 	void SelectAnimationForObject();
 	void Setting_AnimationProperties();
-	void ApplyHierarchicalLayout(class CAnimController* pCtrl);
 	void ApplyCategoryLayout(class CAnimController* pCtrl);
 
 	void SaveLoadEvents(_bool isSave = true);
 	void SaveLoadAnimStates(_bool isSave = true);
 	void Test_AnimEvents();
 	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
-
-	void Manipulate(
-		Operation op,
-		const _float snapT[3] = nullptr,   // 이동용 스냅 (unit)
-		const _float snapR[3] = nullptr,   // 회전용 스냅 (deg)
-		const _float snapS[3] = nullptr    // 스케일용 스냅 (factor)
-	);
 
 	string GetStateCategory(const string& stateName);
 
