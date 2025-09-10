@@ -7,7 +7,7 @@ CProjectile::CProjectile(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 }
 CProjectile::CProjectile(const CProjectile& Prototype)
-    : CGameObject(Prototype),
+	: CGameObject(Prototype),
 	m_pModelCom{ Prototype.m_pModelCom },
 	m_pShaderCom{ Prototype.m_pShaderCom }
 {
@@ -17,7 +17,7 @@ CProjectile::CProjectile(const CProjectile& Prototype)
 
 HRESULT CProjectile::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CProjectile::Initialize(void* pArg)
@@ -33,11 +33,11 @@ HRESULT CProjectile::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-    m_fElapsedTime = 0.f;
+	m_fElapsedTime = 0.f;
 	m_fSpeed = pDesc->fSpeed; // 초기 스피드
 	m_fLifeTime = pDesc->fLifeTime; // 생명 주기
 	m_vDirection = XMLoadFloat3(&pDesc->vDir); // 방향
- 	_vector vStartPos = XMVectorSetW(XMLoadFloat3(&pDesc->vPos),1.f); // 시작 위치
+	_vector vStartPos = XMVectorSetW(XMLoadFloat3(&pDesc->vPos), 1.f); // 시작 위치
 	m_vStartPos = vStartPos;
 	m_fRadius = pDesc->fRadius; // 구체 반지름
 	m_fStartTime = pDesc->fStartTime; // 중력 시작 시간 
@@ -50,7 +50,7 @@ HRESULT CProjectile::Initialize(void* pArg)
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
-    return S_OK;
+	return S_OK;
 }
 
 void CProjectile::Priority_Update(_float fTimeDelta)
@@ -71,36 +71,37 @@ void CProjectile::Update(_float fTimeDelta)
 		return;
 	}
 
-	if (!m_bUseDistTrigger && !m_bUseTimeTrigger) // 거리도 시간도 안쓰면 그냥 중력 없이
-		return;
-
 	if (m_pPhysXActorCom == nullptr)
 		return;
 
-	if (m_bGravity == false)
+	if (m_bUseDistTrigger || m_bUseTimeTrigger)
 	{
-		if (m_bUseTimeTrigger)
+
+		if (m_bGravity == false)
 		{
-			if (m_fElapsedTime >= m_fStartTime)
+			if (m_bUseTimeTrigger)
 			{
-				m_bGravity = true;
-				if (auto pActor = m_pPhysXActorCom->Get_Actor())
+				if (m_fElapsedTime >= m_fStartTime)
 				{
-					pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+					m_bGravity = true;
+					if (auto pActor = m_pPhysXActorCom->Get_Actor())
+					{
+						pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+					}
 				}
 			}
-		}
-		else // 거리 기반
-		{
-			_float3 vCurPos = Get_WorldPosFromActor();
-			_float3 vStartPos = { XMVectorGetX(m_vStartPos), XMVectorGetY(m_vStartPos), XMVectorGetZ(m_vStartPos) };
-			_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&vCurPos), XMLoadFloat3(&vStartPos))));
-			if (fDist >= m_fGravityOnDist)
+			else // 거리 기반
 			{
-				m_bGravity = true;
-				if (auto pActor = m_pPhysXActorCom->Get_Actor())
+				_float3 vCurPos = Get_WorldPosFromActor();
+				_float3 vStartPos = { XMVectorGetX(m_vStartPos), XMVectorGetY(m_vStartPos), XMVectorGetZ(m_vStartPos) };
+				_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&vCurPos), XMLoadFloat3(&vStartPos))));
+				if (fDist >= m_fGravityOnDist)
 				{
-					pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+					m_bGravity = true;
+					if (auto pActor = m_pPhysXActorCom->Get_Actor())
+					{
+						pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, false);
+					}
 				}
 			}
 		}
@@ -125,9 +126,9 @@ void CProjectile::Late_Update(_float fTimeDelta)
 
 HRESULT CProjectile::Render()
 {
-	if(FAILED(Bind_Shader()))
+	if (FAILED(Bind_Shader()))
 		return E_FAIL;
-    return S_OK;
+	return S_OK;
 }
 
 _float3 CProjectile::Get_WorldPosFromActor() const
@@ -147,7 +148,7 @@ HRESULT CProjectile::Ready_Components()
 {	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CProjectile::Ready_Actor()
@@ -156,13 +157,13 @@ HRESULT CProjectile::Ready_Actor()
 	PxVec3 PositionVec = PxVec3(XMVectorGetX(m_vStartPos), XMVectorGetY(m_vStartPos), XMVectorGetZ(m_vStartPos));
 	PxTransform armPose(PositionVec, RotationQuat);
 	PxSphereGeometry Geom = m_pGameInstance->CookSphereGeometry(m_fRadius);
-	if(FAILED(m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), Geom, armPose, m_pGameInstance->GetMaterial(L"Default"))))
+	if (FAILED(m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), Geom, armPose, m_pGameInstance->GetMaterial(L"Default"))))
 		return E_FAIL;
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 	PxFilterData FilterData{};
 	FilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
 	FilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_MAP;
-	
+
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_QueryFilterData(FilterData);
 	m_pPhysXActorCom->Set_Owner(this);
@@ -176,15 +177,15 @@ HRESULT CProjectile::Ready_Actor()
 	}
 	PxVec3 velocity = PxVec3(XMVectorGetX(m_vDirection), XMVectorGetY(m_vDirection), XMVectorGetZ(m_vDirection)) * m_fSpeed;
 
-	if (auto pRigid =m_pPhysXActorCom->Get_Actor()->is<PxRigidDynamic>())
+	if (auto pRigid = m_pPhysXActorCom->Get_Actor()->is<PxRigidDynamic>())
 	{
 		pRigid->setLinearVelocity(velocity);
-//		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true); // 연속 충돌 감지 활성화 (빠른 거면)
+		//		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, true); // 연속 충돌 감지 활성화 (빠른 거면)
 	}
 	// 씬에 액터 추가
 
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT CProjectile::Bind_Shader()

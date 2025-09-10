@@ -9,8 +9,8 @@
             "Name": "Atk_Slam_Start",
             "NodeId": 100002,
             "NodePos": [
-                436.0,
-                258.0
+                -411.0,
+                -132.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Atk_Slam_Loop",
             "NodeId": 100003,
             "NodePos": [
-                436.0,
-                428.0
+                -411.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Atk_Slam_End",
             "NodeId": 100004,
             "NodePos": [
-                273.0,
-                480.0
+                -411.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Idle",
             "NodeId": 100008,
             "NodePos": [
-                -664.0,
-                258.0
+                -1511.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Atk_Jump_Start",
             "NodeId": 100010,
             "NodePos": [
-                -44.0,
-                258.0
+                -891.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Atk_Jump_Loop",
             "NodeId": 100011,
             "NodePos": [
-                -44.0,
-                428.0
+                -891.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +99,8 @@
             "Name": "Atk_Jump_End",
             "NodeId": 100012,
             "NodePos": [
-                -44.0,
-                598.0
+                -891.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +114,8 @@
             "Name": "Walk_F",
             "NodeId": 100017,
             "NodePos": [
-                1496.0,
-                258.0
+                649.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "Groggy_Start",
             "NodeId": 100020,
             "NodePos": [
-                536.0,
-                258.0
+                -311.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "Groggy_Loop",
             "NodeId": 100021,
             "NodePos": [
-                536.0,
-                428.0
+                -311.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -159,8 +159,8 @@
             "Name": "Groggy_End",
             "NodeId": 100022,
             "NodePos": [
-                536.0,
-                598.0
+                -311.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "Fatal_Hit_Start",
             "NodeId": 100026,
             "NodePos": [
-                -1384.0,
-                258.0
+                -2231.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "Fatal_Hit_Loop",
             "NodeId": 100027,
             "NodePos": [
-                -1384.0,
-                428.0
+                -2231.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "Fatal_Hit_End",
             "NodeId": 100028,
             "NodePos": [
-                -1384.0,
-                598.0
+                -2231.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "Atk_Strike_Start",
             "NodeId": 100033,
             "NodePos": [
-                916.0,
-                258.0
+                69.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "Atk_Strike_Loop",
             "NodeId": 100034,
             "NodePos": [
-                916.0,
-                428.0
+                69.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +249,8 @@
             "Name": "Atk_Strike_End",
             "NodeId": 100035,
             "NodePos": [
-                771.0,
-                621.0
+                69.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -264,8 +264,8 @@
             "Name": "Atk_CrossSlam_Start",
             "NodeId": 100040,
             "NodePos": [
-                -2924.0,
-                258.0
+                -3771.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Atk_CrossSlam_Loop",
             "NodeId": 100041,
             "NodePos": [
-                -2924.0,
-                428.0
+                -3771.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Atk_CrossSlam_End",
             "NodeId": 100042,
             "NodePos": [
-                -2924.0,
-                598.0
+                -3771.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Atk_AlternateSmash_Start",
             "NodeId": 100047,
             "NodePos": [
-                -3784.0,
-                258.0
+                -4631.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Atk_AlternateSmash_Loop",
             "NodeId": 100048,
             "NodePos": [
-                -3784.0,
-                428.0
+                -4631.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -339,8 +339,8 @@
             "Name": "Atk_AlternateSmash_Start2",
             "NodeId": 100049,
             "NodePos": [
-                -3784.0,
-                598.0
+                -4631.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -354,8 +354,8 @@
             "Name": "Atk_AlternateSmash_Loop2",
             "NodeId": 100050,
             "NodePos": [
-                -3784.0,
-                768.0
+                -4631.0,
+                376.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -369,8 +369,8 @@
             "Name": "Atk_AlternateSmash_Loop3",
             "NodeId": 100051,
             "NodePos": [
-                -3784.0,
-                938.0
+                -4631.0,
+                546.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -384,8 +384,8 @@
             "Name": "Atk_AlternateSmash_Start3",
             "NodeId": 100052,
             "NodePos": [
-                -3784.0,
-                1108.0
+                -4631.0,
+                716.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -399,8 +399,8 @@
             "Name": "Atk_AlternateSmash_End",
             "NodeId": 100053,
             "NodePos": [
-                -3404.0,
-                258.0
+                -4251.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -414,8 +414,8 @@
             "Name": "Atk_Phase2Start",
             "NodeId": 100067,
             "NodePos": [
-                -4264.0,
-                258.0
+                -5111.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -429,8 +429,8 @@
             "Name": "Atk_HalfSpin_Start",
             "NodeId": 100068,
             "NodePos": [
-                -1004.0,
-                258.0
+                -1851.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -444,8 +444,8 @@
             "Name": "Atk_HalfSpin_Loop",
             "NodeId": 100069,
             "NodePos": [
-                -1004.0,
-                428.0
+                -1851.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -459,8 +459,8 @@
             "Name": "Atk_HalfSpin_End",
             "NodeId": 100070,
             "NodePos": [
-                -1004.0,
-                598.0
+                -1851.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -474,53 +474,53 @@
             "Name": "Atk_Spin",
             "NodeId": 100074,
             "NodePos": [
-                -4264.0,
-                428.0
+                -5111.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_11_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_FurySwing_Start",
             "NodeId": 100077,
             "NodePos": [
-                -1484.0,
-                258.0
+                -2481.0,
+                -127.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_11_Attack",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_FurySwing_Loop",
             "NodeId": 100078,
             "NodePos": [
-                -1484.0,
-                428.0
+                -2331.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_11_End",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_FurySwing_End",
             "NodeId": 100079,
             "NodePos": [
-                -1484.0,
-                598.0
+                -2331.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -534,8 +534,8 @@
             "Name": "Atk_FuryBodySlam_Start",
             "NodeId": 100082,
             "NodePos": [
-                -2444.0,
-                258.0
+                -3297.0,
+                -135.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -549,8 +549,8 @@
             "Name": "Atk_FuryBodySlam_Loop",
             "NodeId": 100083,
             "NodePos": [
-                -2444.0,
-                428.0
+                -3291.0,
+                38.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -564,218 +564,218 @@
             "Name": "Atk_FuryBodySlam_End",
             "NodeId": 100084,
             "NodePos": [
-                -2444.0,
-                598.0
+                -3291.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_Attack_Dash",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_DashSwing_Start",
             "NodeId": 100089,
             "NodePos": [
-                -3544.0,
-                258.0
+                -4392.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_11_Attack",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_DashSwing_Loop",
             "NodeId": 100090,
             "NodePos": [
-                -3544.0,
-                428.0
+                -4391.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_11_End",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_DashSwing_End",
             "NodeId": 100091,
             "NodePos": [
-                -3544.0,
-                598.0
+                -4391.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_HammerSlam_Start",
             "NodeId": 100096,
             "NodePos": [
-                -524.0,
-                258.0
+                -1371.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_Attack",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_HammerSlam_Loop",
             "NodeId": 100097,
             "NodePos": [
-                -524.0,
-                428.0
+                -1371.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_End",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_HammerSlam_End",
             "NodeId": 100098,
             "NodePos": [
-                -524.0,
-                598.0
+                -1371.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_FuryHammerSlam_Start",
             "NodeId": 100102,
             "NodePos": [
-                -1964.0,
-                258.0
+                -2811.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_Attack_Sub",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.20999999344348907,
             "MaskBone": "",
             "Name": "Atk_FuryHammerSlam_Loop",
             "NodeId": 100103,
             "NodePos": [
-                -1964.0,
-                428.0
+                -2811.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_12_End",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_FuryHammerSlam_End",
             "NodeId": 100104,
             "NodePos": [
-                -1964.0,
-                598.0
+                -2811.0,
+                206.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_10_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_Swing_Start",
             "NodeId": 100109,
             "NodePos": [
-                1396.0,
-                258.0
+                412.0,
+                -165.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_10_Attack",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_Swing_Loop",
             "NodeId": 100110,
             "NodePos": [
-                1396.0,
-                428.0
+                405.0,
+                46.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_10_End",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",
             "Name": "Atk_Swing_End",
             "NodeId": 100111,
             "NodePos": [
-                1396.0,
-                598.0
+                394.0,
+                243.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_09_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.8899999856948853,
             "MaskBone": "",
             "Name": "Atk_DashSwingCom_Start",
             "NodeId": 100116,
             "NodePos": [
-                -3064.0,
-                258.0
+                -4125.0,
+                -248.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_ATHBoss0_Skill_10_Start",
+            "Clip": "",
             "LowerClip": "",
             "LowerStartTime": 0.800000011920929,
             "MaskBone": "",
             "Name": "Atk_SwingCom_Start",
             "NodeId": 100122,
             "NodePos": [
-                1876.0,
-                258.0
+                1029.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -789,8 +789,8 @@
             "Name": "Walk_B",
             "NodeId": 100126,
             "NodePos": [
-                1496.0,
-                428.0
+                649.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -804,8 +804,8 @@
             "Name": "Walk_R",
             "NodeId": 100127,
             "NodePos": [
-                1496.0,
-                598.0
+                648.0,
+                208.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -819,8 +819,8 @@
             "Name": "Walk_L",
             "NodeId": 100128,
             "NodePos": [
-                1496.0,
-                768.0
+                649.0,
+                376.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -834,8 +834,8 @@
             "Name": "Turn_L",
             "NodeId": 100129,
             "NodePos": [
-                1016.0,
-                258.0
+                169.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -849,8 +849,8 @@
             "Name": "Turn_R",
             "NodeId": 100130,
             "NodePos": [
-                1016.0,
-                428.0
+                169.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -864,8 +864,8 @@
             "Name": "Run_F",
             "NodeId": 100131,
             "NodePos": [
-                776.0,
-                258.0
+                -71.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -879,8 +879,8 @@
             "Name": "Special_Die",
             "NodeId": 100167,
             "NodePos": [
-                -2824.0,
-                258.0
+                -3671.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -894,8 +894,8 @@
             "Name": "CutScene_Start",
             "NodeId": 100170,
             "NodePos": [
-                56.0,
-                258.0
+                -791.0,
+                -134.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -909,8 +909,8 @@
             "Name": "CutScene_End",
             "NodeId": 100171,
             "NodePos": [
-                56.0,
-                428.0
+                -791.0,
+                36.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -5408,20 +5408,6 @@
             "ToNodeId": 100008
         },
         {
-            "Conditions": [],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 100004,
-            "HasExitTime": false,
-            "Link": {
-                "FromNodeId": 1000042,
-                "LinkId": 100007,
-                "ToNodeId": 1000001
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.8999999761581421,
-            "ToNodeId": 100000
-        },
-        {
             "Conditions": [
                 {
                     "Op": "IsFalse",
@@ -6036,6 +6022,20 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100266
+        },
+        {
+            "Conditions": [],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100004,
+            "HasExitTime": false,
+            "Link": {
+                "FromNodeId": 1000042,
+                "LinkId": 100007,
+                "ToNodeId": 1000001
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.8999999761581421,
+            "ToNodeId": 100000
         },
         {
             "Conditions": [],

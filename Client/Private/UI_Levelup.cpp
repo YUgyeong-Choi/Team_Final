@@ -3,6 +3,8 @@
 #include "Dynamic_Text_UI.h"
 #include "Stargazer.h"
 #include "Mana_Bar.h"
+#include "Client_Calculation.h"
+#include "Weapon.h"
 
 CUI_Levelup::CUI_Levelup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -88,6 +90,12 @@ HRESULT CUI_Levelup::Initialize(void* pArg)
 
 	static_cast<CDynamic_Text_UI*>(m_pErgoInfo->Get_PartUI()[0])->Set_Caption(to_wstring(static_cast<_int>(Compute_MaxErgo())));
 	static_cast<CDynamic_Text_UI*>(m_pErgoInfo->Get_PartUI()[1])->Set_Caption(to_wstring(static_cast<_int>(m_fCurrentErgo)));
+
+	// 스탯 적용해놓기
+
+	Ready_Value();
+
+	
 
 	return S_OK;
 }
@@ -328,6 +336,38 @@ HRESULT CUI_Levelup::Ready_Weapon_UI()
 	return S_OK;
 }
 
+HRESULT CUI_Levelup::Ready_Value()
+{
+	_float fValue = {};
+	_wstring strValue = {};
+	// 스탯을 기반으로 값을 다 바꾸기
+	// 다 만들고 처음에도 넣어주기
+	_float fBaseDamage = m_pPlayer->Get_Equip_Weapon()->GetBaseDamage();
+
+	_float fLegionBaseDamage = m_pPlayer->Get_Equip_Legion()->GetBaseDamage();
+
+	// 체력
+	fValue = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
+	strValue = to_wstring(_int(fValue)) + L" / " + to_wstring(_int(fValue));
+	static_cast<CDynamic_Text_UI*>(m_pAbilInfo->Get_PartUI()[0])->Set_Caption(strValue);
+
+	// 스태
+	fValue = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
+	strValue = to_wstring(_int(fValue)) + L" / " + to_wstring(_int(fValue));
+	static_cast<CDynamic_Text_UI*>(m_pAbilInfo->Get_PartUI()[1])->Set_Caption(strValue);
+
+	// 무기, 리전 공격력
+	fValue = floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f) + floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.5f);
+	strValue = to_wstring(_int(fBaseDamage)) + L" + " + to_wstring(_int(fValue));
+	static_cast<CDynamic_Text_UI*>(m_pWeaponInfo->Get_PartUI()[2])->Set_Caption(strValue);
+
+	fValue = floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f) + floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+	strValue = to_wstring(_int(fLegionBaseDamage)) + L" + " + to_wstring(_int(fValue));
+	static_cast<CDynamic_Text_UI*>(m_pLegionInfo->Get_PartUI()[2])->Set_Caption(strValue);
+
+	return S_OK;
+}
+
 void CUI_Levelup::Update_Button()
 {
 	if (m_pGameInstance->Key_Down(DIK_W))
@@ -396,7 +436,7 @@ void CUI_Levelup::Interation_Button()
 
 void CUI_Levelup::Update_Stat(_bool isPlus)
 {
-	
+	_int SelectIndex = {};
 
 
 	if (isPlus)
@@ -424,6 +464,7 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 
 		static_cast<CDynamic_Text_UI*>(part)->Set_Caption(to_wstring(++m_eStat.stat[m_iButtonIndex]));
 
+		SelectIndex = m_iButtonIndex;
 	}
 	else
 	{
@@ -446,7 +487,66 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 
 		auto& part = m_pStatButtons[m_iButtonIndex]->Get_PartUI().back();
 		static_cast<CDynamic_Text_UI*>(part)->Set_Caption(to_wstring(--m_eStat.stat[m_iButtonIndex]));
+
+		SelectIndex = m_iButtonIndex;
 	}
+
+	_float fValue = {};
+	_wstring strValue = {};
+	// 스탯을 기반으로 값을 다 바꾸기
+	// 다 만들고 처음에도 넣어주기
+	_float fBaseDamage = m_pPlayer->Get_Equip_Weapon()->GetBaseDamage();
+
+	_float fLegionBaseDamage = m_pPlayer->Get_Equip_Legion()->GetBaseDamage();
+	switch (SelectIndex)
+	{
+		// 체력
+	case 0:
+		fValue = floorf(ComputeLog(_float(m_eStat.iVitality), 2) * 100.f);
+		strValue = to_wstring(_int(fValue)) + L" / " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pAbilInfo->Get_PartUI()[0])->Set_Caption(strValue);
+		break;
+		// 스테미나
+	case 1:
+		fValue = floorf(ComputeLog(_float(m_eStat.iStamina), 5) * 100.f);
+		strValue = to_wstring(_int(fValue)) + L" / " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pAbilInfo->Get_PartUI()[1])->Set_Caption(strValue);
+		break;
+		
+	case 2:
+		break;
+		// 공격력
+	case 3:
+		fValue = floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f) + floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.5f);
+		strValue = to_wstring(_int(fBaseDamage)) + L" + " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pWeaponInfo->Get_PartUI()[2])->Set_Caption(strValue);
+
+		fValue = floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f) + floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+		strValue = to_wstring(_int(fLegionBaseDamage)) + L" + " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pLegionInfo->Get_PartUI()[2])->Set_Caption(strValue);
+
+		break;
+		// 공격력
+	case 4:
+		fValue = floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f) + floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.5f);
+		strValue = to_wstring(_int(fBaseDamage)) + L" + " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pWeaponInfo->Get_PartUI()[2])->Set_Caption(strValue);
+
+		fValue = floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.1f) + floorf(fLegionBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
+		strValue = to_wstring(_int(fLegionBaseDamage)) + L" + " + to_wstring(_int(fValue));
+		static_cast<CDynamic_Text_UI*>(m_pLegionInfo->Get_PartUI()[2])->Set_Caption(strValue);
+		break;
+		// 팔 공격력만? 일단 보류
+	case 5:
+		break;
+	default:
+		break;
+	}
+	
+	
+	
+
+
 }
 
 _bool CUI_Levelup::Check_Ergo()

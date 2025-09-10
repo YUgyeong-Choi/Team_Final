@@ -52,6 +52,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//바닥인지 여부
 	m_bisFloor = pDesc->bIsFloor;
 
+	//컬링여부
+	m_bCullNone = pDesc->bCullNone;
+
 	//오브젝트 타입
 	m_eObjType = pDesc->eObjType;
 
@@ -158,7 +161,12 @@ HRESULT CMapToolObject::Render()
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		m_pShaderCom->Begin(1);
+
+		if(m_bCullNone == false)
+			m_pShaderCom->Begin(1);
+		else if(m_bCullNone)
+			m_pShaderCom->Begin(6);
+		
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
 	}

@@ -1,19 +1,17 @@
 #ifdef USE_IMGUI
-#include "Bone.h"
-#include "EventMag.h"
 #include "AnimTool.h"
-#include "Buttler_Train.h"
-#include "Buttler_Range.h"
-#include "Player.h"
-#include "Fuoco.h"
-#include "EditorObjectFactory.h"
-#include "Elite_Police.h"
-#include "FestivalLeader.h"	
-#include "GameInstance.h"
-#include <queue>
 
-//ImGuiFileDialog g_ImGuiFileDialog;
-//ImGuiFileDialog::Instance() 이래 싱글톤으로 쓰라고 신이 말하고 감
+#include "Bone.h"
+#include "Fuoco.h"
+#include "Player.h"
+#include "EventMag.h"
+#include "Elite_Police.h"
+#include "GameInstance.h"
+#include "Buttler_Range.h"
+#include "Buttler_Train.h"
+#include "FestivalLeader.h"	
+#include "EditorObjectFactory.h"
+
 
 CAnimTool::CAnimTool(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -59,34 +57,28 @@ HRESULT CAnimTool::Initialize(void* pArg)
 
 	ImNodesStyle& style = ImNodes::GetStyle();
 
-	// 유니티 스타일 색상
 	style.Colors[ImNodesCol_NodeBackground] = IM_COL32(60, 60, 70, 255);
 	style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 85, 255);
 	style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(85, 85, 95, 255);
 	style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 110, 255);
 
-	// 둥근 모서리
 	style.NodeCornerRounding = 5.0f;
 	style.NodePadding = ImVec2(8.0f, 4.0f);
 
-	// 핀 스타일
 	style.PinCircleRadius = 6.0f;
 	style.PinQuadSideLength = 8.0f;
 	style.LinkThickness = 3.0f;
 	style.LinkLineSegmentsPerLength = 0.0f; // 직선
 
+	style.Colors[ImNodesCol_NodeBackground] = IM_COL32(56, 56, 56, 255);
+	style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(70, 70, 70, 255);
+	style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(90, 90, 90, 255);
+	style.Colors[ImNodesCol_NodeOutline] = IM_COL32(128, 128, 128, 255);
 
-	style.Colors[ImNodesCol_NodeBackground] = IM_COL32(56, 56, 56, 255);           // 더 어두운 배경
-	style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(70, 70, 70, 255);    // 호버 시
-	style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(90, 90, 90, 255);   // 선택 시
-	style.Colors[ImNodesCol_NodeOutline] = IM_COL32(128, 128, 128, 255);           // 테두리
-
-	// 타이틀바 색상 (유니티의 주황색 계열)
 	style.Colors[ImNodesCol_TitleBar] = IM_COL32(58, 58, 58, 255);
 	style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(72, 72, 72, 255);
 	style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(86, 86, 86, 255);
 
-	// === 핀(Pin) 스타일 ===
 	// 입력/출력 핀 색상을 다르게 설정
 	style.Colors[ImNodesCol_Pin] = IM_COL32(200, 200, 200, 255);                   // 기본 핀
 	style.Colors[ImNodesCol_PinHovered] = IM_COL32(255, 255, 255, 255);            // 호버 시 핀
@@ -96,25 +88,22 @@ HRESULT CAnimTool::Initialize(void* pArg)
 	style.PinQuadSideLength = 10.0f;     // 사각형 핀 크기
 	style.PinTriangleSideLength = 12.0f; // 삼각형 핀 크기
 
-	// === 링크(연결선) 스타일 - 핵심 개선 사항 ===
 
-	// 1. 직선형 링크로 변경 (곡선 제거)
 	style.LinkThickness = 3.0f;                    // 선 두께
 	style.LinkLineSegmentsPerLength = 0.0f;        // 0으로 설정하면 직선
 	style.LinkHoverDistance = 10.0f;               // 마우스 호버 감지 거리
 
-	// 2. 링크 색상 설정 (유니티 스타일)
 	style.Colors[ImNodesCol_Link] = IM_COL32(150, 150, 150, 255);                // 기본 링크 색상
 	style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);         // 호버 시 흰색
 	style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 165, 0, 255);          // 선택 시 주황색
 
-	// === 노드 모양 개선 ===
+
 	style.NodeCornerRounding = 6.0f;       // 모서리 둥글기
 	style.NodePadding = ImVec2(10.0f, 6.0f); // 노드 내부 여백 증가
 	style.NodeBorderThickness = 2.0f;      // 테두리 두께
 
-	// === 그리드 스타일 ===
-	style.Colors[ImNodesCol_GridBackground] = IM_COL32(40, 40, 40, 255);    // 배경색
+
+	style.Colors[ImNodesCol_GridBackground] = IM_COL32(0, 0, 0, 255);    // 배경색
 	style.Colors[ImNodesCol_GridLine] = IM_COL32(60, 60, 60, 100);          // 그리드 라인
 	style.GridSpacing = 32.0f;                                               // 그리드 간격
 
@@ -122,7 +111,7 @@ HRESULT CAnimTool::Initialize(void* pArg)
 	style.Colors[ImNodesCol_BoxSelector] = IM_COL32(100, 149, 237, 80);     // 선택 박스
 	style.Colors[ImNodesCol_BoxSelectorOutline] = IM_COL32(100, 149, 237, 255);
 
-	// === 미니맵 스타일 ===
+
 	style.Colors[ImNodesCol_MiniMapBackground] = IM_COL32(25, 25, 25, 150);
 	style.Colors[ImNodesCol_MiniMapBackgroundHovered] = IM_COL32(25, 25, 25, 200);
 	style.Colors[ImNodesCol_MiniMapOutline] = IM_COL32(150, 150, 150, 100);
@@ -134,7 +123,7 @@ HRESULT CAnimTool::Initialize(void* pArg)
 	style.Colors[ImNodesCol_MiniMapLink] = IM_COL32(200, 200, 200, 100);
 	style.Colors[ImNodesCol_MiniMapLinkSelected] = IM_COL32(255, 165, 0, 255);
 
-	// 미니맵 크기 및 위치
+
 	style.MiniMapPadding = ImVec2(8.0f, 8.0f);
 	style.MiniMapOffset = ImVec2(4.0f, 4.0f);
 	return S_OK;
@@ -152,8 +141,6 @@ void CAnimTool::Update(_float fTimeDelta)
 {
 	if (m_bIsObject == false)
 		UpdateCurrentModel(fTimeDelta);
-	else
-		UpdateCurrentObject(fTimeDelta);
 
 	if (m_pSelectedObject)
 	{
@@ -1017,6 +1004,10 @@ HRESULT CAnimTool::Render_AnimationSequence()
 			m_pCurAnimator->SetPlaying(true);
 			m_pCurAnimator->Update(0.f);
 			m_pCurAnimator->StopAnimation(); // 다시 pause
+			vector<string> events;
+
+			pCurAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pCurAnim->Get_isLoop(), &events, nullptr);
+			m_pCurAnimator->DispatchAnimEventsForEditor(events);
 		}
 	}
 
@@ -1934,7 +1925,11 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 				/ _float(m_pMySequence->GetFrameMax() - m_pMySequence->GetFrameMin());
 			_float ticks = normalized * pAnim->GetDuration();
 			pAnim->SetCurrentTrackPosition(ticks);
+			vector<string> events;
+
 			m_pCurAnimator->Update(0.f);
+			pAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pAnim->Get_isLoop(), &events, nullptr);
+			m_pCurAnimator->DispatchAnimEventsForEditor(events);
 		}
 	}
 	else
@@ -1943,10 +1938,6 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 	}
 
 	m_pCurModel->Update_Bones();
-}
-
-void CAnimTool::UpdateCurrentObject(_float fTimeDelta)
-{
 }
 
 void CAnimTool::SelectAnimation()
@@ -2103,142 +2094,33 @@ void CAnimTool::Setting_AnimationProperties()
 	}
 }
 
-void CAnimTool::ApplyHierarchicalLayout(CAnimController* pCtrl)
-{
-	set<_int>visited;
-	//map<_int, _bool> visited;
-	map<_int, _int> level;
-	map<_int, _int> nodeOrderInLevel; // 각 계층 내에서 노드의 순서
-
-
-	queue<_int> q;
-
-	// ENTRY 노드를 찾아 큐에 넣고, 방문 처리 및 0레벨로 설정
-	_int entryNodeId = pCtrl->GetEntryNodeId();
-	q.push(entryNodeId);
-	visited.insert(entryNodeId);
-	level[entryNodeId] = 0;
-	nodeOrderInLevel[0] = 0;
-
-	// BFS 
-	while (!q.empty())
-	{
-		_int currentNodeId = q.front();
-		q.pop();
-
-		// 현재 노드에서 나가는 전환 찾기
-		for (const auto& transition : pCtrl->GetTransitions())
-		{
-			if (transition.iFromNodeId == currentNodeId)
-			{
-				_int nextNodeId = transition.iToNodeId;
-				if (!visited.count(nextNodeId))
-				{
-					visited.insert(nextNodeId); // 방문 처리
-					level[nextNodeId] = level[currentNodeId] + 1; // 다음 노드는 현재 노드보다 한 단계 아래
-					q.push(nextNodeId);
-				}
-			}
-		}
-	}
-
-	// 계산된 레벨과 순서를 기반으로 노드 위치 설정
-	map<_int, _int> levelNodeCount;
-	_float horizontalSpacing = 220.0f; // 노드 간 가로 간격
-	_float verticalSpacing = 200.0f;   // 노드 간 세로 간격
-
-	// 노드를 레벨별로 그룹화
-	map<_int, vector<_int>> nodesByLevel;
-	for (const auto& state : pCtrl->GetStates())
-	{
-		nodesByLevel[level[state.iNodeId]].push_back(state.iNodeId);
-	}
-
-	// 각 레벨의 노드 위치를 계산하여 설정
-	for (auto const& [nodeLevel, nodeIds] : nodesByLevel)
-	{
-		_float startX = 0.0f;
-		// 필요에 따라 각 레벨을 중앙에 오게 조정
-		startX = -(static_cast<_float>(nodeIds.size() - 1) / 2.0f) * horizontalSpacing;
-
-		for (size_t i = 0; i < nodeIds.size(); ++i)
-		{
-			_int nodeId = nodeIds[i];
-			ImVec2 newPos = ImVec2(startX + i * horizontalSpacing, nodeLevel * verticalSpacing);
-
-			ImNodes::SetNodeEditorSpacePos(nodeId, newPos);
-		}
-	}
-}
-
 void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 {
-	//const auto& states = pCtrl->GetStates();
-
-	//// 상태를 카테고리별로 분류
-	//map<string, vector<_int>> categories;
-	//m_CategoryStates.clear();
-	//for (const auto& state : states)
-	//{
-	//	string category = GetStateCategory(state.stateName);
-	//	categories[category].push_back(state.iNodeId);
-	//	if (m_CategoryVisibility.find(category) == m_CategoryVisibility.end())
-	//		m_CategoryVisibility[category] = true; // 카테고리 vis 초기화
-	//	m_CategoryStates[category].push_back(state.stateName); // 카테고리에 state 이름 추가
-	//}
-
-
-	//_float categorySpacing = 600.0f;
-	//_float nodeSpacing = 300.0f;
-	//_int categoryIndex = 0;
-
-	//for (auto& [categoryName, nodeIds] : categories)
-	//{
-	//	if (!m_bShowAll && m_CategoryVisibility[categoryName] == false)
-	//		continue;
-	//	// 각 카테고리를 세로로 나열
-	//	_float categoryX = categoryIndex * categorySpacing;
-
-	//	// 카테고리 내 노드들을 격자로 배치
-	//	_int nodesPerRow = max(1, (_int)sqrt(nodeIds.size()));
-
-	//	for (_int i = 0; i < static_cast<_int>(nodeIds.size()); ++i)
-	//	{
-	//		_int row = i / nodesPerRow;
-	//		_int col = i % nodesPerRow;
-
-	//		ImVec2 pos = ImVec2(
-	//			categoryX + col * nodeSpacing,
-	//			row * nodeSpacing
-	//		);
-	//		ImNodes::SetNodeEditorSpacePos(nodeIds[i], pos);
-	//	}
-
-	//	categoryIndex++;
-	//}
 
 	const auto& states = pCtrl->GetStates();
 	const auto& transitions = pCtrl->GetTransitions();
 
-	// ---- 0) 허브 노드(Any/Exit) 별도 고정 배치 ----
-	constexpr float kHubY = -220.f;     // 상단에 고정
-	constexpr float kAnyX = -500.f;
-	// Exit X는 나중에 카테고리 개수로 계산
+	// 허브 노드 위치 상수
+	constexpr _float kHubY = -300.f;     // 더 위쪽으로 이동
+	constexpr _float kAnyX = -800.f;     // 더 왼쪽으로
+	constexpr _float kExitMargin = 600.f; // Exit 노드 여유 공간
 
-	// ---- 1) 카테고리 구성 + 가시성 초기화 ----
-	std::map<std::string, std::vector<_int>> categories; // 이름순 정렬 보장
+	// 카테고리 구성
+	map<string, vector<_int>> categories;
 	m_CategoryStates.clear();
 
-	// 연결 허브 정도 계산(허브/중간 노드 위쪽 배치)
-	std::unordered_map<_int, int> degree;
+	// 연결 허브 정도 계산
+	unordered_map<_int, _int> degree;
 	degree.reserve(states.size());
-	for (const auto& t : transitions) {
-		degree[t.iFromNodeId]++; degree[t.iToNodeId]++;
+	for (const auto& t : transitions)
+	{
+		degree[t.iFromNodeId]++;
+		degree[t.iToNodeId]++;
 	}
 
 	for (const auto& st : states)
 	{
-		std::string cat = GetStateCategory(st.stateName);
+		string cat = GetStateCategory(st.stateName);
 		categories[cat].push_back(st.iNodeId);
 
 		if (m_CategoryVisibility.find(cat) == m_CategoryVisibility.end())
@@ -2247,15 +2129,13 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 		m_CategoryStates[cat].push_back(st.stateName);
 	}
 
-	// ---- 2) 배치 파라미터 ----
-	const float categorySpacingX = 720.f;   // 카테고리(컬럼) 간 X 간격
-	const float nodeSpacingX = 280.f;   // 같은 카테고리 내 X 간격
-	const float nodeSpacingY = 170.f;   // 같은 카테고리 내 Y 간격
-	const int   MAX_COLS = 4;       // 한 카테고리 최대 열 수(너무 가로로 길어지는 것 방지)
-	const bool  snakeLayout = true;    // 지그재그 배치로 링크 교차 완화
+	const _float categorySpacingX = 100.f;   // 카테고리 간격 증가
+	const _float nodeSpacingX = 250.f;        // 노드 간격
+	const _float nodeSpacingY = 165.f;        // 노드 세로 간격
+	const _float kColGapX = 200.f;            // 컬럼 간 간격
 
-	// ---- 3) 가시 카테고리 목록 추출 ----
-	vector<pair<string, std::vector<_int>>> visibleCats;
+	// 보이는 카테고리 수집
+	vector<pair<string, vector<_int>>> visibleCats;
 	visibleCats.reserve(categories.size());
 	for (auto& kv : categories) {
 		if (m_bShowAll || m_CategoryVisibility[kv.first])
@@ -2264,102 +2144,141 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 	if (visibleCats.empty())
 		return;
 
-	// ---- 4) 각 카테고리별 rows/cols 계산, 전체에서 maxRows 산출(세로 중앙정렬용) ----
-	vector<int> catCols(visibleCats.size());
-	vector<int> catRows(visibleCats.size());
-	int globalMaxRows = 1;
-
-	for (size_t i = 0; i < visibleCats.size(); ++i)
-	{
-		int n = static_cast<int>(visibleCats[i].second.size());
-		int cols = max(1, (int)floor(sqrt((float)n)));
-		cols = min(cols, MAX_COLS);
-		int rows = (n + cols - 1) / cols;
-
-		catCols[i] = max(1, cols);
-		catRows[i] = max(1, rows);
-		globalMaxRows = max(globalMaxRows, rows);
-	}
-
-	// ---- 5) 카테고리별 정렬 규칙(허브/중간 노드 우선) ----
+	// 카테고리별 정렬 
 	for (auto& kv : visibleCats) {
 		auto& list = kv.second;
 		sort(list.begin(), list.end(), [&](int a, int b) {
 			int da = degree.count(a) ? degree[a] : 0;
 			int db = degree.count(b) ? degree[b] : 0;
-			if (da != db) return da > db;            // 연결 많은 노드 먼저
-			return a < b;                             // 동일하면 ID 오름차순
+			if (da != db) return da > db;
+			return a < b;
 			});
 	}
 
-	auto ClusterKey = [](const string& name)->string
-		{
-			size_t p1 = name.find('_');
-			if (p1 == string::npos) return name;
 
+	auto ClusterKey = [](const string& name) -> string {
+		string result = name;
+
+		// 언더스코어 기반 처리
+		size_t p1 = name.find('_');
+		if (p1 != string::npos) {
 			size_t p2 = name.find('_', p1 + 1);
-			if (p2 == string::npos) return name.substr(0, p1); // 1토큰
-			return name.substr(0, p2);                          // 2토큰
+			result = (p2 == string::npos) ? name.substr(0, p1) : name.substr(0, p2);
+		}
+
+		// 끝에 붙은 숫자 제거
+		while (!result.empty() && isdigit(result.back())) {
+			result.pop_back();
+		}
+
+		return result.empty() ? name : result;
 		};
 
-	// ---- 6) 카테고리를 컬럼으로 배치(클러스터 + 최대 행수 고정) ----
-	const int   kMaxRowsPerCol = 6;     // ★ 세로 길이(행 수) 제한
-	const float kColGapX = 100.f;  // 같은 버킷(Column) 간 간격
+	const _int kMaxRowsPerCol = 4;  // 행 수 증가
 
+
+	_float totalLayoutWidth = 0.f;
+	vector<_float> categoryWidths(visibleCats.size());
+
+	// 각 카테고리의 예상 너비 계산
+	for (size_t ci = 0; ci < visibleCats.size(); ++ci)
+	{
+		const auto& nodeIds = visibleCats[ci].second;
+
+		// 버킷 생성
+		map<string, vector<_int>> buckets;
+		for (_int id : nodeIds)
+		{
+			auto* st = pCtrl->GetStateByNodeIdForEditor(id);
+			const string nm = st ? st->stateName : "";
+			buckets[nm].push_back(id);
+		}
+
+		// 이 카테고리가 차지할 너비 계산
+		_int totalCols = 0;
+		for (auto& kv : buckets)
+		{
+			_int bucketCols = (static_cast<_int>(kv.second.size()) + kMaxRowsPerCol - 1) / kMaxRowsPerCol;
+			totalCols += bucketCols;
+		}
+
+		categoryWidths[ci] = totalCols * (nodeSpacingX + kColGapX) + kColGapX;
+		totalLayoutWidth += categoryWidths[ci];
+	}
+
+	// 전체 레이아웃의 중앙 정렬을 위한 시작 X 계산
+	_float startX = -totalLayoutWidth * 0.5f;
+
+	// 카테고리별 노드 배치
+	_float currentX = startX;
 	for (size_t ci = 0; ci < visibleCats.size(); ++ci)
 	{
 		const auto& catName = visibleCats[ci].first;
 		const auto& nodeIds = visibleCats[ci].second;
 
-		// 6-1) 이 카테고리 노드를 이름 프리픽스(앞 1~2 토큰)로 버킷화
+		// 버킷화
 		map<string, vector<_int>> buckets;
-		for (int id : nodeIds)
+		for (_int id : nodeIds)
 		{
 			auto* st = pCtrl->GetStateByNodeIdForEditor(id);
 			const string nm = st ? st->stateName : "";
 			buckets[ClusterKey(nm)].push_back(id);
 		}
 
-		// 6-2) 카테고리 시작 X
-		float baseX = (float)ci * categorySpacingX;
+		// 이 카테고리의 시작 X 위치
+		_float categoryStartX = currentX;
 
-		// 6-3) 세로 중앙 정렬용 대략 기준(Y 시작점)
-		const float yBase = -0.5f * (kMaxRowsPerCol - 1) * nodeSpacingY;
-
-		// 6-4) 버킷 단위로 배치: 버킷마다 세로 kMaxRowsPerCol까지 쌓고 넘치면 옆 열로 wrap
-		float curX = baseX;
+		// 버킷별 배치
+		_float bucketX = categoryStartX;
 		for (auto& kv : buckets)
 		{
 			auto& ids = kv.second;
-			sort(ids.begin(), ids.end()); // 안정성(원하면 유지)
+			sort(ids.begin(), ids.end());
 
-			int row = 0;
-			float colX = curX;
+			_int row = 0;
+			_int col = 0;
 
-			for (int idx = 0; idx < (int)ids.size(); ++idx)
+			for (size_t idx = 0; idx < ids.size(); ++idx)
 			{
-				if (row >= kMaxRowsPerCol) // 줄바꿈
+				if (row >= kMaxRowsPerCol)
 				{
 					row = 0;
-					colX += nodeSpacingX + kColGapX;
+					col++;
 				}
 
-				ImVec2 pos = ImVec2(colX, yBase + row * nodeSpacingY);
+				_float posX = bucketX + col * (nodeSpacingX + kColGapX);
+				_float posY = row * nodeSpacingY;
+
+				ImVec2 pos = ImVec2(posX, posY);
 				ImNodes::SetNodeEditorSpacePos(ids[idx], pos);
 				++row;
 			}
 
-			// 다음 버킷은 한 칸 띄워서 시작
-			curX = colX + nodeSpacingX + kColGapX * 2.f;
+			// 다음 버킷 위치 계산
+			_int bucketCols = (static_cast<_int>(ids.size()) + kMaxRowsPerCol - 1) / kMaxRowsPerCol;
+			bucketX += bucketCols * (nodeSpacingX + kColGapX) + kColGapX * 2;
 		}
+
+		currentX += categoryWidths[ci] + categorySpacingX;
 	}
 
-	// Any는 왼쪽 상단, Exit은 마지막 카테고리 오른쪽 상단으로 고정
-	const float exitX = (float)(visibleCats.size()) * categorySpacingX + 200.f;
+	// Any/Exit 노드 배치 - 항상 양 끝에 위치하도록 보장
+	_float minNodeX = startX - 100.f;  // 가장 왼쪽 노드보다 더 왼쪽
+	_float maxNodeX = currentX - categorySpacingX + 100.f; // 가장 오른쪽 노드보다 더 오른쪽
+
+	// Any 노드를 가장 왼쪽에
 	if (pCtrl->GetStateByNodeIdForEditor(ANY_NODE_ID))
-		ImNodes::SetNodeEditorSpacePos(ANY_NODE_ID, ImVec2(kAnyX, kHubY));
+	{
+		_float anyX = min(kAnyX, minNodeX - 300.f);
+		ImNodes::SetNodeEditorSpacePos(ANY_NODE_ID, ImVec2(anyX, kHubY));
+	}
+
+	// Exit 노드를 가장 오른쪽에
 	if (pCtrl->GetStateByNodeIdForEditor(EXIT_NODE_ID))
+	{
+		_float exitX = max(maxNodeX + kExitMargin, totalLayoutWidth * 0.5f + 400.f);
 		ImNodes::SetNodeEditorSpacePos(EXIT_NODE_ID, ImVec2(exitX, kHubY));
+	}
 }
 
 void CAnimTool::Test_AnimEvents()
@@ -2571,58 +2490,6 @@ void CAnimTool::Setting_Sequence()
 	}
 }
 
-void CAnimTool::Manipulate(Operation op, const _float snapT[3], const _float snapR[3], const _float snapS[3])
-{
-	if (!m_pTransformCom) return;
-
-	ImGuizmo::BeginFrame();
-	auto& io = ImGui::GetIO();
-	ImGuizmo::SetDrawlist();
-	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-	// 뷰·프로젝션·월드 매트릭스 float[16] 준비
-	_float matV[16], matP[16], matW[16];
-	XMStoreFloat4x4((XMFLOAT4X4*)matV, CGameInstance::Get_Instance()->Get_Transform_Matrix(D3DTS::VIEW));
-	XMStoreFloat4x4((XMFLOAT4X4*)matP, CGameInstance::Get_Instance()->Get_Transform_Matrix(D3DTS::PROJ));
-
-	_matrix xmW = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
-	XMStoreFloat4x4(reinterpret_cast<XMFLOAT4X4*>(matW), xmW);
-
-	// 조작 모드 결정
-	ImGuizmo::OPERATION gizOp =
-		op == Operation::TRANSLATE ? ImGuizmo::TRANSLATE :
-		op == Operation::ROTATE ? ImGuizmo::ROTATE :
-		ImGuizmo::SCALE;
-
-	// Shift 누르고 있을 때만 스냅 적용
-	const _float* snapPtr = nullptr;
-	if (ImGui::IsKeyDown(ImGuiMod_Shift))
-	{
-		switch (op)
-		{
-		case Operation::TRANSLATE: snapPtr = snapT; break;
-		case Operation::ROTATE:    snapPtr = snapR; break;
-		case Operation::SCALE:     snapPtr = snapS; break;
-		}
-	}
-
-	// Manipulate에 스냅 배열 전달
-	ImGuizmo::Manipulate(matV, matP, gizOp, ImGuizmo::WORLD, matW, nullptr, snapPtr);
-
-	//// 드래그 중이면 WorldMatrix 업데이트
-	//if (ImGuizmo::IsUsing())
-	//{
-	//	XMFLOAT4X4 newW;
-	//	memcpy(&newW, matW, sizeof(newW));
-	//	m_pTransformCom->Set_WorldMatrix(newW);
-
-	//	if (op == Operation::ROTATE)
-	//	{
-	//		pTransform->UpdateEulerAngles();
-	//	}
-	//}
-
-}
 
 string CAnimTool::GetStateCategory(const string& stateName)
 {
@@ -2664,10 +2531,8 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 
 	// 컬럼 Name | Type | Value | Action
 
-
 	if (ImGui::CollapsingHeader("Settings", ImGuiTreeNodeFlags_CollapsingHeader))
 	{
-		// 이 안이 접힌 상태일 때 숨겨지고, 펼쳐지면 보입니다.
 		ImGui::Indent(10);
 		ImGui::Checkbox("Has Exit Time", &transition.hasExitTime);
 		ImGui::SliderFloat("Exit Time", &transition.minTime, 0.f, 1.f);
@@ -2678,7 +2543,6 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 	// 현재 트랜지션의 컨디션 조건 가져오기
 	// 가져왔을 때 현재 조건을 포함해서 컨디션을 정할 수 있게
 	// 각각의 컨디션마다 조건을 정할 수 있게 
-
 	if (ImGui::CollapsingHeader("Conditions", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		// 파라미터 목록 준비
@@ -2810,7 +2674,6 @@ HRESULT CAnimTool::Register_Objects()
 	m_vecObjectNames.push_back("Fuoco");
 
 	CMonster_Base::MONSTER_BASE_DESC* pDesc = new CMonster_Base::MONSTER_BASE_DESC();
-	//pDesc.fSpeedPerSec = 1.f;
 	pDesc->fSpeedPerSec = 5.f;
 	pDesc->fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
@@ -2826,7 +2689,6 @@ HRESULT CAnimTool::Register_Objects()
 	m_SpawnObjectDesc["Buttler_Train"] = pDesc;
 
 	CMonster_Base::MONSTER_BASE_DESC* pDesc1 = new CMonster_Base::MONSTER_BASE_DESC();
-	//pDesc.fSpeedPerSec = 1.f;
 	pDesc1->fSpeedPerSec = 5.f;
 	pDesc1->fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc1->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
@@ -2842,7 +2704,6 @@ HRESULT CAnimTool::Register_Objects()
 	m_SpawnObjectDesc["Buttler_Basic"] = pDesc1;
 
 	CMonster_Base::MONSTER_BASE_DESC* pDesc2 = new CMonster_Base::MONSTER_BASE_DESC();
-	//pDesc.fSpeedPerSec = 1.f;
 	pDesc2->fSpeedPerSec = 5.f;
 	pDesc2->fRotationPerSec = XMConvertToRadians(600.0f);
 	pDesc2->eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
@@ -2857,9 +2718,7 @@ HRESULT CAnimTool::Register_Objects()
 	m_vecObjectNames.push_back("Buttler_Range");
 	m_SpawnObjectDesc["Buttler_Range"] = pDesc2;
 
-
 	CPlayer::PLAYER_DESC* pPlayerDesc = new CPlayer::PLAYER_DESC();
-	//pDesc.fSpeedPerSec = 1.f;
 	pPlayerDesc->fSpeedPerSec = 5.f;
 	pPlayerDesc->fRotationPerSec = XMConvertToRadians(600.0f);
 	pPlayerDesc->eMeshLevelID = LEVEL::JW;
@@ -2948,9 +2807,7 @@ HRESULT CAnimTool::Bind_Shader()
 		{
 
 		}
-		//	return E_FAIL;
 
-	//m_pCurModel->Bind_SkinningSRVs(m_pAnimShader, i);
 		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
 
 		if (FAILED(m_pAnimShader->Begin(0)))
@@ -2959,20 +2816,6 @@ HRESULT CAnimTool::Bind_Shader()
 		if (FAILED(m_pCurModel->Render(i)))
 			return E_FAIL;
 	}
-
-	//ID3D11ShaderResourceView* cur[3]{};
-	//m_pContext->VSGetShaderResources(0, 3, cur);
-	//auto* expect = m_pCurAnimator->GetFinalBoneMatricesSRV();
-	//assert(cur[0] == expect); // ★ 이제 통과해야 정상
-	//for (auto& s : cur) if (s) s->Release();
-	//ID3D11UnorderedAccessView* nullUAV = nullptr;
-	//UINT counts = 0;
-	//m_pContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, &counts);
-	//ID3D11ShaderResourceView* nullSRV[3]{ nullptr, nullptr, nullptr };
-
-
-	//// VS 단계 t0,t1,t2 슬롯에서 언바인드
-	//m_pContext->VSSetShaderResources(0, 3, nullSRV);
 
 	return S_OK;
 }
@@ -3042,7 +2885,4 @@ void CAnimTool::Free()
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pEditorObjectFactory);
 }
-
-
-
 #endif

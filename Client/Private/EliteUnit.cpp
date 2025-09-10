@@ -313,7 +313,10 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
 		HandleMovementDecision(fDistance, fTimeDelta);
       
     }
-    _bool bIsRootMotion = m_pAnimator->GetCurrentAnim()->IsRootMotionEnabled();
+	auto pAnim = m_pAnimator->GetCurrentAnim();
+    _bool bIsRootMotion = false;
+    if(pAnim)
+      bIsRootMotion = pAnim->IsRootMotionEnabled();
 
     if (bIsRootMotion)
     {
@@ -596,18 +599,18 @@ void CEliteUnit::Reset()
 	m_bGroggyActive = false;
     m_bUseLockon = true;
     m_fChangeMoveDirCooldown = 0.f;
-    if (nullptr != m_pHPBar)
-        m_pHPBar->Set_RenderTime(0.f);
-	
+    if (m_pHPBar)
+    {
+        m_pHPBar->Reset();
+    }
     m_pTransformCom->Set_WorldMatrix(m_InitWorldMatrix);
     if (m_pAnimator)
     {
         m_pAnimator->Reset();
-      //  m_pAnimator->ResetParameters();
         auto pController = m_pAnimator->Get_CurrentAnimController();
         if (pController)
         {
-            pController->SetState(pController->GetEntryNodeId());
+            pController->SetStateToEntry();
         }
     }
     m_bRootMotionClamped = false;
@@ -673,24 +676,19 @@ PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pOffset)
     if (!pBone) 
         return PxTransform(PxIdentity);
 
-
-
-    _matrix mat = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) *
-        m_pTransformCom->Get_WorldMatrix();
-
+    _matrix local = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix());
     if (pOffset)
     {
-        _vector S, R, T;
-        XMMatrixDecompose(&S, &R, &T, mat);
-
-        _vector Sw, Rw, Tw;
-        XMMatrixDecompose(&Sw, &Rw, &Tw, *pOffset);
-
-        T = XMVectorAdd(T, XMVectorSet(XMVectorGetX(Tw), XMVectorGetY(Tw), XMVectorGetZ(Tw), 0.f));
-
-        // 원래 스케일/회전 유지하고 새 위치로 재합성
-        mat = XMMatrixAffineTransformation(S, XMVectorZero(), R, T);
+		local = local * (*pOffset);
     }
+
+
+    _matrix mat = local *
+        m_pTransformCom->Get_WorldMatrix();
+
+    //if (pOffset)
+    //    mat =  mat* (*pOffset);
+
 
     return ToPxPose(mat);
 }
@@ -765,6 +763,8 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
+        static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
         _float fDamage = 0.f;
 		if (m_eUnitType == EUnitType::ELITE_MONSTER)
 			fDamage = pWeapon->Get_CurrentDamage() * 0.25f;
@@ -805,6 +805,8 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             m_fGroggyGauge += m_fGroggyScale_Charge;
             if (m_bGroggyActive)
             {
+                if (m_eCurrentState == EEliteState::FATAL || m_eCurrentState == EEliteState::PARALYZATION)
+                    break;
                 SwitchEmissive(false, 1.f);
                 m_pAnimator->SetTrigger("Groggy");
 				m_eCurrentState = EEliteState::GROGGY;

@@ -54,9 +54,9 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 
-#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
-#ifdef TESTMAP
+#ifdef TESTMAP //여러 개 켜도 됨
 //#define TEST_STATION_MAP //이거 키면 테스트 맵에 스테이션 맵 생성됨
 //#define TEST_HOTEL_MAP //이거 키면 테스트 맵에  호텔 맵 생성됨
 //#define TEST_OUTER_MAP //이거 키면 테스트 맵에 외부 맵 생성됨
@@ -68,7 +68,7 @@ using namespace Client;
 #define PRE_TRANSFORMMATRIX_SCALE 0.004f
 #define INSTANCE_THRESHOLD 30 //이 갯수 초과 모델로드시 인스턴싱으로 로드한다.
 #pragma endregion
-
+  
 #pragma region MANAGER
 
 #define EFFECT_MANAGER CEffect_Manager::Get_Instance()

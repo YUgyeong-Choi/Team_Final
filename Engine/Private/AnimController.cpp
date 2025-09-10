@@ -859,7 +859,10 @@ void CAnimController::Deserialize(const json& j)
 				{
 					auto pModel = m_pAnimator->GetModel();
 					clip = pModel ? pModel->GetAnimationClipByName(clipName): nullptr;
-					clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
+					if (clip)
+					{
+						clip->Set_Bones(m_pAnimator->GetModel()->Get_Bones()); // 애니메이션에 모델의 본 정보 설정
+					}
 				}
 				_float fLowerStartTime = 0.f;
 				_float fUpperStartTime = 0.f;

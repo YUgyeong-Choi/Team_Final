@@ -16,6 +16,7 @@ protected:
 	virtual ~CUI_Feature() = default;
 
 public:
+	_wstring Get_Tag() { return m_strProtoTag; }
 	void Set_IsLoop(_bool isLoop) { m_isLoop = isLoop; }
 	void Reset() { m_iCurrentFrame = 0; }
 

@@ -35,19 +35,7 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
-	m_fMaxHp = 900.f;
-	m_fDamage = 15.f;
-	m_fAttckDleay = 1.5f;
-	m_iPatternLimit = 1;
-	m_fChasingDistance = 3.f;
-	m_fMinimumTurnAngle = 45.f;
-	m_fPhase2HPThreshold = 0.65f;
-	m_fMaxRootMotionSpeed = 30.f;
-	m_fChangeMoveDirCooldown = 2.f;
 
-	m_fGroggyScale_Weak = 0.02f;
-	m_fGroggyScale_Strong = 0.03f;
-	m_fGroggyScale_Charge = 0.12f;
 
 	if (pArg == nullptr)
 	{
@@ -104,9 +92,21 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 2,3번은 바스켓
 
 
+	m_fMaxHp = 100.f;
+	m_fHp = m_fMaxHp;
+	m_fDamage = 15.f;
+	m_fAttckDleay = 1.5f;
+	m_iPatternLimit = 1;
+	m_fChasingDistance = 3.f;
+	m_fMinimumTurnAngle = 45.f;
+	m_fPhase2HPThreshold = 0.65f;
+	m_fMaxRootMotionSpeed = 18.f;
+	m_fChangeMoveDirCooldown = 2.f;
 
-	//m_pPhysXActorCom->Add_IngoreActors(static_cast<CWeapon_Monster*>(m_pHammer)->Get_PhysXActor()->Get_Actor());
-	
+	m_fGroggyScale_Weak = 0.1f;
+	m_fGroggyScale_Strong = 0.15f;
+	m_fGroggyScale_Charge = 0.2f;
+
 	return S_OK;
 }
 
@@ -181,11 +181,11 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("Attack");
 	}
 
-	if (KEY_DOWN(DIK_B))
-	{
-		EnterCutScene();
-		m_bDebugMode = !m_bDebugMode;
-	}
+	//if (KEY_DOWN(DIK_B))
+	//{
+	//	EnterCutScene();
+	//	m_bDebugMode = !m_bDebugMode;
+	//}
 
 	if (KEY_PRESSING(DIK_LALT))
 	{
@@ -224,24 +224,24 @@ void CFestivalLeader::Update(_float fTimeDelta)
 			//m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
 			m_pAnimator->SetTrigger("SpecialDie");
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			SwitchEmissive(false, 1.f);
+			SwitchFury(false, 1.f);
 		}
 		Safe_Release(m_pHPBar);
 	}
 
 	__super::Update(fTimeDelta);
+	m_pSpringBoneSys->Update(fTimeDelta);
 	if (m_bSwitchHeadSpace)
 	{
 		ApplyHeadSpaceSwitch(fTimeDelta);
-		Update_Collider(); 
 	}
-	m_pSpringBoneSys->Update(fTimeDelta);
-	//Update_HairSpring(fTimeDelta);
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
-
+	Update_Collider();
 }
 
 void CFestivalLeader::Late_Update(_float fTimeDelta)
@@ -280,24 +280,16 @@ void CFestivalLeader::Reset()
 	m_iLastComboType = -1;
 	m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
-	if (m_pAnimator)
-	{
-		m_pAnimator->CancelOverrideAnimController();
-	}
-
+	m_pAnimator->CancelOverrideAnimController();
 	m_pModelCom->SetMeshVisible(2, true);
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
 	m_bSwitchHeadSpace = false;                       
-	if (m_pHammerBone && m_iOriginBoneIndex >= 0)
-	{
-		m_pHammerBone->Set_ParentBoneIndex(m_iOriginBoneIndex);
-		m_pHammerBone->Set_TransformationMatrix(XMLoadFloat4x4(&m_HeadLocalInit));
-	}
-	m_pAnimator->Update(0.016f);
+
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
+
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -334,11 +326,11 @@ HRESULT CFestivalLeader::Ready_Actor()
 	// 해머
 	if (m_pHammerBone)
 	{
-		_vector vWorldOffset = XMVectorSet(0.f,0.f, -2.5f, 1.f);
+		_vector vWorldOffset = XMVectorSet(-1.1f, 0.f, 0.f, 1.f);
 		_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
 		const PxTransform hammerPose = GetBonePose(m_pHammerBone, &matWorldOffset);
 
-		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.8f,0.7f,0.7f));
+		PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(PxVec3(1.85f,0.7f,0.7f));
 
 		m_pPhysXActorComForHammer->Create_Collision(
 			m_pGameInstance->GetPhysics(),
@@ -389,7 +381,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform leftPose = GetBonePose(m_pLeftHandBone);
 
-		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(0.8f);
+		PxSphereGeometry leftGeom = m_pGameInstance->CookSphereGeometry(0.9f);
 		m_pPhysXActorComForLeftHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			leftGeom,
@@ -413,7 +405,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	{
 		const PxTransform rightPose = GetBonePose(m_pRightHandBone);
 
-		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(0.8f);
+		PxSphereGeometry rightGeom = m_pGameInstance->CookSphereGeometry(0.9f);
 		m_pPhysXActorComForRightHand->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			rightGeom,
@@ -506,14 +498,8 @@ void CFestivalLeader::Update_Collider()
 
 	if (m_pPhysXActorComForHammer && m_pHammerBone)
 	{
-		_vector vWorldOffset = XMVectorSet(0.f, 0.f, -2.5f, 1.f);
-		_vector S, R, T;
-		XMMatrixDecompose(&S, &R, &T, XMLoadFloat4x4(m_pHammerBone->Get_CombinedTransformationMatrix()));
-
-		R = XMQuaternionNormalize(R);
+		_vector vWorldOffset = XMVectorSet(-1.1f, 0.f, 0.f, 1.f);
 		_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
-
-
 		m_pPhysXActorComForHammer->Set_Transform(GetBonePose(m_pHammerBone, &matWorldOffset));
 	}
 
@@ -673,7 +659,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		m_eAttackType = EAttackType::FURY_STAMP;	
 		break;
 	case ENUM_CLASS(BossStateID::Atk_FurySwing_Start):
-		m_eAttackType = EAttackType::STRONG_KNOCKBACK;
+		m_eAttackType = EAttackType::KNOCKBACK;
 		break;
 	case ENUM_CLASS(BossStateID::Atk_HammerSlam_Start):
 		m_eAttackType = EAttackType::STAMP;
@@ -869,7 +855,7 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		m_eAttackType = EAttackType::FURY_STAMP;
 		break;
 	case Client::CFestivalLeader::FurySwing:
-		m_eAttackType = EAttackType::STRONG_KNOCKBACK;
+		m_eAttackType = EAttackType::KNOCKBACK;
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
 		break;
 	case Client::CFestivalLeader::FuryBodySlam:
@@ -1095,7 +1081,7 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 	m_pAnimator->SetBool("Phase2Combo", true);
 	m_pAnimator->SetPlayRate(1.f);
 	m_bIsPhase2 = true;
-	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::STRONG_KNOCKBACK); // 바스켓에 충돌했을 때를 생각해서 
+	static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::KNOCKBACK); // 바스켓에 충돌했을 때를 생각해서 
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,

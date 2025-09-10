@@ -784,9 +784,9 @@
                 0.0
             ],
             [
-                67.406494140625,
-                3.2680392265319824,
-                -8.2277193069458,
+                185.17938232421875,
+                10.204042434692383,
+                -7.946812629699707,
                 1.0
             ]
         ]
@@ -8061,11 +8061,11 @@
         "Falloff": 5.0,
         "FogCutOff": 6.800000190734863,
         "FogDensity": 18.5,
-        "InnerCosAngle": 77.0999755859375,
+        "InnerCosAngle": 77.09996795654297,
         "Intensity": 0.0,
         "LevelType": 0,
         "LightType": 1,
-        "OuterCosAngle": 86.5999755859375,
+        "OuterCosAngle": 86.59996795654297,
         "Range": 7.599999904632568,
         "Volumetric": true,
         "WorldMatrix": [
@@ -8149,11 +8149,11 @@
         "Falloff": 5.0,
         "FogCutOff": 6.800000190734863,
         "FogDensity": 18.5,
-        "InnerCosAngle": 77.09996795654297,
+        "InnerCosAngle": 77.09996032714844,
         "Intensity": 0.0,
         "LevelType": 0,
         "LightType": 1,
-        "OuterCosAngle": 86.59996795654297,
+        "OuterCosAngle": 86.59996032714844,
         "Range": 7.599999904632568,
         "Volumetric": true,
         "WorldMatrix": [

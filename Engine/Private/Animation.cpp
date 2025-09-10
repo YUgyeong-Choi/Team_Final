@@ -174,20 +174,51 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 	{
 		for (auto& ev : m_events)
 		{
-			if (m_bReverse)
-			{
-				if (ev.fTime > m_fCurrentTrackPosition && ev.fTime <= prevPos)
+			/*	if (m_bReverse)
+				{
+					if (ev.fTime > m_fCurrentTrackPosition && ev.fTime <= prevPos)
+					{
+						outEvents->push_back(ev.name);
+					}
+				}
+				else
+				{
+
+				if (ev.fTime > prevPos && ev.fTime <= m_fCurrentTrackPosition)
 				{
 					outEvents->push_back(ev.name);
 				}
-			}
-			else
-			{
+				}*/
 
-			if (ev.fTime > prevPos && ev.fTime <= m_fCurrentTrackPosition)
+				// prevPos == curPos (deltaTime=0) 인 경우 현재 프레임 이벤트도 잡아줌
+			if (fabs(prevPos - m_fCurrentTrackPosition) < 0.0001f)
 			{
-				outEvents->push_back(ev.name);
+				if (fabs(ev.fTime - m_fCurrentTrackPosition) < 0.0001f)
+					outEvents->push_back(ev.name);
+				continue; // 이미 처리했으니 다음 이벤트로
 			}
+
+			// 역재생인 경우
+			if (m_bReverse)
+			{
+				if (ev.fTime > m_fCurrentTrackPosition && ev.fTime <= prevPos)
+					outEvents->push_back(ev.name);
+				continue;
+			}
+
+			// 정방향
+			if (m_fCurrentTrackPosition >= prevPos) // 일반적인 경우
+			{
+				if (ev.fTime > prevPos && ev.fTime <= m_fCurrentTrackPosition)
+					outEvents->push_back(ev.name);
+			}
+			else // 루프 발생 (curPos < prevPos)
+			{
+				if ((ev.fTime > prevPos && ev.fTime <= m_fDuration) ||
+					(ev.fTime >= 0.f && ev.fTime <= m_fCurrentTrackPosition))
+				{
+					outEvents->push_back(ev.name);
+				}
 			}
 		}
 	}

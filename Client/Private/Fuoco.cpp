@@ -31,10 +31,7 @@ HRESULT CFuoco::Initialize_Prototype()
 HRESULT CFuoco::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
-	m_fDamage = 15.f;
-	m_fAttckDleay = 1.5f;
-	m_fChasingDistance = 4.f;
-	m_iPatternLimit = 1;
+
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -68,7 +65,10 @@ HRESULT CFuoco::Initialize(void* pArg)
 
 	m_fMaxRootMotionSpeed = 18.f;
 
-
+	m_fDamage = 15.f;
+	m_fAttckDleay = 1.5f;
+	m_fChasingDistance = 4.f;
+	m_iPatternLimit = 1;
 	//처음에 비활성화 되어있던 인덱스들을 받아온다.
 	//m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
 
@@ -448,7 +448,7 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 
 	if (CheckConditionFlameField())
 	{
-		m_fAttackCooldown = 10.f;
+		m_fAttackCooldown = m_fAttckDleay;
 		return;
 	}
 
@@ -503,6 +503,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	m_iPrevNodeID = m_iCurNodeID;
 	m_iCurNodeID = iNodeID;
 	m_ePrevState = m_eCurrentState;
+	_bool bIsFury = false;
 	switch (iNodeID)
 	{
 	case ENUM_CLASS(BossStateID::IDLE):
@@ -634,6 +635,14 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eAttackType = EAttackType::FURY_STAMP;
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
+		bIsFury = true;
+		break;
+	case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
+	case ENUM_CLASS(BossStateID::ATK_SLAM_FURY_END):
+		bIsFury = true;
+		break;
+	case ENUM_CLASS(BossStateID::ATK_STRIKE_FURY):
+		bIsFury = true;
 		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
@@ -643,6 +652,14 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	{
 		m_fMaxRootMotionSpeed = 18.f;
 		m_fRootMotionAddtiveScale = 1.2f;
+	}
+	if (bIsFury)
+	{
+		m_eFuryState = EFuryState::Fury;
+	}
+	else
+	{
+		m_eFuryState = EFuryState::None;
 	}
 
 }
@@ -879,7 +896,10 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
 		{
 			if (m_pHPBar)
+			{
+				m_pHPBar->Set_RenderTime(0.0016f);
 				return;
+			}
 
 			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 			eDesc.strName = TEXT("왕의 불꽃 푸오코");
@@ -1161,7 +1181,13 @@ void CFuoco::Register_Events()
 			}
 		});
 
-
+	m_pAnimator->RegisterEventListener("SwitchFuryState", [this]()
+		{
+			if (m_eFuryState == EFuryState::None)
+				m_eFuryState = EFuryState::Fury;
+			else
+				m_eFuryState = EFuryState::None;
+		});
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -1185,10 +1211,11 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	if (m_eCurrentState == EEliteState::FATAL)
 		return;
 	m_pAnimator->SetTrigger("Paralyzation");
+	m_pAnimator->SetPlayRate(1.f);
 	//m_pAnimator->SetTrigger("Groggy");
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
-		SlamCombo,Uppercut,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
+		SlamCombo,SwingAtk,SwingAtkSeq,SlamFury,FootAtk,
 		SlamAtk,StrikeFury,P2_FireOil,P2_FireBall,P2_FireFlame,
 		P2_FireBall_B
 	};
@@ -1921,9 +1948,11 @@ _bool CFuoco::CheckConditionFlameField()
 			m_pAnimator->SetInt("SkillType", P2_FlameField);
 			m_bUsedFlameFiledOnLowHp = true;
 			m_pAnimator->SetTrigger("Attack");
+			m_pAnimator->SetPlayRate(1.f);
 		}
 		else
 		{
+			m_pAnimator->SetPlayRate(1.f);
 			m_bWaitPhase2Rotate = true;
 			//m_pAnimator->SetInt("SkillType", StrikeFury);
 			//m_fAttackCooldown = m_fAttckDleay;

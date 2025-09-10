@@ -25,9 +25,9 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
 	Ready_AttackPatternWeightForPhase1();
-	m_fGroggyScale_Weak = 0.01f;
-	m_fGroggyScale_Strong = 0.025f;
-	m_fGroggyScale_Charge = 0.08f;
+	m_fGroggyScale_Weak = 0.1f;
+	m_fGroggyScale_Strong = 0.12f;
+	m_fGroggyScale_Charge = 0.14f;
 	return S_OK;
 }
 
@@ -42,6 +42,7 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 
 void CBossUnit::EnterCutScene()
 {
+	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
 	SwitchEmissive(true, 0.9f);
@@ -62,6 +63,7 @@ void CBossUnit::Reset()
 	m_ActiveEffect.clear();
 	m_pAnimator->SetPlayRate(1.f);
 	m_fFirstChaseBeforeAttack = 2.f;
+	m_pAnimator->ResetTrigger("SpecialDie");
 }
 
 void CBossUnit::Ready_AttackPatternWeightForPhase1()

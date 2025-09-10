@@ -140,13 +140,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
-	//if (FAILED(Ready_Stat()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Stat()))
+		return E_FAIL;
 
-#ifdef _DEBUG
+	m_iLevel = 5;
+
 	Add_Ergo(10000.f);
-#endif
-	Add_Ergo(10000.f);
+
 	return S_OK;
 }
 
@@ -2445,6 +2445,11 @@ void CPlayer::Set_Ergo(_float fErgo)
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
 }
 
+CWeapon* CPlayer::Get_Equip_Legion()
+{
+	return m_pLegionArm;
+}
+
 void CPlayer::Apply_Stat()
 {
 
@@ -2468,11 +2473,11 @@ void CPlayer::Apply_Stat()
 		
 		if (m_eStat.iMotivity > 1)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) );
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f );
 		}
 		if (m_eStat.iTechnique > 1)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) );
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.3f );
 		}
 
 
@@ -2492,11 +2497,7 @@ void CPlayer::Apply_Stat()
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
 		}
-		if (m_eStat.iAdvance > 1)
-		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
-		}
-	
+
 
 		m_pLegionArm->SetDamage(fBaseDamage);
 
@@ -2698,8 +2699,8 @@ HRESULT CPlayer::Ready_Controller()
 }
 HRESULT CPlayer::Ready_UIParameters()
 {
-	m_fHp = 100.f;
-	m_fMaxHp = 100.f;
+	m_fHp = 358.f;
+	m_fMaxHp = 358.f;
 
 	Callback_HP();
 	Callback_Mana();
@@ -2823,8 +2824,8 @@ HRESULT CPlayer::Ready_Stat()
 	m_eStat.iVitality = 12;
 	m_eStat.iStamina = 10;
 	m_eStat.iCapacity = 8;
-	m_eStat.iMotivity = 13;
-	m_eStat.iTechnique = 7;
+	m_eStat.iMotivity = 9;
+	m_eStat.iTechnique = 5;
 	m_eStat.iAdvance = 6;
 
 	Apply_Stat();
@@ -2913,6 +2914,15 @@ void CPlayer::Callback_Mana()
 
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
+}
+
+void CPlayer::Add_Mana(_float fMana)
+{
+	m_fMana += fMana;
+	if (m_fMana > m_fMaxMana)
+		m_fMana = m_fMaxMana;
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 }
 
 void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
@@ -3474,12 +3484,12 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 
 void CPlayer::Create_LeftArm_Lightning()
 {
-	//CEffectContainer::DESC Lightdesc = {};
-	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-	//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
-	//	MSG_BOX("이펙트 생성 실패함");
+	CEffectContainer::DESC Lightdesc = {};
+	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 void CPlayer::Movement(_float fTimeDelta)

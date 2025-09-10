@@ -35,7 +35,7 @@ public:
 	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
 	void Set_MaxHp(_float iHp) { m_fMaxHp = iHp; }
 
-	void Add_Damage(_float fDamage) { m_fDamage += fDamage; }
+	void Add_Damage(_float fDamage) { m_fDamage += fDamage; if (m_isBoss) { m_fDamageRenderTime = 2.f; } }
 
 public:
 	virtual HRESULT Initialize_Prototype();
@@ -71,6 +71,8 @@ private:
 
 	_wstring m_strName = {};
 	_bool	 m_isBoss = {};
+
+	_float m_fDamageRenderTime = {};
 
 	const _float4x4* m_pParentMatrix = { nullptr };
 	_float4x4				m_CombinedWorldMatrix{};

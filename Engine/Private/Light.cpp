@@ -127,7 +127,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
 		AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
-		if (eArea == AREAMGR::FUOCO || eArea == AREAMGR::DEBUG)
+		if (eArea == AREAMGR::FUOCO)
 			return S_OK;
 
 		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
@@ -140,6 +140,12 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		else if (eAreaMgr == AREAMGR::STATION)
 		{
 			_float fFogDensity = 0.4f;
+			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
+				return E_FAIL;
+		}
+		else if (eAreaMgr == AREAMGR::OUTER)
+		{
+			_float fFogDensity = 0.7f;
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
 				return E_FAIL;
 		}

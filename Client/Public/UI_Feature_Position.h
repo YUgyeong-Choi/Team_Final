@@ -26,6 +26,9 @@ public:
 	virtual json Serialize();
 	virtual void Deserialize(const json& j);
 
+	void Set_Position(_bool isStartPos, _float2 fPos);
+	_float2& Get_Position(_bool isStartPos);
+
 private:
 
 	// 상태 받아와서 반대로 움직일지 결정하면 될듯?

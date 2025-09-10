@@ -82,7 +82,18 @@ public:
             m_pCurAnimController->SetState(stateName);
         }
     }
-
+    void DispatchAnimEventsForEditor(const vector<string>& triggeredEvents)
+    {
+        for (auto& name : triggeredEvents)
+        {
+            auto it = m_eventListeners.find(name);
+            if (it != m_eventListeners.end())
+            {
+                for (auto& cb : it->second)
+                    cb();
+            }
+        }
+    }
      unordered_map<string, Parameter>& GetParametersForEditor();
 #endif
 
