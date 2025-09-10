@@ -4,6 +4,12 @@
 NS_BEGIN(Client)
 class CBossUnit : public CEliteUnit
 {
+public:
+	enum class EFuryState
+	{
+		None,   // 평상시
+		Fury    // 퓨리 상태
+	};
 protected:
 	CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBossUnit(const CBossUnit& Prototype);
@@ -16,6 +22,8 @@ public:
 public:
 	void EnterCutScene();
 	virtual void Reset() override;
+	EFuryState GetFuryState() const { return m_eFuryState; }
+
 protected:
 	virtual void Ready_AttackPatternWeightForPhase1();
 	virtual void Ready_AttackPatternWeightForPhase2();
@@ -27,6 +35,7 @@ protected:
 	_float   m_fPhase2HPThreshold = 0.6f; // 60% 이하로 떨어지면 페이즈2 시작
 	_float   m_fFirstChaseBeforeAttack = 2.f;
 	_bool    m_bCutSceneOn = false;
+	EFuryState m_eFuryState = EFuryState::None;
 public:
 	static CBossUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

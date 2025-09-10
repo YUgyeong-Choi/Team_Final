@@ -69,19 +69,23 @@
             "Events": [
                 {
                     "EventName": "OffFury",
-                    "Time": 3.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 3.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 3.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 3.0
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ColliderBasketOff",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -254,19 +258,23 @@
             "Events": [
                 {
                     "EventName": "OffFury",
-                    "Time": 3.0
+                    "Time": 2.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 3.0
+                    "Time": 2.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 3.0
+                    "Time": 2.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 3.0
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "EndStrikeCollisionFlag",
+                    "Time": 2.0
                 }
             ],
             "IsLoop": false,
@@ -410,6 +418,10 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "EndStrikeCollisionFlag",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -423,6 +435,26 @@
                 {
                     "EventName": "ActiveHpBar",
                     "Time": 199.0
+                },
+                {
+                    "EventName": "CollidersOn",
+                    "Time": 195.0
+                },
+                {
+                    "EventName": "ColliderHammerOff",
+                    "Time": 199.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 199.0
+                },
+                {
+                    "EventName": "ColliderRightHandOff",
+                    "Time": 199.0
+                },
+                {
+                    "EventName": "ColliderBasketOff",
+                    "Time": 199.0
                 }
             ],
             "IsLoop": false,
@@ -435,11 +467,7 @@
             "Events": [
                 {
                     "EventName": "ColliderLeftHandOn",
-                    "Time": 15.0
-                },
-                {
-                    "EventName": "ColliderLeftHandOff",
-                    "Time": 23.0
+                    "Time": 11.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -460,6 +488,10 @@
             "Events": [
                 {
                     "EventName": "ResetAnimSpeed",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOff",
                     "Time": 1.0
                 }
             ],
@@ -490,7 +522,7 @@
                 },
                 {
                     "EventName": "EndStrikeCollisionFlag",
-                    "Time": 44.0
+                    "Time": 56.0
                 },
                 {
                     "EventName": "ColliderRightHandOn",
@@ -502,11 +534,11 @@
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 44.0
+                    "Time": 56.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 44.0
+                    "Time": 56.0
                 },
                 {
                     "EventName": "CameraShake",
@@ -546,10 +578,6 @@
             "Duration": 24.0,
             "Events": [
                 {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 2.0
-                },
-                {
                     "EventName": "FastAnimSpeed",
                     "Time": 1.0
                 }
@@ -564,7 +592,7 @@
             "Events": [
                 {
                     "EventName": "EndStrikeCollisionFlag",
-                    "Time": 2.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -590,6 +618,10 @@
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 31.0
+                },
+                {
+                    "EventName": "BeginStrikeCollisionFlag",
+                    "Time": 29.0
                 }
             ],
             "IsLoop": false,
@@ -670,7 +702,7 @@
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 25.0
+                    "Time": 28.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -691,7 +723,7 @@
             "Events": [
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 25.0
+                    "Time": 28.0
                 },
                 {
                     "EventName": "ColliderRightHandOn",
@@ -712,7 +744,7 @@
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 25.0
+                    "Time": 35.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -806,7 +838,7 @@
                     "Time": 110.0
                 },
                 {
-                    "EventName": "ColliderLeftHandOff",
+                    "EventName": "ColliderLeftHandOn",
                     "Time": 110.0
                 },
                 {
@@ -853,7 +885,7 @@
             "Events": [
                 {
                     "EventName": "ColliderLeftHandOn",
-                    "Time": 15.0
+                    "Time": 11.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
@@ -906,7 +938,7 @@
                 },
                 {
                     "EventName": "EndStrikeCollisionFlag",
-                    "Time": 44.0
+                    "Time": 53.0
                 },
                 {
                     "EventName": "ColliderRightHandOn",
@@ -918,11 +950,11 @@
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 44.0
+                    "Time": 53.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 44.0
+                    "Time": 53.0
                 }
             ],
             "IsLoop": false,
@@ -958,12 +990,12 @@
             "Duration": 24.0,
             "Events": [
                 {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 2.0
-                },
-                {
                     "EventName": "ResetAnimSpeed",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "EndStrikeCollisionFlag",
+                    "Time": 22.0
                 }
             ],
             "IsLoop": false,
@@ -998,6 +1030,10 @@
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 30.0
+                },
+                {
+                    "EventName": "BeginStrikeCollisionFlag",
+                    "Time": 31.0
                 }
             ],
             "IsLoop": false,
@@ -1017,11 +1053,11 @@
             "Events": [
                 {
                     "EventName": "ColliderHammerOn",
-                    "Time": 14.0
+                    "Time": 10.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 21.0
+                    "Time": 22.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -1066,11 +1102,11 @@
             "Events": [
                 {
                     "EventName": "ColliderHammerOn",
-                    "Time": 18.0
+                    "Time": 15.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 27.0
+                    "Time": 28.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -1103,7 +1139,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_11_Attack",
@@ -1115,7 +1151,7 @@
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 36.0
+                    "Time": 40.0
                 }
             ],
             "IsLoop": false,
@@ -1159,7 +1195,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 50.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_12_Attack",
@@ -1189,14 +1225,6 @@
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 22.0
-                },
-                {
-                    "EventName": "ColliderHammerOff",
-                    "Time": 33.0
-                },
-                {
-                    "EventName": "ColliderHammerOn",
-                    "Time": 45.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
@@ -1258,11 +1286,11 @@
             "Events": [
                 {
                     "EventName": "ColliderHammerOn",
-                    "Time": 98.0
+                    "Time": 92.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 152.0
+                    "Time": 154.0
                 }
             ],
             "IsLoop": false,

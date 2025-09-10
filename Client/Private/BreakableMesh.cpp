@@ -1,9 +1,11 @@
 #include "BreakableMesh.h"
-#include "GameInstance.h"
-#include "Client_Calculation.h"
+
+#include "Cell.h"
+#include "Fuoco.h"
 #include "Player.h"
 #include "Navigation.h"
-#include "Cell.h"
+#include "GameInstance.h"
+#include "Client_Calculation.h"
 
 CBreakableMesh::CBreakableMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -209,9 +211,15 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	//푸오코가 퓨리상태일 때
 	//pOther->퓨리일 때 트리거 트루
 
-	if (m_bBreakTriggered == false)
+	if (eColliderType == COLLIDERTYPE::MONSTER&&m_bBreakTriggered == false)
 	{
-		m_bBreakTriggered = true;
+		if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+		{
+		if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+			{
+				m_bBreakTriggered = true;
+			}
+		}
 	}
 }
 

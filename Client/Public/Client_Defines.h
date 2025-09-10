@@ -54,7 +54,7 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 #define TEST_FIRE_EATER_MAP //이거 키면 테스트 맵과, 푸오코 맵 생성됨
-//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #pragma region 한영웅
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"

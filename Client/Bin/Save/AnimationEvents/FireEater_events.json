@@ -354,6 +354,10 @@
                 {
                     "EventName": "OffFury",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "SwitchFuryState",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
@@ -378,6 +382,10 @@
                 },
                 {
                     "EventName": "OnFury",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "SwitchFuryState",
                     "Time": 4.0
                 }
             ],
@@ -546,6 +554,14 @@
                 {
                     "EventName": "RunSound",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "SwitchFuryState",
+                    "Time": 16.0
+                },
+                {
+                    "EventName": "SwitchFuryState",
+                    "Time": 163.0
                 }
             ],
             "IsLoop": false,
