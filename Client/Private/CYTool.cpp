@@ -622,6 +622,10 @@ HRESULT CCYTool::Window_Particle()
 	if (ImGui::RadioButton("Random", m_eParticleType == PTYPE_ALLRANDOM)) {
 		m_eParticleType = PTYPE_ALLRANDOM;
 	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Shrink", m_eParticleType == PTYPE_SHRINK)) {
+		m_eParticleType = PTYPE_SHRINK;
+	}
 	m_tPCB.vTileCnt = _float2(_float(*pPE->Get_TileX()), _float(*pPE->Get_TileY()));
 	m_tPCB.fTileTickPerSec = *pPE->Get_TileTickPerSec();
 	pPE->Set_CBuffer(m_tPCB);

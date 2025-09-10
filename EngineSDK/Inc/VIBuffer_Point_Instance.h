@@ -65,6 +65,7 @@ public:
 	void Set_First(_bool bFirst) { m_bFirst = bFirst; }
 	void Set_InitRotation(_fmatrix matRot);
 
+	_float3 Get_InitLocalCenter() { return m_vLocalCenter; }
 #ifdef USE_IMGUI
 	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_tCBuffer = tCBuffer; }
 	const PARTICLECBUFFER& Get_CBuffer() { return m_tCBuffer; }
@@ -76,7 +77,7 @@ private:
 private:	
 	/* PARTICLECBUFFER 구조체로 통합됨 !! */
 	PARTICLECBUFFER				m_tCBuffer = {};
-
+	_float3						m_vLocalCenter = {};
 	//VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
 	//PARTICLEDESC*				m_pParticleDesc = { nullptr };	
 	// + => PPDESC 통합함

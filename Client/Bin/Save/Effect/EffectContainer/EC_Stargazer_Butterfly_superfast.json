@@ -1,0 +1,326 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.10588235408067703,
+                0.5058823823928833,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 3.0,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.10471206903457642,
+                        0.5078262686729431,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.600000023841858,
+                        0.30000001192092896
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.10588235408067703,
+                        0.5058823823928833,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 4.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.10588235408067703,
+                        0.5058823823928833,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        -0.8999999761581421,
+                        0.6000000238418579
+                    ],
+                    "TrackPosition": 8.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.10588235408067703,
+                        0.5058823823928833,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 12.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.10588235408067703,
+                        0.5058823823928833,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.600000023841858,
+                        0.30000001192092896
+                    ],
+                    "TrackPosition": 16.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 3347.975341796875,
+            "Loop": true,
+            "ModelTag": "SM_Butterfly_01_LGS",
+            "Name": "Stargazer_Butterfly_superfast",
+            "NumKeyFrames": 5,
+            "RenderGroup": 8,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Noise_02_C_LKM",
+                "T_butterfly_01_C_GDH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.3036649227142334,
+                0.6828212738037109,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 1,
+            "EmissiveIntensity": 5.0,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.3036649227142334,
+                        0.6828212738037109,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 0.9300000071525574,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 3347.975341796875,
+            "LifeTime_Particle": [
+                0.5,
+                1.2999999523162842
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Stargazer_Butterfly_superfastemitter",
+            "NumInstance": 10,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "Size": [
+                0.029999999329447746,
+                0.07999999821186066
+            ],
+            "Speed": [
+                0.10000000149011612,
+                0.20000000298023224
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "T_Shere_05_C_HJS",
+                "T_Shere_05_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 17
+}
