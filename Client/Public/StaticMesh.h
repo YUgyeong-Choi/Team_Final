@@ -36,6 +36,7 @@ public:
 		COLLIDER_TYPE eColliderType = { COLLIDER_TYPE::NONE };
 		_int		iLightShape = { 0 };
 		_bool		bIsFloor = { false }; //바닥 여부
+		_bool		bCullNone = { false }; //컬링 여부
 	}STATICMESH_DESC;
 
 protected:
@@ -92,6 +93,10 @@ protected:
 private:
 	//바닥 여부
 	_bool m_bIsFloor = { false };
+
+private:
+	//컬링 여부
+	_bool m_bCullNone = { false };
 
 private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태

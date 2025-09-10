@@ -466,6 +466,10 @@ HRESULT CMapTool::Save(const _char* Map)
 				//바닥여부
 				ObjectJson["IsFloor"] = pMapToolObject->m_bisFloor;
 
+				//컬링여부
+				if (pMapToolObject->m_bCullNone)
+					ObjectJson["IsCullNone"] = true; // true일 때만 저장 (진작 이렇게 할걸)
+
 				//인스턴싱 제외
 				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
@@ -639,7 +643,11 @@ HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 				MapToolObjDesc.bIsFloor = false;
 			}
 
-
+			//컬링 여부(진작 이렇게 할 걸) 컬링 태그가 있으면 true임
+			if (Objects[j].contains("IsCullNone"))
+				MapToolObjDesc.bCullNone = true;
+			else
+				MapToolObjDesc.bCullNone = false;
 
 			//인스턴싱 제외 여부
 			if (Models[i].contains("NoInstancing"))
@@ -1369,6 +1377,10 @@ void CMapTool::Render_Detail()
 		ImGui::Separator();
 
 		Detail_IsFloor();
+
+		ImGui::Separator();
+
+		Detail_CullNone();
 	}
 	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
 	{
@@ -2354,6 +2366,15 @@ void CMapTool::Detail_IsFloor()
 		ImGui::Checkbox("Is Floor", &m_pFocusObject->m_bisFloor);
 	}
 
+}
+
+void CMapTool::Detail_CullNone()
+{
+	ImGui::Text("Cull None");
+	if (m_pFocusObject)
+	{
+		ImGui::Checkbox("Cull None", &m_pFocusObject->m_bCullNone);
+	}
 }
 
 

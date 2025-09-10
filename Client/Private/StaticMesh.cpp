@@ -42,7 +42,11 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	//라이트 모양
 	m_iLightShape = StaicMeshDESC->iLightShape;
 
+	//바닥인가?
 	m_bIsFloor = StaicMeshDESC->bIsFloor;
+
+	//컬링 여부
+	m_bCullNone = StaicMeshDESC->bCullNone;
 
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
@@ -171,8 +175,10 @@ HRESULT CStaticMesh::Render()
 				return E_FAIL;
 		}
 
-
-		m_pShaderCom->Begin(0);
+		if(m_bCullNone == false)
+			m_pShaderCom->Begin(0);
+		else if(m_bCullNone)
+			m_pShaderCom->Begin(7);
 
 		m_pModelCom[ENUM_CLASS(m_eLOD)]->Render(i);
 	}

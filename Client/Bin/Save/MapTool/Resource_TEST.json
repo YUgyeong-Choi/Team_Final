@@ -10,8 +10,15 @@
         "Collision": true,
         "ModelName": "FloorA",
         "NoInstancing": false,
-        "ObjectCount": 7,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/FloorA.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_BuildingA_Door_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
     },
     {
         "Collision": false,
@@ -24,7 +31,7 @@
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
-        "ObjectCount": 9,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
@@ -35,87 +42,10 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin"
     },
     {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_01.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_01A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_01A.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_02",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_02A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_02A.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_03",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_03.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_04",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_04.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_04A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_04A.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_05",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_05.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_05A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_05A.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_06",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_06.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Station_ClownPanel_06A",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_06A.bin"
-    },
-    {
         "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
     },
     {
