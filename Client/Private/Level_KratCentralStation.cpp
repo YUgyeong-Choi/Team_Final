@@ -234,8 +234,8 @@ HRESULT CLevel_KratCentralStation::Reset()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	if (FAILED(Ready_Dummy()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Dummy()))
+		return E_FAIL;*/
 	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
@@ -248,12 +248,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -271,6 +271,7 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
+
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 	if (FAILED(Ready_ErgoItem()))
