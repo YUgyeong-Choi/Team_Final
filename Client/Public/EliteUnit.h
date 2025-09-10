@@ -153,7 +153,7 @@ protected:
 	 _float  m_fGroggyScale_Charge = 0.15f; // 차지공격에 대한 게이지 증가율
 	_float   m_fGroggyGauge  = 0.f;       // 누적 값
 	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
-	_float   m_fGroggyTimer = 6.f;       // 화이트 게이지 유지 시간
+	_float   m_fGroggyTimer = 8.f;       // 화이트 게이지 유지 시간
 	_float	 m_fGroggyEndTimer = 0.f;   // 화이트 게이지 유지 시간 카운트
 	_vector  m_PrevWorldDelta = XMVectorZero();
 	_vector  m_PrevWorldRotation = XMVectorZero();

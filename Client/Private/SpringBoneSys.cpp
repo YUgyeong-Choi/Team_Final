@@ -376,10 +376,12 @@ CSpringBoneSys::SpringBonePart CSpringBoneSys::SetBonePart(const string& boneNam
 		return SpringBonePart::Front;
 	else if (boneName.find("BL_") != string::npos || boneName.find("BR_") != string::npos)
 		return SpringBonePart::Back;
-	else if (boneName.find("Cloth") != string::npos)
+	else if (boneName.find("Cloth") != string::npos || boneName.find("Coat") != string::npos
+		|| boneName.find("Frill") != string::npos || boneName.find("Skirt") != string::npos)
 		return SpringBonePart::Cloth;
-	else if (boneName.find("Lamp") != string::npos)
-		return SpringBonePart::Lamp;
+	else if (boneName.find("Lamp") != string::npos
+		|| boneName.find("BN_Robe_B_L") != string::npos)
+		return SpringBonePart::Item;
 	else
 		return SpringBonePart::Other;
 }
@@ -399,14 +401,14 @@ void CSpringBoneSys::Deserialize(const json& j)
 	if (j.contains("exp"))
 		exp = j["exp"].get<_float>();
 
-	if (j.contains("follow") && j["follow"].is_array() && j["follow"].size() == 2)
-		follow = { j["follow"][0].get<_float>(), j["follow"][1].get<_float>() };
+	//if (j.contains("follow") && j["follow"].is_array() && j["follow"].size() == 2)
+	//	follow = { j["follow"][0].get<_float>(), j["follow"][1].get<_float>() };
 
-	if (j.contains("maxDeg") && j["maxDeg"].is_array() && j["maxDeg"].size() == 2)
-		maxDeg = { j["maxDeg"][0].get<_float>(), j["maxDeg"][1].get<_float>() };
+	//if (j.contains("maxDeg") && j["maxDeg"].is_array() && j["maxDeg"].size() == 2)
+	//	maxDeg = { j["maxDeg"][0].get<_float>(), j["maxDeg"][1].get<_float>() };
 
-	if (j.contains("damping") && j["damping"].is_array() && j["damping"].size() == 2)
-		damping = { j["damping"][0].get<_float>(), j["damping"][1].get<_float>() };
+	//if (j.contains("damping") && j["damping"].is_array() && j["damping"].size() == 2)
+	//	damping = { j["damping"][0].get<_float>(), j["damping"][1].get<_float>() };
 
 	// parts Ã³¸®
 	if (j.contains("parts"))
@@ -416,9 +418,18 @@ void CSpringBoneSys::Deserialize(const json& j)
 			SpringBoneProfile profile;
 
 			profile.fExp = exp;
-			profile.followRange = follow;
-			profile.maxDegRange = maxDeg;
-			profile.dampingRange = damping;
+			//profile.followRange = follow;
+			//profile.maxDegRange = maxDeg;
+			//profile.dampingRange = damping;
+
+			if (val.contains("follow") && val["follow"].is_array() && val["follow"].size() == 2)
+				profile.followRange = { val["follow"][0].get<_float>(), val["follow"][1].get<_float>() };
+
+			if (val.contains("maxDeg") && val["maxDeg"].is_array() && val["maxDeg"].size() == 2)
+				profile.maxDegRange = { val["maxDeg"][0].get<_float>(), val["maxDeg"][1].get<_float>() };
+
+			if (val.contains("damping") && val["damping"].is_array() && val["damping"].size() == 2)
+				profile.dampingRange = { val["damping"][0].get<_float>(), val["damping"][1].get<_float>() };
 
 			if (val.contains("stiffness") && val["stiffness"].is_array() && val["stiffness"].size() == 2)
 				profile.stiffnessRange = { val["stiffness"][0].get<_float>(), val["stiffness"][1].get<_float>() };
@@ -446,8 +457,8 @@ string CSpringBoneSys::ReturnPartString(SpringBonePart part)
 		return "Other";
 	case SpringBonePart::Cloth: 
 		return "Cloth";
-	case SpringBonePart::Lamp:
-		return "Lamp";
+	case SpringBonePart::Item:
+		return "Item";
 	default:
 		return "Other";
 	}

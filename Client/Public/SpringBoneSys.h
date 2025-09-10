@@ -25,7 +25,7 @@ public:
 private:
 	enum class SpringBonePart // 머리카락 앞,뒤, 다른 부위, 옷
 	{
-		Front, Back, Other, Cloth, Lamp
+		Front, Back, Other, Cloth, Item
 	};
 	struct SpringBoneParm
 	{
@@ -84,7 +84,6 @@ private:
 	void Build_SpringBoneHierarchy();
 	void SetupSpringBoneParameters();
 	_bool IsCorrectBoneName(CBone* pBone, const vector<string>& vecSpringBoneNames);
-	void Pendulum(SpringBone& sb, _float fTimeDelta);
 	SpringBonePart SetBonePart(const string& boneName);
 	string ReturnPartString(SpringBonePart part);
 

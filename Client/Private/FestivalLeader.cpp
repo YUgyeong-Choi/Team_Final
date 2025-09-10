@@ -73,7 +73,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 
 		CSpringBoneSys::SpringInitParams springParams;
 		springParams.restDirBiasEnable = true;
-		m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair", "Head_Rope"}, springParams);
+		m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair", "Head_Rope","Coat"}, springParams);
 		if (m_pSpringBoneSys == nullptr)
 			return E_FAIL;
 		if (m_pHammerBone)
@@ -101,7 +101,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fMinimumTurnAngle = 45.f;
 	m_fPhase2HPThreshold = 0.65f;
 	m_fMaxRootMotionSpeed = 18.f;
-	m_fChangeMoveDirCooldown = 2.f;
+	m_fChangeMoveDirCooldown = 2.5f;
 
 	m_fGroggyScale_Weak = 0.1f;
 	m_fGroggyScale_Strong = 0.15f;
@@ -982,8 +982,8 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
-			m_fRootMotionAddtiveScale = 7.f;
-			m_fMaxRootMotionSpeed = 30.f;
+			m_fRootMotionAddtiveScale = 6.f;
+			m_fMaxRootMotionSpeed = 27.f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()

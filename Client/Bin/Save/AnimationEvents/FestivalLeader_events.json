@@ -442,19 +442,19 @@
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderBasketOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 }
             ],
             "IsLoop": false,
@@ -470,7 +470,7 @@
                     "Time": 11.0
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 6.0
                 },
                 {
@@ -578,7 +578,7 @@
             "Duration": 24.0,
             "Events": [
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 1.0
                 }
             ],
@@ -705,7 +705,7 @@
                     "Time": 28.0
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 5.0
                 },
                 {
@@ -751,7 +751,7 @@
                     "Time": 6.084270000457764
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 8.0
                 }
             ],
@@ -888,11 +888,7 @@
                     "Time": 11.0
                 },
                 {
-                    "EventName": "ColliderLeftHandOff",
-                    "Time": 23.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 6.0
                 },
                 {
@@ -911,6 +907,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_01_End_1",
             "Duration": 72.0,
+            "Events": [
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -996,6 +998,10 @@
                 {
                     "EventName": "EndStrikeCollisionFlag",
                     "Time": 22.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -1023,10 +1029,6 @@
             "ClipName": "AS_ATHBoss0_Skill_04_Start_1",
             "Duration": 36.0,
             "Events": [
-                {
-                    "EventName": "SetRootStep",
-                    "Time": 1.0
-                },
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 30.0
@@ -1062,13 +1064,9 @@
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 9.0
-                },
+                },   
                 {
                     "EventName": "ResetAnimSpeed",
-                    "Time": 14.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
                     "Time": 12.0
                 }
             ],
