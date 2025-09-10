@@ -45,6 +45,8 @@ private:
 	_float m_fMaxStamina = {};
 	_float m_fRatio = { 1.f };
 
+	_float m_fScaleRatio = { 1.f };
+
 public:
 	static CStamina_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

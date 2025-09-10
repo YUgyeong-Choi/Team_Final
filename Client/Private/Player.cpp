@@ -140,13 +140,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
-	//if (FAILED(Ready_Stat()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Stat()))
+		return E_FAIL;
 
-#ifdef _DEBUG
+	m_iLevel = 5;
+
 	Add_Ergo(10000.f);
-#endif
-	Add_Ergo(10000.f);
+
 	return S_OK;
 }
 
@@ -2445,6 +2445,11 @@ void CPlayer::Set_Ergo(_float fErgo)
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
 }
 
+CWeapon* CPlayer::Get_Equip_Legion()
+{
+	return m_pLegionArm;
+}
+
 void CPlayer::Apply_Stat()
 {
 
@@ -2468,11 +2473,11 @@ void CPlayer::Apply_Stat()
 		
 		if (m_eStat.iMotivity > 1)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) );
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iMotivity), 10)) * 0.5f );
 		}
 		if (m_eStat.iTechnique > 1)
 		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) );
+			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.3f );
 		}
 
 
@@ -2492,11 +2497,7 @@ void CPlayer::Apply_Stat()
 		{
 			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iTechnique), 10)) * 0.1f);
 		}
-		if (m_eStat.iAdvance > 1)
-		{
-			fBaseDamage += floorf(fBaseDamage * (ComputeLog(_float(m_eStat.iAdvance), 10)) * 0.15f);
-		}
-	
+
 
 		m_pLegionArm->SetDamage(fBaseDamage);
 
@@ -2698,8 +2699,8 @@ HRESULT CPlayer::Ready_Controller()
 }
 HRESULT CPlayer::Ready_UIParameters()
 {
-	m_fHp = 100.f;
-	m_fMaxHp = 100.f;
+	m_fHp = 358.f;
+	m_fMaxHp = 358.f;
 
 	Callback_HP();
 	Callback_Mana();
@@ -2823,8 +2824,8 @@ HRESULT CPlayer::Ready_Stat()
 	m_eStat.iVitality = 12;
 	m_eStat.iStamina = 10;
 	m_eStat.iCapacity = 8;
-	m_eStat.iMotivity = 13;
-	m_eStat.iTechnique = 7;
+	m_eStat.iMotivity = 9;
+	m_eStat.iTechnique = 5;
 	m_eStat.iAdvance = 6;
 
 	Apply_Stat();

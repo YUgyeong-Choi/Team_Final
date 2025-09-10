@@ -276,6 +276,8 @@ public:/*[스탯 관련]*/
 	_float Get_Ergo() { return m_fErgo; }
 	void Set_Ergo(_float fErgo);
 	_int Get_Player_Level() { return m_iLevel; }
+	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
+	CWeapon* Get_Equip_Legion();
 
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
@@ -423,8 +425,8 @@ private: /* [ 플레이어 변수 ] */
 	_bool   m_bResetSoundTime = true;
 	_bool   m_bSetCamera[9] = {};
 
-	_float	m_fMaxStamina = { 150.f };
-	_float	m_fStamina = { 150.f };
+	_float	m_fMaxStamina = { 143.f };
+	_float	m_fStamina = { 143.f };
 	
 	_float	m_fMaxMana = { 300.f };
 	_float	m_fMana = { 300.f };

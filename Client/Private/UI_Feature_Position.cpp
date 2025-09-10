@@ -144,6 +144,26 @@ void CUI_Feature_Position::Deserialize(const json& j)
     m_strProtoTag = StringToWStringU8(strPrototag);
 }
 
+void CUI_Feature_Position::Set_Position(_bool isStartPos, _float2 fPos)
+{
+    if (isStartPos)
+    {
+        m_fStartPos = fPos;
+    }
+    else
+    {
+        m_fEndPos = fPos;
+    }
+}
+
+_float2& CUI_Feature_Position::Get_Position(_bool isStartPos)
+{
+    if (isStartPos)
+        return m_fStartPos;
+    else
+        return m_fEndPos;
+}
+
 CUI_Feature_Position* CUI_Feature_Position::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     CUI_Feature_Position* pInstance = new CUI_Feature_Position(pDevice, pContext);
