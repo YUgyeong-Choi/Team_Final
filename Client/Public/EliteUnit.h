@@ -18,7 +18,7 @@ class CEliteUnit : public CUnit
 public:
 	enum class EAttackType
 	{
-		FURY_AIRBORNE,AIRBORNE,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
+		FURY_AIRBORNE,AIRBORNE, FURY_KNOCKBACK,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
 	};
 	enum class EEliteState {
 		IDLE, WALK, RUN, TURN, ATTACK, GROGGY, PARALYZATION, FATAL, DEAD, CUTSCENE,NONE
@@ -138,7 +138,6 @@ public:
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 	CUI_MonsterHP_Bar* m_pHPBar = { nullptr };
-	_vector m_vTargetPos = XMVectorZero();
 
 	EEliteState m_eCurrentState = EEliteState::NONE;
 	EEliteState m_ePrevState = EEliteState::NONE;
@@ -155,8 +154,7 @@ protected:
 	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
 	_float   m_fGroggyTimer = 8.f;       // 화이트 게이지 유지 시간
 	_float	 m_fGroggyEndTimer = 0.f;   // 화이트 게이지 유지 시간 카운트
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.05f;

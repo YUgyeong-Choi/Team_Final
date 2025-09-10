@@ -149,6 +149,7 @@ void CAnimator::PlayClip(CAnimation* pAnim, _bool isLoop)
 
 void CAnimator::StartTransition(const CAnimController::TransitionResult& transitionResult)
 {
+	
 	ResetRootMotion();
 
 	m_Blend.active = true;

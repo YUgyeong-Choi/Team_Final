@@ -13,6 +13,7 @@
 #include "UI_MonsterHP_Bar.h"
 #include "Static_Decal.h"
 #include "Cell.h"
+#include "SpringBoneSys.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -71,7 +72,6 @@ HRESULT CFuoco::Initialize(void* pArg)
 	m_iPatternLimit = 1;
 	//처음에 비활성화 되어있던 인덱스들을 받아온다.
 	//m_NavInactiveIndecies = m_pNaviCom->Get_Inactive_Index();
-
 	return S_OK;
 }
 
@@ -158,29 +158,11 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pAnimator->SetInt("SkillType", testArray[i++]);
 		if (i >= 13)
 			i = 0;
-		//m_pAnimator->SetTrigger("Paralyzation");
-	//	m_pAnimator->SetTrigger("Fatal");
-		//m_pAnimator->SetTrigger("Groggy");
-		//if (m_bStartPhase2 == false)
-		//	m_bStartPhase2 = true;
-	//	m_fHp -= 10.f;
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
 		m_pAnimator->SetTrigger("Attack");
-		//m_fHp -= 10.f;
-		/*m_pAnimator->SetTrigger("Attack");
-		m_pAnimator->SetInt("SkillType",Uppercut);*/
-
-		//CEffectContainer::DESC desc = {};
-	//desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
-	//desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-
-	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_SpinReady_HandSpark_P2"), &desc) == nullptr)
-	//	MSG_BOX("이펙트 생성 실패함");
 	}
 
 	if (KEY_DOWN(DIK_B))
@@ -208,31 +190,17 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 void CFuoco::Update(_float fTimeDelta)
 {
-	if (CalculateCurrentHpRatio() <= 0.f)
-	{
-		// 죽음 처리
-		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD)
-		{
-			m_eCurrentState = EEliteState::DEAD;
-			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
-			m_pAnimator->SetTrigger("SpecialDie");
-			CLockOn_Manager::Get_Instance()->Set_Off(this);
-		}
-		Safe_Release(m_pHPBar);
-	}
+	__super::Update(fTimeDelta);
 
 	if (m_fFireFlameDuration > 0.f)
 	{
 		m_fFireFlameDuration -= fTimeDelta;
 		FlamethrowerAttack();
 		{
-		if (m_fFireFlameDuration <= 0.f)
-			m_fFireFlameDuration = 0.f;
+			if (m_fFireFlameDuration <= 0.f)
+				m_fFireFlameDuration = 0.f;
 		}
 	}
-
-	__super::Update(fTimeDelta);
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
@@ -247,7 +215,6 @@ void CFuoco::Late_Update(_float fTimeDelta)
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider())
 	{
-		//m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom);
 		if (m_pPhysXActorComForArm->Get_ReadyForDebugDraw())
 			m_pGameInstance->Add_DebugComponent(m_pPhysXActorComForArm);
 		if (m_pPhysXActorComForFoot->Get_ReadyForDebugDraw())
@@ -263,7 +230,7 @@ void CFuoco::Reset()
 {
 	__super::Reset();
 	m_bWaitPhase2Rotate = false;
-	m_vPhase2TurnDir = XMVectorZero();
+	m_vPhase2TurnDir = {};
 	m_bPhase2TurnProcessed = false;
 	m_bPhase2TurnFinished = false;
 	m_bPlayerCollided = false;
@@ -693,14 +660,15 @@ void CFuoco::UpdateSpecificBehavior(_float fTimeDelta)
 		// 현재 중앙으로 턴을 안했으면
 		if (m_eCurrentState != EEliteState::TURN&& m_bPhase2TurnProcessed == false)
 		{	// 방향을 정하고
-			m_vPhase2TurnDir = XMLoadFloat4(&m_vCenterPos) - m_pTransformCom->Get_State(STATE::POSITION);
-			m_vPhase2TurnDir = XMVectorSetY(m_vPhase2TurnDir, 0.f);
-			m_vPhase2TurnDir = XMVector3Normalize(m_vPhase2TurnDir);
+			
+			_vector vDir = XMLoadFloat4(&m_vCenterPos) - m_pTransformCom->Get_State(STATE::POSITION);
+			vDir = XMVectorSetY(vDir, 0.f);
+			vDir = XMVector3Normalize(vDir);
 
 			_vector vCurrentLook = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
-			_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, m_vPhase2TurnDir));
+			_float fDot = XMVectorGetX(XMVector3Dot(vCurrentLook, vDir));
 			fDot = clamp(fDot, -1.f, 1.f);
-			_vector vCross = XMVector3Cross(vCurrentLook, m_vPhase2TurnDir);
+			_vector vCross = XMVector3Cross(vCurrentLook, vDir);
 			_float fSign = (XMVectorGetY(vCross) < 0.f) ? -1.f : 1.f;
 			_float fYaw = acosf(fDot) * fSign; // 회전 각도 (라디안 단위) -180~180
 			m_pAnimator->SetInt("TurnDir", (fYaw >= 0.f) ? 0 : 1); // 0: 오른쪽, 1: 왼쪽
@@ -710,6 +678,7 @@ void CFuoco::UpdateSpecificBehavior(_float fTimeDelta)
 			m_ePrevState = m_eCurrentState;
 			m_eCurrentState = EEliteState::TURN;
 			m_bPhase2TurnProcessed = true;
+			XMStoreFloat3(&m_vPhase2TurnDir, vDir);
 		}
 
 		if(m_bPhase2TurnFinished)
@@ -728,7 +697,7 @@ void CFuoco::UpdateSpecificBehavior(_float fTimeDelta)
 		}
 		else if(m_bPhase2TurnProcessed)
 		{
-			m_pTransformCom->RotateToDirectionSmoothly(m_vPhase2TurnDir, fTimeDelta);
+			m_pTransformCom->RotateToDirectionSmoothly(XMLoadFloat3(&m_vPhase2TurnDir), fTimeDelta);
 		}
 	}
 }
@@ -1181,13 +1150,23 @@ void CFuoco::Register_Events()
 			}
 		});
 
-	m_pAnimator->RegisterEventListener("SwitchFuryState", [this]()
+	m_pAnimator->RegisterEventListener("ActivateFuryState", [this]()
 		{
-			if (m_eFuryState == EFuryState::None)
-				m_eFuryState = EFuryState::Fury;
-			else
-				m_eFuryState = EFuryState::None;
+			m_eFuryState = EFuryState::Fury;
 		});
+
+	m_pAnimator->RegisterEventListener("DeactivateFuryState", [this]()
+		{
+			m_eFuryState = EFuryState::None;
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSoundEffect", [this]()
+		{
+			if(m_pSoundCom)
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Dead_", 3);
+		});
+
+
 }
 
 void CFuoco::Ready_AttackPatternWeightForPhase1()
@@ -1398,8 +1377,6 @@ void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
 		{
 			return;
 		}
-
-
 	}
 	break;
 	case Client::CFuoco::ProjectileType::Oil:
@@ -1472,10 +1449,6 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	vDir.normalize();
 	vRight.normalize();
 
-	//_float fPitchAngle = XMConvertToRadians(15.f);
-	//PxQuat pitchRot(fPitchAngle, PxVec3(1, 0, 0));
-	//vDir = pitchRot.rotate(vDir);
-
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::eDYNAMIC | PxQueryFlag::ePREFILTER;
@@ -1521,8 +1494,6 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
 				}
 
-				//printf("RayHitPos X: %f, Y: %f, Z: %f\n", hitPos.x, hitPos.y, hitPos.z);
-				//printf("RayHitNormal X: %f, Y: %f, Z: %f\n", hitNormal.x, hitNormal.y, hitNormal.z);
 				m_bRayHit = true;
 				m_vRayHitPos = hitPos;
 		
@@ -2027,21 +1998,6 @@ void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 	if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
 	{
-		//auto pAnimator = pPlayer->Get_Animator();
-		//_vector vDir = GetTargetDirection();
-		//_float fDot = XMVectorGetX(XMVector3Dot(vDir, pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
-		//if (fDot > 0.f)
-		//{
-		//	pAnimator->SetInt("HitDir", 2); // 뒤에서 맞음
-		//}
-		//else if (fDot < 0.f)
-		//{
-		//	pAnimator->SetInt("HitDir", 0); // 앞에서 맞음
-		//}
-		//else
-		//{
-		//	pAnimator->SetInt("HitDir", 1); // 옆에서 맞음
-		//}
 		_uint curNodeID = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->iNodeId;
 		switch (curNodeID)
 		{
@@ -2147,8 +2103,6 @@ CGameObject* CFuoco::Clone(void* pArg)
 void CFuoco::Free()
 {
 	__super::Free();
-	//Safe_Release(m_pNaviCom);
-	//Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXActorComForArm);
 	Safe_Release(m_pPhysXActorComForFoot);
 }

@@ -210,8 +210,8 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 {
 	//푸오코가 퓨리상태일 때
 	//pOther->퓨리일 때 트리거 트루
-
-	if (eColliderType == COLLIDERTYPE::MONSTER&&m_bBreakTriggered == false)
+	if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType  == COLLIDERTYPE::BOSS_WEAPON)
+		&&m_bBreakTriggered == false)
 	{
 		if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
 		{
@@ -221,6 +221,24 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 			}
 		}
 	}
+}
+
+void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	//if (eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON && m_bBreakTriggered == false)
+	//{
+	//	if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+	//	{
+	//		if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+	//		{
+	//			m_bBreakTriggered = true;
+	//		}
+	//	}
+	//}
+}
+
+void CBreakableMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
 }
 
 void CBreakableMesh::Break()

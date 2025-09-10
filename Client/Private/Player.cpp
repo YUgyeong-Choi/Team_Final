@@ -2310,7 +2310,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 		//보스몬스터라면?
-		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		CBossUnit* pBoss = dynamic_cast<CBossUnit*>(pOther);
 		if (pBoss)
 		{
 			//필요한 정보를 수집한다.

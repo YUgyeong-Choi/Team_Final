@@ -30,36 +30,37 @@ HRESULT CSpringBoneSys::InitializeSpringBones(CModel* pModel, const vector<strin
 		vSpringBone.childIdx = child->Get_BoneIndex();
 
 		_matrix childL = XMLoadFloat4x4(child->Get_TransformationMatrix());
-		vSpringBone.restLocalPos = childL.r[3]; // 자기가 돌아갈 로컬 위치
-		vSpringBone.length = XMVectorGetX(XMVector3Length(vSpringBone.restLocalPos));
-		vSpringBone.restDirLocal = XMVector3Normalize(vSpringBone.restLocalPos);
+		XMStoreFloat3(&vSpringBone.restLocalPos, childL.r[3]);// 자기가 돌아갈 로컬 위치
+		vSpringBone.length = XMVectorGetX(XMVector3Length(XMLoadFloat3(&vSpringBone.restLocalPos)));
+		XMStoreFloat3(&vSpringBone.restDirLocal, XMVector3Normalize(XMLoadFloat3(&vSpringBone.restLocalPos)));
 		vSpringBone.part = SetBonePart(boneName);
 
-		_vector correctedRestDir = vSpringBone.restDirLocal;
+		_vector correctedRestDir = XMLoadFloat3(&vSpringBone.restDirLocal);
 
 		if (m_InitParams.restDirBiasEnable) // 재조정할건지
 		{
-			_float fY = XMVectorGetY(vSpringBone.restDirLocal);
+			_float fY =vSpringBone.restDirLocal.y;
 			_vector idealDir = XMVectorSet(0.f, -1.f, 0., 0.f);
 			idealDir = XMVector3Normalize(idealDir);
 
 			// 현재 방향과 이상적 방향의 차이 확인
-			_float fAngleFromIdeal = acosf(clamp(XMVectorGetX(XMVector3Dot(vSpringBone.restDirLocal, idealDir)), -1.f, 1.f));
+			_float fAngleFromIdeal = acosf(clamp(XMVectorGetX(XMVector3Dot(XMLoadFloat3(&vSpringBone.restDirLocal), idealDir)), -1.f, 1.f));
 			_float fMaxAngle = XMConvertToRadians(m_InitParams.restDirMaxAngleDeg);
 
 			if (fAngleFromIdeal > fMaxAngle || fY > 0.1f) // Y가 양수면 위쪽을 향함
 			{
 				_float fBlendFactor = m_InitParams.restDirBlend; //60%는 내가 쓸 방향, 30% 원래 방향
 				correctedRestDir = XMVector3Normalize(
-					vSpringBone.restDirLocal * (1.f - fBlendFactor) + idealDir * fBlendFactor
+					XMLoadFloat3(&vSpringBone.restDirLocal) * (1.f - fBlendFactor) + idealDir * fBlendFactor
 				);
 			}
 		}
 
-		vSpringBone.restDirLocal = correctedRestDir;
+		XMStoreFloat3(&vSpringBone.restDirLocal, correctedRestDir);
+		XMStoreFloat3(&vSpringBone.restUpLocal, XMVector3Normalize(childL.r[1])); 
 
-		vSpringBone.restUpLocal = XMVector3Normalize(childL.r[1]);
-		vSpringBone.restRotQ = XMQuaternionRotationMatrix(childL);
+		XMStoreFloat4(&vSpringBone.restRotQ, XMQuaternionRotationMatrix(childL));
+
 
 		// 부위별 처짐 정도 설정
 		_float fDownBiasAmount = m_InitParams.downBiasOther;
@@ -75,14 +76,14 @@ HRESULT CSpringBoneSys::InitializeSpringBones(CModel* pModel, const vector<strin
 		}
 
 		_vector restBiasDir = XMVector3Normalize(
-			vSpringBone.restDirLocal * (1.f - fDownBiasAmount) + gravityDir * fDownBiasAmount
+			XMLoadFloat3(&vSpringBone.restDirLocal) * (1.f - fDownBiasAmount) + gravityDir * fDownBiasAmount
 		);
 
-		vSpringBone.curTipLocal = restBiasDir * vSpringBone.length;
+		XMStoreFloat3(&vSpringBone.curTipLocal, restBiasDir * vSpringBone.length);
 		vSpringBone.prevTipLocal = vSpringBone.curTipLocal;
 
 		_matrix parentMat = XMLoadFloat4x4(pParent->Get_CombinedTransformationMatrix());
-		vSpringBone.prevParentPos = parentMat.r[3];  // 초기 부모 위치 저장
+		XMStoreFloat3(&vSpringBone.prevParentPos, parentMat.r[3]); // 초기 부모 위치 저장
 
 		m_SpringBones.push_back(vSpringBone);
 	}
@@ -132,44 +133,51 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			// 관성 + 복원력 + 감쇠 + 중력 + 길이제한 + 콘 제한을 다 해야지 됨
 
 			// 부모 회전 변화에 따른 관성 처리
-			_matrix toCurr = parentRInv * vSpringBone.parentPrevRotC;
+			_matrix toCurr = parentRInv * XMLoadFloat4x4(&vSpringBone.parentPrevRotC);
 			_vector qToCurr = XMQuaternionRotationMatrix(toCurr);
 			_vector qBlend = XMQuaternionSlerp(XMQuaternionIdentity(), qToCurr, vParam.follow); // 부모를 따라가는 정도로 블렌드
 			_matrix toCurrSoft = XMMatrixRotationQuaternion(qBlend);
 
-			_vector oldTipLocal = vSpringBone.curTipLocal;
+
+			_vector curTip = XMLoadFloat3(&vSpringBone.curTipLocal);
+			_vector prevTip = XMLoadFloat3(&vSpringBone.prevTipLocal);
+			_vector restDir = XMLoadFloat3(&vSpringBone.restDirLocal);
+
+			_vector oldTipLocal = curTip;
+
+			//_vector oldTipLocal = XMLoadFloat3(&vSpringBone.curTipLocal);
 
 			// Verlet 적분 (관성) 현재 상태 유지하려고 하는 힘
-			_vector velocity = (vSpringBone.curTipLocal - vSpringBone.prevTipLocal) * vParam.damping; // 현재와 이전 위치 차이에 얼마나 감쇠할지를 적용해서 속도를 계산
-			vSpringBone.curTipLocal += velocity;
-			vSpringBone.curTipLocal = XMVector3TransformNormal(vSpringBone.curTipLocal, toCurrSoft); // 현재 위치에 부모 회전 변화에 따른 관성 적용
+			_vector velocity = (curTip - prevTip) * vParam.damping; // 현재와 이전 위치 차이에 얼마나 감쇠할지를 적용해서 속도를 계산
+			curTip = curTip + velocity;
+			curTip = XMVector3TransformNormal(curTip, toCurrSoft); // 현재 위치에 부모 회전 변화에 따른 관성 적용
+			
 
 			// 중력 처리
 			_vector gDir = XMVectorSet(0.f, -1.f, 0.f, 0.f);
 			_vector gGravityDir = XMVector3TransformNormal(gDir, parentRInv);
 
 			// 뼈의 원래 방향과 중력 방향을 적용해 얼마나 내릴지
-			_vector restBiasDir = XMVector3Normalize(
-				vSpringBone.restDirLocal * (1.f - vParam.downBias) + gGravityDir * vParam.downBias);
+			_vector restBiasDir = XMVector3Normalize(restDir * (1.f - vParam.downBias) + gGravityDir * vParam.downBias);
 
 			// 중력
 			_vector gravityForce = gGravityDir * (vParam.gravity * vParam.gScale * fTargetTimeDelta * fTargetTimeDelta * fTimeScale);
-			vSpringBone.curTipLocal += gravityForce;
+			curTip += gravityForce;
 
 
 			// 복원력(stiffness는 탄성으로 생각하면 됨)
 			_vector targetPos = restBiasDir * vSpringBone.length;
-			_vector restoreForce = (targetPos - vSpringBone.curTipLocal) * vParam.stiffness;
-			vSpringBone.curTipLocal += restoreForce;
+			_vector restoreForce = (targetPos - curTip) * vParam.stiffness;
+			curTip += restoreForce;
 
 
 			// 길이(이걸 해야지 진짜 스프링처럼 길이가 늘어났다 줄어났다 안함) 뼈는 늘어날 수 없으니까
-			_vector dirL = XMVector3Normalize(vSpringBone.curTipLocal);
-			vSpringBone.curTipLocal = dirL * vSpringBone.length;
+			_vector dirL = XMVector3Normalize(curTip);
+			curTip = dirL * vSpringBone.length;
 
 			//  콘 제한 (원뿔 각도 제한) 약간 손목이 움직이는 범위를 생각하면 편하다
 			_float fMaxRad = XMConvertToRadians(vParam.maxDeg);
-			_float fAng = acosf(std::clamp(XMVectorGetX(XMVector3Dot(restBiasDir, dirL)), -1.f, 1.f));
+			_float fAng = acosf(clamp(XMVectorGetX(XMVector3Dot(restBiasDir, dirL)), -1.f, 1.f));
 
 			if (fAng > fMaxRad)
 			{
@@ -191,14 +199,14 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 						vAxis = XMVector3Normalize(vAxis);
 						_matrix rot = XMMatrixRotationAxis(vAxis, targetAngle);
 						dirL = XMVector3TransformNormal(restBiasDir, rot);
-						vSpringBone.curTipLocal = dirL * vSpringBone.length;
+						curTip = dirL * vSpringBone.length;
 					}
 				}
 			}
 
 			// 회전 계산
-			_vector dq = FromToQ(vSpringBone.restDirLocal, dirL);
-			_vector newRotQ = XMQuaternionMultiply(dq, vSpringBone.restRotQ);
+			_vector dq = FromToQ(restDir, dirL);
+			_vector newRotQ = XMQuaternionMultiply(dq, XMLoadFloat4(&vSpringBone.restRotQ));
 			newRotQ = XMQuaternionNormalize(newRotQ);
 
 			_matrix R = XMMatrixRotationQuaternion(newRotQ);
@@ -208,13 +216,14 @@ void CSpringBoneSys::Update(_float fTimeDelta)
 			L.r[0] = R.r[0];
 			L.r[1] = R.r[1];
 			L.r[2] = R.r[2];
-			L.r[3] = XMVectorSetW(vSpringBone.restLocalPos, 1.f);
+			L.r[3] = XMVectorSetW(XMLoadFloat3(&vSpringBone.restLocalPos), 1.f);
 
 			vSpringBone.pBone->Set_TransformationMatrix(L);
 
 			// 상태 업데이트
-			vSpringBone.prevTipLocal = oldTipLocal;
-			vSpringBone.parentPrevRotC = parentR;
+			XMStoreFloat3(&vSpringBone.prevTipLocal, oldTipLocal);
+			XMStoreFloat3(&vSpringBone.curTipLocal, curTip);
+			XMStoreFloat4x4(&vSpringBone.parentPrevRotC, parentR);
 
 		}
 	}
@@ -347,7 +356,7 @@ void CSpringBoneSys::SetupSpringBoneParameters()
 				Rq = XMQuaternionNormalize(Rq);
 				parentLocal = XMMatrixRotationQuaternion(Rq); // 순수 회전만
 			}
-			sb.parentPrevRotC = parentLocal;
+			XMStoreFloat4x4(&sb.parentPrevRotC, parentLocal);
 		}
 	}
 }
@@ -360,10 +369,6 @@ _bool CSpringBoneSys::IsCorrectBoneName(CBone* pBone, const vector<string>& vecS
 	{
 		if (boneName.find(name) != string::npos)
 		{
-			//cout << "[CASE-INSENSITIVE MATCH] BoneName: " << boneName
-			//	<< " (matched with keyword: " << name << ")" << std::endl;
-			//if (boneName.find("Lamp") != string::npos)
-			//	cout << "  -> Lamp Pendulum Enabled!" << std::endl;
 			return true;
 		}
 	}

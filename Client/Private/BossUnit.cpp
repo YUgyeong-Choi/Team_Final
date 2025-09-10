@@ -1,6 +1,8 @@
 #include "BossUnit.h"
 #include "Player.h"
 #include "GameInstance.h"
+#include "SpringBoneSys.h"
+#include "LockOn_Manager.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -40,6 +42,30 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 	}
 }
 
+void CBossUnit::Update(_float fTimeDelta)
+{
+	if (CalculateCurrentHpRatio() <= 0.f)
+	{
+		// Á×À½ Ã³¸®
+		m_bUseLockon = false;
+		if (m_eCurrentState != EEliteState::DEAD)
+		{
+			m_eCurrentState = EEliteState::DEAD;
+			m_pAnimator->SetTrigger("SpecialDie");
+			CLockOn_Manager::Get_Instance()->Set_Off(this);
+			m_pAnimator->SetPlayRate(1.f);
+			SwitchEmissive(false, 1.f);
+			SwitchFury(false, 1.f);
+		}
+		Safe_Release(m_pHPBar);
+	}
+	__super::Update(fTimeDelta);
+	if (m_pSpringBoneSys)
+	{
+		m_pSpringBoneSys->Update(fTimeDelta);
+	}
+}
+
 void CBossUnit::EnterCutScene()
 {
 	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
@@ -55,6 +81,7 @@ void CBossUnit::Reset()
 	m_ePrevState = EEliteState::CUTSCENE;
 	m_bIsPhase2 = false;
 	m_bStartPhase2 = false;
+	m_bPlayerCollided = false;
 	m_bCutSceneOn = false;
 	m_pAnimator->Update(0.f);
 	m_pModelCom->Update_Bones();
@@ -104,4 +131,5 @@ CGameObject* CBossUnit::Clone(void* pArg)
 void CBossUnit::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSpringBoneSys);
 }

@@ -2,6 +2,7 @@
 #include "AnimTool.h"
 
 #include "Bone.h"
+#include "Mesh.h"
 #include "Fuoco.h"
 #include "Player.h"
 #include "EventMag.h"
@@ -2459,7 +2460,7 @@ void CAnimTool::CreateModel(const string& fileName, const string& filePath)
 			desc.pModel = pModel;
 
 			pAnimator->Initialize(pModel);
-			//pAnimator->Initialize_Test(&desc);
+		//	pAnimator->Initialize_Test(&desc);
 			m_LoadedAnimators[modelName] = pAnimator;
 		}
 
@@ -2762,8 +2763,8 @@ HRESULT CAnimTool::Bind_Shader()
 
 
 	////m_pContext->Flush();
-	//if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
-	//	return E_FAIL;
+	/*if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
+		return E_FAIL;*/
 
 
 	//if (KEY_PRESSING(DIK_I))
@@ -2809,6 +2810,7 @@ HRESULT CAnimTool::Bind_Shader()
 		}
 
 		m_pCurModel->Bind_Bone_Matrices(m_pAnimShader, "g_BoneMatrices", i);
+
 
 		if (FAILED(m_pAnimShader->Begin(0)))
 			return E_FAIL;

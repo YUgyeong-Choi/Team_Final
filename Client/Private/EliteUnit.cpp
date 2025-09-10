@@ -465,11 +465,12 @@ _vector CEliteUnit::GetTargetDirection() const
 
 void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
 {
-
+    constexpr _float fFixedStep = 1.f / 60.f;
+    _float fScaleFactor = fTimeDelta / fFixedStep;
     _float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
     _vector vLocal = XMLoadFloat3(&rootMotionDelta);
-    vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale);
+    vLocal = XMVectorScale(vLocal, m_fRootMotionAddtiveScale* fScaleFactor);
 
     // 현재 트랜스폼 분해 (스케일, 회전, 위치)
     _vector vScale, vCurRotQuat, vTrans;
@@ -491,15 +492,15 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
 
     if (fDeltaMag < 1e-6f)
     {
-        m_PrevWorldDelta = XMVectorZero();
+        m_PrevWorldDelta = {0.f,0.f,0.f,1.f};
         return;
     }
 
-    _float fAnimSafeStep = m_fMaxRootMotionSpeed /60.f;
+    _float fAnimSafeStep = (m_fMaxRootMotionSpeed / 60.f) * fScaleFactor;
     if (fDeltaMag > fAnimSafeStep)
         vWorldDelta = XMVector3Normalize(vWorldDelta) * fAnimSafeStep;
 
-    m_PrevWorldDelta = vWorldDelta;
+	XMStoreFloat4(&m_PrevWorldDelta, vWorldDelta);
     _vector vNext = XMVectorAdd(vTrans, vWorldDelta);
 
     // 네비 보정
@@ -679,7 +680,7 @@ PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pOffset)
     _matrix local = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix());
     if (pOffset)
     {
-		local = local * (*pOffset);
+		local = (*pOffset)* local;
     }
 
 
@@ -798,6 +799,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			break;
         case Client::EPlayerState::STRONGATTACKA:
 		case Client::EPlayerState::STRONGATTACKB:
+		case Client::EPlayerState::MAINSKILL:
             m_fGroggyGauge += m_fGroggyScale_Strong;
             break;
         case Client::EPlayerState::CHARGEA:
@@ -808,6 +810,7 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
                 if (m_eCurrentState == EEliteState::FATAL || m_eCurrentState == EEliteState::PARALYZATION)
                     break;
                 SwitchEmissive(false, 1.f);
+                m_pGameInstance->Set_GameTimeScale(0.85f);
                 m_pAnimator->SetTrigger("Groggy");
 				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
@@ -820,8 +823,6 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         case Client::EPlayerState::USEITEM:
             break;
         case Client::EPlayerState::SHILD:
-            break;
-        case Client::EPlayerState::MAINSKILL:
             break;
         case Client::EPlayerState::ARMATTACKCHARGE:
             break;

@@ -5,7 +5,7 @@
 #include "UI_MonsterHP_Bar.h"
 
 NS_BEGIN(Client)
-class CFuoco final : public CBossUnit
+class  CFuoco final : public CBossUnit
 {
     // 주요 상태들의 NodeID
     enum class BossStateID : _uint
@@ -197,7 +197,6 @@ private:
 	
     // 상태 관련
     _bool m_bUsedFlameFiledOnLowHp = false;
-	_bool m_bPlayerCollided = false;
     _bool m_bPhase2TurnProcessed = false;
     _bool m_bPhase2TurnFinished = false;
 
@@ -218,7 +217,7 @@ private:
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
-	_vector m_vPhase2TurnDir = XMVectorZero();
+    _float3 m_vPhase2TurnDir = {};
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
 	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 
