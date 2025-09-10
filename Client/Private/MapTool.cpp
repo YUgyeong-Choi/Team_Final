@@ -519,20 +519,24 @@ HRESULT CMapTool::Save(const _char* Map)
 				json ObjectJson;
 				ObjectJson["WorldMatrix"] = MatrixJson;
 
-				// 모델 이름을 key로 접근 → 배열에 추가
-				BreakableJsonMap[pMapToolObject->m_ModelName].push_back(ObjectJson);
-
-				if ("SM_Factory_BasePipe_07" == pMapToolObject->m_ModelName)
+				// 모델 그룹 JSON이 object인지 확인하고 없으면 초기화
+				if (!BreakableJsonMap.contains(pMapToolObject->m_ModelName))
 				{
-					// 조각 갯수 직접 입력
+					BreakableJsonMap[pMapToolObject->m_ModelName] = json::object();
+					BreakableJsonMap[pMapToolObject->m_ModelName]["Instances"] = json::array();
+
+					//여기서 파일 탐색으로, 프래그먼트 수를 결정하자. (min, max)에 따라 달라지도록 추후에
+					BreakableJsonMap[pMapToolObject->m_ModelName]["FragmentCount"] = 0; //임시
 				}
+
+				// 인스턴스 추가
+				BreakableJsonMap[pMapToolObject->m_ModelName]["Instances"].push_back(ObjectJson);
 
 				if (pMapToolObject->m_eColliderType != COLLIDER_TYPE::NONE)
 					ReadyModelJson["Collision"] = true;
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
-
 
 		}
 
@@ -821,10 +825,24 @@ HRESULT CMapTool::Load_Breakable(const _char* Map)
 	for (auto it = Breakables.begin(); it != Breakables.end(); ++it)
 	{
 		string strModelName = it.key();       // 모델 이름
-		const json& Instances = it.value();   // WorldMatrix 배열
+		const json& ModelData = it.value();   // { FragmentCount, Instances }
+
+		// FragmentCount 읽기 (안 쓰면 무시해도 됨)
+		_int iFragmentCount = 0;
+		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
+			iFragmentCount = ModelData["FragmentCount"].get<_int>();
+
+		// Instances 배열
+		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
+			continue;
+
+		const json& Instances = ModelData["Instances"];
 
 		for (const auto& Obj : Instances)
 		{
+			if (!Obj.contains("WorldMatrix"))
+				continue;
+
 			const json& WorldMatrixJson = Obj["WorldMatrix"];
 			_float4x4 WorldMatrix = {};
 

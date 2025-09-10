@@ -1266,13 +1266,27 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 
 	auto& Breakables = Json["Breakables"];
 
-	// 모델명(key) - 배열(value) 순회
-	for (auto& [ModelNameStr, ObjArray] : Breakables.items())
+	// 모델명(key) - 데이터(value) 순회
+	for (auto& [ModelNameStr, ModelData] : Breakables.items())
 	{
 		wstring ModelName = StringToWString(ModelNameStr);
 
-		for (auto& Obj : ObjArray)
+		// FragmentCount 읽기
+		_int FragmentCount = 0;
+		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
+			FragmentCount = ModelData["FragmentCount"];
+
+		// Instances 배열 확인
+		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
+			continue;
+
+		const json& Instances = ModelData["Instances"];
+
+		for (const auto& Obj : Instances)
 		{
+			if (!Obj.contains("WorldMatrix"))
+				continue;
+
 			// 월드 행렬 읽기
 			const json& WorldMatrixJson = Obj["WorldMatrix"];
 			_float4x4 WorldMatrix = {};
@@ -1308,11 +1322,7 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
 				Desc.bFireEaterBossPipe = false;
 				Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-
-				// TODO: JSON에 FragmentCount 넣어두면 여기서 불러오기
-				if (Obj.contains("FragmentCount"))
-					Desc.iPartModelCount = Obj["FragmentCount"];
-
+				Desc.iPartModelCount = FragmentCount;
 				Desc.ModelName = ModelName;
 
 				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
