@@ -41,6 +41,8 @@ private:
 	// 같은거 여러개 만들고 스탯 가져와서 넣어주고... 위치 맞춰주고
 	HRESULT Ready_Stat_UI();
 	HRESULT Ready_Weapon_UI();
+	// 플레이어 스탯에 맞게 적용해놓기
+	HRESULT Ready_Value();
 
 	void Update_Button();
 

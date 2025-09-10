@@ -298,6 +298,8 @@ void CButtler_Range::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
+		static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 
@@ -467,6 +469,33 @@ void CButtler_Range::Register_Events()
 
 		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
 
+		// XZ 방향 추출 
+		_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
+		dirXZ = XMVector3Normalize(dirXZ);
+
+		// Look의 XZ
+		_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
+		lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
+		lookXZ = XMVector3Normalize(lookXZ);
+
+		// 각도 구하기
+		float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
+		dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
+		float angle = acosf(dot);
+
+		// 회전 방향 결정 
+		float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
+		if (crossY < 0.f) angle = -angle;
+
+		// Y축 회전 행렬
+		XMMATRIX rot = XMMatrixRotationY(angle);
+
+		// vDir 전체를 회전
+		_vector vRotated = XMVector3TransformNormal(vDir, rot);
+
+
+		vRotated = XMVector3Normalize(vRotated);
+
 		desc.bUseDistTrigger = false;
 		desc.bUseTimeTrigger = false;
 		desc.fGravityOnDist = 0.f;
@@ -477,7 +506,7 @@ void CButtler_Range::Register_Events()
 		desc.fSpeedPerSec = 5.f;
 		desc.iLevelID = iLevelIndex;
 		lstrcpy(desc.szName, TEXT("Bullet"));
-		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
+		desc.vDir = { vRotated.m128_f32[0], vRotated.m128_f32[1], vRotated.m128_f32[2] };
 		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
 
 		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Bullet"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
@@ -543,6 +572,30 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
 	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
+
+	// XZ 방향 추출 
+	_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
+	dirXZ = XMVector3Normalize(dirXZ);
+
+	// Look의 XZ
+	_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
+	lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
+	lookXZ = XMVector3Normalize(lookXZ);
+
+	// 각도 구하기
+	float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
+	dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
+	float angle = acosf(dot);
+
+	// 회전 방향 결정 
+	float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
+	if (crossY < 0.f) angle = -angle;
+
+	// Y축 회전 행렬
+	XMMATRIX rot = XMMatrixRotationY(angle);
+
+	// vDir 전체를 회전
+	_vector vRotated = XMVector3TransformNormal(vDir, rot);
 
 	_vector vOffset = m_vRayOffset * 0.5f;
 

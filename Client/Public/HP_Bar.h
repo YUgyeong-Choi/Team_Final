@@ -47,6 +47,8 @@ private:
 	_float m_fCurrentRatio = { 1.f };
 	_bool  m_isPlus = { false };
 
+	_float m_fScaleRatio = { 1.f };
+
 
 public:
 	static CHP_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

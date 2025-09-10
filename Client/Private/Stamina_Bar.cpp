@@ -1,6 +1,7 @@
 #include "Stamina_Bar.h"
 #include "GameInstance.h"
 #include "Observer_Player_Status.h"
+#include "UI_Feature_Position.h"
 
 CStamina_Bar::CStamina_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CDynamic_UI{pDevice, pContext}
@@ -43,9 +44,39 @@ HRESULT CStamina_Bar::Initialize(void* pArg)
 		}
 		else if (L"MaxStamina" == eventType)
 		{
+			_float fMaxStamina = m_fMaxStamina;
+			_float fPreScaleRatio = m_fScaleRatio;
 			m_fMaxStamina = *static_cast<_float*>(data);
 
+			if (m_fMaxStamina != 0.f && fMaxStamina != 0.f)
+				m_fScaleRatio = m_fMaxStamina / fMaxStamina;
 
+
+			// 사이즈가 커지면
+			if (m_fScaleRatio > 1.f)
+			{
+				_vector fSize = m_pTransformCom->Get_Scale();
+
+				_float fOriginSizeX = fSize.m128_f32[0];
+
+				fSize.m128_f32[0] *= m_fScaleRatio / fPreScaleRatio;
+
+				m_pTransformCom->SetUp_Scale(fSize.m128_f32[0], fSize.m128_f32[1], fSize.m128_f32[2]);
+
+				_float fDelta = fSize.m128_f32[0] - fOriginSizeX;
+
+				for (auto& pFeature : m_pUIFeatures)
+				{
+					if (pFeature->Get_Tag().find(L"Pos") != _wstring::npos)
+					{
+						_float2 fPos = static_cast<CUI_Feature_Position*>(pFeature)->Get_Position(false);
+						fPos.x += fDelta * 0.43f / g_iWinSizeX;
+						static_cast<CUI_Feature_Position*>(pFeature)->Set_Position(false, fPos);
+
+						break;
+					}
+				}
+			}
 		}
 
 		m_fRatio = (m_fCurrentStamina) / m_fMaxStamina;

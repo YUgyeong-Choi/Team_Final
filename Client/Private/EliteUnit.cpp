@@ -763,6 +763,8 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         pWeapon->Add_CollisonObj(this);
 		pWeapon->Calc_Durability(3);
 
+        static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
         _float fDamage = 0.f;
 		if (m_eUnitType == EUnitType::ELITE_MONSTER)
 			fDamage = pWeapon->Get_CurrentDamage() * 0.25f;
