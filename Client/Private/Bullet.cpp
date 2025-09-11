@@ -25,7 +25,7 @@ HRESULT CBullet::Initialize(void* pArg)
     //if (FAILED(Ready_Effect()))
     //    return E_FAIL;
 
-    m_fDamge = 10.f;
+    m_fDamge = 50.f;
 
 
     // ¿Ã∆Â∆Æ?
