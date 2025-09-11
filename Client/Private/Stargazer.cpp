@@ -157,6 +157,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 					m_bChange = true;
 					//m_eState = STARGAZER_STATE::FUNCTIONAL;
 					CUI_Manager::Get_Instance()->Activate_Popup(false);
+					m_pEffectSet->Activate_Stargazer_Reassemble();
 					return;
 				}
 				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
