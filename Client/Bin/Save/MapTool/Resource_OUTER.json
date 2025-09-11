@@ -619,7 +619,7 @@
         "Collision": false,
         "ModelName": "SM_BuildingC_Pillar_01",
         "NoInstancing": false,
-        "ObjectCount": 59,
+        "ObjectCount": 60,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Pillar_01.bin"
     },
     {
@@ -1606,7 +1606,7 @@
         "Collision": false,
         "ModelName": "SM_OldTown_WoodBoard_03",
         "NoInstancing": false,
-        "ObjectCount": 14,
+        "ObjectCount": 16,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_WoodBoard_03.bin"
     },
     {

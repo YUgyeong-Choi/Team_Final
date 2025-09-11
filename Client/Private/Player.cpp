@@ -1997,7 +1997,7 @@ void CPlayer::Update_Collider_Actor()
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	/* [ 플레이어 피격 ] */
-	if (m_bIsInvincible)
+	if (m_bIsInvincible || m_fHp <= 0.f)
 		return;
 
 
@@ -2195,7 +2195,7 @@ void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 플레이어 피격 ] */
-	if (m_bIsInvincible)
+	if (m_bIsInvincible || m_fHp <= 0.f)
 		return;
 
 

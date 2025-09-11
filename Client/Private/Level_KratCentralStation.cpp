@@ -641,6 +641,24 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
+
+	// Area 20 
+	_float3 a20p0 = _float3{ 162.2489f, 0.f, 4.0193f };
+	_float3 a20p1 = _float3{ 186.83f, 48.18f, -20.2639f };
+	_float3 a20Min, a20Max;
+	FnToAABB(a20p0, a20p1, a20Min, a20Max);
+
+	// Area 21
+	_float3 a21p0 = _float3{ 176.838f, 0.f, -2.1049f };
+	_float3 a21p1 = _float3{ 184.8192f, 48.18f, -12.4495f };
+	_float3 a21Min, a21Max;
+	FnToAABB(a21p0, a21p1, a21Min, a21Max);
+
+	// Area 22
+	_float3 a22p0 = _float3{ 185.0822f, 0.f, -4.3780f };
+	_float3 a22p1 = _float3{ 181.0464f, 48.1307f, -12.5612f };
+	_float3 a22Min, a22Max;
+	FnToAABB(a22p0, a22p1, a22Min, a22Max);
 	
 	// ------------- Area 50 --------------
 	_float3 a50p0 = _float3{ 168.3228f, 61.1988f, 62.4843f };
@@ -708,6 +726,22 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a60Min, a60Max;
 	FnToAABB(a60p0, a60p1, a60Min, a60Max);
 
+	// ------------- Area 61 --------------
+	_float3 a61p0 = _float3{ 168.32f, 61.1988f, 62.4843f };
+	_float3 a61p1 = _float3{ 203.69f, -25.574f, -92.6368f };
+	_float3 a61Min, a61Max;
+	FnToAABB(a61p0, a61p1, a61Min, a61Max);
+	// ------------- Area 62 --------------
+	_float3 a62p0 = _float3{ 203.69f, 61.1988f, 62.4843f };
+	_float3 a62p1 = _float3{ 239.06f, -25.574f, -92.6368f };
+	_float3 a62Min, a62Max;
+	FnToAABB(a62p0, a62p1, a62Min, a62Max);
+	// ------------- Area 63 --------------
+	_float3 a63p0 = _float3{ 239.06f, 61.1988f, 62.4843f };
+	_float3 a63p1 = _float3{ 274.44f, -25.574f, -92.6368f };
+	_float3 a63Min, a63Max;
+	FnToAABB(a63p0, a63p1, a63Min, a63Max);
+
 	{
 		/* [ 1번 구역 ] */
 		const vector<_uint> vecAdj1 = { 2 };
@@ -752,14 +786,14 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 7번 구역 ] */
-		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12 };
+		const vector<_uint> vecAdj7 = { 8, 9, 14, 12, 18, 20 };
 		if (!m_pGameInstance->AddArea_AABB(
 			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	{
 		/* [ 8번 구역 ] */
-		const vector<_uint> vecAdj8 = { 7, 9, 10, 11 };
+		const vector<_uint> vecAdj8 = { 9, 10, 11, 20 };
 		if (!m_pGameInstance->AddArea_AABB(
 			8, a8Min, a8Max, vecAdj8, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
@@ -768,21 +802,21 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 		/* [ 9번 구역 ] */
 		const vector<_uint> vecAdj9 = { 7, 8, 10, 11 };
 		if (!m_pGameInstance->AddArea_AABB(
-			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::HOUSE, ENUM_CLASS(AREA::EAreaType::HOUSE)))
 			return E_FAIL;
 	}
 	{
 		/* [ 10번 구역 ] */
-		const vector<_uint> vecAdj10 = { 9, 12, 14, 16, 17, 18 };
+		const vector<_uint> vecAdj10 = { 9 };
 		if (!m_pGameInstance->AddArea_AABB(
-			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
 		/* [ 11번 구역 ] */
 		const vector<_uint> vecAdj11 = { 9, 12 };
 		if (!m_pGameInstance->AddArea_AABB(
-			11, a11Min, a11Max, vecAdj11, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			11, a11Min, a11Max, vecAdj11, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
@@ -841,13 +875,34 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+	{
+		/* [ 20번 구역 ] */
+		const vector<_uint> vecAdj20 = { 7, 8, 9, 11, 21, 22, 61 };
+		if (!m_pGameInstance->AddArea_AABB(
+			20, a20Min, a20Max, vecAdj20, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 21번 구역 ] */
+		const vector<_uint> vecAdj21 = { 7, 20, 22, 61, 62 };
+		if (!m_pGameInstance->AddArea_AABB(
+			21, a21Min, a21Max, vecAdj21, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 22번 구역 ] */
+		const vector<_uint> vecAdj22 = { 20, 50, 52 };
+		if (!m_pGameInstance->AddArea_AABB(
+			22, a22Min, a22Max, vecAdj22, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
 
 
 
 	/* ---------- 야외 ------------ */
 	{
 		/* [ 50번 구역 ] */
-		const vector<_uint> vecAdj50 = { 51, 52 };
+		const vector<_uint> vecAdj50 = { 20, 51, 52, 61, 62, 63 };
 		if (!m_pGameInstance->AddArea_AABB(
 			50, a50Min, a50Max, vecAdj50, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
@@ -920,6 +975,27 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 		const vector<_uint> vecAdj60 = { 59 };
 		if (!m_pGameInstance->AddArea_AABB(
 			60, a60Min, a60Max, vecAdj60, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 61번 구역 ] */
+		const vector<_uint> vecAdj61 = { 20, 50, 52, 62, 63 };
+		if (!m_pGameInstance->AddArea_AABB(
+			61, a61Min, a61Max, vecAdj61, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 62번 구역 ] */
+		const vector<_uint> vecAdj62 = { 20, 50, 51, 52, 61, 63 };
+		if (!m_pGameInstance->AddArea_AABB(
+			62, a62Min, a62Max, vecAdj62, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 63번 구역 ] */
+		const vector<_uint> vecAdj63 = { 50, 51, 52, 61, 62 };
+		if (!m_pGameInstance->AddArea_AABB(
+			63, a63Min, a63Max, vecAdj63, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->FinalizePartition()))
