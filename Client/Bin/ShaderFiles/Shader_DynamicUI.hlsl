@@ -157,16 +157,23 @@ PS_OUT PS_MAIN_DISCARD_DARK(PS_IN In)
 {
     PS_OUT Out;
     
+    In.vTexcoord.x -= g_UVTime;
+    
     Out.vColor = g_Texture.Sample(DefaultSampler, In.vTexcoord);
     
-    if (length(Out.vColor.rgb) < 0.2f)
-        discard;
-    
-    Out.vColor *= g_Color;
-    
-    Out.vColor.a *= g_Alpha;
-    
+    float brightness = dot(Out.vColor.rgb, float3(0.2126, 0.7152, 0.0722));
+
+   // 0.2 이하면 투명, 0.3 이상이면 그대로
+    float alphaFactor = smoothstep(0.2f, 0.5f, brightness);
+
+    // 원래 색은 그대로
+    Out.vColor.rgb *= g_Color.rgb;
+
+    // 알파만 페이드 적용
+    Out.vColor.a *= g_Alpha * alphaFactor * 0.4f;
+
     return Out;
+    
 }
 
 PS_OUT PS_MAIN_SPRITE(PS_IN In)
@@ -972,6 +979,16 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_REVIVE();
     }
-    
+    pass Discard_Dark
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_DISCARD_DARK();
+    }
 
  }

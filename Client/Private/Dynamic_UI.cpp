@@ -180,7 +180,7 @@ void CDynamic_UI::Update(_float fTimeDelta)
 		m_fElapsedTime += fTimeDelta;
 
 		if (m_isUVMove)
-			m_fUVTime += fTimeDelta;
+			m_fUVTime += fTimeDelta * (0.15f);
 
 
 		if (m_fElapsedTime > m_fDuration)

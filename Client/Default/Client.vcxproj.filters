@@ -472,9 +472,6 @@
     <Filter Include="02.GameObjects\99.UI\Container\DeBuff">
       <UniqueIdentifier>{5640eb68-dfc9-46e1-8966-982cf3b6ff2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Item\Lamp">
-      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
       <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
     </Filter>

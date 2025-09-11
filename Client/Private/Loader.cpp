@@ -2711,6 +2711,16 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/Bg_BrushDot.dds")))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Activated"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Text/ImgText_Activated.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_BeamLightning"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Text/BeamLightning.dds")))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
