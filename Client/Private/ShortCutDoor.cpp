@@ -41,9 +41,9 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
 
-	m_pAnimator->SetPlaying(true);
-	m_pAnimatorFrontKey->SetPlaying(true);
-	m_pAnimatorBackKey->SetPlaying(true);
+	//m_pAnimator->SetPlaying(true);
+	//m_pAnimatorFrontKey->SetPlaying(true);
+	//m_pAnimatorBackKey->SetPlaying(true);
 
 	return S_OK;
 }
@@ -291,6 +291,10 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		// 문 여는 거 활성화
 		
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
+
+		m_pAnimatorFrontKey->SetTrigger("Open");
+		m_pAnimatorBackKey->SetTrigger("Open");
+
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
 }
@@ -382,8 +386,10 @@ HRESULT CShortCutDoor::LoadFromJson()
 
 	if (FAILED(LoadAnimationEventsFromJson(modelName, m_pModelComFrontKey)))
 		return E_FAIL;
-	//if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimator)))
-	//	return E_FAIL;
+	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimatorFrontKey)))
+		return E_FAIL;
+	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimatorBackKey)))
+		return E_FAIL;
 	return S_OK;
 }
 
