@@ -54,7 +54,7 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 
-//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP //여러 개 켜도 됨
 

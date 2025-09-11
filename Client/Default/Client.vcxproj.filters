@@ -553,6 +553,9 @@
     <Filter Include="02.GameObjects\03.Item\ErgoItem">
       <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffects">
+      <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1141,6 +1144,7 @@
     <ClInclude Include="..\Public\ShortCutDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StargazerEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1703,6 +1707,7 @@
     <ClCompile Include="..\Private\ShortCutDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\StargazerEffect.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

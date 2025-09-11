@@ -1911,7 +1911,6 @@ void CFuoco::Create_CutsceneEffect()
 {
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
 	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 	CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_Cutscene_Slam"), &desc);

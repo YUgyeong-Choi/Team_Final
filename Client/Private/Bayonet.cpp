@@ -102,22 +102,13 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 
 	if (m_bHitRegActive)
 		Update_HitReg(fTimeDelta);
-	if (KEY_PRESSING(DIK_LCONTROL) && KEY_DOWN(DIK_G))
+	if (KEY_PRESSING(DIK_LALT) && KEY_DOWN(DIK_Q))
 	{
-		CEffectContainer::DESC desc = {};
 
-		auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
-
-		XMStoreFloat4x4(&desc.PresetMatrix,
-			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-				worldmat.r[3].m128_f32[1],
-				worldmat.r[3].m128_f32[2]));
-
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
-			MSG_BOX("이펙트 생성 실패함");
 		static _bool bTEactive = true;
 		bTEactive = !bTEactive;
-		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
+		Set_WeaponTrail_Active(bTEactive, TRAIL_BLOOD);
+
 	}
 
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
@@ -365,15 +356,12 @@ HRESULT CBayonet::Ready_Effect()
 	else
 		MSG_BOX("무기 트레일 사망");
 
-	//desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
-	////desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
-	//desc.bHasEmitter = true;
-	//// 타격 피 트레일
-	//m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	//if (m_pTrailEffect[TRAIL_BLOOD])
-	//	m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
-	//else
-	//	MSG_BOX("무기 스킬 트레일 사망");
+	// 타격 피 트레일
+	m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_BloodTest"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (m_pTrailEffect[TRAIL_BLOOD])
+		m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
+	else
+		MSG_BOX("무기 스킬 트레일 사망");
 
 	desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
 	//desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
@@ -550,10 +538,13 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 
 	if (pEffect == nullptr)
 		return E_FAIL;
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&desc.PresetMatrix, mAlign);
 	pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Attack_Blood"), &desc);
 	if (pEffect == nullptr)
 		return E_FAIL;
+
+	Set_WeaponTrail_Active(true, TRAIL_BLOOD);
+
 	return S_OK;
 }
 

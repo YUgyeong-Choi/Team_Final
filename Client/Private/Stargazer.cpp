@@ -8,6 +8,7 @@
 #include "UI_Button_Script.h"
 #include "UI_SelectLocation.h"
 #include "UI_Levelup.h"
+#include "StargazerEffect.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -55,6 +56,9 @@ HRESULT CStargazer::Initialize(void* pArg)
 	LoadScriptData();
 
 	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
+	if (FAILED(Ready_EffectSet()))
 		return E_FAIL;
 
 	return S_OK;
@@ -447,6 +451,7 @@ void CStargazer::Register_Events()
 			if (m_eState == STARGAZER_STATE::DESTROYED)
 				m_eState = STARGAZER_STATE::FUNCTIONAL;
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+			m_pEffectSet->Activate_Stargazer_Spread();
 		});
 }
 
@@ -684,6 +689,18 @@ HRESULT CStargazer::Ready_Script()
 
 	m_bUseScript = true;
 	m_bUseOtherUI = false;
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_EffectSet()
+{
+	CGameObject* pInstance = nullptr;
+	CStargazerEffect::DESC desc = {};
+	desc.pOwner = this;
+	desc.iLevelID = m_iLevelID;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance,&desc)))
+		return E_FAIL;
+	m_pEffectSet = static_cast<CStargazerEffect*>(pInstance);
 	return S_OK;
 }
 
