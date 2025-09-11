@@ -407,7 +407,7 @@ _bool CEliteUnit::CanMove() const
         m_eCurrentState != EEliteState::FATAL;
 }
 
-_bool CEliteUnit::IsTargetInFront(_float fDectedAngle) const
+_bool CEliteUnit::IsTargetInFront(_float fDectedAngle,_float fMaxDist) const
 {
     if (!m_pPlayer)
         return false;
@@ -415,8 +415,12 @@ _bool CEliteUnit::IsTargetInFront(_float fDectedAngle) const
     _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
     _vector vThisPos = m_pTransformCom->Get_State(STATE::POSITION);
     _vector vForward = XMVector3Normalize(XMVectorSetY(m_pTransformCom->Get_State(STATE::LOOK), 0.f));
-    _vector vToPlayerXZ = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
-    _float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerXZ));
+    _vector vToPlayer = XMVectorSetY(vPlayerPos - vThisPos, 0.f);
+    _vector vToPlayerN = XMVector3Normalize(vToPlayer);
+    _float fDist = XMVectorGetX(XMVector3Length(vToPlayer));
+    if (fMaxDist > 0.f && fDist > fMaxDist)
+        return false;
+    _float fDot = XMVectorGetX(XMVector3Dot(vForward, vToPlayerN));
     fDot = clamp(fDot, -1.f, 1.f); // -1 ~ 1 사이로 제한
     _float fAngle = cosf(XMConvertToRadians(fDectedAngle)); // 시야각 60도 기준
 

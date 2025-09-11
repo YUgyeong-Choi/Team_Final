@@ -79,7 +79,7 @@ protected:
 
 	virtual void EnableColliders(_bool bEnable);
 	virtual _bool CanMove() const;
-	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
+	_bool  IsTargetInFront(_float fDectedAngle = 60.f,_float fMaxDist = 6.f) const;
 
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
 	_float Get_DistanceToPlayer() const;
@@ -118,7 +118,7 @@ protected:
 	virtual _int GetRandomAttackPattern(_float fDistance) { return -1; }
 
 	// 이펙트 출력 관련
-	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) { return S_OK; }
+	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) { return S_OK; }
 	virtual HRESULT Spawn_Effect() { return S_OK; }
 	
 	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready

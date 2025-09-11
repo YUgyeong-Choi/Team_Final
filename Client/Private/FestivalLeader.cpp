@@ -83,7 +83,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
 	// 2,3번은 바스켓
 
-	m_fMaxHp = 100.f;
+	m_fMaxHp = 1000.f;
 	m_fHp = m_fMaxHp;
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
@@ -1056,15 +1056,12 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	if (m_BoneRefs[Hammer] == nullptr || m_BoneRefs[Basket] == nullptr)
 		return;
 
-	CEffectContainer::DESC desc = {};
 
-	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
 }
 
-HRESULT CFestivalLeader::EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
+HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
 {
-	auto it = m_EffectMap.find(iPattern);
+	auto it = m_EffectMap.find(iEffectId);
 	if (it == m_EffectMap.end())
 		return E_FAIL; // 해당 패턴 이펙트 없음
 
@@ -1101,7 +1098,7 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 
 	for (auto it = m_ActiveEffect.begin(); it != m_ActiveEffect.end(); )
 	{
-		const _wstring EffectTag = it->first;
+		const _wstring& EffectTag = it->first;
 		ProcessingEffects(EffectTag);
 		if (it->second) // 한번만 실행이면
 		{

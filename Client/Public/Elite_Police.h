@@ -87,8 +87,8 @@ private:
     virtual void EnableColliders(_bool bEnable) override;
 
     virtual void Ready_EffectNames() override;
-    virtual void ProcessingEffects(const _wstring& stEffectTag) override;
-    virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) override;
+    virtual void ProcessingEffects(const _wstring& stEffectTag)  override;
+    virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true)  override;
     virtual HRESULT Spawn_Effect();
 
     virtual HRESULT Ready_Effect();

@@ -624,7 +624,7 @@ void CElite_Police::ProcessingEffects(const _wstring& stEffectTag)
 {
 }
 
-HRESULT CElite_Police::EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce)
+HRESULT CElite_Police::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce)
 {
 	return S_OK;
 }

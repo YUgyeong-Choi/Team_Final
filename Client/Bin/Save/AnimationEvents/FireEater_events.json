@@ -902,6 +902,10 @@
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 250.0
+                },
+                {
+                    "EventName": "OnCutSceneEffect",
+                    "Time": 252.0
                 }
             ],
             "IsLoop": false,
