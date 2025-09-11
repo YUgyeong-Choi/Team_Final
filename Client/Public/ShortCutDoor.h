@@ -73,6 +73,10 @@ private:
 
 	_bool m_bCanOpen = false;
 
+	// 플레이어 move 풀기 위한 
+	_float m_fEscapeTime = 0.f;
+	_bool m_bCanMovePlayer = false;
+
 	// 자물쇠
 	class CModel* m_pModelComFrontKey = { nullptr };
 	class CAnimator* m_pAnimatorFrontKey = { nullptr };

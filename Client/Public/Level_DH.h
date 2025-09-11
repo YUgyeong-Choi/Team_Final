@@ -36,7 +36,7 @@ public:
 	HRESULT Separate_Area();
 
 	HRESULT Ready_Dummy();
-
+	HRESULT Ready_Interact();
 
 private:
 	//맵 로드하는 부분

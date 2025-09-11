@@ -43,10 +43,6 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 
 	Register_Events();
 
-	//m_pAnimator->SetPlaying(true);
-	//m_pAnimatorFrontKey->SetPlaying(true);
-	//m_pAnimatorBackKey->SetPlaying(true);
-
 	return S_OK;
 }
 
@@ -70,6 +66,8 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 				m_bFinish = true;
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(true);
 			}
 			else
 			{
@@ -88,6 +86,7 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 		m_bFinish = false;
 		m_bCanActive = false;
 		m_bCanOpen = true;
+		m_fEscapeTime = 0.f;
 	}
 #endif // _DEBUG
 }
@@ -299,13 +298,28 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
+		m_bCanMovePlayer = true;
 		// 문 여는 거 활성화
-
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
+	}
+
+	if (m_bCanMovePlayer)
+	{
 
 
+		m_fEscapeTime += fTimeDelta;
+		if (m_bCanOpen && m_fEscapeTime > 8.5f)
+		{
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(false);
+			m_bCanMovePlayer = false;
+		}
 
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		if(!m_bCanOpen)
+		{
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_bCanMovePlayer = false;
+		}
 	}
 }
 
