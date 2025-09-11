@@ -1235,6 +1235,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_pLegionArm->Use_LegionEnergy(20.f);
 			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
+
+			CEffectContainer::DESC Lightdesc = {};
+			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_LeftarmBIGLIGHT"), &Lightdesc))
+				MSG_BOX("이펙트 생성 실패함");
 		}
 
 		RootMotionActive(fTimeDelta);

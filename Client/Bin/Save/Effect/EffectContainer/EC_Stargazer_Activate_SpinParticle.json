@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                1.0,
-                2.0
+                2.0,
+                4.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -30,7 +30,7 @@
             "EmissiveIntensity": 0.6000000238418579,
             "EndTrack": 200,
             "FlipUV": false,
-            "Gravity": -1.5,
+            "Gravity": -0.800000011920929,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -61,15 +61,15 @@
                     ]
                 }
             ],
-            "LifeTime": 7033.1103515625,
+            "LifeTime": 7470.751953125,
             "LifeTime_Particle": [
                 0.699999988079071,
-                1.2999999523162842
+                1.5
             ],
             "Local": true,
             "Loop": false,
             "MaxLifeTime": 4.0,
-            "MaxSpeed": 5.0,
+            "MaxSpeed": 100.0,
             "MinSpeed": 0.0,
             "Name": "Stargazer_SpinParticle1",
             "NumInstance": 1000,
@@ -81,19 +81,19 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -200.0,
-                -190.0
+                -480.0,
+                -90.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.009999999776482582,
+                -0.7300000190734863,
                 0.0
             ],
             "Range": [
+                0.800000011920929,
                 1.0,
-                0.009999999776482582,
-                1.0
+                0.800000011920929
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -112,8 +112,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                0.03999999910593033,
-                0.09000000357627869
+                0.019999999552965164,
+                0.4000000059604645
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -139,5 +139,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 60
+    "MaxFrame": 120
 }

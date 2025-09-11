@@ -69,6 +69,9 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 
 			// 이펙트 삭제 로직 필요
+			if (m_pEffect)
+				m_pEffect->End_Effect();
+			// 없어지는 이펙트 추가할 것 - 채영
 		}
 
 	}
@@ -171,7 +174,9 @@ HRESULT CErgoItem::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc);
+	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+	if (m_pEffect == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }

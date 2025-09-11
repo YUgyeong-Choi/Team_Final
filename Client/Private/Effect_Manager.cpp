@@ -561,6 +561,10 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     if (j.contains("TileTickPerSec"))
         VIBufferDesc.fTileTickPerSec = j["TileTickPerSec"].get<_float>();
 
+
+    if (j.contains("ShrinkThreshold"))
+        VIBufferDesc.fShrinkThreshold = j["ShrinkThreshold"].get<_float>();
+
     VIBufferDesc.isTool = false;
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,

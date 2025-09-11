@@ -97,7 +97,7 @@ void CStargazerEffect::Activate_Stargazer_Reassemble()
 {
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, -0.f, 0.f));
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, -0.5f, 0.f));
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activate_SpinParticle"), &desc))
 		MSG_BOX("별바라기 회전 이펙트 생성 실패");
 }
@@ -166,6 +166,14 @@ void CStargazerEffect::Activate_Stargazer_Spread()
 				m_pGameInstance->Compute_Random(0.2f, 1.f),
 				m_pGameInstance->Compute_Random(0.2f, 0.6f));
 	}
+
+	m_pFloatingEffect->End_Effect();
+	m_pFloatingEffect = nullptr;
+	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 1.f, 0.f));
+	m_pFloatingEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Active_FloatingParticle"), &desc));
+	if (m_pFloatingEffect == nullptr)
+		return ;
 }
 
 HRESULT CStargazerEffect::Bind_ShaderResources()
