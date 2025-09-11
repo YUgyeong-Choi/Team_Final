@@ -260,6 +260,11 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+    /*    if (m_pOwner->m_Input.bGetItem)
+        {
+			m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        }*/
     }
 
     virtual void Exit() override
@@ -402,6 +407,11 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+        //if (m_pOwner->m_Input.bGetItem)
+        //{
+        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        //}
 
         LockOnMovement();        
     }
@@ -556,6 +566,12 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+      /*  if (m_pOwner->m_Input.bGetItem)
+        {
+            m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        }*/
+
 		LockOnMovement();
     }
 
@@ -1197,6 +1213,10 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
+        //if (m_pOwner->m_Input.bGetItem)
+        //{
+        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        //}
     }
 
     virtual void Exit() override
@@ -3098,7 +3118,7 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("Hited");
         }
 
-
+        //m_pOwner->m_pAnimator->ResetTrigger("GetItem");
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
 

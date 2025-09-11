@@ -83,7 +83,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
 	// 2,3번은 바스켓
 
-	m_fMaxHp = 1400.f;
+	m_fMaxHp = 1200.f;
 	m_fHp = m_fMaxHp;
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
@@ -405,6 +405,7 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			pPlayer->SetHitedAttackType(EAttackType::AIRBORNE);
 			pPlayer->SetHitMotion(HITMOTION::UP);
 		}
+		m_bRootMotionClamped = true;
 		return;
 	}
 
@@ -670,10 +671,11 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	}
 	break;
 	case Client::CFestivalLeader::JumpAttack:
-		//m_eAttackType = EAttackType::FURY_STAMP;
+		m_bRootMotionClamped = true;
 		break;
 	case Client::CFestivalLeader::Strike:
 	{
+		m_bRootMotionClamped = true;
 		_int iStrikeCombo = (GetRandomFloat(0.f, 1.f) < 0.8f);
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
 		m_pAnimator->SetInt("StrikeCombo", iStrikeCombo);

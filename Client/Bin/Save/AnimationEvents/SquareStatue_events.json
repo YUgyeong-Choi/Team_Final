@@ -1,0 +1,11 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Square_Statue_Anim",
+            "Duration": 119.0,
+            "IsLoop": true,
+            "RootMotion": false,
+            "TickPerSecond": 65.0
+        }
+    ]
+}

@@ -637,6 +637,7 @@ void CPlayer::HandleInput()
 	m_Input.bSkill = KEY_DOWN(DIK_F);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
 	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
+	m_Input.bGetItem = KEY_DOWN(DIK_E);
 	
 	/* [ 뛰기 걷기를 토글합니다. ] */
 	if (KEY_DOWN(DIK_Z))
@@ -2335,6 +2336,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		CBossUnit* pBoss = dynamic_cast<CBossUnit*>(pOther);
 		if (pBoss)
 		{
+			if (pBoss->HasCollided())
+				return;
 			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
 			m_pHitedTarget = pBoss;

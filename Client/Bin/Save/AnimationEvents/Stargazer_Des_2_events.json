@@ -18,7 +18,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 75.0
+            "TickPerSecond": 55.0
         }
     ]
 }

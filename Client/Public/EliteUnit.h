@@ -131,7 +131,6 @@ protected:
 	PxTransform GetBonePose(CBone* pBone, const _matrix* pOffset = nullptr) ;
 
 	void ApplyAttackTypeToPlayer(EAttackType type);
-
 public:
 	EEliteState GetCurrentState() const { return m_eCurrentState; }
 
