@@ -234,8 +234,8 @@ HRESULT CLevel_KratCentralStation::Reset()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	if (FAILED(Ready_Dummy()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Dummy()))
+		return E_FAIL;*/
 	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
@@ -248,12 +248,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -271,6 +271,7 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
+
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 	if (FAILED(Ready_ErgoItem()))
@@ -1379,48 +1380,6 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable()
 
 HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 {
-	//아직 푸오코 기둥을 위한 것으로만
-
-	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
-	ifstream inFile(FilePath);
-	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json Json;
-	inFile >> Json;
-	inFile.close();
-
-	// 배열 순회
-	for (auto& Data : Json)
-	{
-		// 월드 행렬
-		const json& WorldMatrixJson = Data["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		Desc.iPartModelCount = 3;
-		Desc.ModelName = TEXT("Main");
-		Desc.vOffsets.push_back(_float3(4.09f, -8.75f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -5.82f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -2.89f, 1.21f));
-		Desc.PartModelNames.push_back(TEXT("Part2"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.WorldMatrix = WorldMatrix;
-		Desc.wsNavName = StringToWString(Map);
-		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-			return E_FAIL;
-	}
-
 	return S_OK;
 }
 

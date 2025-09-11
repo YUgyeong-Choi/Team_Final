@@ -205,7 +205,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_7))
 	{
-		PxVec3 pos = PxVec3(360.78f, 10.90f, -48.81f);
+		PxVec3 pos = PxVec3(360.78f, 15.90f, -48.81f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
