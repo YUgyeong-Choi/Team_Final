@@ -1,12 +1,12 @@
 {
     "Pitch": 0.06561191380023956,
-    "Yaw": -1.5644537210464478,
+    "Yaw": -1.5800000429153442,
     "bEndBlend": false,
     "bStartBlend": false,
     "iEndFrame": 1000,
     "vecFovData": [
         {
-            "curveType": 0,
+            "curveType": 1,
             "curveY": [
                 0.0,
                 0.25,
@@ -16,7 +16,7 @@
             ],
             "fFov": 60.0,
             "interpFov": 1,
-            "keyFrame": 190
+            "keyFrame": 200
         },
         {
             "curveType": 0,
@@ -29,7 +29,33 @@
             ],
             "fFov": 50.0,
             "interpFov": 0,
-            "keyFrame": 300
+            "keyFrame": 280
+        },
+        {
+            "curveType": 1,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "fFov": 50.0,
+            "interpFov": 1,
+            "keyFrame": 420
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "fFov": 40.0,
+            "interpFov": 0,
+            "keyFrame": 580
         },
         {
             "curveType": 2,
@@ -40,9 +66,9 @@
                 0.75,
                 1.0
             ],
-            "fFov": 50.0,
+            "fFov": 40.0,
             "interpFov": 1,
-            "keyFrame": 800
+            "keyFrame": 770
         },
         {
             "curveType": 0,
@@ -73,7 +99,7 @@
             "keyFrame": 0,
             "pitch": 0.06561191380023956,
             "targetType": 1,
-            "yaw": -1.5644537210464478
+            "yaw": -1.5800000429153442
         },
         {
             "curveType": 0,
@@ -89,7 +115,7 @@
             "keyFrame": 999,
             "pitch": 0.06561191380023956,
             "targetType": 1,
-            "yaw": -1.5644537210464478
+            "yaw": -1.5800000429153442
         }
     ]
 }

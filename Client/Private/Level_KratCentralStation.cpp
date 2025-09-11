@@ -752,7 +752,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 7번 구역 ] */
-		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12 };
+		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12, 50 };
 		if (!m_pGameInstance->AddArea_AABB(
 			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
@@ -847,7 +847,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	/* ---------- 야외 ------------ */
 	{
 		/* [ 50번 구역 ] */
-		const vector<_uint> vecAdj50 = { 51, 52 };
+		const vector<_uint> vecAdj50 = { 7, 51, 52 };
 		if (!m_pGameInstance->AddArea_AABB(
 			50, a50Min, a50Max, vecAdj50, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
