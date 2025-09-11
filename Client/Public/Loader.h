@@ -69,6 +69,9 @@ private:
 	//필요한 데칼 텍스쳐를 로딩한다.
 	HRESULT Loading_Decal_Textures(_uint iLevelIndex, const _char* Map);
 
+	//부서질 수 있는 메쉬를 로딩한다.
+	HRESULT Loading_Breakable(_uint iLevelIndex, const _char* Map);
+
 private:
 	//맵 소환(메쉬, 네비, 데칼 등...)
 	HRESULT Ready_Map(_uint iLevelIndex, const _char* Map);
@@ -83,6 +86,9 @@ private:
 
 	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
 	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);
+
+	//부서질 수 있는 메쉬를 소환한다.
+	HRESULT Ready_Breakable(_uint iLevelIndex, const _char* Map);
 
 private:
 	mutex m_mtx = {};

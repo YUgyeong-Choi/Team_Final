@@ -17,6 +17,7 @@ float4 g_Color;
 
 float4 g_ButtonFlag;
 
+float g_CurrentBarRatio;
 float g_BarRatio;
 float4 g_ManaDesc;
 
@@ -27,8 +28,15 @@ float4 g_ItemDesc;
 float g_Groggy;
 float g_UVTime;
 
+
+float g_IsPlayer;
 float g_IsHpBar;
 float g_UseGradation;
+float g_fHpEffectTime;
+
+float g_IsDurablityBar;
+float g_IsIncrease;
+
 
 /* 정점의 기초적인 변환 (월드변환, 뷰, 투영변환) */ 
 /* 정점의 구성 정보를 변형할 수 있다. */ 
@@ -263,7 +271,7 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
     PS_OUT Out;
     Out.vColor = float4(0, 0, 0, 0);
 
-    float4 vBorder = g_Texture.Sample(DefaultSampler, In.vTexcoord);
+    float4 vBorder = g_Texture.Sample(PointSampler, In.vTexcoord);
     float2 highlightUV;
 // 축소하고 가운데 정렬
     highlightUV.x = (In.vTexcoord.x - 0.5f) * 0.9f + 0.5f;
@@ -291,23 +299,108 @@ PS_OUT PS_MAIN_HPBAR(PS_IN In)
         
         filledX = minX + max((maxX - minX) * g_BarRatio , minWidth);
     }
+    float filledCurX = minX + max((maxX - minX) * g_CurrentBarRatio, 0.05f);
  
 
-    bool isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
+    bool isInsideX = 0;
     bool isInsideY = In.vTexcoord.y >= fMarginY && In.vTexcoord.y <= 1 - fMarginY ;
 
-
-    
+ 
     if (vBorder.a > 0.001f)
     {
         Out.vColor += vBorder * 0.8f;
         return Out;
     }
+    
+    vector vGradation = g_GradationTexture.Sample(PointSampler, In.vTexcoord);
+    
+    if (g_IsPlayer == 1.f && g_IsHpBar == 1.f)
+    {
+        float pixelSize = 1 / 192.f; // 실제 체력 바 픽셀 크기
+        // 체력 증가 중
+        if (filledX > filledCurX)
+        {
+            bool isInsideXMain = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledCurX;
+            bool isInsideXSub = In.vTexcoord.x >= filledCurX && In.vTexcoord.x <= filledX;
+
+
+            
+            if (isInsideXMain && isInsideY)
+            {
+                Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+                if (g_fHpEffectTime > 0.f && In.vTexcoord.x > filledCurX - pixelSize * 0.6f )
+                    Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+            }
+            else if (isInsideXSub && isInsideY)
+            {
+                Out.vColor = g_Color * 0.5f; 
+            }
+
+          
+                
+        }
+        // 체력 감소 중
+        else if (filledX < filledCurX)
+        {
+            bool isInsideXMain = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
+            bool isInsideXSub = In.vTexcoord.x >= filledX && In.vTexcoord.x <= filledCurX;
+            
+          
+              
+            if (isInsideXMain && isInsideY)
+            {
+                Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+                
+                if (g_fHpEffectTime > 0.f && In.vTexcoord.x > filledX - pixelSize * 0.6f)
+                    Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+            }
+            else if (isInsideXSub && isInsideY)
+            {
+                if(In.vTexcoord.x < minX)
+                    discard;
+                
+                Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f) * 0.5f; // 어두운 영역
+            }
+
+          
+            
+            
+           
+
+        }
+        else
+        {
+            isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
+            
+            if (isInsideX && isInsideY)
+            {
+                Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+                
+                
+                if (g_fHpEffectTime > 0.f)
+                {
+                    if (In.vTexcoord.x > filledX - pixelSize * 0.6f)       
+                        Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+                }
+            }
+
+        }
+      
+            
+          
+        return Out;
+    }
+    
+    isInsideX = In.vTexcoord.x >= minX && In.vTexcoord.x <= filledX;
 
     if (isInsideX && isInsideY)
     {
-        vector vGradation = g_GradationTexture.Sample(DefaultSampler, In.vTexcoord);
-        Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+     
+         
+            Out.vColor = g_Color * (length(vGradation.rgb) * 0.5 + 0.5f);
+        
+        
+           
     }
 
     return Out;
@@ -524,7 +617,40 @@ PS_OUT PS_MAIN_DURABILITYBAR(PS_IN In)
                 Out.vColor = g_Color * (length(vGradation.rgb)   + 0.5f);
             }
             else
-                Out.vColor = g_Color;
+            {
+                if (g_IsIncrease == 1.f && g_IsDurablityBar == 1.f)
+                {
+                    // 끝부분에 그라데이션을 넣어보자
+                    if (In.vTexcoord.x >= filledX - 0.075f)
+                    {
+                        if (In.vTexcoord.x >= filledX - 0.01f)
+                            Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+                        else
+                        {
+                            float t = saturate((In.vTexcoord.x - filledX + 0.1f) / 0.15f);
+                            Out.vColor = lerp(float4(0.8f, 0.5f, 0.5f, 1.f), float4(1.f, 1.f, 1.f, 1.f), t);
+                            Out.vColor.a *= 1.5f;
+                            
+                        }
+                        
+                        
+             
+                        
+                    }
+                    else
+                    {
+                        
+                        
+                        Out.vColor = g_Color;
+                    }
+
+                }
+                else
+                {
+                    Out.vColor = g_Color;
+                }
+            }
+                
         }
           
         else

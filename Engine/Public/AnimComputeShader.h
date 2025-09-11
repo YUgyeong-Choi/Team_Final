@@ -61,9 +61,6 @@ private:
 
 	ID3D11UnorderedAccessView* m_pOutputBoneUAV{ nullptr }; // 뼈대 UAV
 
-	ID3D11Buffer* m_pOutputBufferForVS = nullptr;                // 추가 멤버
-	ID3D11ShaderResourceView* m_pOutputBoneSRV_VSOnly = nullptr; // 추가 멤버
-
 	vector<_int> m_BoneLevels;          // 각 뼈의 계층 레벨 (0=루트, 1=1단계...)
 	vector<_int> m_ParentIndices; // 부모 인덱스 배열
 	_uint m_iMaxLevel = 0;              // 최대 계층 깊이

@@ -356,7 +356,7 @@
                     "Time": 1.0
                 },
                 {
-                    "EventName": "SwitchFuryState",
+                    "EventName": "DeactivateFuryState",
                     "Time": 58.0
                 }
             ],
@@ -385,7 +385,7 @@
                     "Time": 4.0
                 },
                 {
-                    "EventName": "SwitchFuryState",
+                    "EventName": "ActivateFuryState",
                     "Time": 4.0
                 }
             ],
@@ -556,12 +556,12 @@
                     "Time": 58.0
                 },
                 {
-                    "EventName": "SwitchFuryState",
-                    "Time": 16.0
+                    "EventName": "ActivateFuryState",
+                    "Time": 1.0
                 },
                 {
-                    "EventName": "SwitchFuryState",
-                    "Time": 163.0
+                    "EventName": "DeactivateFuryState",
+                    "Time": 205.0
                 }
             ],
             "IsLoop": false,
@@ -881,7 +881,7 @@
                 },
                 {
                     "EventName": "ActiveHpBar",
-                    "Time": 649.0
+                    "Time": 440.0
                 },
                 {
                     "EventName": "StandUpSound",
@@ -902,6 +902,10 @@
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 250.0
+                },
+                {
+                    "EventName": "OnCutSceneEffect",
+                    "Time": 252.0
                 }
             ],
             "IsLoop": false,
@@ -1053,6 +1057,10 @@
                 {
                     "EventName": "CollidersOff",
                     "Time": 10.0
+                },
+                {
+                    "EventName": "DeadSoundEffect",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,

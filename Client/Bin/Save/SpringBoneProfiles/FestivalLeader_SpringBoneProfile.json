@@ -4,20 +4,34 @@
     "Front": {
       "downBias": [ 0.25, 0.52 ],
       "gScale": [ 1.50, 2.10 ],
-      "stiffness": [ 0.02, 0.01 ]
+      "stiffness": [ 0.02, 0.01 ],
+      "follow": [ 0.10, 0.50 ],
+      "maxDeg": [ 140.0, 90.0 ],
+      "damping": [ 1.00, 0.70 ]
     },
     "Back": {
       "downBias": [ 0.28, 0.50 ],
       "gScale": [ 1.40, 2.00 ],
-      "stiffness": [ 0.03, 0.018 ]
+      "stiffness": [ 0.03, 0.018 ],
+      "follow": [ 0.10, 0.50 ],
+      "maxDeg": [ 140.0, 90.0 ],
+      "damping": [ 1.00, 0.70 ]
     },
     "Other": {
       "downBias": [ 0.25, 0.52 ],
       "gScale": [ 1.60, 2.30 ],
-      "stiffness": [ 0.02, 0.01 ]
+      "stiffness": [ 0.02, 0.01 ],
+      "follow": [ 0.10, 0.50 ],
+      "maxDeg": [ 140.0, 90.0 ],
+      "damping": [ 1.00, 0.70 ]
+    },
+    "Cloth": {
+      "stiffness": [ 0.015, 0.02 ],
+      "gScale": [ 0.09, 0.1 ],
+      "downBias": [ 0.05, 0.1 ],
+      "follow": [ 0.2, 0.35 ],
+      "maxDeg": [ 140.0, 170.0 ],
+      "damping": [ 0.7, 0.825 ]
     }
-  },
-  "follow": [ 0.10, 0.50 ],
-  "maxDeg": [ 140.0, 90.0 ],
-  "damping": [ 1.00, 0.70 ]
+  }
 }

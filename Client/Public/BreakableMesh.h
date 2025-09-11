@@ -26,6 +26,10 @@ public:
 
 		//영향을 줄 네브메쉬 이름
 		wstring wsNavName = {};
+
+		//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
+		_bool bFireEaterBossPipe = { false }
+		;
 	}BREAKABLEMESH_DESC;
 
 protected:
@@ -44,7 +48,7 @@ public:
 
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
-
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
 private:
 	void Break();
 
@@ -80,16 +84,23 @@ private:
 	//파트 모델 갯수
 	_uint m_iPartModelCount = 0;
 
+private:
 	_bool m_bBreakTriggered = { false }; //무너진다는 트리거
 	_bool m_bIsBroken = { false }; //이미 무너진 상태인지 확인하는 코드
 
+private:
 	//몇초뒤 렌더링과, 콜라이더도 빼주자
 	const _float m_fTime_Invisible = { 8.f };
 	_float m_fTimeAcc = { 0.f };
 	_bool m_bInvisible = { false };
 
-
+private:
 	class CPlayer* m_pPlayer = { nullptr };
+
+private:
+	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
+	_bool m_bFireEaterBossPipe = { false };
+
 private:    
 
 	/* [ 컴포넌트 ] */

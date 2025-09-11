@@ -3298,8 +3298,6 @@ public:
         {
             m_pOwner->Reset();
 
-            m_pOwner->m_fHp = 100.f;
-            m_pOwner->Callback_HP();
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();

@@ -25,7 +25,7 @@ public:
 private:
 	enum class SpringBonePart // 머리카락 앞,뒤, 다른 부위, 옷
 	{
-		Front, Back, Other, Cloth, Lamp
+		Front, Back, Other, Cloth, Item
 	};
 	struct SpringBoneParm
 	{
@@ -45,17 +45,17 @@ private:
 		_int  parentIdx = -1;
 		_int  childIdx = -1;
 		// 레스트 로컬 기준들
-		_vector restLocalPos = XMVectorZero();     // 로컬 위치
-		_vector restDirLocal = XMVectorZero();     // 로컬 방향
-		_vector restUpLocal = XMVectorZero();      // 로컬 업 벡터
-		_vector restRotQ = XMVectorZero();         // child 로컬의 레스트 회전(quat)
+		_float3 restLocalPos = { 0.f,0.f,0.f };     // 로컬 위치
+		_float3 restDirLocal = { 0.f,0.f,0.f };     // 로컬 방향
+		_float3 restUpLocal = { 0.f,0.f,0.f };      // 로컬 업 벡터
+		_float4 restRotQ = { 0.f,0.f,0.f,1.f };         // child 로컬의 레스트 회전(quat)
 		_float  length{};         // 부모랑의 길이
 		// 부모 로컬에서 끝점 위치를 적분
-		_vector curTipLocal = XMVectorZero();
-		_vector prevTipLocal = XMVectorZero();
+		_float3 curTipLocal = { 0.f,0.f,0.f };
+		_float3 prevTipLocal = { 0.f,0.f,0.f };
 		// 부모의 직전 로컬 회전
-		_matrix parentPrevRotC = XMMatrixIdentity();
-		_vector prevParentPos = XMVectorZero();  // 부모의 이전 프레임 위치
+		_float4x4  parentPrevRotC = {};
+		_float3 prevParentPos = { 0.f,0.f,0.f };    // 부모의 이전 프레임 위치
 		// 파라미터 (강성, 최대 각도, 중력)
 		_int   depth = 0;
 		_int   chainLen = 0;
@@ -84,7 +84,6 @@ private:
 	void Build_SpringBoneHierarchy();
 	void SetupSpringBoneParameters();
 	_bool IsCorrectBoneName(CBone* pBone, const vector<string>& vecSpringBoneNames);
-	void Pendulum(SpringBone& sb, _float fTimeDelta);
 	SpringBonePart SetBonePart(const string& boneName);
 	string ReturnPartString(SpringBonePart part);
 

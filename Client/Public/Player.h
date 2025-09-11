@@ -276,6 +276,7 @@ public:/*[½ºÅÈ °ü·Ã]*/
 	_float Get_Ergo() { return m_fErgo; }
 	void Set_Ergo(_float fErgo);
 	_int Get_Player_Level() { return m_iLevel; }
+	void Set_Player_Level(_int iLevel) { m_iLevel = iLevel; }
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
 

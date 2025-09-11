@@ -61,6 +61,8 @@ HRESULT CMonsterToolObject::Initialize(void* pArg)
 
 	m_eSpawnType = pDesc->eSpawnType;
 	
+	m_pAnimator->SetTrigger("Sit");
+
 	return S_OK;
 }
 

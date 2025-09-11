@@ -78,10 +78,11 @@ private:
 
 	HRESULT Ready_Script();
 
+	HRESULT Ready_EffectSet();
 
 
 private:
-
+	class CStargazerEffect* m_pEffectSet = { nullptr };
 
 private:
 	STARGAZER_STATE m_eState = { STARGAZER_STATE::END };

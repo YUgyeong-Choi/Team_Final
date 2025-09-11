@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 2.799999952316284,
@@ -60,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 600.3015747070313,
+            "LifeTime": 686.302001953125,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.699999988079071
@@ -115,6 +116,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -129,8 +131,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         },
         {
             "Animation": false,
@@ -142,11 +146,12 @@
                 0.0
             ],
             "Color": [
-                0.9842932224273682,
-                0.43492022156715393,
+                1.0,
+                0.4397905468940735,
                 0.0,
-                0.0
+                1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 1.899999976158142,
@@ -160,7 +165,7 @@
                         0.0,
                         1.0
                     ],
-                    "Intensity": 10.0,
+                    "Intensity": 2.5,
                     "Interpolation": 2,
                     "Rotation": [
                         -0.0,
@@ -208,7 +213,7 @@
                     ]
                 }
             ],
-            "LifeTime": 416.77239990234375,
+            "LifeTime": 502.7732849121094,
             "Loop": true,
             "Name": "PlayerHit_RingFlareSprite1",
             "NumKeyFrames": 2,
@@ -229,6 +234,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -243,10 +249,11 @@
             ],
             "Color": [
                 1.0,
-                0.1568627506494522,
+                0.28272247314453125,
                 0.0,
-                0.0
+                1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 2.0999999046325684,
@@ -308,7 +315,7 @@
                     ]
                 }
             ],
-            "LifeTime": 148.35739135742188,
+            "LifeTime": 234.4356689453125,
             "Loop": true,
             "Name": "PlayerHit_CircleFlareSprite1",
             "NumKeyFrames": 2,
@@ -329,6 +336,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -343,10 +351,11 @@
             ],
             "Color": [
                 1.0,
-                1.0,
-                1.0,
+                0.1256544589996338,
+                0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 1.649999976158142,
@@ -408,7 +417,7 @@
                     ]
                 }
             ],
-            "LifeTime": 124.79459381103516,
+            "LifeTime": 210.87156677246094,
             "Loop": true,
             "Name": "PlayerHit_LensFlareSprite1",
             "NumKeyFrames": 2,
@@ -429,6 +438,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         }

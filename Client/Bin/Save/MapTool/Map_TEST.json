@@ -1,5 +1,5 @@
 {
-    "ModelCount": 8,
+    "ModelCount": 14,
     "Models": [
         {
             "Collision": false,
@@ -89,7 +89,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
-                    "IsCullNone": true,
+                    "CullNone": true,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -388,6 +388,108 @@
         {
             "Collision": false,
             "ModelName": "SM_Factory_BasePipe_07",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_02",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_02_1of2",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            4.079593658447266,
+                            -1.1794612407684326,
+                            -1.5241957902908325,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_02_2of2",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            4.079593658447266,
+                            -1.1794612407684326,
+                            -3.043229103088379,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Vase_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Vase_02",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_OldTown_WoodBoard_03",
             "ObjectCount": 0,
             "Objects": []
         },

@@ -13,6 +13,7 @@
         0.0,
         1.0
     ],
+    "DistortionStrength": 10.0,
     "Duration": 20,
     "EffectType": 3,
     "EmissiveIntensity": 0.0,
@@ -26,7 +27,7 @@
                 0.0,
                 1.0
             ],
-            "Intensity": 1.0,
+            "Intensity": -2.200000047683716,
             "Interpolation": 0,
             "Rotation": [
                 0.0,
@@ -58,7 +59,7 @@
     "StartTrack": 0,
     "Subdivisions": 4,
     "TextureTags": [
-        "T_Bullet_01_C_KMH",
+        "T_WaterDrop_02_C_GDH",
         "T_BloodSlash_01_C_KMH",
         "",
         ""
@@ -71,6 +72,7 @@
     ],
     "Threshold": 0.0,
     "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
     "TileX": 2,
     "TileY": 1
 }

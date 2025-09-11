@@ -49,6 +49,8 @@ private:
 
 	_float m_fScaleRatio = { 1.f };
 
+	_float m_fEffectTime = {};
+
 
 public:
 	static CHP_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

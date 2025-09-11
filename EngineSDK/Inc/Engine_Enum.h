@@ -56,6 +56,7 @@ namespace Engine
 		NPC,
 		ENVIRONMENT_CONVEX,
 		ENVIRONMENT_TRI,
+		BREAKABLE_OBJECT, //부술 수 있는 오브젝트(푸오코 기둥 등 부서지는 오브젝트)
 		A,
 		B,
 		C,
@@ -66,6 +67,6 @@ namespace Engine
 
 	enum class ParamType { Bool, Trigger, Float, Int};
 
-	enum PARTICLETYPE { PTYPE_SPREAD, PTYPE_DIRECTIONAL, PTYPE_ALLRANDOM, PTYPE_END };
+	enum PARTICLETYPE { PTYPE_SPREAD, PTYPE_DIRECTIONAL, PTYPE_ALLRANDOM, PTYPE_SHRINK, PTYPE_END };
 
 }

@@ -68,6 +68,8 @@ void CUI_SelectLocation::Priority_Update(_float fTimeDelta)
 
 		pStar->Script_Activate();
 
+
+
 		return;
 
 	}
