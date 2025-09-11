@@ -445,7 +445,10 @@ void CButtler_Train::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
+		if (m_strStateName.find("Fatal") != m_strStateName.npos ||
+			m_strStateName.find("Down") != m_strStateName.npos ||
+			m_strStateName.find("KnockBack") != m_strStateName.npos ||
+			m_strStateName.find("Hit") != m_strStateName.npos)
 		{
 			m_isLookAt = false;
 			m_isCollisionPlayer = false;
@@ -570,7 +573,7 @@ void CButtler_Train::Start_Fatal_Reaction()
 
 void CButtler_Train::Reset()
 {
-	m_fHp = 300;
+	m_fHp = 450;
 
 	if (nullptr != m_pHPBar)
 	{
@@ -602,6 +605,13 @@ void CButtler_Train::Reset()
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
 	m_isFatal = false;
+
+	if (m_eSpawnType == SPAWN_TYPE::PATROL)
+	{
+		m_pAnimator->SetTrigger("SpawnPatrol");
+		m_isPatrol = true;
+
+	}
 }
 
 HRESULT CButtler_Train::Ready_Weapon()

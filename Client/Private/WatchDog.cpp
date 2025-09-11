@@ -49,7 +49,9 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.f, 0.f, 0.f };
 
-	m_fDamage = 10.f;
+	m_fDamage = 50.f;
+
+	m_CanFatal = false;
 
 	return S_OK;
 }

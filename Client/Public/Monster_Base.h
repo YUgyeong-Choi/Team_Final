@@ -60,6 +60,10 @@ public: /* [ Setup ÇÔ¼ö ] */
 	_float Get_CurrentHp() { return m_fHp;  }
 
 	_bool Get_IsGroggyLoop() { return m_isGroogyLoop; }
+
+	_bool Get_CanFatal() { return m_CanFatal; }
+
+	string Get_StateName() { return m_strStateName; }
 	
 	void	RootMotionActive(_float fTimeDelta);
 
@@ -130,6 +134,8 @@ protected:
 	_bool			m_isFatal = {};
 
 	_bool			m_isGroogyLoop = {};
+
+	_bool			m_CanFatal = { true };
 
 
 	_vector m_vKnockBackDir = {};

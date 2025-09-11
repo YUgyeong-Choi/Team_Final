@@ -351,6 +351,8 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 		
+		if (m_isFatal)
+			return;
 		
 
 		if (!m_isCanGroggy)
@@ -419,7 +421,10 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
+		if(m_strStateName.find("Fatal") != m_strStateName.npos ||
+			m_strStateName.find("Down") != m_strStateName.npos ||
+			m_strStateName.find("KnockBack") != m_strStateName.npos ||
+			m_strStateName.find("Hit") != m_strStateName.npos)
 		{
 			m_isLookAt = false;
 			m_isCollisionPlayer = false;
@@ -521,7 +526,7 @@ void CButtler_Basic::Start_Fatal_Reaction()
 
 void CButtler_Basic::Reset()
 {
-	m_fHp = 300;
+	m_fHp = 450;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
@@ -545,6 +550,13 @@ void CButtler_Basic::Reset()
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
 	m_isFatal = false;
+
+	if (m_eSpawnType != SPAWN_TYPE::IDLE)
+	{
+		m_pAnimator->SetTrigger("ChangeSpawnPattern");
+		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
+
+	}
 }
 
 HRESULT CButtler_Basic::Ready_Weapon()

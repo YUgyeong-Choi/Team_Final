@@ -154,6 +154,8 @@ public: /* [ 옵저버 관련 ] */
 	void Callback_Stamina();
 	void Callback_Mana();
 
+
+
 	void Add_Mana(_float fMana);
 
 public: /* [ 상호작용 관련 ] */

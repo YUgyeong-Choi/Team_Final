@@ -41,7 +41,7 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 	m_fDetectDist = 10.f;
 	m_fGroggyThreshold = 100;
 
-	m_fHp = 300;
+	m_fHp = 450;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
