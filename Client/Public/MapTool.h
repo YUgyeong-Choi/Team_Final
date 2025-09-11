@@ -4,6 +4,8 @@
 
 #include "MapToolObject.h"
 
+//#define FRAGMENT_MIN //이것이 켜져있으면 부서지는 오브젝트의 조각 수를 최소로 줄인다.
+
 NS_BEGIN(Client)
 
 class CMapTool final : public CYWTool

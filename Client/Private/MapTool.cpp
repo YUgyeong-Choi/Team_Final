@@ -525,8 +525,40 @@ HRESULT CMapTool::Save(const _char* Map)
 					BreakableJsonMap[pMapToolObject->m_ModelName] = json::object();
 					BreakableJsonMap[pMapToolObject->m_ModelName]["Instances"] = json::array();
 
-					//여기서 파일 탐색으로, 프래그먼트 수를 결정하자. (min, max)에 따라 달라지도록 추후에
-					BreakableJsonMap[pMapToolObject->m_ModelName]["FragmentCount"] = 0; //임시
+					// 파일 탐색으로 프래그먼트 수 결정
+					_uint minDenom = UINT_MAX;
+					_uint maxDenom = 0;
+
+					regex pattern(pMapToolObject->m_ModelName + "_([0-9]+)of([0-9]+)\\.bin");
+
+					for (auto& entry : filesystem::directory_iterator(PATH_NONANIM))
+					{
+						if (!entry.is_regular_file())
+							continue;
+
+						string filename = entry.path().filename().string();
+						smatch match;
+
+						if (regex_match(filename, match, pattern))
+						{
+							_uint denom = stoi(match[2]);
+							minDenom = min(minDenom, denom);
+							maxDenom = max(maxDenom, denom);
+						}
+					}
+
+					_uint finalDenom;
+
+#ifdef FRAGMENT_MIN
+					finalDenom = minDenom;
+#endif // FRAGMENT_MIN
+
+
+#ifndef FRAGMENT_MIN
+					finalDenom = maxDenom;
+#endif // !FRAGMENT_MIN
+
+					BreakableJsonMap[pMapToolObject->m_ModelName]["FragmentCount"] = finalDenom;
 				}
 
 				// 인스턴스 추가
@@ -537,6 +569,7 @@ HRESULT CMapTool::Save(const _char* Map)
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
+
 
 		}
 

@@ -1626,6 +1626,10 @@ HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
 		return E_FAIL;
 
+	//부서질 수 있는 메쉬 조각들, 또는 본메쉬 로드
+	if (FAILED(Loading_Breakable(iLevelIndex, Map)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -1838,6 +1842,73 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 }
+
+#include <regex>
+
+HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map, _bool Maxfragment)
+{
+	_matrix PreTransformMatrix = XMMatrixScaling(
+		PRE_TRANSFORMMATRIX_SCALE,
+		PRE_TRANSFORMMATRIX_SCALE,
+		PRE_TRANSFORMMATRIX_SCALE);
+
+	// JSON 파일 경로
+	wstring wsPath = L"../Bin/Save/MapTool/Breakable_" + StringToWString(Map) + L".json";
+
+	ifstream ifs(wsPath);
+	if (!ifs.is_open())
+		return E_FAIL;
+
+	json j;
+	ifs >> j;
+
+	// 최상위에 "Breakables" 체크
+	if (!j.contains("Breakables") || !j["Breakables"].is_object())
+		return S_OK;
+
+	for (auto& [ModelName, ModelData] : j["Breakables"].items())
+	{
+		// 푸오코 기둥은 무시
+		if (ModelName == "SM_Factory_BasePipe_07")
+			continue;
+
+		// JSON에 저장된 FragmentCount 사용
+		if (!ModelData.contains("FragmentCount"))
+			continue;
+
+		_uint finalDenom = ModelData["FragmentCount"].get<_uint>();
+
+		// --- 1 ~ finalDenom 범위의 조각들을 등록 ---
+		for (_uint num = 1; num <= finalDenom; ++num)
+		{
+			wstring wsPrototypeTag =
+				L"Prototype_Component_Model_" + StringToWString(ModelName) +
+				L"_" + to_wstring(num) + L"of" + to_wstring(finalDenom);
+
+			if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTag) == nullptr)
+			{
+				filesystem::path modelPath = filesystem::path(PATH_NONANIM) /
+					(ModelName + "_" + to_string(num) + "of" + to_string(finalDenom) + ".bin");
+
+				if (filesystem::exists(modelPath))
+				{
+					if (FAILED(m_pGameInstance->Add_Prototype(
+						iLevelIndex, wsPrototypeTag,
+						CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,
+							modelPath.string().c_str(),
+							PreTransformMatrix))))
+					{
+						return S_OK; // 실패해도 무시
+					}
+				}
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
 	//어떤 맵을 소환 시킬 것인지?
@@ -1851,7 +1922,11 @@ HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 	//어떤 데칼을 소환 시킬 것인지?
 	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
 		return E_FAIL;
-
+	 
+	//부서질 수 있는 오브젝트 소환
+	if (FAILED(Ready_Breakable(iLevelIndex, Map)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -2101,6 +2176,105 @@ HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 
+}
+HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
+{
+	// JSON 경로
+	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
+	ifstream inFile(FilePath);
+	if (!inFile.is_open())
+		return S_OK;
+
+	json Json;
+	inFile >> Json;
+	inFile.close();
+
+	// "Breakables" 오브젝트 접근
+	if (!Json.contains("Breakables") || !Json["Breakables"].is_object())
+		return E_FAIL;
+
+	auto& Breakables = Json["Breakables"];
+
+	// 모델명(key) - 데이터(value) 순회
+	for (auto& [ModelNameStr, ModelData] : Breakables.items())
+	{
+		wstring ModelName = StringToWString(ModelNameStr);
+
+		// FragmentCount 읽기
+		_int FragmentCount = 0;
+		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
+			FragmentCount = ModelData["FragmentCount"];
+
+		// Instances 배열 확인
+		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
+			continue;
+
+		const json& Instances = ModelData["Instances"];
+
+		for (const auto& Obj : Instances)
+		{
+			if (!Obj.contains("WorldMatrix"))
+				continue;
+
+			// 월드 행렬 읽기
+			const json& WorldMatrixJson = Obj["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			// 푸오코 기둥 예외 처리
+			if (ModelNameStr == "SM_Factory_BasePipe_07")
+			{
+				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+				Desc.bFireEaterBossPipe = true;
+				Desc.iLevelID = iLevelIndex;
+				Desc.iPartModelCount = 3;
+				Desc.ModelName = TEXT("Main");
+				Desc.vOffsets = {
+					_float3(4.09f, -8.75f, 1.21f),
+					_float3(4.09f, -5.82f, 1.21f),
+					_float3(4.09f, -2.89f, 1.21f)
+				};
+				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
+				Desc.WorldMatrix = WorldMatrix;
+				Desc.wsNavName = StringToWString(Map);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(
+					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+					return E_FAIL;
+			}
+			else
+			{
+				// 일반적인 부서짐
+				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+				Desc.bFireEaterBossPipe = false;
+				Desc.iLevelID = iLevelIndex;
+				Desc.iPartModelCount = FragmentCount;
+				Desc.ModelName = ModelName;
+
+				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
+				{
+					wstring PartName = ModelName + L'_' +
+						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
+
+					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
+					Desc.PartModelNames.push_back(PartName);
+				}
+
+				Desc.WorldMatrix = WorldMatrix;
+				Desc.wsNavName = StringToWString(Map);
+
+				if (FAILED(m_pGameInstance->Add_GameObject(
+					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+					return E_FAIL;
+			}
+		}
+	}
+
+	return S_OK;
 }
 #pragma endregion
 

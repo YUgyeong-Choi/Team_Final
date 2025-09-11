@@ -28,13 +28,6 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
 	m_bFireEaterBossPipe = pDesc->bFireEaterBossPipe;
-
-	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
-	if (m_bFireEaterBossPipe)
-	{
-		if (FAILED(Find_Player()))
-			return E_FAIL;
-	}
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -74,6 +67,12 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
+	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
+	if (m_bFireEaterBossPipe)
+	{
+		Find_Player();
+	}
+
 	//if (m_pGameInstance->Key_Down(DIK_L))
 	//{
 	//	Reset();
@@ -333,6 +332,9 @@ HRESULT CBreakableMesh::Render_PartModels()
 
 HRESULT CBreakableMesh::Find_Player()
 {
+	if (m_pPlayer != nullptr)
+		return S_OK;
+
 	CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
 
 	if (nullptr != pObj)
@@ -725,7 +727,7 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 		{
 			//영향을 줄 네비게이션
 			wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
-			if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
+			if (FAILED(__super::Add_Component(pDesc->iLevelID, wsPrototypeTag.c_str(),
 				TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
 				return E_FAIL;
 
