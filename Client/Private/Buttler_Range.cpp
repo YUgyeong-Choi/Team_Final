@@ -402,6 +402,7 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 	{
 		m_fHitSpeed = 1.f;
 		m_fAwaySpeed = 1.f;
+		m_fKnockBackSpeed = 5.f;
 		RootMotionActive(fTimeDelta);
 
 		return;
@@ -423,14 +424,14 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 	}
 	else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
-		m_fAwaySpeed -= fTimeDelta * 0.5f;
+		m_fKnockBackSpeed -= fTimeDelta * 10.f;
 
-		if (m_fAwaySpeed <= 0.f)
-			m_fAwaySpeed = 0.f;
+		if (m_fKnockBackSpeed <= 0.f)
+			m_fKnockBackSpeed = 0.f;
 
 		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{

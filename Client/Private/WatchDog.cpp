@@ -393,14 +393,14 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 	}
 	else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
-		m_fAwaySpeed -= fTimeDelta * 3.f;
+		m_fKnockBackSpeed -= fTimeDelta * 10.f;
 
-		if (m_fAwaySpeed <= 0.f)
-			m_fAwaySpeed = 0.f;
+		if (m_fKnockBackSpeed <= 0.f)
+			m_fKnockBackSpeed = 0.f;
 
-		//RootMotionActive(fTimeDelta);
+		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Jump") != m_strStateName.npos)
 	{
@@ -410,6 +410,7 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
+		m_fKnockBackSpeed = 5.f;
 		RootMotionActive(fTimeDelta);
 	}
 

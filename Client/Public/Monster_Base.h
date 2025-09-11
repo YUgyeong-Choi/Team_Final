@@ -139,6 +139,7 @@ protected:
 
 
 	_vector m_vKnockBackDir = {};
+	_float m_fKnockBackSpeed = {};
 
 	_bool m_isPatrol = {};
 	_float m_fPatrolTime = {};
