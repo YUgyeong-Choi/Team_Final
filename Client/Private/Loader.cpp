@@ -1154,6 +1154,32 @@ HRESULT CLoader::Loading_For_DH()
 //#pragma endregion
 
 #pragma region YW
+	//부술수있는 메쉬 테스트용 모델
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
+
+	//파트2
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Part2"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//파트1
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Part1"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
+		return E_FAIL;
+	//SM_Interior_Table_07_3of8
+	//본 모델
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Main"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	//부술수 있는 메쉬(푸오코 기둥 등...)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_BreakableMesh"),
+		CBreakableMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 //스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
