@@ -339,6 +339,9 @@ json CAnimation::Serialize()
 	j["Duration"] = m_fDuration;
 	j["TickPerSecond"] = m_fTickPerSecond;
 	j["IsLoop"] = m_isLoop;
+	sort(m_events.begin(), m_events.end(), [](const AnimationEvent& a, const AnimationEvent& b) {
+		return a.fTime < b.fTime;
+		});
 	for (const auto& event : m_events)
 	{
 		j["Events"].push_back({
@@ -393,5 +396,7 @@ void CAnimation::Deserialize(const json& j)
 		m_bReverse = j["Reverse"].get<_bool>();
 	}
 
-//	m_fTickPerSecond = max(m_fTickPerSecond, 55.f); // 최소값 설정
+	sort(m_events.begin(), m_events.end(), [](const AnimationEvent& a, const AnimationEvent& b) {
+		return a.fTime < b.fTime;
+		});
 }
