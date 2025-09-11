@@ -87,9 +87,7 @@ void CEliteUnit::Priority_Update(_float fTimeDelta)
 #ifdef _DEBUG
     if (KEY_DOWN(DIK_TAB))
     {
-        cout << "현재 플레이어와의 거리 : " << Get_DistanceToPlayer() << endl;
         cout << "현재 애니메이션 상태 : " << m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName << endl;
-        cout << "현재 이동 방향 " << m_pAnimator->GetInt("MoveDir") << endl;
     }
 #endif
 }
@@ -293,9 +291,6 @@ void CEliteUnit::UpdateState(_float fTimeDelta)
         {
             m_bGroggyActive = false; 
             m_fGroggyGauge = 0.f;
-#ifdef _DEBUG
-			cout << "그로기 가능 시간 종료" << endl;
-#endif
         }
     }
     UpdateAttackPattern(fDistance, fTimeDelta);// 공격 패턴 업데이트
@@ -813,13 +808,13 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             {
                 if (m_eCurrentState == EEliteState::FATAL || m_eCurrentState == EEliteState::PARALYZATION)
                     break;
+                SwitchFury(false, 1.f);
                 SwitchEmissive(false, 1.f);
-                m_pGameInstance->Set_GameTimeScale(0.85f);
-                m_pAnimator->SetTrigger("Groggy");
-				m_eCurrentState = EEliteState::GROGGY;
                 m_bGroggyActive = false;
                 m_fGroggyGauge = 0.f;
-                SwitchFury(false, 1.f);
+                m_pAnimator->SetPlayRate(1.f);
+                m_pAnimator->SetTrigger("Groggy");
+				m_eCurrentState = EEliteState::GROGGY;
             }
             break;
         case Client::EPlayerState::GARD:

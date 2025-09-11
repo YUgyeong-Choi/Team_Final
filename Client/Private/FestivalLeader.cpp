@@ -83,7 +83,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
 	// 2,3번은 바스켓
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 1400.f;
 	m_fHp = m_fMaxHp;
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
@@ -94,9 +94,9 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fMaxRootMotionSpeed = 18.f;
 	m_fChangeMoveDirCooldown = 2.5f;
 
-	m_fGroggyScale_Weak = 0.1f;
-	m_fGroggyScale_Strong = 0.15f;
-	m_fGroggyScale_Charge = 0.2f;
+	m_fGroggyScale_Weak = 0.07f;
+	m_fGroggyScale_Strong = 0.1f;
+	m_fGroggyScale_Charge = 0.15f;
 
 	return S_OK;
 }
@@ -765,35 +765,36 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("CollidersOff", [this]() {
 		EnableColliders(false);
-
+		m_bPlayerCollided = false;
 		});
 	m_pAnimator->RegisterEventListener("CollidersOn", [this]() {
 		EnableColliders(true);
-		m_bPlayerCollided = false;
+	
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderHammerOn", [this]()
-		{		m_bPlayerCollided = false;
+		{	
 			m_Colliders[EBossCollider::Hammer]->Set_SimulationFilterData(m_Colliders[EBossCollider::Hammer]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderHammerOff", [this]()
 		{
 			m_Colliders[EBossCollider::Hammer]->Init_SimulationFilterData();
+			m_bPlayerCollided = false;
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderBaskettOn", [this]()
-		{		m_bPlayerCollided = false;
+		{	
 			m_Colliders[EBossCollider::Basket]->Set_SimulationFilterData(m_Colliders[EBossCollider::Basket]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderBasketOff", [this]()
 		{	
-
 			m_Colliders[EBossCollider::Basket]->Init_SimulationFilterData();
+			m_bPlayerCollided = false;
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderRightHandOn", [this]()
 		{
-			m_bPlayerCollided = false;
+			
 			m_Colliders[EBossCollider::RightHand]->Set_SimulationFilterData(m_Colliders[EBossCollider::RightHand]->Get_FilterData());
 			m_Colliders[EBossCollider::RightForearm]->Set_SimulationFilterData(m_Colliders[EBossCollider::RightForearm]->Get_FilterData());
 		});
@@ -801,10 +802,11 @@ void CFestivalLeader::Register_Events()
 		{
 			m_Colliders[EBossCollider::RightHand]->Init_SimulationFilterData();
 			m_Colliders[EBossCollider::RightForearm]->Init_SimulationFilterData();
+			m_bPlayerCollided = false;
 
 		});
 	m_pAnimator->RegisterEventListener("ColliderLeftHandOn", [this]()
-		{	m_bPlayerCollided = false;
+		{
 			m_Colliders[EBossCollider::LeftHand]->Set_SimulationFilterData(m_Colliders[EBossCollider::LeftHand]->Get_FilterData());
 			m_Colliders[EBossCollider::LeftForearm]->Set_SimulationFilterData(m_Colliders[EBossCollider::LeftForearm]->Get_FilterData());
 		});
@@ -812,7 +814,7 @@ void CFestivalLeader::Register_Events()
 		{
 			m_Colliders[EBossCollider::LeftHand]->Init_SimulationFilterData();
 			m_Colliders[EBossCollider::LeftForearm]->Init_SimulationFilterData();
-
+			m_bPlayerCollided = false;
 		});
 
 
@@ -824,22 +826,6 @@ void CFestivalLeader::Register_Events()
 				{
 					pController->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 				}
-			}
-		});
-
-	m_pAnimator->RegisterEventListener("BeginStrikeCollisionFlag", [this]()
-		{	m_bPlayerCollided = false;
-			if (m_pPhysXActorCom)
-			{
-				m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
-			}
-		});
-
-	m_pAnimator->RegisterEventListener("EndStrikeCollisionFlag", [this]()
-		{
-			if (m_pPhysXActorCom)
-			{
-				m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER);
 			}
 		});
 
@@ -947,7 +933,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 		return;
 	if (m_bStartPhase2 == false)
 	{
-
+		m_bGroggyActive = false;
+		m_fGroggyGauge = 0.f;
 		m_pAnimator->SetTrigger("Phase2Start");
 		m_pAnimator->SetBool("Phase2Combo", true);
 		m_pAnimator->SetPlayRate(1.f);

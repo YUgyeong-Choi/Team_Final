@@ -1859,6 +1859,8 @@ _bool CFuoco::CheckConditionFlameField()
 		{
 			m_pAnimator->SetPlayRate(1.f);
 			m_bWaitPhase2Rotate = true;
+			m_bGroggyActive = false;
+			m_fGroggyGauge = 0.f;
 			m_bStartPhase2 = false;
 			m_bIsPhase2 = true;
 			m_pSoundCom->Play("Dialog_CH03_PhaseChange_01_text_3");

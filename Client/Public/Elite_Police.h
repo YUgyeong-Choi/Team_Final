@@ -133,7 +133,7 @@ private:
     };
 
     vector<EPoliceAttackPattern> m_vecMiddleAttackPatterns = {
-			COMBO1, COMBO2, COMBO3,COMBO5
+		COMBO1, COMBO2, COMBO3,COMBO5
     };
 
     const _float ATTACK_DISTANCE_CLOSE = 0.f;
