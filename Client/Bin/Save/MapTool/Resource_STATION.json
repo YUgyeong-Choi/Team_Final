@@ -722,6 +722,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_OldTown_WoodBoard_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_WoodBoard_03.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Sign_AD_01",
         "NoInstancing": false,
         "ObjectCount": 1,

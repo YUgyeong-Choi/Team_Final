@@ -77,6 +77,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Vase_02.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_OldTown_WoodBoard_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_WoodBoard_03.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Station_TicketOffice_01",
         "NoInstancing": false,

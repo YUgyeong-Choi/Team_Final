@@ -99028,7 +99028,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.30000001192092896,
@@ -100024,7 +100024,7 @@
             "Objects": [
                 {
                     "ColliderType": 2,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.20000000298023224,

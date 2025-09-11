@@ -1,5 +1,5 @@
 {
-    "ModelCount": 13,
+    "ModelCount": 14,
     "Models": [
         {
             "Collision": false,
@@ -484,6 +484,12 @@
         {
             "Collision": false,
             "ModelName": "SM_Interior_Vase_02",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_OldTown_WoodBoard_03",
             "ObjectCount": 0,
             "Objects": []
         },

@@ -563,7 +563,7 @@ HRESULT CBreakableMesh::Ready_Collider()
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BREAKABLE_OBJECT);
 
 	//리셋으로 호출되버린다
 	//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
@@ -657,7 +657,7 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
 		pActorCom->Set_Owner(this);
-		pActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
+		pActorCom->Set_ColliderType(COLLIDERTYPE::BREAKABLE_OBJECT);
 	}
 
 	return S_OK;

@@ -54,13 +54,17 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 
-#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP //여러 개 켜도 됨
+
+
 //#define TEST_STATION_MAP //이거 키면 테스트 맵에 스테이션 맵 생성됨
 //#define TEST_HOTEL_MAP //이거 키면 테스트 맵에  호텔 맵 생성됨
 //#define TEST_OUTER_MAP //이거 키면 테스트 맵에 외부 맵 생성됨
-#define TEST_FIRE_EATER_MAP //이거 키면 테스트 맵에 푸오코 맵 생성됨
+//#define TEST_FIRE_EATER_MAP //이거 키면 테스트 맵에 푸오코 맵 생성됨
+
+
 #endif _TESTMAP
 
 #pragma region 한영웅
