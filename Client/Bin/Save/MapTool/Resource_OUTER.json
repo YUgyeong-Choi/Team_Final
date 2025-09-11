@@ -8,13 +8,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Bridge_Banner_01",
-        "NoInstancing": false,
-        "ObjectCount": 2,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Banner_01.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Bridge_Module_18",
         "NoInstancing": false,
         "ObjectCount": 9,
@@ -33,76 +26,6 @@
         "NoInstancing": false,
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Module_25.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_StoneModule_02",
-        "NoInstancing": false,
-        "ObjectCount": 25,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_StoneModule_02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_11",
-        "NoInstancing": false,
-        "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_11.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_12",
-        "NoInstancing": false,
-        "ObjectCount": 8,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_12.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_14",
-        "NoInstancing": false,
-        "ObjectCount": 2,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_14.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_15",
-        "NoInstancing": false,
-        "ObjectCount": 21,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_15.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_16",
-        "NoInstancing": false,
-        "ObjectCount": 2,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_16.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_17",
-        "NoInstancing": false,
-        "ObjectCount": 2,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_17.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_18",
-        "NoInstancing": false,
-        "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_18.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_22",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_22.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Bridge_Trus_23",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Bridge_Trus_23.bin"
     },
     {
         "Collision": false,
@@ -199,7 +122,7 @@
         "Collision": true,
         "ModelName": "SM_BuildingA_Fence_08",
         "NoInstancing": false,
-        "ObjectCount": 70,
+        "ObjectCount": 111,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Fence_08.bin"
     },
     {
@@ -569,14 +492,14 @@
     {
         "Collision": false,
         "ModelName": "SM_BuildingA_WindowGlass_03",
-        "NoInstancing": true,
+        "NoInstancing": false,
         "ObjectCount": 65,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_WindowGlass_03.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_BuildingA_WindowGlass_06",
-        "NoInstancing": true,
+        "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_WindowGlass_06.bin"
     },
@@ -843,7 +766,7 @@
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
@@ -1032,7 +955,7 @@
         "Collision": false,
         "ModelName": "SM_Debris_04A",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Debris_04A.bin"
     },
     {
@@ -1053,7 +976,7 @@
         "Collision": false,
         "ModelName": "SM_Debris_06B",
         "NoInstancing": false,
-        "ObjectCount": 6,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Debris_06B.bin"
     },
     {
@@ -1137,7 +1060,7 @@
         "Collision": false,
         "ModelName": "SM_Exterior_TrashPaper_02",
         "NoInstancing": false,
-        "ObjectCount": 33,
+        "ObjectCount": 30,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_TrashPaper_02.bin"
     },
     {
@@ -1188,6 +1111,20 @@
         "NoInstancing": false,
         "ObjectCount": 21,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_transportcart_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_BossWall_01",
+        "NoInstancing": false,
+        "ObjectCount": 25,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BossWall_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Factory_BossWall_02",
+        "NoInstancing": false,
+        "ObjectCount": 8,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BossWall_02.bin"
     },
     {
         "Collision": false,
@@ -1375,7 +1312,7 @@
         "Collision": true,
         "ModelName": "SM_Interior_Bag_01",
         "NoInstancing": false,
-        "ObjectCount": 101,
+        "ObjectCount": 100,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Bag_01.bin"
     },
     {
@@ -1436,13 +1373,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Interior_Stall_01",
-        "NoInstancing": false,
-        "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Stall_01.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Interior_Table_01",
         "NoInstancing": false,
         "ObjectCount": 3,
@@ -1478,6 +1408,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_LightProp_Light_03",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_Light_03.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_LightProp_SpotLight_01",
         "NoInstancing": false,
         "ObjectCount": 5,
@@ -1494,7 +1431,7 @@
         "Collision": true,
         "ModelName": "SM_LightProp_StreetLamp_04",
         "NoInstancing": false,
-        "ObjectCount": 16,
+        "ObjectCount": 15,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_04.bin"
     },
     {
@@ -1506,13 +1443,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_LightProp_StreetLamp_07",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLamp_07.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_LightProp_StreetLamp_08",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -1521,8 +1451,8 @@
     {
         "Collision": false,
         "ModelName": "SM_LightProp_StreetLight_03",
-        "NoInstancing": true,
-        "ObjectCount": 54,
+        "NoInstancing": false,
+        "ObjectCount": 52,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLight_03.bin"
     },
     {
@@ -1634,7 +1564,7 @@
         "Collision": false,
         "ModelName": "SM_Outstructure_IronBridge_07",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Outstructure_IronBridge_07.bin"
     },
     {
@@ -1648,7 +1578,7 @@
         "Collision": false,
         "ModelName": "SM_Outstructure_IronBridge_10",
         "NoInstancing": false,
-        "ObjectCount": 4,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Outstructure_IronBridge_10.bin"
     },
     {
@@ -1716,6 +1646,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Sign_Flag_02A",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Flag_02A.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Sign_LargePoster_01",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -1739,14 +1676,14 @@
         "Collision": false,
         "ModelName": "SM_Sign_Poster_03",
         "NoInstancing": false,
-        "ObjectCount": 19,
+        "ObjectCount": 14,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_03.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Sign_Poster_04",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Poster_04.bin"
     },
     {
@@ -1870,20 +1807,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Sign_SignBoard_05",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_SignBoard_05.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Sign_SignBoard_07",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_SignBoard_07.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Sign_SignBoard_10",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -1891,30 +1814,9 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Sign_SignBoard_23",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_SignBoard_23.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Sign_SignBoard_27",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_SignBoard_27.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_Sign_Sign_02",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Sign_02.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "SM_Sign_Sign_03",
         "NoInstancing": false,
-        "ObjectCount": 7,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Sign_03.bin"
     },
     {
@@ -2236,7 +2138,7 @@
         "Collision": true,
         "ModelName": "SM_Vehicle_WagonBroken_01",
         "NoInstancing": false,
-        "ObjectCount": 13,
+        "ObjectCount": 12,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_WagonBroken_01.bin"
     },
     {
@@ -2292,7 +2194,7 @@
         "Collision": true,
         "ModelName": "SM_Wall_InStairPoll02",
         "NoInstancing": false,
-        "ObjectCount": 34,
+        "ObjectCount": 35,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_InStairPoll02.bin"
     },
     {
@@ -2395,13 +2297,6 @@
     },
     {
         "Collision": false,
-        "ModelName": "SM_Wall_WoodBlock01",
-        "NoInstancing": false,
-        "ObjectCount": 4,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_WoodBlock01.bin"
-    },
-    {
-        "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -2460,7 +2355,7 @@
         "Collision": true,
         "ModelName": "TreeA",
         "NoInstancing": false,
-        "ObjectCount": 32,
+        "ObjectCount": 30,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/TreeA.bin"
     }
 ]

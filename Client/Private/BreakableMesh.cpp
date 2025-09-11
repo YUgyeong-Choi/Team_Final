@@ -248,10 +248,6 @@ void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 	//}
 }
 
-void CBreakableMesh::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
 void CBreakableMesh::Break()
 {
 	if (m_bIsBroken == true)
