@@ -1,0 +1,21 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_StationA_ClownPanel_01_ClownF_C04",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Break",
+            "NodeId": 2,
+            "NodePos": [
+                607.0,
+                329.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        }
+    ],
+    "ControllerName": "ClownPanel_Default",
+    "EntryState": "Break"
+}

@@ -136,7 +136,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	CSpringBoneSys::SpringInitParams springParams;
 	springParams.restDirBiasEnable = false;
-	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Lamp"}, springParams);
+	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Frill", "Lamp","BN_Robe_B_L"}, springParams);
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
@@ -2310,7 +2310,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 		//보스몬스터라면?
-		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		CBossUnit* pBoss = dynamic_cast<CBossUnit*>(pOther);
 		if (pBoss)
 		{
 			//필요한 정보를 수집한다.

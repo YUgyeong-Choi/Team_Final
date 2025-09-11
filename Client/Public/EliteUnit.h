@@ -18,7 +18,7 @@ class CEliteUnit : public CUnit
 public:
 	enum class EAttackType
 	{
-		FURY_AIRBORNE,AIRBORNE,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
+		FURY_AIRBORNE,AIRBORNE, FURY_KNOCKBACK,STRONG_KNOCKBACK,KNOCKBACK, NORMAL, FURY_STAMP, STAMP, NONE
 	};
 	enum class EEliteState {
 		IDLE, WALK, RUN, TURN, ATTACK, GROGGY, PARALYZATION, FATAL, DEAD, CUTSCENE,NONE
@@ -79,7 +79,7 @@ protected:
 
 	virtual void EnableColliders(_bool bEnable);
 	virtual _bool CanMove() const;
-	_bool  IsTargetInFront(_float fDectedAngle = 60.f) const;
+	_bool  IsTargetInFront(_float fDectedAngle = 60.f,_float fMaxDist = 6.f) const;
 
 	_bool UpdateTurnDuringAttack(_float fTimeDelta);
 	_float Get_DistanceToPlayer() const;
@@ -118,7 +118,7 @@ protected:
 	virtual _int GetRandomAttackPattern(_float fDistance) { return -1; }
 
 	// 이펙트 출력 관련
-	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) { return S_OK; }
+	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) { return S_OK; }
 	virtual HRESULT Spawn_Effect() { return S_OK; }
 	
 	virtual HRESULT Ready_Effect() { return S_OK; } // Initialize에서 Loop로 평생 돌릴 이펙트 ready
@@ -138,7 +138,6 @@ public:
 protected:
 	CNavigation* m_pNaviCom = { nullptr };
 	CUI_MonsterHP_Bar* m_pHPBar = { nullptr };
-	_vector m_vTargetPos = XMVectorZero();
 
 	EEliteState m_eCurrentState = EEliteState::NONE;
 	EEliteState m_ePrevState = EEliteState::NONE;
@@ -153,10 +152,9 @@ protected:
 	 _float  m_fGroggyScale_Charge = 0.15f; // 차지공격에 대한 게이지 증가율
 	_float   m_fGroggyGauge  = 0.f;       // 누적 값
 	_float   m_fGroggyThreshold = 1.f;   // 발동 기준
-	_float   m_fGroggyTimer = 6.f;       // 화이트 게이지 유지 시간
+	_float   m_fGroggyTimer = 8.f;       // 화이트 게이지 유지 시간
 	_float	 m_fGroggyEndTimer = 0.f;   // 화이트 게이지 유지 시간 카운트
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
 	_float   m_fSmoothThreshold = 0.05f;

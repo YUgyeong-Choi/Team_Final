@@ -5,7 +5,7 @@
 #include "UI_MonsterHP_Bar.h"
 
 NS_BEGIN(Client)
-class CFuoco final : public CBossUnit
+class  CFuoco final : public CBossUnit
 {
     // 주요 상태들의 NodeID
     enum class BossStateID : _uint
@@ -96,6 +96,18 @@ class CFuoco final : public CBossUnit
         Oil
     };
 
+    enum EBossEffect : _uint
+    {
+		EF_NONE = 0,
+		EF_SWING_ATK = 1,
+		EF_SWING_ATK_SEQ = 2,
+		EF_LASTSPIN = 3,
+		EF_FIRE_FLAME = 4,
+		EF_FIRE_BALL = 5,
+		EF_SLAM = 6,
+		EF_CUTSCENE = 7
+    };
+
 private:
 	CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CFuoco(const CFuoco& Prototype);
@@ -113,17 +125,7 @@ private:
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
-	/* Ray로 인항 충돌(HitPos& HitNormal) */
-	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
-//private:
-//    //비활성화 되어있던 인덱스 이것들을 페이탈상타에 따라 껏다 켰다.
-//    vector<_int> m_NavInactiveIndecies = {};
-
-
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
@@ -158,7 +160,7 @@ private:
 	void SpawnFlameField();
     virtual void Ready_EffectNames() override;
     virtual void ProcessingEffects(const _wstring& stEffectTag) override;
-    virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive,_bool bIsOnce = true) override;
+    virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive,_bool bIsOnce = true) override;
     virtual HRESULT Spawn_Effect();
     
     virtual HRESULT Ready_Effect();
@@ -166,26 +168,7 @@ private:
 
     virtual void Ready_SoundEvents() override;
 
-public:
-    void Create_CutsceneEffect();
 
-
-#ifdef _DEBUG
-    function<void()> PatterDebugFunc = [this]() {   
-    //    cout << "=== Attack Pattern Weights ===" << endl;
-    //for (const auto& [pattern, weight] : m_PatternWeightMap)
-    //{
-    //    cout << "Pattern " << static_cast<_int>(pattern)
-    //        << ": Weight=" << weight
-    //        << ", Consecutive=" << m_PatternCountMap[pattern]
-    //        <<"\n"
-    //        << ", Previous=" << static_cast<_int>(m_ePrevAttackPattern) <<"\n"<<
-    //            ", Current=" << static_cast<_int>(m_eCurAttackPattern)
-    //            << endl;
-    //}
-    //cout << "===============================" << endl;
-        };
-#endif
 private:
 	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
@@ -197,7 +180,6 @@ private:
 	
     // 상태 관련
     _bool m_bUsedFlameFiledOnLowHp = false;
-	_bool m_bPlayerCollided = false;
     _bool m_bPhase2TurnProcessed = false;
     _bool m_bPhase2TurnFinished = false;
 
@@ -218,7 +200,7 @@ private:
     EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
     EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
 
-	_vector m_vPhase2TurnDir = XMVectorZero();
+    _float3 m_vPhase2TurnDir = {};
 
 	vector<EBossAttackPattern> m_vecCloseAttackPatterns = {
 	  SlamCombo, Uppercut, SlamAtk, SwingAtk, 
@@ -238,8 +220,7 @@ private:
 
     vector<EBossAttackPattern> m_vecFarAttackPatterns = {
      P2_FireOil,StrikeFury,
-     P2_FireBall, P2_FireBall_B,
-     P2_FireFlame
+     P2_FireBall, P2_FireBall_B
     };
 
     // 상수
@@ -247,10 +228,10 @@ private:
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-    const _float DAMAGE_LIGHT = 5.f;   
-    const _float DAMAGE_MEDIUM = 10.f;  
-    const _float DAMAGE_HEAVY = 15.f; 
-    const _float DAMAGE_FURY = 17.f; 
+    const _float DAMAGE_LIGHT = 10.f;   
+    const _float DAMAGE_MEDIUM = 15.f;  
+    const _float DAMAGE_HEAVY = 20.f; 
+    const _float DAMAGE_FURY = 25.f; 
 
    
 public:

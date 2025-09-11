@@ -58,7 +58,6 @@ public:
 	unordered_map<_uint, string>& GetAnimationsByIndex() { return m_AnimationNameMap; }
 #endif // USE_IMGUI
 
-
 	const string& Get_ModelName() const
 	{
 		return m_ModelName;
