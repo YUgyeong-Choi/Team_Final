@@ -39,6 +39,24 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 		{
 			m_fCurrentHP = *static_cast<_float*>(data);
 
+			if (m_fCurrentHP < 0.f)
+			{
+				m_fCurrentHP = 0.f;
+				m_fRatio = 0.f;
+				m_fCurrentRatio = 0.f;
+				m_fEffectTime = 0.5f;
+				return;
+			}
+				
+
+			m_fRatio = (m_fCurrentHP) / m_fMaxHp;
+
+			if (m_fRatio > m_fCurrentRatio)
+				m_isPlus = true;
+			else
+				m_isPlus = false;
+
+			m_fEffectTime = 0.5f;
 
 		}
 		else if (L"MaxHP" == eventType)
@@ -83,14 +101,12 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 				//Set_Position(fPos.x, fPos.y);
 				
 			}
+
+			//m_fCurrentRatio = m_fMaxHp / m_fMaxHp;
 		}
 			
-		m_fRatio = (m_fCurrentHP) / m_fMaxHp;
-
-		if (m_fRatio > m_fCurrentRatio)
-			m_isPlus = true;
-		else
-			m_isPlus = false;
+		
+		
 		
 		});
 
@@ -115,15 +131,37 @@ void CHP_Bar::Update(_float fTimeDelta)
 	// 일단 하고 나중에 고쳐
 	__super::Update(fTimeDelta);
 
-	if (m_isPlus)
+	//변화가 끝났을때, 흰색 이펙트를 없애주기 위해 시간을 체크한다 
+	if (fabs(m_fCurrentRatio - m_fRatio) < 0.0005f)
 	{
-		m_fCurrentRatio = clamp(m_fCurrentRatio + fTimeDelta * 1.5f, 0.f, m_fRatio);
+		if (m_fEffectTime > 0.f)
+			m_fEffectTime -= fTimeDelta;
+
+		m_fEffectTime = max(m_fEffectTime, 0.f);
+		
 	}
 	else
 	{
-		m_fCurrentRatio = clamp(m_fCurrentRatio - fTimeDelta * 1.5f, m_fRatio, 1.f);
+
+		float t = fTimeDelta * 3.f;  // 속도 조절
+		if (t > 1.f) t = 1.f;        
+
+		// ease-out quadratic
+		t = 1.f - (1.f - t) * (1.f - t);
+
+		// 현재 비율에 남은 거리 비례 적용
+		m_fCurrentRatio += (m_fRatio - m_fCurrentRatio) * t;
+
+		// 최소값 클램프
+		if (m_fCurrentRatio < 0.f)
+			m_fCurrentRatio = 0.f;
+		
 	}
+
 	
+
+
+
 }
 
 void CHP_Bar::Late_Update(_float fTimeDelta)
@@ -163,13 +201,27 @@ HRESULT CHP_Bar::Bind_ShaderResources()
 	if (FAILED(m_pGradationCom->Bind_ShaderResource(m_pShaderCom, "g_GradationTexture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fCurrentRatio, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_CurrentBarRatio", &m_fCurrentRatio, sizeof(_float))))
 		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_BarRatio", &m_fRatio, sizeof(_float))))
+		return E_FAIL;
+
 
 	_float isHpbar = 1.f;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_IsHpBar", &isHpbar, sizeof(_float))))
 		return E_FAIL;
+
+	_float isPlayer = 1.f;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_IsPlayer", &isPlayer, sizeof(_float))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fHpEffectTime", &m_fEffectTime, sizeof(_float))))
+		return E_FAIL;
+
+	
 
 	return S_OK;
 }

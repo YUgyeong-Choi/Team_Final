@@ -77,6 +77,10 @@ HRESULT CUI_Levelup::Initialize(void* pArg)
 
 	m_pBehindButtons = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
 
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Level/Confirm.json");
+
+	m_pConfirmUI = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
+
 
 	Ready_Stat_UI();
 
@@ -111,29 +115,104 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 
 	if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 	{
-		Set_bDead();
+		if (m_isRenderCorfirmUI)
+		{
+			m_isRenderCorfirmUI = false;
+			return;
+		}
+		else
+		{
+			Set_bDead();
 
-		CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
+			CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
 
-		pStar->Script_Activate();
+			pStar->Script_Activate();
+			return;
+		}
 
-
-		return;
+		
 	}
-
-	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	else if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
-		Set_bDead();
+		// 확인 ui 띄우기
+		if (m_isRenderCorfirmUI)
+		{
+			m_pPlayer->Set_Player_Level(m_iLevel);
+			m_pPlayer->Set_Stat(m_eStat);
+			m_pPlayer->Apply_Stat();
 
-		CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
+			m_pPlayer->Set_Ergo(m_fCurrentErgo);
 
-		pStar->End_Script();
+			m_pErgoInfo->Get_PartUI()[1]->Set_Color({ 1.f,1.f,1.f,1.f });
+			
+			for (auto& pContainer : m_pStatButtons)
+			{
+				pContainer->Get_PartUI().back()->Set_Color({ 1.f,1.f,1.f,1.f });
+			}
 
+			for (int i = 0; i < 4; ++i)
+			{
+				switch (i)
+				{
+					// 체력
+				case 0:
+					m_PartObjects[2]->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					(m_pAbilInfo->Get_PartUI()[0])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
 
-		m_pPlayer->Set_Stat(m_eStat);
-  		m_pPlayer->Apply_Stat();
+					break;
+					// 스테미나
+				case 1:
+					m_PartObjects[3]->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					(m_pAbilInfo->Get_PartUI()[1])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					break;
 
-		m_pPlayer->Set_Ergo(m_fCurrentErgo);
+				case 2:
+					break;
+					// 공격력
+				case 3:
+
+					(m_pWeaponInfo->Get_PartUI()[1])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					(m_pLegionInfo->Get_PartUI()[1])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					(m_pWeaponInfo->Get_PartUI()[2])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+					(m_pLegionInfo->Get_PartUI()[2])->Set_Color({ 1.f, 1.f, 1.f, 1.f });
+
+					break;
+					// 공격력
+				default:
+					break;
+				}
+			}
+
+			m_eStat = m_pPlayer->Get_Stat();
+
+			m_iLevel = m_pPlayer->Get_Player_Level();
+
+			m_fErgo = m_pPlayer->Get_Ergo();
+
+			m_fCurrentErgo = m_fErgo;
+
+			m_iCount = 0;
+		
+
+			m_pLevelUpButton->Get_PartUI()[0]->Set_Alpha(0.3f);
+			m_pLevelUpButton->Get_PartUI()[1]->Set_Alpha(0.3f);
+			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(0.f);
+
+			m_isRenderCorfirmUI = false;
+		}
+		else
+		{
+			if (m_iCount > 0)
+			{
+				m_isRenderCorfirmUI = true;
+
+				_wstring strErgo = to_wstring(static_cast<_int>(m_fErgo - m_fCurrentErgo));
+				static_cast<CDynamic_Text_UI*>(m_pConfirmUI->Get_PartUI().back())->Set_Caption(strErgo);
+			}
+				
+		}
+
+		
 
 		return;
 	}
@@ -154,6 +233,9 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 
 	for (auto& pConatiner : m_pWeaponStat)
 		pConatiner->Priority_Update(fTimeDelta);
+
+	if (m_isRenderCorfirmUI)
+		m_pConfirmUI->Priority_Update(fTimeDelta);
 
 	Update_Button();
 
@@ -176,6 +258,9 @@ void CUI_Levelup::Update(_float fTimeDelta)
 
 	for (auto& pConatiner : m_pWeaponStat)
 		pConatiner->Update(fTimeDelta);
+
+	if (m_isRenderCorfirmUI)
+		m_pConfirmUI->Update(fTimeDelta);
 }
 
 void CUI_Levelup::Late_Update(_float fTimeDelta)
@@ -195,6 +280,9 @@ void CUI_Levelup::Late_Update(_float fTimeDelta)
 
 	for (auto& pConatiner : m_pWeaponStat)
 		pConatiner->Late_Update(fTimeDelta);
+
+	if (m_isRenderCorfirmUI)
+		m_pConfirmUI->Late_Update(fTimeDelta);
 }
 
 HRESULT CUI_Levelup::Render()
@@ -377,11 +465,18 @@ void CUI_Levelup::Update_Button()
 			m_iButtonIndex = 0;
 			return;
 		}
-			
 
-		auto& part0 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
-		part0[0]->Set_Color({ 1,1,1,1 });
-		static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
+
+		if (m_iButtonIndex != m_pStatButtons.size())
+		{
+			auto& part0 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
+			part0[0]->Set_Color({ 1,1,1,1 });
+			static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
+		}
+		else
+		{
+			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(0.f);
+		}
 
 		--m_iButtonIndex;
 		if (m_iButtonIndex < 0)
@@ -397,27 +492,60 @@ void CUI_Levelup::Update_Button()
 	}
 	else if (m_pGameInstance->Key_Down(DIK_S))
 	{
-		if (m_iButtonIndex >= m_pStatButtons.size())
+		// 레벨업 버튼으로 가도록 처리하자
+		if (m_iButtonIndex > m_pStatButtons.size())
 		{
-			m_iButtonIndex = static_cast<_int>(m_pStatButtons.size()) - 1;
+			m_iButtonIndex = static_cast<_int>(m_pStatButtons.size());
 			return;
 		}
 
-		auto& part0 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
-		part0[0]->Set_Color({ 1,1,1,1 });
-		static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
-
-		++m_iButtonIndex;
-		if (m_iButtonIndex >= m_pStatButtons.size())
+		// 일단 레벨업이 안되는 경우는 처리 안하기
+		if (m_iButtonIndex >= static_cast<_int>(m_pStatButtons.size()))
 		{
-			m_iButtonIndex = static_cast<_int>(m_pStatButtons.size()) - 1;
+			if (m_iCount == 0)
+				return;
+			auto& part0 = m_pStatButtons.back()->Get_PartUI();
+			part0[0]->Set_Color({ 1,1,1,1 });
+			static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
+
+			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(1.f);
 			
 		}
+		else
+		{
+			auto& part0 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
+			part0[0]->Set_Color({ 1,1,1,1 });
+			static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
+			++m_iButtonIndex;
 			
+			if (m_iButtonIndex == static_cast<_int>(m_pStatButtons.size()))
+			{
+				if (m_iCount == 0)
+				{
+					--m_iButtonIndex;
+					auto& part1 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
+					part1[0]->Set_Color({ 0.8f,0.1f,0.1f,1 });
+					static_cast<CDynamic_UI*>(part1[1])->Set_iTextureIndex(1);
+					return;
+				}
+					
+					auto& part0 = m_pStatButtons.back()->Get_PartUI();
+					part0[0]->Set_Color({ 1,1,1,1 });
+					static_cast<CDynamic_UI*>(part0[1])->Set_iTextureIndex(0);
 
-		auto& part1 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
-		part1[0]->Set_Color({ 0.8f,0.1f,0.1f,1 });
-		static_cast<CDynamic_UI*>(part1[1])->Set_iTextureIndex(1);
+					m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(1.f);
+			}
+			else
+			{
+				auto& part1 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
+				part1[0]->Set_Color({ 0.8f,0.1f,0.1f,1 });
+				static_cast<CDynamic_UI*>(part1[1])->Set_iTextureIndex(1);
+			}
+
+		
+		}
+
+		
 	}
 	else if (m_pGameInstance->Key_Down(DIK_A))
 	{
@@ -436,6 +564,9 @@ void CUI_Levelup::Interation_Button()
 
 void CUI_Levelup::Update_Stat(_bool isPlus)
 {
+	if (m_iButtonIndex == m_pStatButtons.size())
+		return;
+
 	_int SelectIndex = {};
 
 
@@ -443,6 +574,7 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 	{
 		if (!Check_Ergo())
 		{
+			
 			return;
 		}
 
@@ -455,24 +587,77 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 		
 		++m_iCount;
 
+		m_pLevelUpButton->Get_PartUI()[0]->Set_Alpha(1.f);
+		m_pLevelUpButton->Get_PartUI()[1]->Set_Alpha(1.f);
+
 
 		static_cast<CDynamic_Text_UI*>(m_pErgoInfo->Get_PartUI()[0])->Set_Caption(to_wstring(static_cast<_int>(Compute_MaxErgo())));
 		static_cast<CDynamic_Text_UI*>(m_pErgoInfo->Get_PartUI()[1])->Set_Caption(to_wstring(static_cast<_int>(m_fCurrentErgo)));
+		m_pErgoInfo->Get_PartUI()[1]->Set_Color({ 1.f,0.3f,0.1f,1.f });
 
 
 		auto& part = m_pStatButtons[m_iButtonIndex]->Get_PartUI().back();
 
 		static_cast<CDynamic_Text_UI*>(part)->Set_Caption(to_wstring(++m_eStat.stat[m_iButtonIndex]));
-
 		SelectIndex = m_iButtonIndex;
+
+		m_pStatButtons[SelectIndex]->Get_PartUI().back()->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+		switch (SelectIndex)
+		{
+			// 체력
+		case 0:
+			m_PartObjects[2]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pAbilInfo->Get_PartUI()[0])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+
+			break;
+			// 스테미나
+		case 1:
+			m_PartObjects[3]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pAbilInfo->Get_PartUI()[1])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			break;
+
+		case 2:
+			break;
+			// 공격력
+		case 3:
+
+			(m_pWeaponInfo->Get_PartUI()[1])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pLegionInfo->Get_PartUI()[1])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pWeaponInfo->Get_PartUI()[2])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pLegionInfo->Get_PartUI()[2])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+
+			break;
+			// 공격력
+		case 4:
+
+			(m_pWeaponInfo->Get_PartUI()[1])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pLegionInfo->Get_PartUI()[1])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pWeaponInfo->Get_PartUI()[2])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			(m_pLegionInfo->Get_PartUI()[2])->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			break;
+			// 팔 공격력만? 일단 보류
+		case 5:
+			break;
+		default:
+			break;
+		}
+	
 	}
 	else
 	{
 		if (m_iCount <= 0)
+		{
+			m_pErgoInfo->Get_PartUI()[1]->Set_Color({ 1.f,1.f,1.f,1.f });
+
 			return;
+		}
+			
 
 		if (m_iStat[m_iButtonIndex]  > m_eStat.stat[m_iButtonIndex] - 1)
 		{
+
+			m_pStatButtons[m_iButtonIndex]->Get_PartUI().back()->Set_Color({ 1.f,1.f,1.f,1.f });
+
 			return;
 		}
 		
@@ -489,6 +674,59 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 		static_cast<CDynamic_Text_UI*>(part)->Set_Caption(to_wstring(--m_eStat.stat[m_iButtonIndex]));
 
 		SelectIndex = m_iButtonIndex;
+
+		if (m_iStat[SelectIndex] == m_eStat.stat[SelectIndex])
+		{
+			switch (SelectIndex)
+			{
+				// 체력
+			case 0:
+				m_PartObjects[2]->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pAbilInfo->Get_PartUI()[0])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+
+				break;
+				// 스테미나
+			case 1:
+				m_PartObjects[3]->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pAbilInfo->Get_PartUI()[1])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				break;
+
+			case 2:
+				break;
+				// 공격력
+			case 3:
+
+				(m_pWeaponInfo->Get_PartUI()[1])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pLegionInfo->Get_PartUI()[1])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pWeaponInfo->Get_PartUI()[2])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pLegionInfo->Get_PartUI()[2])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+
+				break;
+				// 공격력
+			case 4:
+				(m_pWeaponInfo->Get_PartUI()[1])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pLegionInfo->Get_PartUI()[1])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pWeaponInfo->Get_PartUI()[2])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				(m_pLegionInfo->Get_PartUI()[2])->Set_Color({ 0.7f, 0.7f, 0.7f, 1.f });
+				break;
+				// 팔 공격력만? 일단 보류
+			case 5:
+				break;
+			default:
+				break;
+			}
+		}
+
+		if (m_iCount == 0)
+		{
+			m_pLevelUpButton->Get_PartUI()[0]->Set_Alpha(0.3f);
+			m_pLevelUpButton->Get_PartUI()[1]->Set_Alpha(0.3f);
+			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(0.f);
+
+			m_pStatButtons[SelectIndex]->Get_PartUI().back()->Set_Color({ 1.f,1.f,1.f,1.f });
+			
+			m_pErgoInfo->Get_PartUI()[1]->Set_Color({ 1.f,1.f,1.f,1.f });
+		}
 	}
 
 	_float fValue = {};
@@ -607,6 +845,7 @@ void CUI_Levelup::Free()
 	Safe_Release(m_pLegionInfo);
 	Safe_Release(m_pArmorInfo);
 	Safe_Release(m_pBehindButtons);
+	Safe_Release(m_pConfirmUI);
 
 	for (auto& pContainer : m_pStatButtons)
 		Safe_Release(pContainer);

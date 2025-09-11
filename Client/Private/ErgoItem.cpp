@@ -2,6 +2,8 @@
 #include "GameInstance.h"
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "Player.h"
+#include "UI_Manager.h"
 
 CErgoItem::CErgoItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CItem{ pDevice, pContext }
@@ -40,14 +42,50 @@ HRESULT CErgoItem::Initialize(void* pArg)
 
 void CErgoItem::Priority_Update(_float fTimeDelta)
 {
+	if (nullptr == m_pTarget)
+	{
+		m_pTarget = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
+	}
 
+	if (Check_Player_Close())
+	{
+		// 팝업 키기
+		if (!m_bDoOnce)
+		{
+			CUI_Manager::Get_Instance()->Activate_Popup(true);
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(5);
+			m_bDoOnce = true;
+		}
 
+		// 키 입력 받아서 ...
 
+		if (m_pGameInstance->Key_Down(DIK_E))
+		{
+			Set_bDead();
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
+
+			// 아이템 태그에 맞춰서 어떤 아이템을 먹었는지 알려주기
+
+			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+
+			// 이펙트 삭제 로직 필요
+		}
+
+	}
+	else
+	{
+		if (m_bDoOnce)
+		{
+			// 팝업 끄기
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
+			m_bDoOnce = false;
+		}
+	}
 }
 
 void CErgoItem::Update(_float fTimeDelta)
 {
-
+	
 }
 
 void CErgoItem::Late_Update(_float fTimeDelta)
@@ -80,6 +118,25 @@ HRESULT CErgoItem::Render()
 	}*/
 
 	return S_OK;
+}
+
+_bool CErgoItem::Check_Player_Close()
+{
+	if (nullptr == m_pTarget)
+		return false;
+
+	//
+	//플레이어가 가까운지 체크
+	_vector vPlayerPos = m_pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDiff = vPos - vPlayerPos;
+	_float fDist = XMVectorGetX(XMVector3Length(vDiff));
+
+	if (fDist < 1.f)
+		return true;
+	else
+		return false;
+	
 }
 
 HRESULT CErgoItem::Bind_ShaderResources()

@@ -143,8 +143,10 @@ HRESULT CStamina_Bar::Bind_ShaderResources()
 
 	_float isHpbar = 0.f;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_IsHpBar", &isHpbar, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_IsPlayer", &isHpbar, sizeof(_float))))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }

@@ -90,6 +90,8 @@ protected:
 	// ¸Ç ¾Æ·¡
 	CUI_Container* m_pBehindButtons = { nullptr };
 
+	CUI_Container* m_pConfirmUI = { nullptr };
+
 	_int m_iButtonIndex = { 0 };
 
 	_bool m_bInit = {};
@@ -103,6 +105,8 @@ protected:
 
 	_int	  m_iCount = {};
 	_int      m_iStat[6] = {};
+
+	_bool     m_isRenderCorfirmUI = {false};
 
 public:
 	static CUI_Levelup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

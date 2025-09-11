@@ -18,6 +18,7 @@
 #include "SlideDoor.h"
 #include "KeyDoor.h"
 #include "BossDoor.h"
+#include "ShortCutDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -234,8 +235,8 @@ HRESULT CLevel_KratCentralStation::Reset()
 HRESULT CLevel_KratCentralStation::Ready_Level()
 {
 	/* [ 해야할 준비들 ] */
-	if (FAILED(Ready_Dummy()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Dummy()))
+		return E_FAIL;*/
 	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
@@ -248,12 +249,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	//고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 
 	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -271,6 +272,7 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
+
 	if (FAILED(Ready_Monster()))
 		return E_FAIL;
 	if (FAILED(Ready_ErgoItem()))
@@ -640,11 +642,71 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 	
-	// ------------- Area 99 --------------
-	_float3 a99p0 = _float3{ 180.65f, -47.92f, 63.37f };
-	_float3 a99p1 = _float3{ 457.66f, 133.33f, -116.79f };
-	_float3 a99Min, a99Max;
-	FnToAABB(a99p0, a99p1, a99Min, a99Max);
+	// ------------- Area 50 --------------
+	_float3 a50p0 = _float3{ 168.3228f, 61.1988f, 62.4843f };
+	_float3 a50p1 = _float3{ 274.4402f, -25.574f, -92.6368f };
+	_float3 a50Min, a50Max;
+	FnToAABB(a50p0, a50p1, a50Min, a50Max);
+
+	// ------------- Area 51 --------------
+	_float3 a51p0 = _float3{ 222.4114f, 49.5397f, -31.8351f };
+	_float3 a51p1 = _float3{ 278.6766f, 3.0048f, -92.0069f };
+	_float3 a51Min, a51Max;
+	FnToAABB(a51p0, a51p1, a51Min, a51Max);
+
+	// ------------- Area 52 --------------
+	_float3 a52p0 = _float3{ 259.0224f, -3.9186f, 0.5415f };
+	_float3 a52p1 = _float3{ 306.6759f, 55.6382f, -43.3137f };
+	_float3 a52Min, a52Max;
+	FnToAABB(a52p0, a52p1, a52Min, a52Max);
+
+	// ------------- Area 53 --------------
+	_float3 a53p0 = _float3{ 274.1295f, 33.1423f, -4.9048f };
+	_float3 a53p1 = _float3{ 310.5031f, -5.5138f, 20.2391f };
+	_float3 a53Min, a53Max;
+	FnToAABB(a53p0, a53p1, a53Min, a53Max);
+
+	// ------------- Area 54 --------------
+	_float3 a54p0 = _float3{ 303.3356f, 35.4927f, -54.3758f };
+	_float3 a54p1 = _float3{ 277.5223f, 3.7437f, -30.f };
+	_float3 a54Min, a54Max;
+	FnToAABB(a54p0, a54p1, a54Min, a54Max);
+
+	// ------------- Area 55 --------------
+	_float3 a55p0 = _float3{ 300.7349f, 34.1267f, -27.0379f };
+	_float3 a55p1 = _float3{ 345.4542f, -10.8288f, -47.1570f };
+	_float3 a55Min, a55Max;
+	FnToAABB(a55p0, a55p1, a55Min, a55Max);
+
+	// ------------- Area 56 --------------
+	_float3 a56p0 = _float3{ 343.6360f, -9.9221f, -35.5008f };
+	_float3 a56p1 = _float3{ 303.3795f, 32.7578f, 8.8136f };
+	_float3 a56Min, a56Max;
+	FnToAABB(a56p0, a56p1, a56Min, a56Max);
+
+	// ------------- Area 57 --------------
+	_float3 a57p0 = _float3{ 343.6360f, -9.9221f, -35.5008f };
+	_float3 a57p1 = _float3{ 301.3311f, 69.7224f, -129.5032f };
+	_float3 a57Min, a57Max;
+	FnToAABB(a57p0, a57p1, a57Min, a57Max);
+
+	// ------------- Area 58 --------------
+	_float3 a58p0 = _float3{ 342.1822f, 1.2864f, -11.8887f };
+	_float3 a58p1 = _float3{ 373.2293f, 45.0072f, -45.6612f };
+	_float3 a58Min, a58Max;
+	FnToAABB(a58p0, a58p1, a58Min, a58Max);
+
+	// ------------- Area 59 --------------
+	_float3 a59p0 = _float3{ 373.2293f, 45.0072f, -45.6612f };
+	_float3 a59p1 = _float3{ 350.6409f, 5.9597f, -66.2621f };
+	_float3 a59Min, a59Max;
+	FnToAABB(a59p0, a59p1, a59Min, a59Max);
+
+	// ------------- Area 60 --------------
+	_float3 a60p0 = _float3{ 370.8979f, 52.3032f, -84.6963f };
+	_float3 a60p1 = _float3{ 439.8365f, 5.1572f, -10.2087f };
+	_float3 a60Min, a60Max;
+	FnToAABB(a60p0, a60p1, a60Min, a60Max);
 
 	{
 		/* [ 1번 구역 ] */
@@ -773,7 +835,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 			return E_FAIL;
 	}
 	{
-		/* [ 19번 구역 ] */
+		/* [ 푸오코 구역 ] */
 		const vector<_uint> vecAdj19 = {  };
 		if (!m_pGameInstance->AddArea_AABB(
 			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
@@ -782,12 +844,82 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 
 
 
-
+	/* ---------- 야외 ------------ */
 	{
-		/* -------- [ 99번 구역 ] ---------- */
-		const vector<_uint> vecAdj99 = {  };
+		/* [ 50번 구역 ] */
+		const vector<_uint> vecAdj50 = { 51, 52 };
 		if (!m_pGameInstance->AddArea_AABB(
-			99, a99Min, a99Max, vecAdj99, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			50, a50Min, a50Max, vecAdj50, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 51번 구역 ] */
+		const vector<_uint> vecAdj51 = { 50, 52, 53 };
+		if (!m_pGameInstance->AddArea_AABB(
+			51, a51Min, a51Max, vecAdj51, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 52번 구역 ] */
+		const vector<_uint> vecAdj52 = { 50, 53, 54 };
+		if (!m_pGameInstance->AddArea_AABB(
+			52, a52Min, a52Max, vecAdj52, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 53번 구역 ] */
+		const vector<_uint> vecAdj53 = { 52, 54 };
+		if (!m_pGameInstance->AddArea_AABB(
+			53, a53Min, a53Max, vecAdj53, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 54번 구역 ] */
+		const vector<_uint> vecAdj54 = { 52, 53, 55, 58, 59 };
+		if (!m_pGameInstance->AddArea_AABB(
+			54, a54Min, a54Max, vecAdj54, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 55번 구역 ] */
+		const vector<_uint> vecAdj55 = { 54, 56, 57, 58, 59 };
+		if (!m_pGameInstance->AddArea_AABB(
+			55, a55Min, a55Max, vecAdj55, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 56번 구역 ] */
+		const vector<_uint> vecAdj56 = { 55, 57, 58, 59 };
+		if (!m_pGameInstance->AddArea_AABB(
+			56, a56Min, a56Max, vecAdj56, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 57번 구역 ] */
+		const vector<_uint> vecAdj57 = { 55, 56 };
+		if (!m_pGameInstance->AddArea_AABB(
+			57, a57Min, a57Max, vecAdj57, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 58번 구역 ] */
+		const vector<_uint> vecAdj58 = { 54, 55, 56, 57, 59, 60 };
+		if (!m_pGameInstance->AddArea_AABB(
+			58, a58Min, a58Max, vecAdj58, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 59번 구역 ] */
+		const vector<_uint> vecAdj59 = { 55, 56, 58, 60 };
+		if (!m_pGameInstance->AddArea_AABB(
+			59, a59Min, a59Max, vecAdj59, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 60번 구역 ] */
+		const vector<_uint> vecAdj60 = { 59 };
+		if (!m_pGameInstance->AddArea_AABB(
+			60, a60Min, a60Max, vecAdj60, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->FinalizePartition()))
@@ -1249,48 +1381,6 @@ HRESULT CLevel_KratCentralStation::Ready_Breakable()
 
 HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
 {
-	//아직 푸오코 기둥을 위한 것으로만
-
-	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
-	ifstream inFile(FilePath);
-	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json Json;
-	inFile >> Json;
-	inFile.close();
-
-	// 배열 순회
-	for (auto& Data : Json)
-	{
-		// 월드 행렬
-		const json& WorldMatrixJson = Data["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		Desc.iPartModelCount = 3;
-		Desc.ModelName = TEXT("Main");
-		Desc.vOffsets.push_back(_float3(4.09f, -8.75f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -5.82f, 1.21f));
-		Desc.vOffsets.push_back(_float3(4.09f, -2.89f, 1.21f));
-		Desc.PartModelNames.push_back(TEXT("Part2"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.PartModelNames.push_back(TEXT("Part1"));
-		Desc.WorldMatrix = WorldMatrix;
-		Desc.wsNavName = StringToWString(Map);
-		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-			Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-			return E_FAIL;
-	}
-
 	return S_OK;
 }
 
@@ -1520,7 +1610,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
-	///* [ 축제의 인도자 문 ] */
+	/* [ 축제의 인도자 문 ] */
 	BossDoorDesc = {};
 	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	BossDoorDesc.szMeshID = TEXT("FestivalDoor");
@@ -1549,6 +1639,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
+	/* [ 야외 나가는 문 ] */
 	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
 	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
@@ -1570,6 +1661,30 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+		return E_FAIL;
+
+	/* [ 숏컷 문 ] */
+	CShortCutDoor::SHORTCUTDOORMESH_DESC ShortCutDoorDesc{};
+	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	KeyDoorDesc.szMeshID = TEXT("ShortCutDoor");
+	lstrcpy(KeyDoorDesc.szName, TEXT("ShortCutDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_ShortCutDoor");
+	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	vPosition = _float3(147.46f, 2.66f, -25.17f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	KeyDoorDesc.vColliderSize = _vector({ 2.0f, 2.f, 0.2f, 0.f });
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::SHORTCUT;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &KeyDoorDesc)))
 		return E_FAIL;
 
 	return S_OK;

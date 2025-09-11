@@ -18,122 +18,104 @@ HRESULT CAnimComputeShader::Initialize_AnimComputeShader(const _wstring& wstrFil
 	if (m_iBoneCount == 0)
 		return E_FAIL;
 
-	// 애니메이션 로컬 행렬 입력 버퍼 및 SRV 생성 (t0)
-	D3D11_BUFFER_DESC inputBufferDesc = {};
-	inputBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	inputBufferDesc.ByteWidth = sizeof(_float4x4) * m_iBoneCount;
-	inputBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	inputBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	inputBufferDesc.StructureByteStride = sizeof(_float4x4);
-	if (FAILED(m_pDevice->CreateBuffer(&inputBufferDesc, nullptr, &m_pInputBuffer))) 
-		return E_FAIL;
-	D3D11_SHADER_RESOURCE_VIEW_DESC inputSrvDesc = {};
-	inputSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	inputSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	inputSrvDesc.BufferEx.NumElements = m_iBoneCount;
-	inputSrvDesc.BufferEx.FirstElement = 0;
-	inputSrvDesc.BufferEx.Flags = 0;
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pInputBuffer, &inputSrvDesc, &m_pSourceBoneSRV)))
-		return E_FAIL;
+    // 입력: 로컬 행렬 버퍼 (t0)
+    D3D11_BUFFER_DESC inputBufferDesc = {};
+    inputBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    inputBufferDesc.ByteWidth = sizeof(_float4x4) * m_iBoneCount;
+    inputBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    inputBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    inputBufferDesc.StructureByteStride = sizeof(_float4x4);
+    if (FAILED(m_pDevice->CreateBuffer(&inputBufferDesc, nullptr, &m_pInputBuffer)))
+        return E_FAIL;
 
-	//  최종 행렬 출력 버퍼 (GPU 쓰기, VS 읽기) 및 UAV(u0), SRV(VS용) 생성
-	D3D11_BUFFER_DESC outputBufferDesc = {};
-	outputBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	outputBufferDesc.ByteWidth = sizeof(_float4x4) * m_iBoneCount;
-	outputBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	outputBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	outputBufferDesc.StructureByteStride = sizeof(_float4x4);
+    D3D11_SHADER_RESOURCE_VIEW_DESC inputSrvDesc = {};
+    inputSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+    inputSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    inputSrvDesc.BufferEx.NumElements = m_iBoneCount;
+    inputSrvDesc.BufferEx.FirstElement = 0;
+    inputSrvDesc.BufferEx.Flags = 0;
+    if (FAILED(m_pDevice->CreateShaderResourceView(m_pInputBuffer, &inputSrvDesc, &m_pSourceBoneSRV)))
+        return E_FAIL;
 
-	if (FAILED(m_pDevice->CreateBuffer(&outputBufferDesc, nullptr, &m_pOutputBuffer))) 
-		return E_FAIL;
+    // 출력: 최종 행렬 버퍼 (UAV u0 + VS용 SRV) - 단일 버퍼
+    D3D11_BUFFER_DESC outputBufferDesc = {};
+    outputBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    outputBufferDesc.ByteWidth = sizeof(_float4x4) * m_iBoneCount;
+    outputBufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+    outputBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    outputBufferDesc.StructureByteStride = sizeof(_float4x4);
+    if (FAILED(m_pDevice->CreateBuffer(&outputBufferDesc, nullptr, &m_pOutputBuffer)))
+        return E_FAIL;
 
-	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
-	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	uavDesc.Buffer.NumElements = m_iBoneCount;
-	uavDesc.Buffer.FirstElement = 0;
+    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+    uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+    uavDesc.Format = DXGI_FORMAT_UNKNOWN;
+    uavDesc.Buffer.NumElements = m_iBoneCount;
+    uavDesc.Buffer.FirstElement = 0;
+    if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pOutputBuffer, &uavDesc, &m_pOutputBoneUAV)))
+        return E_FAIL;
 
-	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pOutputBuffer, &uavDesc, &m_pOutputBoneUAV))) 
-		return E_FAIL;
+    D3D11_SHADER_RESOURCE_VIEW_DESC outputSrvDesc = {};
+    outputSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+    outputSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    outputSrvDesc.BufferEx.NumElements = m_iBoneCount;
+    outputSrvDesc.BufferEx.FirstElement = 0;
+    outputSrvDesc.BufferEx.Flags = 0;
+    if (FAILED(m_pDevice->CreateShaderResourceView(m_pOutputBuffer, &outputSrvDesc, &m_pOutputBoneSRVForVS)))
+        return E_FAIL;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC outputSrvDesc = {};
-	outputSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	outputSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	outputSrvDesc.BufferEx.NumElements = m_iBoneCount;
-	outputSrvDesc.BufferEx.FirstElement = 0;
-	outputSrvDesc.BufferEx.Flags = 0;
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pOutputBuffer, &outputSrvDesc, &m_pOutputBoneSRVForVS)))
-		return E_FAIL;
+    // 초기값: 아이덴티티로 채우기
+    {
+        vector<_float4x4> identityList(m_iBoneCount);
+        _matrix id = XMMatrixIdentity();
+        for (_uint i = 0; i < m_iBoneCount; ++i)
+            XMStoreFloat4x4(&identityList[i], id);
+        m_pContext->UpdateSubresource(m_pOutputBuffer, 0, nullptr, identityList.data(), 0, 0);
+    }
 
-	vector<_float4x4> identityList(m_iBoneCount);
-	_matrix id = XMMatrixIdentity();
-	for (_uint i = 0; i < m_iBoneCount; ++i)
-		XMStoreFloat4x4(&identityList[i], id);
-	m_pContext->UpdateSubresource(m_pOutputBuffer, 0, nullptr,
-		identityList.data(), 0, 0);
+    // CS 상수 버퍼 (b0)
+    D3D11_BUFFER_DESC cbd = {};
+    cbd.Usage = D3D11_USAGE_DEFAULT;
+    cbd.ByteWidth = sizeof(ANIM_CS_DESC);
+    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    if (FAILED(m_pDevice->CreateBuffer(&cbd, nullptr, &m_pCSParamBuffer)))
+        return E_FAIL;
 
+    // 부모 인덱스 버퍼 (t2)
+    D3D11_BUFFER_DESC pbDesc = {};
+    pbDesc.Usage = D3D11_USAGE_DEFAULT;
+    pbDesc.ByteWidth = sizeof(_int) * m_iBoneCount;
+    pbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    pbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+    pbDesc.StructureByteStride = sizeof(_int);
+    if (FAILED(m_pDevice->CreateBuffer(&pbDesc, nullptr, &m_pParentIndexBuffer)))
+        return E_FAIL;
 
-	// 상수 버퍼 생성 (b0)
-	D3D11_BUFFER_DESC cbd = {};
-	cbd.Usage = D3D11_USAGE_DEFAULT;
-	cbd.ByteWidth = sizeof(ANIM_CS_DESC);
-	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	if (FAILED(m_pDevice->CreateBuffer(&cbd, nullptr, &m_pCSParamBuffer))) return E_FAIL;
+    D3D11_SHADER_RESOURCE_VIEW_DESC psrvDesc = {};
+    psrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+    psrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    psrvDesc.BufferEx.NumElements = m_iBoneCount;
+    psrvDesc.BufferEx.FirstElement = 0;
+    psrvDesc.BufferEx.Flags = 0;
+    if (FAILED(m_pDevice->CreateShaderResourceView(m_pParentIndexBuffer, &psrvDesc, &m_pParentIndexSRV)))
+        return E_FAIL;
 
-	//  부모 인덱스 버퍼 및 SRV 생성 (t2)
-	D3D11_BUFFER_DESC pbDesc = {};
-	pbDesc.Usage = D3D11_USAGE_DEFAULT;
-	pbDesc.ByteWidth = sizeof(_int) * m_iBoneCount;
-	pbDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	pbDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	pbDesc.StructureByteStride = sizeof(_int);
-	if (FAILED(m_pDevice->CreateBuffer(&pbDesc, nullptr, &m_pParentIndexBuffer))) 
-		return E_FAIL;
+    // 뼈 마스크 버퍼 (t3)
+    D3D11_BUFFER_DESC mbDesc = pbDesc;
+    mbDesc.ByteWidth = sizeof(_float) * m_iBoneCount;
+    mbDesc.StructureByteStride = sizeof(_float);
+    if (FAILED(m_pDevice->CreateBuffer(&mbDesc, nullptr, &m_pBoneMaskBuffer)))
+        return E_FAIL;
 
-	D3D11_SHADER_RESOURCE_VIEW_DESC psrvDesc = {};
-	psrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	psrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	psrvDesc.BufferEx.NumElements = m_iBoneCount;
-	psrvDesc.BufferEx.FirstElement = 0;
-	psrvDesc.BufferEx.Flags = 0;
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pParentIndexBuffer, &psrvDesc, &m_pParentIndexSRV))) 
-		return E_FAIL;
+    D3D11_SHADER_RESOURCE_VIEW_DESC msrvDesc = {};
+    msrvDesc.Format = DXGI_FORMAT_UNKNOWN;
+    msrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
+    msrvDesc.BufferEx.FirstElement = 0;
+    msrvDesc.BufferEx.NumElements = m_iBoneCount;
+    msrvDesc.BufferEx.Flags = 0;
+    if (FAILED(m_pDevice->CreateShaderResourceView(m_pBoneMaskBuffer, &msrvDesc, &m_pBoneMaskSRV)))
+        return E_FAIL;
 
-	//  뼈 마스크 버퍼 및 SRV 생성 (t3)
-
-
-	D3D11_BUFFER_DESC mbDesc = pbDesc;
-	mbDesc.ByteWidth = sizeof(_float) * m_iBoneCount;
-	mbDesc.StructureByteStride = sizeof(_float);
-	if (FAILED(m_pDevice->CreateBuffer(&mbDesc, nullptr, &m_pBoneMaskBuffer)))
-		return E_FAIL;
-	D3D11_SHADER_RESOURCE_VIEW_DESC msrvDesc = {};
-	msrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	msrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	msrvDesc.BufferEx.FirstElement = 0;
-	msrvDesc.BufferEx.NumElements = m_iBoneCount;
-	msrvDesc.BufferEx.Flags = 0;
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pBoneMaskBuffer, &msrvDesc, &m_pBoneMaskSRV)))
-		return E_FAIL;
-
-	D3D11_BUFFER_DESC vsBufDesc = {};
-	vsBufDesc.Usage = D3D11_USAGE_DEFAULT;
-	vsBufDesc.ByteWidth = sizeof(_float4x4) * m_iBoneCount;
-	vsBufDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	vsBufDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	vsBufDesc.StructureByteStride = sizeof(_float4x4);
-	if (FAILED(m_pDevice->CreateBuffer(&vsBufDesc, nullptr, &m_pOutputBufferForVS)))
-	    return E_FAIL;
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC vsSrvDesc = {};
-	vsSrvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFEREX;
-	vsSrvDesc.Format = DXGI_FORMAT_UNKNOWN;
-	vsSrvDesc.BufferEx.FirstElement = 0;
-	vsSrvDesc.BufferEx.NumElements = m_iBoneCount;
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pOutputBufferForVS, &vsSrvDesc, &m_pOutputBoneSRV_VSOnly)))
-		return E_FAIL;
-
-	m_pContext->UpdateSubresource(m_pOutputBufferForVS, 0, nullptr, identityList.data(), 0, 0);
 
 	return S_OK;
 }
@@ -196,9 +178,7 @@ void CAnimComputeShader::ExecuteHierarchical(const _float4x4& preTransform)
 	//// 모든 리소스 언바인딩
 	ID3D11UnorderedAccessView* nullUAV = nullptr;
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &nullUAV, nullptr);
-//	m_pContext->Flush();
-	ID3D11ShaderResourceView* nullSRVs[5] =
-	{ nullptr, nullptr, nullptr, nullptr, nullptr };
+	ID3D11ShaderResourceView * nullSRVs[5] = { nullptr, nullptr, nullptr, nullptr, nullptr };
 	m_pContext->CSSetShaderResources(0, 5, nullSRVs);
 
 	__super::Unbind();
@@ -283,7 +263,7 @@ void CAnimComputeShader::BuildHierarchyLevels()
 	{
 		int bone = q.front(); q.pop();
 		int level = m_BoneLevels[bone];
-		//m_iMaxLevel = max(m_iMaxLevel, level);
+		m_iMaxLevel = max(m_iMaxLevel, (_uint)level);
 
 		// 자식 찾기: m_ParentIndices에서 bone이 부모인 인덱스들
 		for (_uint i = 0; i < m_iBoneCount; ++i)
@@ -363,7 +343,6 @@ void CAnimComputeShader::Free()
 	Safe_Release(m_pOutputBoneUAV);
 	Safe_Release(m_pBoneLevelBuffer);
 	Safe_Release(m_pBoneLevelSRV);
-	Safe_Release(m_pOutputBufferForVS);
-	Safe_Release(m_pOutputBoneSRV_VSOnly);
+
 	m_iBoneCount = 0;
 }

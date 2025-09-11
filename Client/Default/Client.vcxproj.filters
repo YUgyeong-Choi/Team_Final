@@ -145,18 +145,6 @@
     <Filter Include="02.GameObjects\03.Weapon">
       <UniqueIdentifier>{87bd98b7-f2e3-4aba-bbd8-673c9acc6bd4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Item">
-      <UniqueIdentifier>{19f9895f-95e4-4f19-8513-e9457ce85169}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Item\Portion">
-      <UniqueIdentifier>{bcef0c42-54bd-40dd-a827-7ff316c89096}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Item\Grinder">
-      <UniqueIdentifier>{311830bb-b1f9-45ff-a605-d0b0e6094773}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Item\Belt">
-      <UniqueIdentifier>{af3572e6-708d-4733-8058-128ddec890f6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03. Observer\Slot">
       <UniqueIdentifier>{e266084c-38d3-42df-9999-4c7cde30193f}</UniqueIdentifier>
     </Filter>
@@ -300,9 +288,6 @@
     </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\TriggerItem">
       <UniqueIdentifier>{8ce35ac3-2f6d-4bd2-8c70-afdd5167bcd9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03. Item\Lamp">
-      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
       <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
@@ -541,9 +526,6 @@
     <Filter Include="02.GameObjects\99.UI\Container\SelectLocation">
       <UniqueIdentifier>{c8d583f2-acba-448d-82c4-ff80ddc93c9b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Item\ErgoItem">
-      <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
-    </Filter>
     <Filter Include="04.Utility">
       <UniqueIdentifier>{ff4bfb0c-59c5-4206-9eeb-f96e14f04d51}</UniqueIdentifier>
     </Filter>
@@ -552,6 +534,24 @@
     </Filter>
     <Filter Include="02.GameObjects\17.BreakableMesh">
       <UniqueIdentifier>{a8dc9d78-dfec-4a6e-b3b0-6f4ebac7416f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item">
+      <UniqueIdentifier>{19f9895f-95e4-4f19-8513-e9457ce85169}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item\Portion">
+      <UniqueIdentifier>{bcef0c42-54bd-40dd-a827-7ff316c89096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item\Grinder">
+      <UniqueIdentifier>{311830bb-b1f9-45ff-a605-d0b0e6094773}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item\Belt">
+      <UniqueIdentifier>{af3572e6-708d-4733-8058-128ddec890f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item\Lamp">
+      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Item\ErgoItem">
+      <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\16.Stargazer\StargazerEffects">
       <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
@@ -859,13 +859,13 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Item.h">
-      <Filter>02.GameObjects\03. Item</Filter>
+      <Filter>02.GameObjects\03.Item</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Lamp.h">
-      <Filter>02.GameObjects\03. Item\Lamp</Filter>
+      <Filter>02.GameObjects\03.Item\Lamp</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Belt.h">
-      <Filter>02.GameObjects\03. Item\Belt</Filter>
+      <Filter>02.GameObjects\03.Item\Belt</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Icon_Item.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Item</Filter>
@@ -877,10 +877,10 @@
       <Filter>02.GameObjects\99.UI\Container\Panel\Player\LD</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Portion.h">
-      <Filter>02.GameObjects\03. Item\Portion</Filter>
+      <Filter>02.GameObjects\03.Item\Portion</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Grinder.h">
-      <Filter>02.GameObjects\03. Item\Grinder</Filter>
+      <Filter>02.GameObjects\03.Item\Grinder</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Weapon.h">
       <Filter>02.GameObjects\03.Weapon</Filter>
@@ -1130,7 +1130,7 @@
       <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ErgoItem.h">
-      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
+      <Filter>02.GameObjects\03.Item\ErgoItem</Filter>
     </ClInclude>
     <ClInclude Include="..\public\BreakableMesh.h">
       <Filter>02.GameObjects\17.BreakableMesh</Filter>
@@ -1140,6 +1140,9 @@
     </ClInclude>
     <ClInclude Include="..\public\UI_Levelup.h">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ShortCutDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h" />
   </ItemGroup>
@@ -1416,10 +1419,10 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Lamp.cpp">
-      <Filter>02.GameObjects\03. Item\Lamp</Filter>
+      <Filter>02.GameObjects\03.Item\Lamp</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Belt.cpp">
-      <Filter>02.GameObjects\03. Item\Belt</Filter>
+      <Filter>02.GameObjects\03.Item\Belt</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Icon_Item.cpp">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Item</Filter>
@@ -1431,13 +1434,13 @@
       <Filter>02.GameObjects\99.UI\Container\Panel\Player\LD</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Portion.cpp">
-      <Filter>02.GameObjects\03. Item\Portion</Filter>
+      <Filter>02.GameObjects\03.Item\Portion</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Grinder.cpp">
-      <Filter>02.GameObjects\03. Item\Grinder</Filter>
+      <Filter>02.GameObjects\03.Item\Grinder</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Item.cpp">
-      <Filter>02.GameObjects\03. Item</Filter>
+      <Filter>02.GameObjects\03.Item</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Weapon.cpp">
       <Filter>02.GameObjects\03.Weapon</Filter>
@@ -1690,7 +1693,7 @@
       <Filter>02.GameObjects\99.UI\Container\SelectLocation</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ErgoItem.cpp">
-      <Filter>02.GameObjects\03. Item\ErgoItem</Filter>
+      <Filter>02.GameObjects\03.Item\ErgoItem</Filter>
     </ClCompile>
     <ClCompile Include="..\private\BreakableMesh.cpp">
       <Filter>02.GameObjects\17.BreakableMesh</Filter>
@@ -1700,6 +1703,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Levelup.cpp">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ShortCutDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp" />
   </ItemGroup>

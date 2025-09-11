@@ -157,7 +157,7 @@ public: /* [ 옵저버 관련 ] */
 	void Add_Mana(_float fMana);
 
 public: /* [ 상호작용 관련 ] */
-	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
+	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen = true);
 	void GetWeapon();
 private:
 	void Play_CutScene_Door();
@@ -276,6 +276,7 @@ public:/*[스탯 관련]*/
 	_float Get_Ergo() { return m_fErgo; }
 	void Set_Ergo(_float fErgo);
 	_int Get_Player_Level() { return m_iLevel; }
+	void Set_Player_Level(_int iLevel) { m_iLevel = iLevel; }
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
 

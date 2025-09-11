@@ -410,6 +410,9 @@ HRESULT CDHTool::Render_LightTool()
 		float fInnerCosAngle = m_pSelectedObject->GetfInnerCosAngle();
 		if (ImGui::SliderFloat("InnerCosAngle", &fInnerCosAngle, 0.1f, 100.0f, "%.1f"))
 			m_pSelectedObject->SetfInnerCosAngle(fInnerCosAngle);
+
+		if (ImGui::InputFloat("##InnerCosAngleInput", &fInnerCosAngle, 0.001f, 100.0f, "%.4f"))
+			m_pSelectedObject->SetfFogDensity(fInnerCosAngle);
 	}
 	else
 	{
@@ -423,6 +426,9 @@ HRESULT CDHTool::Render_LightTool()
 		float fOuterCosAngle = m_pSelectedObject->GetfOuterCosAngle();
 		if (ImGui::SliderFloat("fOuterCosAngle", &fOuterCosAngle, 0.1f, 100.0f, "%.1f"))
 			m_pSelectedObject->SetfOuterCosAngle(fOuterCosAngle);
+
+		if (ImGui::InputFloat("##fOuterCosAngleInput", &fOuterCosAngle, 0.001f, 100.0f, "%.4f"))
+			m_pSelectedObject->SetfFogDensity(fOuterCosAngle);
 	}
 	else
 	{
@@ -449,23 +455,26 @@ HRESULT CDHTool::Render_LightTool()
 		float fFogDensity = m_pSelectedObject->GetfFogDensity();
 		if (ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 100.0f, "%.1f"))
 			m_pSelectedObject->SetfFogDensity(fFogDensity);
+
+		if (ImGui::InputFloat("##fFogDensityInput", &fFogDensity, 0.001f, 100.0f, "%.4f"))
+			m_pSelectedObject->SetfFogDensity(fFogDensity);
 	}
 	else
 	{
 		static float fFogDensity = 1.f;
-		ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 20.0f, "%.1f");
+		ImGui::SliderFloat("fFogDensity", &fFogDensity, 0.1f, 100.0f, "%.1f");
 	}
 	// FogCutOff
 	if (m_pSelectedObject != nullptr)
 	{
 		float fFogCutOff = m_pSelectedObject->GetfFogCutOff();
-		if (ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 30.f, "%.1f"))
+		if (ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 150.f, "%.1f"))
 			m_pSelectedObject->SetfFogCutOff(fFogCutOff);
 	}
 	else
 	{
 		static float fFogCutOff = 15.f;
-		ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 30.f, "%.1f");
+		ImGui::SliderFloat("fFogCutOff", &fFogCutOff, 1.f, 150.f, "%.1f");
 	}
 
 

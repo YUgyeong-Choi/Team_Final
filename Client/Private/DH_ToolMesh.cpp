@@ -63,8 +63,9 @@ void CDH_ToolMesh::Priority_Update(_float fTimeDelta)
 		_vector vDiff = XMVectorSubtract(vPlayerPos, vMyPos);
 		vDiff = XMVectorSetY(vDiff, 0.f);
 
+		//제곱 연산 최적화
 		_float fDistSq = XMVectorGetX(XMVector3LengthSq(vDiff));
-		const _float fTh = 40.f;
+		const _float fTh = m_fPlayerFar;
 		const _float fThSq = fTh * fTh;
 
 		if (fDistSq > fThSq)

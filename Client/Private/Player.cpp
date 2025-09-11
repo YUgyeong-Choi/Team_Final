@@ -136,7 +136,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	CSpringBoneSys::SpringInitParams springParams;
 	springParams.restDirBiasEnable = false;
-	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Lamp"}, springParams);
+	m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair","Cloth","Frill", "Lamp","BN_Robe_B_L"}, springParams);
 	if (m_pSpringBoneSys == nullptr)
 		return E_FAIL;
 
@@ -205,7 +205,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_7))
 	{
-		PxVec3 pos = PxVec3(360.78f, 10.90f, -48.81f);
+		PxVec3 pos = PxVec3(360.78f, 15.90f, -48.81f);
 		PxTransform posTrans = PxTransform(pos);
 		m_pControllerCom->Set_Transform(posTrans);
 	}
@@ -2310,7 +2310,7 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 		//보스몬스터라면?
-		CUnit* pBoss = dynamic_cast<CUnit*>(pOther);
+		CBossUnit* pBoss = dynamic_cast<CBossUnit*>(pOther);
 		if (pBoss)
 		{
 			//필요한 정보를 수집한다.
@@ -2925,7 +2925,7 @@ void CPlayer::Add_Mana(_float fMana)
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 }
 
-void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
+void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen)
 {
 	m_pInterectionStuff = pObj;
 	string stateName;
@@ -2951,6 +2951,12 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 			stateName = "Door_Check";
 			m_pAnimator->SetBool("Outdoor", false);
 		}
+		break;
+	case Client::SHORTCUT:
+		if (bOpen)
+			stateName = "";
+		else
+			stateName = "";
 		break;
 	default:
 		break;

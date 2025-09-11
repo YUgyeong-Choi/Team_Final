@@ -39,11 +39,16 @@ private:
 private:
 	CTexture* m_pBackTextureCom = { nullptr };
 	CTexture* m_pGradationCom = { nullptr };
+	
 
 private:
 	_float m_fDurablity = {};
 	_float m_fMaxDurablity = {};
 	_float m_fRatio = {};
+
+	_bool m_isIncrease = {};
+
+	_float m_fIncreaseTime = {};
 
 public:
 	static CDurability_Bar* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -1,6 +1,7 @@
 #include "Durability_Bar.h"
 #include "GameInstance.h"
 #include "Observer_Weapon.h"
+#include "UI_Container.h"
 
 CDurability_Bar::CDurability_Bar(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CDynamic_UI{pDevice, pContext}
@@ -47,13 +48,37 @@ HRESULT CDurability_Bar::Initialize(void* pArg)
         }
         else if (L"AddDurablity" == eventType)
         {
-            m_fDurablity += *static_cast<_float*>(data);
+            _float fDelta = *static_cast<_float*>(data);
+            if (m_fDurablity == m_fMaxDurablity && fDelta > 0.f)
+            { 
+                return;
+            }
+               
+
+            
+            m_fDurablity += fDelta;
 
             if(m_fDurablity >= m_fMaxDurablity)
                 m_fDurablity = m_fMaxDurablity;
 
             if (m_fDurablity <= 0.f)
                 m_fDurablity = 0.f;
+
+          
+            if (fDelta > 0.f)
+            {
+                m_isIncrease = true;
+
+                m_fIncreaseTime = 0.5f;
+            }
+
+            if (m_fDurablity == m_fMaxDurablity)
+            {
+                // 이미지 생성
+
+            
+            }
+           
         }
 
         m_fRatio = (m_fDurablity) / m_fMaxDurablity;
@@ -77,6 +102,18 @@ void CDurability_Bar::Priority_Update(_float fTimeDelta)
 void CDurability_Bar::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
+
+    if (m_isIncrease)
+    {
+        m_fIncreaseTime -= fTimeDelta;
+
+        if (m_fIncreaseTime < 0.f)
+        {
+            m_fIncreaseTime = 0.f;
+            m_isIncrease = false;
+        }
+          
+    }
 }
 
 void CDurability_Bar::Late_Update(_float fTimeDelta)
@@ -125,6 +162,34 @@ HRESULT CDurability_Bar::Bind_ShaderResources()
 
     if (FAILED(m_pShaderCom->Bind_RawValue("g_UseGradation", &fGradation, sizeof(_float))))
         return E_FAIL;
+
+    fGradation = 1.f;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_IsDurablityBar", &fGradation, sizeof(_float))))
+        return E_FAIL;
+
+    _float fIsincrease = static_cast<_float>(m_isIncrease);
+
+
+    if (m_fIncreaseTime  > 0.f)
+    {
+        if (m_fRatio > 0.99f)
+        {
+            _float fValue = 0.6f + 0.4f * sin(m_fIncreaseTime * (XM_PI));
+            _float4 vColor = { fValue,fValue,fValue,1.f };
+         
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_Color", &vColor, sizeof(_float4))))
+                return E_FAIL;
+        }
+    }
+
+    if (m_fRatio > 0.99f)
+        fIsincrease = 0.f;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_IsIncrease", &fIsincrease, sizeof(_float))))
+        return E_FAIL;
+
+
 
     return S_OK;
 }

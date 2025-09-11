@@ -502,8 +502,7 @@ void CButtler_Range::Register_Events()
 		desc.fLifeTime = 5.f;
 		desc.fRadius = 0.1f;
 		desc.fRotationPerSec = 0.f;
-		desc.fSpeed = 2.3f;
-		desc.fSpeedPerSec = 5.f;
+		desc.fSpeed = 10.f;
 		desc.iLevelID = iLevelIndex;
 		lstrcpy(desc.szName, TEXT("Bullet"));
 		desc.vDir = { vRotated.m128_f32[0], vRotated.m128_f32[1], vRotated.m128_f32[2] };

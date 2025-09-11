@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\KeyDoor.h" />
     <ClInclude Include="..\public\MeshEmitter.h" />
     <ClInclude Include="..\Public\PlayerState.h" />
+    <ClInclude Include="..\Public\ShortCutDoor.h" />
     <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
     <ClInclude Include="..\Public\DynamicMesh.h" />
@@ -391,6 +392,7 @@
     <ClCompile Include="..\Private\KeyDoor.cpp" />
     <ClCompile Include="..\private\MeshEmitter.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\ShortCutDoor.cpp" />
     <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
     <ClCompile Include="..\Private\DynamicMesh.cpp" />

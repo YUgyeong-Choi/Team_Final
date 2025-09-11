@@ -28,8 +28,8 @@ void BoneAnimationCS(uint3 id : SV_DispatchThreadID)
     if (boneIdx >= boneCount)
         return;
 
-    //if (g_BoneLevels[boneIdx] != currentLevel)
-    //    return;
+    if (g_BoneLevels[boneIdx] != currentLevel)
+        return;
 
     float4x4 localMat = g_LocalBoneMatrices_A[boneIdx];
     int parentIdx = g_Parents[boneIdx];

@@ -96,8 +96,8 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 void CCamera_Free::Update(_float fTimeDelta)
 {
-	//if (KEY_DOWN(DIK_CAPSLOCK))
-	//	PrintMatrix("FreeCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
+	if (KEY_DOWN(DIK_CAPSLOCK))
+		PrintMatrix("FreeCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 
 	if (m_pGameInstance->Mouse_Down(DIM::LBUTTON)) {
 		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);

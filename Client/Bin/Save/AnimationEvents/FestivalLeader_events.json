@@ -271,10 +271,6 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 2.0
-                },
-                {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 2.0
                 }
             ],
             "IsLoop": false,
@@ -418,10 +414,6 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 1.0
-                },
-                {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -442,19 +434,19 @@
                 },
                 {
                     "EventName": "ColliderHammerOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 },
                 {
                     "EventName": "ColliderBasketOff",
-                    "Time": 199.0
+                    "Time": 197.0
                 }
             ],
             "IsLoop": false,
@@ -467,10 +459,10 @@
             "Events": [
                 {
                     "EventName": "ColliderLeftHandOn",
-                    "Time": 11.0
+                    "Time": 7.0
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 6.0
                 },
                 {
@@ -516,14 +508,6 @@
             "ClipName": "AS_ATHBoss0_Skill_02_Attack",
             "Duration": 78.0,
             "Events": [
-                {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 35.0
-                },
-                {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 56.0
-                },
                 {
                     "EventName": "ColliderRightHandOn",
                     "Time": 35.0
@@ -578,7 +562,15 @@
             "Duration": 24.0,
             "Events": [
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 22.0
+                },
+                {
+                    "EventName": "SetRootStep",
                     "Time": 1.0
                 }
             ],
@@ -591,15 +583,11 @@
             "Duration": 42.0,
             "Events": [
                 {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 1.0
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 2.0
                 },
                 {
                     "EventName": "ResetRootStep",
-                    "Time": 3.0
-                },
-                {
-                    "EventName": "ResetAnimSpeed",
                     "Time": 3.0
                 }
             ],
@@ -612,16 +600,16 @@
             "Duration": 36.0,
             "Events": [
                 {
-                    "EventName": "SetRootStep",
-                    "Time": 1.0
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 30.0
                 },
                 {
-                    "EventName": "SlowAnimSpeed",
+                    "EventName": "ColliderLeftHandOn",
                     "Time": 31.0
                 },
                 {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 29.0
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -705,7 +693,7 @@
                     "Time": 28.0
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 5.0
                 },
                 {
@@ -751,7 +739,7 @@
                     "Time": 6.084270000457764
                 },
                 {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 8.0
                 }
             ],
@@ -792,10 +780,6 @@
             "Duration": 30.0,
             "Events": [
                 {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 25.0
-                },
-                {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 25.0
                 },
@@ -829,10 +813,6 @@
             "ClipName": "AS_ATHBoss0_Skill_08_Start",
             "Duration": 120.0,
             "Events": [
-                {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 110.0
-                },
                 {
                     "EventName": "ColliderRightHandOn",
                     "Time": 110.0
@@ -877,7 +857,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 55.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_01_Attack_1",
@@ -888,11 +868,7 @@
                     "Time": 11.0
                 },
                 {
-                    "EventName": "ColliderLeftHandOff",
-                    "Time": 23.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
+                    "EventName": "ResetAnimSpeed",
                     "Time": 6.0
                 },
                 {
@@ -911,6 +887,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_01_End_1",
             "Duration": 72.0,
+            "Events": [
+                {
+                    "EventName": "ColliderLeftHandOff",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -932,14 +914,6 @@
             "ClipName": "AS_ATHBoss0_Skill_02_Attack_1",
             "Duration": 78.0,
             "Events": [
-                {
-                    "EventName": "BeginStrikeCollisionFlag",
-                    "Time": 35.0
-                },
-                {
-                    "EventName": "EndStrikeCollisionFlag",
-                    "Time": 53.0
-                },
                 {
                     "EventName": "ColliderRightHandOn",
                     "Time": 35.0
@@ -991,11 +965,15 @@
             "Events": [
                 {
                     "EventName": "ResetAnimSpeed",
-                    "Time": 1.0
+                    "Time": 5.0
                 },
                 {
-                    "EventName": "EndStrikeCollisionFlag",
+                    "EventName": "ColliderLeftHandOff",
                     "Time": 22.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -1007,7 +985,7 @@
             "Duration": 42.0,
             "Events": [
                 {
-                    "EventName": "EndStrikeCollisionFlag",
+                    "EventName": "ColliderLeftHandOff",
                     "Time": 2.0
                 },
                 {
@@ -1024,16 +1002,16 @@
             "Duration": 36.0,
             "Events": [
                 {
-                    "EventName": "SetRootStep",
-                    "Time": 1.0
-                },
-                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 30.0
                 },
                 {
-                    "EventName": "BeginStrikeCollisionFlag",
+                    "EventName": "ColliderLeftHandOn",
                     "Time": 31.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -1065,10 +1043,6 @@
                 },
                 {
                     "EventName": "ResetAnimSpeed",
-                    "Time": 14.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
                     "Time": 12.0
                 }
             ],
@@ -1152,6 +1126,10 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 40.0
+                },
+                {
+                    "EventName": "OffFury",
+                    "Time": 40.0
                 }
             ],
             "IsLoop": false,
@@ -1161,12 +1139,6 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_11_End",
             "Duration": 150.0,
-            "Events": [
-                {
-                    "EventName": "OffFury",
-                    "Time": 1.0
-                }
-            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -1245,7 +1217,7 @@
             "Events": [
                 {
                     "EventName": "OffFury",
-                    "Time": 1.0
+                    "Time": 3.0
                 }
             ],
             "IsLoop": false,
