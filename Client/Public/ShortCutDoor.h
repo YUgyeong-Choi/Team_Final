@@ -57,6 +57,7 @@ protected:
 	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 private:
 	HRESULT Render_Key();
+	void Start_Effect(_float fTimeDelta);
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	class CAnimator* m_pAnimator = { nullptr };
@@ -76,6 +77,9 @@ private:
 	// 플레이어 move 풀기 위한 
 	_float m_fEscapeTime = 0.f;
 	_bool m_bCanMovePlayer = false;
+
+	_bool m_bEffectActive = false;
+	_float m_fEffectTime = 0.f;
 
 	// 자물쇠
 	class CModel* m_pModelComFrontKey = { nullptr };

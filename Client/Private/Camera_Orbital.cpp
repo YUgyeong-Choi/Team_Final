@@ -74,12 +74,11 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 		return;
 
 	
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
-	// Pitch clamp
-	if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
-		m_fAlwaysDistanceTarget = 3.f;
-	else
-		m_fAlwaysDistanceTarget = 2.5f;
+	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+	//if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
+	//	m_fAlwaysDistanceTarget = 3.f;
+	//else
+	//	m_fAlwaysDistanceTarget = 2.5f;
 
 	Update_LerpDistacne(fTimeDelta);
 
@@ -500,8 +499,6 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 			return;
 		}
 	}
-
-	m_fDistance = LerpFloat(m_fAlwaysDistanceTarget, 3.f, fTimeDelta);
 }
 
 
