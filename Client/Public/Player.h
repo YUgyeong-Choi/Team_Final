@@ -159,7 +159,7 @@ public: /* [ 옵저버 관련 ] */
 	void Add_Mana(_float fMana);
 
 public: /* [ 상호작용 관련 ] */
-	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj);
+	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen = true);
 	void GetWeapon();
 private:
 	void Play_CutScene_Door();

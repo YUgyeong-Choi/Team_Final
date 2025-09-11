@@ -26,8 +26,10 @@ HRESULT CBreakableMesh::Initialize_Prototype()
 
 HRESULT CBreakableMesh::Initialize(void* pArg)
 {
-	if (FAILED(Find_Player()))
-		return E_FAIL;
+	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
+
+	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
+	m_bFireEaterBossPipe = pDesc->bFireEaterBossPipe;
 	
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -35,7 +37,6 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	if (FAILED(Ready_Collider()))
@@ -53,10 +54,14 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 	if (FAILED(Ready_PartColliders()))
 		return E_FAIL;
 
-	if (pDesc->wsNavName.empty() == false)
+	//푸오코 기둥만 네비를 비활성화 시킨다.
+	if (m_bFireEaterBossPipe)
 	{
-		//자신의 aabb 만큼의 네브 인덱스를 가져온다.
-		Store_NavIndices();
+		if (pDesc->wsNavName.empty() == false)
+		{
+			//자신의 aabb 만큼의 네브 인덱스를 가져온다.
+			Store_NavIndices();
+		}
 	}
 
 	return S_OK;
@@ -64,6 +69,12 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
+	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
+	if (m_bFireEaterBossPipe)
+	{
+		Find_Player();
+	}
+
 	//if (m_pGameInstance->Key_Down(DIK_L))
 	//{
 	//	Reset();
@@ -210,8 +221,8 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 {
 	//푸오코가 퓨리상태일 때
 	//pOther->퓨리일 때 트리거 트루
-
-	if (eColliderType == COLLIDERTYPE::MONSTER&&m_bBreakTriggered == false)
+	if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType  == COLLIDERTYPE::BOSS_WEAPON)
+		&&m_bBreakTriggered == false)
 	{
 		if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
 		{
@@ -221,6 +232,20 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 			}
 		}
 	}
+}
+
+void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	//if (eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON && m_bBreakTriggered == false)
+	//{
+	//	if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+	//	{
+	//		if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+	//		{
+	//			m_bBreakTriggered = true;
+	//		}
+	//	}
+	//}
 }
 
 void CBreakableMesh::Break()
@@ -275,7 +300,7 @@ HRESULT CBreakableMesh::Render_Model()
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 			return E_FAIL;
-
+			
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
 
@@ -318,6 +343,9 @@ HRESULT CBreakableMesh::Render_PartModels()
 
 HRESULT CBreakableMesh::Find_Player()
 {
+	if (m_pPlayer != nullptr)
+		return S_OK;
+
 	CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player"));
 
 	if (nullptr != pObj)
@@ -449,6 +477,11 @@ HRESULT CBreakableMesh::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
 
+	_bool bUseTiling = false;
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &bUseTiling, sizeof(_bool))))
+		return E_FAIL;
+
 	//이미시브 끄기
 	_float fEmissive = 0.f;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
@@ -513,8 +546,20 @@ HRESULT CBreakableMesh::Ready_Collider()
 	PxMeshScale meshScale(scaleVec);
 
 	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_MAP;
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+
+	if (m_bFireEaterBossPipe)
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+		//푸오코에 의해서만 부서져야 한다.
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
+	}
+	else
+	{
+		filterData.word0 = WORLDFILTER::FILTER_MAP;
+		//몬스터, 플레이어, 무기(플레이어, 몬스터)에 의해서 부서져야한다.
+		filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY | WORLDFILTER::FILTER_PLAYERWEAPON | WORLDFILTER::FILTER_MONSTERWEAPON;
+	}
+
 
 	// ──────────────────────────────
 	// Convex는 버텍스 제한 있음 (255개)
@@ -529,7 +574,7 @@ HRESULT CBreakableMesh::Ready_Collider()
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);
-	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BREAKABLE_OBJECT);
 
 	//리셋으로 호출되버린다
 	//m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
@@ -595,20 +640,35 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
 		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
-		//플레이어 무시
-		IgnorePlayerCollider(pActorCom);
+		if (m_bFireEaterBossPipe)
+		{
+			//플레이어 무시
+			IgnorePlayerCollider(pActorCom);
+		}
+		else
+		{
+			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
+		}
 
 		// 6) 필터 설정
 		PxFilterData fd{};
 		fd.word0 = WORLDFILTER::FILTER_DYNAMICOBJ;
-		fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY; //WORLDFILTER::FILTER_MAP를 FILTER_FLOOR 로 바꿀 예정
+
+		if (m_bFireEaterBossPipe)
+		{
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY;
+		}
+		else
+		{
+			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY;
+		}
+
 		pActorCom->Set_ShapeFlag(true, false, true);
 		pActorCom->Set_SimulationFilterData(fd);
 		pActorCom->Set_QueryFilterData(fd);
 		pActorCom->Set_Owner(this);
-		pActorCom->Set_ColliderType(COLLIDERTYPE::ENVIRONMENT_CONVEX);
-		// 7) 씬에 등록
-		//m_pGameInstance->Get_Scene()->addActor(*pRigid);
+		pActorCom->Set_ColliderType(COLLIDERTYPE::BREAKABLE_OBJECT);
 	}
 
 	return S_OK;
@@ -676,15 +736,19 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 #pragma endregion
 	}
 
-	if (pDesc->wsNavName.empty() == false)
+	//푸오코만 네비가 필요하다. 셀을 비활성화/활성화 하기위해서
+	if (m_bFireEaterBossPipe)
 	{
-		//영향을 줄 네비게이션
-		wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
-		if (FAILED(__super::Add_Component(m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag.c_str(),
-			TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
-			return E_FAIL;
+		if (pDesc->wsNavName.empty() == false)
+		{
+			//영향을 줄 네비게이션
+			wstring wsPrototypeTag = TEXT("Prototype_Component_Navigation_") + pDesc->wsNavName; //어떤 네비를 STAION, HOTEL...
+			if (FAILED(__super::Add_Component(pDesc->iLevelID, wsPrototypeTag.c_str(),
+				TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNaviCom))))
+				return E_FAIL;
 
-		//테스트맵에 생성되는 부술수있는 애들이, 푸오코 네비를 찾아버려서 터진것임 ()
+			//테스트맵에 생성되는 부술수있는 애들이, 푸오코 네비를 찾아버려서 터진것임 ()
+		}
 	}
 
 	return S_OK;

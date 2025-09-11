@@ -136,6 +136,10 @@ private:
 	};
 
 private:
+	//조각을 최대 갯수로 저장할지?
+	_bool m_bMaxFragment = { true };
+
+private:
 	//마우스 드랙 시작 포인트
 	_float2 m_vMouseDragStart = {};
 	_bool	m_bDragging = { false };

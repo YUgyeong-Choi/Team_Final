@@ -90,6 +90,12 @@ void CLevel_YW::Update(_float fTimeDelta)
 
 void CLevel_YW::Late_Update(_float fTimeDelta)
 {
+	//현재 활성화된 툴을 렌더시킨다. 근데 몬스터툴일 때 내비 켜지면 좋을거 같다.
+	if (m_eActiveTool == IMGUITOOL::MONSTER)
+	{
+		m_ImGuiTools[ENUM_CLASS(IMGUITOOL::NAV)]->Late_Update(fTimeDelta);
+	}
+
 	m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Late_Update(fTimeDelta);
 }
 
@@ -338,8 +344,6 @@ HRESULT CLevel_YW::ImGui_Render()
 
 	//여기서 맵을 선택하면 맵과, 네비게이션 등등... 로드 되도록 하는 게 좋아보인다.
 	Render_File();
-
-
 
 	if (FAILED(m_ImGuiTools[ENUM_CLASS(m_eActiveTool)]->Render_ImGui()))
 		return E_FAIL;

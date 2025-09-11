@@ -910,6 +910,59 @@ _vector CTransform::Get_Scale() const
 	return XMVectorSet(fScaleX, fScaleY, fScaleZ, 0.f);
 }
 
+void CTransform::Set_Orbit(_fvector vCenter, _fvector vAxis, _float fRadius, _float fSpeed)
+{
+	XMStoreFloat4(&m_vOrbitAxis, vAxis);
+	XMStoreFloat4(&m_vOrbitCenter, vCenter);
+	m_fOrbitRadius = fRadius;
+	m_fSpeedPerSec = fSpeed;
+}
+
+void CTransform::UpdateOrbit(_float fTimeDelta)
+{
+	m_fOrbitAngle += m_fSpeedPerSec * fTimeDelta;
+
+	// 000 기준
+	_vector vCenter = XMLoadFloat4(&m_vOrbitCenter);
+	_vector vAxis = XMLoadFloat4(&m_vOrbitAxis);
+
+	// 축과 수직인 시작 벡터 ㅈ됏다
+	_vector vUpRef = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vStart = XMVector3Cross(vAxis, vUpRef);
+	if (XMVector3Equal(vStart, XMVectorZero()))
+	{
+		vUpRef = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		vStart = XMVector3Cross(vAxis, vUpRef);
+	}
+	vStart = XMVector3Normalize(vStart) * m_fOrbitRadius;
+
+	// 현재 위치
+	_matrix matRot = XMMatrixRotationAxis(vAxis, m_fOrbitAngle);
+	_vector vCurPos = XMVector3TransformNormal(vStart, matRot) + vCenter;
+
+	// 직전 위치 (접선 방향)
+	_matrix matRotPrev = XMMatrixRotationAxis(vAxis, m_fOrbitAngle - m_fSpeedPerSec * fTimeDelta);
+	_vector vPrevPos = XMVector3TransformNormal(vStart, matRotPrev) + vCenter;
+
+	// 방향 벡터 (Look)
+	_vector vLook = XMVector3Normalize(vCurPos - vPrevPos);
+	_vector vWorldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
+	if (XMVector3Equal(vRight, XMVectorZero()))
+	{
+		vWorldUp = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+		vRight = XMVector3Normalize(XMVector3Cross(vWorldUp, vLook));
+	}
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	// 스케일 유지
+	_float3 vScale = Compute_Scaled();
+	Set_State(STATE::RIGHT, vRight * vScale.x);
+	Set_State(STATE::UP, vUp * vScale.y);
+	Set_State(STATE::LOOK, vLook * vScale.z);
+	Set_State(STATE::POSITION, XMVectorSetW(vCurPos, 1.f));
+}
+
 void CTransform::LookAt(_fvector vAt)
 {
 	_float3		vScaled = Get_Scaled();

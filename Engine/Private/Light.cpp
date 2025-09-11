@@ -123,11 +123,11 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		return S_OK; // 볼륨메트릭이 꺼지면 렌더링하지 않는다.
 
 	_uint iPassIndex = {};
+	AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
-		AREAMGR eArea = m_pGameInstance->GetCurrentAreaMgr();
-		if (eArea == AREAMGR::FUOCO)
+		if (eArea == AREAMGR::FUOCO || eArea == AREAMGR::OUTER)
 			return S_OK;
 
 		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
@@ -161,8 +161,8 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	{
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
-		
-		if (m_LightDesc.bIsPlayerFar)
+
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER)
 			return S_OK;
 
 		/* 빛정보를 쉐이더에 던진다. */
@@ -190,7 +190,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
 		
-		if (m_LightDesc.bIsPlayerFar)
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER)
 			return S_OK;
 
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))

@@ -46,7 +46,11 @@ HRESULT CLevel_DH::Initialize()
 		return E_FAIL;
 
 	/* [ 敲饭捞绢啊 加茄 备开沤祸 ] */
+	//6锅备开
 	m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
+	//1锅备开
+	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
+
 	m_pGameInstance->FindAreaContainingPoint();
 
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
@@ -186,23 +190,272 @@ HRESULT CLevel_DH::Separate_Area()
 			};
 		};
 
-	//_float3 a1p0 = _float3{ -10000.f, -10000.f,  -10000.f };
-	//_float3 a1p1 = _float3{ 10000.f,  10000.f, 10000.f };
-	_float3 a1p0 = _float3{ 180.65f, -47.92f, 63.37f };
-	_float3 a1p1 = _float3{ 457.66f, 133.33f, -116.79f };
+	// Area 1
+	_float3 a1p0 = _float3{ 35.73f, -2.87f,  4.97f };
+	_float3 a1p1 = _float3{ -10.57f,  9.92f, -4.62f };
 	_float3 a1Min, a1Max;
 	FnToAABB(a1p0, a1p1, a1Min, a1Max);
 
+	// Area 2
+	_float3 a2p0 = _float3{ 61.82f, -5.39f,  8.25f };
+	_float3 a2p1 = _float3{ 32.16f,  8.91f, -4.62f };
+	_float3 a2Min, a2Max;
+	FnToAABB(a2p0, a2p1, a2Min, a2Max);
+
+	// Area 3
+	_float3 a3p0 = _float3{ 110.f, -5.63f,  32.20f };
+	_float3 a3p1 = _float3{ -40.69f, 52.55f, -61.73f };
+	_float3 a3Min, a3Max;
+	FnToAABB(a3p0, a3p1, a3Min, a3Max);
+
+	// Area 4
+	_float3 a4p0 = _float3{ 120.04f, -5.32f, 4.66f };
+	_float3 a4p1 = _float3{ 95.67f, 15.49f, -21.39f };
+	_float3 a4Min, a4Max;
+	FnToAABB(a4p0, a4p1, a4Min, a4Max);
+
+	// Area 5
+	_float3 a5p0 = _float3{ 110.35f, -5.63f,  32.20f };
+	_float3 a5p1 = _float3{ 26.53f,  49.64f, -52.41f };
+	_float3 a5Min, a5Max;
+	FnToAABB(a5p0, a5p1, a5Min, a5Max);
+
+	// Area 6
+	_float3 a6p0 = _float3{ 135.35f, 1.29f, 3.18f };
+	_float3 a6p1 = _float3{ 117.31f, 19.65f, -17.30f };
+	_float3 a6Min, a6Max;
+	FnToAABB(a6p0, a6p1, a6Min, a6Max);
+
+	// Area 7
+	_float3 a7p0 = _float3{ 186.83f, -0.18f, 24.92f };
+	_float3 a7p1 = _float3{ 113.46f, 48.18f, -30.18f };
+	_float3 a7Min, a7Max;
+	FnToAABB(a7p0, a7p1, a7Min, a7Max);
+
+	// Area 8
+	_float3 a8p0 = _float3{ 178.65f, 1.57f, -16.40f };
+	_float3 a8p1 = _float3{ 163.46f, 21.62f, -28.31f };
+	_float3 a8Min, a8Max;
+	FnToAABB(a8p0, a8p1, a8Min, a8Max);
+
+	// Area 9
+	_float3 a9p0 = _float3{ 180.31f, -0.99f, -24.41f };
+	_float3 a9p1 = _float3{ 164.76f, 28.10f, -58.69f };
+	_float3 a9Min, a9Max;
+	FnToAABB(a9p0, a9p1, a9Min, a9Max);
+
+	// Area 10
+	_float3 a10p0 = _float3{ 165.54f, -0.73f, -35.35f };
+	_float3 a10p1 = _float3{ 153.13f, 15.00f, -86.29f };
+	_float3 a10Min, a10Max;
+	FnToAABB(a10p0, a10p1, a10Min, a10Max);
+
+	// Area 11
+	_float3 a11p0 = _float3{ 174.33f, 3.05f, -58.39f };
+	_float3 a11p1 = _float3{ 141.42f, 25.38f, -72.59f };
+	_float3 a11Min, a11Max;
+	FnToAABB(a11p0, a11p1, a11Min, a11Max);
+
+	// Area 12
+	_float3 a12p0 = _float3{ 150.09f, 0.33f, -71.50f };
+	_float3 a12p1 = _float3{ 110.35f, 36.75f, -26.58f };
+	_float3 a12Min, a12Max;
+	FnToAABB(a12p0, a12p1, a12Min, a12Max);
+
+	// Area 13
+	_float3 a13p0 = _float3{ 114.46f, 36.75f, -26.58f };
+	_float3 a13p1 = _float3{ 123.11f, 8.05f, -15.80f };
+	_float3 a13Min, a13Max;
+	FnToAABB(a13p0, a13p1, a13Min, a13Max);
+
+	// Area 14
+	_float3 a14p0 = _float3{ 139.64f, -3.73f, -34.23f };
+	_float3 a14p1 = _float3{ 164.14f, 27.16f, -15.25f };
+	_float3 a14Min, a14Max;
+	FnToAABB(a14p0, a14p1, a14Min, a14Max);
+
+	// Area 15
+	_float3 a15p0 = _float3{ 164.14f, 27.16f, -15.25f };
+	_float3 a15p1 = _float3{ 166.82f, 11.23f, -33.21f };
+	_float3 a15Min, a15Max;
+	FnToAABB(a15p0, a15p1, a15Min, a15Max);
+
+	// Area 16
+	_float3 a16p0 = _float3{ 166.82f, 11.23f, -33.21f };
+	_float3 a16p1 = _float3{ 149.83f, 28.02f, -44.12f };
+	_float3 a16Min, a16Max;
+	FnToAABB(a16p0, a16p1, a16Min, a16Max);
+
+	// Area 17
+	_float3 a17p0 = _float3{ 161.07f, 25.85f, -32.40f };
+	_float3 a17p1 = _float3{ 144.76f, -1.09f, -48.68f };
+	_float3 a17Min, a17Max;
+	FnToAABB(a17p0, a17p1, a17Min, a17Max);
+
+	// Area 18
+	_float3 a18p0 = _float3{ 153.11f, -1.26f, -24.49f };
+	_float3 a18p1 = _float3{ 141.22f, 22.73f, -45.47f };
+	_float3 a18Min, a18Max;
+	FnToAABB(a18p0, a18p1, a18Min, a18Max);
+
+	// Area 19 
+	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19Min, a19Max;
+	FnToAABB(a19p0, a19p1, a19Min, a19Max);
+
+	// ------------- Area 50 --------------
+	_float3 a50p0 = _float3{ 180.65f, -47.92f, 63.37f };
+	_float3 a50p1 = _float3{ 457.66f, 133.33f, -116.79f };
+	_float3 a50Min, a50Max;
+	FnToAABB(a50p0, a50p1, a50Min, a50Max);
+
 	{
-		const vector<_uint> vecAdj1 = {  };
+		/* [ 1锅 备开 ] */
+		const vector<_uint> vecAdj1 = { 2 };
 		if (!m_pGameInstance->AddArea_AABB(
-			50, a1Min, a1Max, vecAdj1, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			1, a1Min, a1Max, vecAdj1, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 2锅 备开 ] */
+		const vector<_uint> vecAdj2 = { 1, 3 };
+		if (!m_pGameInstance->AddArea_AABB(
+			2, a2Min, a2Max, vecAdj2, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 3锅 备开 ] */
+		const vector<_uint> vecAdj3 = { 1, 2, 5 };
+		if (!m_pGameInstance->AddArea_AABB(
+			3, a3Min, a3Max, vecAdj3, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 4锅 备开 ] */
+		const vector<_uint> vecAdj4 = { 5, 6, 7 };
+		if (!m_pGameInstance->AddArea_AABB(
+			4, a4Min, a4Max, vecAdj4, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 5锅 备开 ] */
+		const vector<_uint> vecAdj5 = { 4, 6 };
+		if (!m_pGameInstance->AddArea_AABB(
+			5, a5Min, a5Max, vecAdj5, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 6锅 备开 ] */
+		const vector<_uint> vecAdj6 = { 4, 7, 12 };
+		if (!m_pGameInstance->AddArea_AABB(
+			6, a6Min, a6Max, vecAdj6, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 7锅 备开 ] */
+		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12 };
+		if (!m_pGameInstance->AddArea_AABB(
+			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 8锅 备开 ] */
+		const vector<_uint> vecAdj8 = { 7, 9, 10, 11 };
+		if (!m_pGameInstance->AddArea_AABB(
+			8, a8Min, a8Max, vecAdj8, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 9锅 备开 ] */
+		const vector<_uint> vecAdj9 = { 7, 8, 10, 11 };
+		if (!m_pGameInstance->AddArea_AABB(
+			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 10锅 备开 ] */
+		const vector<_uint> vecAdj10 = { 9, 12, 14, 16, 17, 18 };
+		if (!m_pGameInstance->AddArea_AABB(
+			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 11锅 备开 ] */
+		const vector<_uint> vecAdj11 = { 9, 12 };
+		if (!m_pGameInstance->AddArea_AABB(
+			11, a11Min, a11Max, vecAdj11, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 12锅 备开 ] */
+		const vector<_uint> vecAdj12 = { 7, 11, 13, 14, 15, 16, 18 };
+		if (!m_pGameInstance->AddArea_AABB(
+			12, a12Min, a12Max, vecAdj12, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 13锅 备开 ] */
+		const vector<_uint> vecAdj13 = { 12 };
+		if (!m_pGameInstance->AddArea_AABB(
+			13, a13Min, a13Max, vecAdj13, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 14锅 备开 ] */
+		const vector<_uint> vecAdj14 = { 12, 15, 16, 17, 18, 7 };
+		if (!m_pGameInstance->AddArea_AABB(
+			14, a14Min, a14Max, vecAdj14, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 15锅 备开 ] */
+		const vector<_uint> vecAdj15 = { 14 , 12, 16, 18, 7 };
+		if (!m_pGameInstance->AddArea_AABB(
+			15, a15Min, a15Max, vecAdj15, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 16锅 备开 ] */
+		const vector<_uint> vecAdj16 = { 14, 15, 17, 18, 12, 7 };
+		if (!m_pGameInstance->AddArea_AABB(
+			16, a16Min, a16Max, vecAdj16, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 17锅 备开 ] */
+		const vector<_uint> vecAdj17 = { 7, 12, 14, 16, 18 };
+		if (!m_pGameInstance->AddArea_AABB(
+			17, a17Min, a17Max, vecAdj17, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 18锅 备开 ] */
+		const vector<_uint> vecAdj18 = { 7, 12, 14, 16, 17 };
+		if (!m_pGameInstance->AddArea_AABB(
+			18, a18Min, a18Max, vecAdj18, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 19锅 备开 ] */
+		const vector<_uint> vecAdj19 = {  };
+		if (!m_pGameInstance->AddArea_AABB(
+			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
 
+
+
+
+	{
+		/* -------- [ 50锅 备开 ] ---------- */
+		const vector<_uint> vecAdj50 = {  };
+		if (!m_pGameInstance->AddArea_AABB(
+			50, a50Min, a50Max, vecAdj50, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
 	if (FAILED(m_pGameInstance->FinalizePartition()))
 		return E_FAIL;
-
 
 	return S_OK;
 }

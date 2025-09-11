@@ -178,6 +178,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.bUseOrbit = pDesc->bOrbit ? 1 : 0;
 	m_tCBuffer.fGravity = pDesc->fGravity;
 	m_tCBuffer.vCenter = pDesc->vCenter;
+	m_vLocalCenter = pDesc->vCenter;
 	//m_tCBuffer.vPivot = pDesc->vPivot;
 	// 절대 위치 Pivot으로 저장
 	XMStoreFloat3(&m_tCBuffer.vPivot, XMLoadFloat3(&pDesc->vPivot) - XMLoadFloat3(&pDesc->vCenter));
@@ -186,6 +187,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.vTileCnt = pDesc->vTileCnt; // m_iTileX, Y인데..
 	m_tCBuffer.fTileTickPerSec = pDesc->fTileTickPerSec;
 	m_tCBuffer.vRange = pDesc->vRange;
+	m_tCBuffer.fShrinkThreshold = pDesc->fShrinkThreshold;
 	XMStoreFloat4x4(&m_tCBuffer.g_CombinedMatrix, XMMatrixIdentity());
 
 #pragma region INSTANCEBUFFER

@@ -18,6 +18,7 @@ protected:
 public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual void Priority_Update(_float fTimeDelta) override;
+	virtual void Update(_float fTimeDelta) override;
 
 public:
 	void EnterCutScene();
@@ -32,10 +33,13 @@ protected:
 protected:
 	_bool    m_bIsPhase2{ false };
 	_bool    m_bStartPhase2 = false;
+	_bool	 m_bPlayerCollided = false;
 	_float   m_fPhase2HPThreshold = 0.6f; // 60% 이하로 떨어지면 페이즈2 시작
 	_float   m_fFirstChaseBeforeAttack = 2.f;
 	_bool    m_bCutSceneOn = false;
 	EFuryState m_eFuryState = EFuryState::None;
+
+	class CSpringBoneSys* m_pSpringBoneSys = { nullptr };
 public:
 	static CBossUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -339,8 +339,8 @@ private:
 
     // 컴퓨트 셰이더
 	CAnimComputeShader* m_pAnimComputeShader = nullptr; // 애니메이션 컴퓨트 셰이더
-    vector<_matrix> m_vLocalBoneMatrices;
-	vector<_matrix> m_vFinalBoneMatrices; // 최종 본 행렬들 (GPU에서 받아온 행렬)
+    vector<_float4x4> m_vLocalBoneMatrices;
+	vector<_float4x4> m_vFinalBoneMatrices; // 최종 본 행렬들 (GPU에서 받아온 행렬)
 
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

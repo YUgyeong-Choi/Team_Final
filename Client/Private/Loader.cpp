@@ -14,6 +14,7 @@
 #include "Nav.h"
 #include "Static_Decal.h"
 #include "Stargazer.h"
+#include "StargazerEffect.h"
 #include "ErgoItem.h"
 #include "BreakableMesh.h"
 #pragma endregion
@@ -55,6 +56,7 @@
 #include "SlideDoor.h"
 #include "KeyDoor.h"
 #include "BossDoor.h"
+#include "ShortCutDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -289,6 +291,8 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Test_20_30_3.json"))))
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Skill.json"))))
+		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_BloodTest.json"))))
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/PE_Player_SkillWeaponParticle.json"))))
 		return E_FAIL;
@@ -631,6 +635,27 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/StationDoubleDoor/StationDoubleDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_ShortCutDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShortCutDoor/ShortCutDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_HeavyLock"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLock/HeavyLock.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_HeavyLockSmall"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	m_fRatio = 0.4f;
 
 
@@ -759,6 +784,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CBossDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
+		CShortCutDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma region YW
 
 	//부술수있는 메쉬 테스트용 모델
@@ -812,6 +841,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StaticMesh_Instance"),
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// 별바라기 전용 이펙트 세트
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StargazerEffect"),
+		CStargazerEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma region 맵 로딩
@@ -1626,6 +1660,10 @@ HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
 		return E_FAIL;
 
+	//부서질 수 있는 메쉬 조각들, 또는 본메쉬 로드
+	if (FAILED(Loading_Breakable(iLevelIndex, Map)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -1838,6 +1876,70 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 }
+
+#include <regex>
+
+HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
+{
+	_matrix PreTransformMatrix = XMMatrixScaling(
+		PRE_TRANSFORMMATRIX_SCALE,
+		PRE_TRANSFORMMATRIX_SCALE,
+		PRE_TRANSFORMMATRIX_SCALE);
+
+	// JSON 파일 경로
+	wstring wsPath = L"../Bin/Save/MapTool/Breakable_" + StringToWString(Map) + L".json";
+
+	ifstream ifs(wsPath);
+	if (!ifs.is_open())
+		return E_FAIL;
+
+	json j;
+	ifs >> j;
+
+	// JSON 최상위 바로 ModelName 확인
+	for (auto& [ModelName, ModelData] : j.items())
+	{
+		// 푸오코 기둥 무시
+		if (ModelName == "SM_Factory_BasePipe_07")
+			continue;
+
+		// FragmentCount 읽기
+		if (!ModelData.contains("FragmentCount"))
+			continue;
+
+		_uint finalDenom = ModelData["FragmentCount"].get<_uint>();
+
+		// 1 ~ finalDenom 범위의 조각 등록
+		for (_uint num = 1; num <= finalDenom; ++num)
+		{
+			wstring wsPrototypeTag =
+				L"Prototype_Component_Model_" + StringToWString(ModelName) +
+				L"_" + to_wstring(num) + L"of" + to_wstring(finalDenom);
+
+			if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTag) == nullptr)
+			{
+				filesystem::path modelPath = filesystem::path(PATH_NONANIM) /
+					(ModelName + "_" + std::to_string(num) + "of" + std::to_string(finalDenom) + ".bin");
+
+				if (filesystem::exists(modelPath))
+				{
+					if (FAILED(m_pGameInstance->Add_Prototype(
+						iLevelIndex, wsPrototypeTag,
+						CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,
+							modelPath.string().c_str(),
+							PreTransformMatrix))))
+					{
+						return S_OK; // 실패해도 무시
+					}
+				}
+			}
+		}
+	}
+
+	return S_OK;
+}
+
+
 HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 {
 	//어떤 맵을 소환 시킬 것인지?
@@ -1851,7 +1953,11 @@ HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 	//어떤 데칼을 소환 시킬 것인지?
 	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
 		return E_FAIL;
-
+	 
+	//부서질 수 있는 오브젝트 소환
+	if (FAILED(Ready_Breakable(iLevelIndex, Map)))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -1960,7 +2066,7 @@ HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, strin
 #pragma endregion
 
 #pragma region 컬링 여부
-		if (objects[j].contains("bCullNone"))
+		if (objects[j].contains("CullNone"))
 			StaticMeshDesc.bCullNone = true;
 		else
 			StaticMeshDesc.bCullNone = false;
@@ -2102,6 +2208,91 @@ HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 
 }
+HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
+{
+	// JSON 경로
+	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
+	ifstream inFile(FilePath);
+	if (!inFile.is_open())
+		return S_OK;
+
+	json Json;
+	inFile >> Json;
+	inFile.close();
+
+	// JSON에서 ModelName 바로 접근
+	for (auto& [ModelNameStr, ModelData] : Json.items())
+	{
+		wstring ModelName = StringToWString(ModelNameStr);
+
+		// FragmentCount 읽기
+		_int FragmentCount = 0;
+		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
+			FragmentCount = ModelData["FragmentCount"];
+
+		// Instances 배열 확인
+		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
+			continue;
+
+		const json& Instances = ModelData["Instances"];
+
+		for (const auto& Obj : Instances)
+		{
+			if (!Obj.contains("WorldMatrix"))
+				continue;
+
+			// 월드 행렬 읽기
+			const json& WorldMatrixJson = Obj["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+			Desc.iLevelID = iLevelIndex;
+			Desc.WorldMatrix = WorldMatrix;
+			Desc.wsNavName = StringToWString(Map);
+
+			if (ModelNameStr == "SM_Factory_BasePipe_07")
+			{
+				// 푸오코 기둥 예외 처리
+				Desc.bFireEaterBossPipe = true;
+				Desc.iPartModelCount = 3;
+				Desc.ModelName = TEXT("Main");
+				Desc.vOffsets = {
+					_float3(4.09f, -8.75f, 1.21f),
+					_float3(4.09f, -5.82f, 1.21f),
+					_float3(4.09f, -2.89f, 1.21f)
+				};
+				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
+			}
+			else
+			{
+				// 일반적인 부서짐
+				Desc.bFireEaterBossPipe = false;
+				Desc.iPartModelCount = FragmentCount;
+				Desc.ModelName = ModelName;
+
+				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
+				{
+					wstring PartName = ModelName + L"_" +
+						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
+
+					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
+					Desc.PartModelNames.push_back(PartName);
+				}
+			}
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+				Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+				return E_FAIL;
+		}
+	}
+
+	return S_OK;
+}
+
 #pragma endregion
 
 
@@ -2821,6 +3012,10 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
 		CBossDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
+		CShortCutDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//뒤에 몬스터 붙이는거 뺐어요(영웅) TEXT("Prototype_GameObject_Buttler_Monster_Train") 이거

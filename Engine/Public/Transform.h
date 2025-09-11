@@ -5,6 +5,7 @@
 NS_BEGIN(Engine)
 class CPhysXController;
 
+__declspec(align(16))
 class ENGINE_DLL CTransform final : public CComponent
 {
 public:
@@ -137,6 +138,11 @@ public:
 	_vector Get_Scale() const;
 
 public:
+	// 공전 초기 상태 설정
+	void Set_Orbit(_fvector vCenter, _fvector vAxis, _float fRadius, _float fSpeed);
+	void UpdateOrbit(_float fTimeDelta);
+
+public:
 	void SetfSpeedPerSec(_float fSpeedPerSec) { m_fSpeedPerSec = fSpeedPerSec; }
 	_float GetfSpeedPerSec() const { return m_fSpeedPerSec; }
 
@@ -179,6 +185,12 @@ private:
 	_vector m_vOriginalUp = { 0.f, 1.f, 0.f };
 	_vector m_vOriginalLook = { 0.f, 0.f, 1.f };
 	_vector m_vQuaternionRotation = XMQuaternionIdentity();
+
+	// 공전 전용
+	_float  m_fOrbitAngle = 0.f;
+	_float  m_fOrbitRadius = 0.f;
+	_float4 m_vOrbitAxis = { 0.f, 1.f, 0.f, 0.f };
+	_float4 m_vOrbitCenter = { 0.f, 0.f, 0.f, 0.f };
 
 	//점프 전용
 	_vector m_vSpecialMoveStartPos = {};

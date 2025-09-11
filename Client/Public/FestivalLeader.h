@@ -54,8 +54,8 @@ class CFestivalLeader final : public CBossUnit
 		Atk_AlternateSmash_Loop = 100048,
 		Atk_AlternateSmash_Start2 = 100049,
 		Atk_AlternateSmash_Loop2 = 100050,
-		Atk_AlternateSmash_Loop3 = 100051,
 		Atk_AlternateSmash_Start3 = 100052,
+		Atk_AlternateSmash_Loop3 = 100051,
 		Atk_AlternateSmash_End = 100053,
 
 		Atk_Phase2Start = 100067,
@@ -114,6 +114,17 @@ class CFestivalLeader final : public CBossUnit
 		FuryBodySlam = 13
 	};
 
+	enum EBossCollider : _uint
+	{
+		Hammer,
+		Basket,
+		LeftHand,
+		RightHand,
+		LeftForearm,
+		RightForearm,
+		Count
+	};
+
 private:
 	CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CFestivalLeader(const CFestivalLeader& Prototype);
@@ -132,12 +143,7 @@ private:
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
-	/* Ray로 인항 충돌(HitPos& HitNormal) */
-	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
 
 private:
 	virtual HRESULT Ready_Components(void* pArg) override;
@@ -167,7 +173,7 @@ private:
 	void ChosePatternWeightByDistance(_float fDistance);
 	virtual void Ready_EffectNames() override;
 	virtual void ProcessingEffects(const _wstring& stEffectTag) override;
-	virtual HRESULT EffectSpawn_Active(_int iPattern, _bool bActive, _bool bIsOnce = true) override;
+	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) override;
 	virtual HRESULT Spawn_Effect();
 
 	virtual HRESULT Ready_Effect();
@@ -176,30 +182,20 @@ private:
 	virtual void Ready_SoundEvents() override;
 
 private:
-	// 컴포넌트 관련
-	CPhysXDynamicActor* m_pPhysXActorComForHammer = { nullptr };
-	CPhysXDynamicActor* m_pPhysXActorComForBasket = { nullptr };
-	CPhysXDynamicActor* m_pPhysXActorComForRightHand = { nullptr };
-	CPhysXDynamicActor* m_pPhysXActorComForLeftHand = { nullptr };
-	CBone* m_pHammerBone{ nullptr };
-	CBone* m_pBasketBone{ nullptr };
+	array<CPhysXDynamicActor*, EBossCollider::Count> m_Colliders{};
+
+	array<CBone*, EBossCollider::Count> m_BoneRefs{};
 	CBone* m_pRightWeaponBone{ nullptr };
-	CBone* m_pLeftHandBone{ nullptr };
-	CBone* m_pRightHandBone{ nullptr };
-	class CSpringBoneSys* m_pSpringBoneSys = { nullptr };
 
 	class CWeapon_Monster* m_pHammer{ nullptr };
-	_matrix m_pHammerWorldMatrix = XMMatrixIdentity();
+
 	_int m_iOriginBoneIndex = -1;
 	_int m_iNewParentIndex = -1;
 	_float4x4 m_StoredHeadLocalMatrix{};
 	_float4x4 m_HeadLocalInit{};
 	_bool m_bSwitchHeadSpace = false;
-	_float3   m_vHeadExtraEulerDeg = {90.f, 0.f, 0.f}; // X=90° 기본
-	_float3   m_vHeadExtraOffset   = {0.f, 0.f, 0.f};  // 추가 위치 보정(로컬)
-	_float     m_fHeadExtraScale    = 1.f;              // 필요 없으면 1
+
 	// 상태 관련
-	_bool m_bPlayerCollided = false;
 	_bool m_bPhase2Processed = false;
 	_bool m_bWaitPhase2 = false;
 	_bool m_bVisibleModel = true;
@@ -224,7 +220,7 @@ private:
 	};
 
 	vector<EBossAttackPattern> m_vecMiddleAttackPatterns = {
-	Swing,	HammerSlam, DashSwing ,FurySwing ,JumpAttack,Strike,FuryBodySlam
+	Swing, HammerSlam, DashSwing ,FurySwing ,JumpAttack,Strike,FuryBodySlam
 	};
 
 	vector<EBossAttackPattern> m_vecFarAttackPatterns = {
@@ -233,19 +229,13 @@ private:
 
 
 	// 상수
-	const _int   LIMIT_FIREBALL_COMBO_COUNT = 4;
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
 	const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-	const _float DAMAGE_LIGHT = 5.f;
-	const _float DAMAGE_MEDIUM = 10.f;
-	const _float DAMAGE_HEAVY = 15.f;
-	const _float DAMAGE_FURY = 17.f;
-
-	// 이펙트용
-	CBone* m_pRightForearmBone{ nullptr };
-	CBone* m_pLeftForearmBone{ nullptr };
-
+	const _float DAMAGE_LIGHT = 10.f;
+	const _float DAMAGE_MEDIUM = 15.f;
+	const _float DAMAGE_HEAVY = 20.f;
+	const _float DAMAGE_FURY = 30.f;
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

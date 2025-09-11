@@ -1,0 +1,21 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Billboard_01_RSW",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Break",
+            "NodeId": 1,
+            "NodePos": [
+                755.0,
+                331.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        }
+    ],
+    "ControllerName": "ClownStationPanel_Default",
+    "EntryState": "Break"
+}
