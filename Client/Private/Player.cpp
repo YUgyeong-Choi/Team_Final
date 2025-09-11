@@ -39,6 +39,7 @@
 #include "Client_Calculation.h"
 
 #include "SpringBoneSys.h"
+#include <ShortCutDoor.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -1735,8 +1736,9 @@ void CPlayer::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnSwordSkillTrail", [this]()
 		{
-			if (m_pWeapon)
+			if (m_pWeapon&& Get_PlayerState() == EPlayerState::MAINSKILL)
 			{
+				
 				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
 			}
 		});
@@ -1878,6 +1880,16 @@ void CPlayer::Register_Events()
 					pKeyDoor->OpenDoor();
 				}
 			});
+
+		m_pAnimator->RegisterEventListener("OnInteractionShortCutDoor", [this]()
+			{
+				if (auto pShortCutDoor = dynamic_cast<CShortCutDoor*>(m_pInterectionStuff))
+				{
+					pShortCutDoor->ActivateUnlock();
+				}
+			});
+
+		
 }
 
 _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
@@ -1891,7 +1903,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
 	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
-	
+	SyncTransformWithController();
 	return bFinishSetPosition;
 }
 
@@ -1905,6 +1917,12 @@ _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
+#ifdef _DEBUG
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+		return;
+#endif
+
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
 	_bool bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	if (bUseRoot)
@@ -2954,9 +2972,9 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 		break;
 	case Client::SHORTCUT:
 		if (bOpen)
-			stateName = "";
+			stateName = "LiftDoor_Activate";
 		else
-			stateName = "";
+			stateName = "LiftDoor_Fail";
 		break;
 	default:
 		break;
@@ -3500,6 +3518,7 @@ void CPlayer::Create_LeftArm_Lightning()
 
 void CPlayer::Movement(_float fTimeDelta)
 {
+
 	SyncTransformWithController();
 
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
@@ -3572,11 +3591,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 
 void CPlayer::SetMoveState(_float fTimeDelta)
 {
-#ifdef _DEBUG
-	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
-	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
-		return;
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
+//	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
+//		return;
+//#endif // _DEBUG
 
 	_vector vCamLook = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::LOOK);
 	_vector vCamRight = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::RIGHT);

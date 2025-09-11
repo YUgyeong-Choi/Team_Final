@@ -50,6 +50,7 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
 
     if (m_bActive && m_bCanChangeTarget)
     {
+        RemoveSomeTargets();
         CUnit* pObj = Change_ToLookTarget();
         if (pObj)
         {
@@ -238,6 +239,8 @@ void CLockOn_Manager::RemoveSomeTargets()
                     }
                     else
                     {
+						if (pTarget != pHitActor->Get_Owner())
+							bRemove = true;
                         _vector vMonsterPos = pTarget->Get_TransfomCom()->Get_State(STATE::POSITION);
                         _vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
                         _float difY = XMVectorGetY(vMonsterPos) - XMVectorGetY(vPlayerPos);

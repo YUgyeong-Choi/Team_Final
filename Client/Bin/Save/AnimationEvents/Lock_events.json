@@ -9,7 +9,13 @@
         },
         {
             "ClipName": "AS_Open",
-            "Duration": 200.0,
+          "Duration": 200.0,
+          "Events": [
+            {
+              "EventName": "UnlockDoor",
+              "Time": 175.0
+            }
+          ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 30.0
