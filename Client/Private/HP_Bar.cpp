@@ -64,6 +64,10 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 			_float fMaxHp = m_fMaxHp;
 			_float fPreScaleRatio = m_fScaleRatio;
 			m_fMaxHp = *static_cast<_float*>(data);
+			m_fCurrentHP = m_fMaxHp;
+
+			m_fCurrentRatio = 1.f;
+			m_fRatio = 1.f;
 
 			if (fMaxHp != 0.f)
 				m_fScaleRatio = m_fMaxHp / fMaxHp;

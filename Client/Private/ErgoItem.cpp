@@ -65,7 +65,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
 			// 아이템 태그에 맞춰서 어떤 아이템을 먹었는지 알려주기
-
+			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+			CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(m_eItemTag));
 			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 
 			// 이펙트 삭제 로직 필요
