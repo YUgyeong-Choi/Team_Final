@@ -219,33 +219,31 @@ void CBreakableMesh::Reset()
 
 void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	//푸오코가 퓨리상태일 때
-	//pOther->퓨리일 때 트리거 트루
-	if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType  == COLLIDERTYPE::BOSS_WEAPON)
-		&&m_bBreakTriggered == false)
+	if (m_bFireEaterBossPipe) //푸오코 기둥이면 푸오코에 의해서만 부서지고
 	{
-		if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+		//푸오코가 퓨리상태일 때
+		//pOther->퓨리일 때 트리거 트루
+		if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+			&& m_bBreakTriggered == false)
 		{
-		if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+			if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
 			{
-				m_bBreakTriggered = true;
+				if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+				{
+					m_bBreakTriggered = true;
+				}
 			}
 		}
 	}
-}
+	else //아니면 그냥 모두에게 부서지게한다.
+	{
+		if (m_bBreakTriggered == false)
+		{
+			m_bBreakTriggered = true;
+		}
+	}
 
-void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-	//if (eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON && m_bBreakTriggered == false)
-	//{
-	//	if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
-	//	{
-	//		if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
-	//		{
-	//			m_bBreakTriggered = true;
-	//		}
-	//	}
-	//}
+
 }
 
 void CBreakableMesh::Break()
