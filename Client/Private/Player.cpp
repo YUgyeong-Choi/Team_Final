@@ -2925,7 +2925,7 @@ void CPlayer::Add_Mana(_float fMana)
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 }
 
-void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
+void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen)
 {
 	m_pInterectionStuff = pObj;
 	string stateName;
@@ -2951,6 +2951,12 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj)
 			stateName = "Door_Check";
 			m_pAnimator->SetBool("Outdoor", false);
 		}
+		break;
+	case Client::SHORTCUT:
+		if (bOpen)
+			stateName = "";
+		else
+			stateName = "";
 		break;
 	default:
 		break;
