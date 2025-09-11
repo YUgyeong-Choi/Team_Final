@@ -17,7 +17,7 @@
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Back_Open",
+            "Clip": "AS_Open",
             "LowerClip": "",
             "LowerStartTime": 0.0,
             "MaskBone": "",

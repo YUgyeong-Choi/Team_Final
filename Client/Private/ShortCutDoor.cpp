@@ -292,8 +292,11 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
 
-		m_pAnimatorFrontKey->SetTrigger("Open");
-		m_pAnimatorBackKey->SetTrigger("Open");
+		if (m_bCanOpen)
+		{
+			m_pAnimatorFrontKey->SetTrigger("Open");
+			m_pAnimatorBackKey->SetTrigger("Open");
+		}
 
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
