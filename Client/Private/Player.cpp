@@ -1892,6 +1892,8 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
 	
+	SyncTransformWithController();
+
 	return bFinishSetPosition;
 }
 
