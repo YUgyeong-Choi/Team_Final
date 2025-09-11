@@ -579,7 +579,7 @@ namespace Engine
 		_uint		iEffectSeed;
 
 		_float3		vCenter;         // vCenter
-		_float		_pad0;
+		_float		fShrinkThreshold;
 
 		_float3		vOrbitAxis;      // normalized
 		_float		_pad1;

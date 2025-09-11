@@ -539,6 +539,7 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.vCenter = desc.vCenter;
 		m_tPCB.vTileCnt = desc.vTileCnt;
 		m_tPCB.isTileLoop = desc.isTileLoop;
+		m_tPCB.fShrinkThreshold = desc.fShrinkThreshold;
 	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
@@ -592,6 +593,10 @@ HRESULT CCYTool::Window_Particle()
 	if (*pPE->Get_ShaderPass_Ptr() == PE_WB_VSTRETCH)
 	{
 		ImGui::DragFloat("StretchFactor", pPE->Get_StretchFactor_Ptr(), 0.001f, 0.001f, 10.f, "%.3f");
+	}
+	if (m_tPCB.iParticleType == PTYPE_SHRINK)
+	{
+		ImGui::DragFloat("ShrinkThreshold", &m_tPCB.fShrinkThreshold, 0.001f, 0.001f, 10.f, "%.3f");
 	}
 	/**************************************************/
 	
@@ -656,6 +661,7 @@ HRESULT CCYTool::Window_Particle()
 		desc.vTileCnt = m_tPCB.vTileCnt;
 		desc.isTileLoop = m_tPCB.isTileLoop;
 		desc.fTileTickPerSec = m_tPCB.fTileTickPerSec;
+		desc.fShrinkThreshold = m_tPCB.fShrinkThreshold;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 

@@ -82,7 +82,7 @@ private:
 
 
 private:
-
+	class CStargazerEffect* m_pEffectSet = { nullptr };
 
 private:
 	STARGAZER_STATE m_eState = { STARGAZER_STATE::END };

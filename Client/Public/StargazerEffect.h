@@ -29,7 +29,8 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 
-	void Activate_Stargazer();
+	void Activate_Stargazer_Reassemble();
+	void Activate_Stargazer_Spread();
 
 private:
 	HRESULT Bind_ShaderResources();
@@ -40,12 +41,13 @@ private:
 	class CStargazer*		m_pOwner = { nullptr };
 
 	class CEffectContainer* m_pFloatingEffect = { nullptr };
-	class CEffectContainer* m_pButterflyEffect_D[3] = {nullptr};
-	CTransform*				m_pButterflyTrans_D[3] = { nullptr };
-	//class CEffectContainer* m_pButterflyEffect_A[3] = {nullptr};
-	CTransform*				m_pButterflyTrans_A[3] = { nullptr };
+	class CEffectContainer* m_pButterflyEffect[3] = {nullptr};
+	CTransform*				m_pButterflyTrans[3] = { nullptr };
 
 	STARGAZER_STATUS		m_eStatus = { STARGAZER_STATUS::DEACTIVATE };
+
+	_float					m_fFlyingParticleTicker = {};
+	_float					m_fFlyingParticleInterval = {0.7f};
 
 public:
 	static CStargazerEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

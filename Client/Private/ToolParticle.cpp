@@ -349,6 +349,7 @@ json CToolParticle::Serialize()
 	j["Accel"] = { m_tDesc.vAccel.x, m_tDesc.vAccel.y };
 	j["MaxSpeed"] = m_tDesc.fMaxSpeed;
 	j["MinSpeed"] = m_tDesc.fMinSpeed;
+	j["ShrinkThreshold"] = m_tDesc.fShrinkThreshold;
 
 	j["IsGravity"] = m_tDesc.bGravity;
 	j["Gravity"] = m_tDesc.fGravity;
@@ -406,6 +407,9 @@ void CToolParticle::Deserialize(const json& j)
 
 	if (j.contains("MinSpeed"))
 		m_tDesc.fMinSpeed = j["MinSpeed"].get<_float>();
+
+	if (j.contains("ShrinkThreshold"))
+		m_tDesc.fShrinkThreshold = j["ShrinkThreshold"].get<_float>();
 
 
 	if (j.contains("IsGravity"))

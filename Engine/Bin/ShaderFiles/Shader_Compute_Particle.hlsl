@@ -54,7 +54,7 @@ cbuffer ParticleCB : register(b0)
     uint EffectSeed;
     
     float3 Center; // vCenter
-    float _pad4;
+    float ShrinkThreshold;
     
     float3 OrbitAxis; // normalized
     float _pad5;
@@ -400,7 +400,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             float3 closest = prevPos + seg * t;
             float fDist = length(vCurPivot - closest);
             
-            if (fDist < 0.01f)
+            if (fDist < ShrinkThreshold)
             {
                 if (isLoop != 0)
                     needReset = true;
@@ -464,8 +464,6 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             }
             else if (ParticleType == 3) // to center
             {
-
-
                 pos = float3(
 			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
 			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),

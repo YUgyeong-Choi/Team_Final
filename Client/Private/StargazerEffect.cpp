@@ -43,25 +43,37 @@ HRESULT CStargazerEffect::Initialize(void* pArg)
 
 void CStargazerEffect::Priority_Update(_float fTimeDelta)
 {
+	for (auto& pTransform : m_pButterflyTrans)
+	{
+		if (pTransform)
+			pTransform->UpdateOrbit(fTimeDelta);
+	}
 	if (m_eStatus == STARGAZER_STATUS::DEACTIVATE)
 	{
-		for (auto& pTransform : m_pButterflyTrans_D)
-		{
-			if (pTransform)
-				pTransform->UpdateOrbit(fTimeDelta);
-		}
+		//m_fFlyingParticleTicker += fTimeDelta;
+		//if (m_fFlyingParticleTicker > m_fFlyingParticleInterval)
+		//{
+		//	m_fFlyingParticleTicker = 0.f;
+		//	m_fFlyingParticleInterval = m_pGameInstance->Compute_Random(0.5f, 1.f);
+		//	CEffectContainer::DESC desc = {};
+		//	XMStoreFloat4x4(&desc.PresetMatrix,
+		//		XMMatrixTranslationFromVector(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION))
+		//	);
+		//	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Floating"), &desc))
+		//		MSG_BOX("별바라기 떠다니는 이펙트 생성 실패");
+		//}//아이거어떻게하지,,
 	}
 	else if (m_eStatus == STARGAZER_STATUS::ACTIVATE)
 	{
-
 	}
 
 	if (KEY_DOWN(DIK_LBRACKET))
 	{
-		CEffectContainer::DESC desc = {};
-		desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 3.f, 0.f));
-		(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating_Shrink"), &desc));
+		//CEffectContainer::DESC desc = {};
+		//desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+		//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 3.f, 0.f));
+		//(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating_Shrink"), &desc));
+		Activate_Stargazer_Spread();
 	}
 
 }
@@ -81,15 +93,70 @@ HRESULT CStargazerEffect::Render()
 	return S_OK;
 }
 
-void CStargazerEffect::Activate_Stargazer()
+void CStargazerEffect::Activate_Stargazer_Spread()
 {                                                                                                                                                                                                                                                                               
-	for (auto& pEff : m_pButterflyEffect_D)
+	for (auto& pEff : m_pButterflyEffect)
 	{
-		pEff->End_Effect();
+		if (pEff)
+			pEff->End_Effect();
 		pEff = nullptr;
+	}
+	for (auto& pTrans : m_pButterflyTrans)
+	{
+		if (pTrans)
+			pTrans = nullptr;
 	}
 	m_eStatus = STARGAZER_STATUS::ACTIVATE;
 
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 1.f, 0.f));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating"), &desc))
+		MSG_BOX("별바라기 폭발 이펙트 생성 실패");
+	 
+	/**************/
+
+	// 생성 이후 나비3마리.
+	XMStoreFloat4x4(&desc.PresetMatrix, 
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.2f, 0.8f), 
+			m_pGameInstance->Compute_Random(0.6f, 1.3f),
+			m_pGameInstance->Compute_Random(0.2f, 0.8f)));
+	m_pButterflyEffect[0] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly_superfast"), &desc));
+	if (m_pButterflyEffect[0] == nullptr)
+		return ;
+
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.2f, 0.8f),
+			m_pGameInstance->Compute_Random(0.6f, 1.3f),
+			m_pGameInstance->Compute_Random(0.2f, 0.8f)));
+	m_pButterflyEffect[1] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly_superfast"), &desc));
+	if (m_pButterflyEffect[1] == nullptr)
+		return ;
+
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.2f, 0.8f),
+			m_pGameInstance->Compute_Random(0.6f, 1.3f),
+			m_pGameInstance->Compute_Random(0.2f, 0.8f)));
+	m_pButterflyEffect[2] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly_superfast"), &desc));
+	if (m_pButterflyEffect[2] == nullptr)
+		return ;
+
+	m_pButterflyTrans[0] = m_pButterflyEffect[0]->Get_TransfomCom();
+	m_pButterflyTrans[1] = m_pButterflyEffect[1]->Get_TransfomCom();
+	m_pButterflyTrans[2] = m_pButterflyEffect[2]->Get_TransfomCom();
+
+	for (auto& pTrans : m_pButterflyTrans)
+	{
+		// 나비들 초기 공전 정보를 설정함
+		if (pTrans)
+			pTrans->Set_Orbit(XMVectorSet(0.f, m_pGameInstance->Compute_Random(1.f, 2.f), 0.f, 0.f),
+				XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
+				m_pGameInstance->Compute_Random(0.2f, 1.f),
+				m_pGameInstance->Compute_Random(0.2f, 0.6f));
+	}
 }
 
 HRESULT CStargazerEffect::Bind_ShaderResources()
@@ -114,33 +181,45 @@ HRESULT CStargazerEffect::Ready_Effect()
 		return E_FAIL;
 
 	// 나비3마리.
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(1.5f, 1.f, 0.f));
-	m_pButterflyEffect_D[0] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
-	if (m_pButterflyEffect_D[0] == nullptr)
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.7f, 1.6f),
+			m_pGameInstance->Compute_Random(0.7f, 1.3f),
+			m_pGameInstance->Compute_Random(0.7f, 1.6f)));
+	m_pButterflyEffect[0] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
+	if (m_pButterflyEffect[0] == nullptr)
 		return E_FAIL;
 
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 0.8f, 1.f));
-	m_pButterflyEffect_D[1] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
-	if (m_pButterflyEffect_D[1] == nullptr)
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.7f, 1.6f),
+			m_pGameInstance->Compute_Random(0.7f, 1.3f),
+			m_pGameInstance->Compute_Random(0.7f, 1.6f)));
+	m_pButterflyEffect[1] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
+	if (m_pButterflyEffect[1] == nullptr)
 		return E_FAIL;
 
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.9f, 1.2f, 1.4f));
-	m_pButterflyEffect_D[2] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
-	if (m_pButterflyEffect_D[2] == nullptr)
+	XMStoreFloat4x4(&desc.PresetMatrix,
+		XMMatrixTranslation(
+			m_pGameInstance->Compute_Random(0.7f, 1.6f),
+			m_pGameInstance->Compute_Random(0.7f, 1.3f),
+			m_pGameInstance->Compute_Random(0.7f, 1.6f)));
+	m_pButterflyEffect[2] = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly"), &desc));
+	if (m_pButterflyEffect[2] == nullptr)
 		return E_FAIL;
 	
-	m_pButterflyTrans_D[0] = m_pButterflyEffect_D[0]->Get_TransfomCom();
-	m_pButterflyTrans_D[1] = m_pButterflyEffect_D[1]->Get_TransfomCom();
-	m_pButterflyTrans_D[2] = m_pButterflyEffect_D[2]->Get_TransfomCom();
+	m_pButterflyTrans[0] = m_pButterflyEffect[0]->Get_TransfomCom();
+	m_pButterflyTrans[1] = m_pButterflyEffect[1]->Get_TransfomCom();
+	m_pButterflyTrans[2] = m_pButterflyEffect[2]->Get_TransfomCom();
 
-	for (auto& pTrans : m_pButterflyTrans_D)
+	for (auto& pTrans : m_pButterflyTrans)
 	{
 		// 나비들 초기 공전 정보를 설정함
 		if (pTrans)
 			pTrans->Set_Orbit(XMVectorSet(0.f, m_pGameInstance->Compute_Random(0.5f, 3.f), 0.f, 0.f),
 				XMVector3Normalize(XMVectorSet(m_pGameInstance->Compute_Random(0.f, 0.3f), m_pGameInstance->Compute_Random(0.f, 1.f), m_pGameInstance->Compute_Random(0.f, 0.3f), 0.f)),
 				m_pGameInstance->Compute_Random(0.2f, 2.f),
-				m_pGameInstance->Compute_Random(0.1f, 0.8f));
+				m_pGameInstance->Compute_Random(0.4f, 0.8f));
 	}
 	return S_OK;
 }

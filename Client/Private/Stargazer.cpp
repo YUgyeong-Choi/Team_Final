@@ -451,6 +451,7 @@ void CStargazer::Register_Events()
 			if (m_eState == STARGAZER_STATE::DESTROYED)
 				m_eState = STARGAZER_STATE::FUNCTIONAL;
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+			m_pEffectSet->Activate_Stargazer_Spread();
 		});
 }
 
@@ -693,11 +694,13 @@ HRESULT CStargazer::Ready_Script()
 
 HRESULT CStargazer::Ready_EffectSet()
 {
+	CGameObject* pInstance = nullptr;
 	CStargazerEffect::DESC desc = {};
 	desc.pOwner = this;
 	desc.iLevelID = m_iLevelID;
-	m_pGameInstance->Add_GameObject(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &desc);
-
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance,&desc)))
+		return E_FAIL;
+	m_pEffectSet = static_cast<CStargazerEffect*>(pInstance);
 	return S_OK;
 }
 
