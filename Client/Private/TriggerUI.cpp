@@ -81,6 +81,7 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 		if (m_strProtoName == L"Prototype_GameObject_UI_Container")
 		{
+			// 내가 지속 시간 줄 ui
 			// 각각 만든다
 			for (auto& strFilePath : m_strFilePaths)
 			{
@@ -95,6 +96,7 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 		}
 		else if (m_strProtoName == L"Prototype_GameObject_UI_Guide")
 		{
+			// 가이드 ui
 			// 여러개 묶어놨으니까 그대로 불러온다
 			CUI_Guide::UI_GUIDE_DESC eGuideDesc = {};
 			eGuideDesc.partPaths = m_strFilePaths;
@@ -104,6 +106,7 @@ void CTriggerUI::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType
 		}
 		else if (m_strProtoName == L"Prototype_GameObject_UI_Info")
 		{
+			// 트리거 충돌 동안 보여줄 ui
 			// 각각 만든다
 			for (auto& strFilePath : m_strFilePaths)
 			{

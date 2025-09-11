@@ -104,6 +104,9 @@ void CUI_Popup::Set_String(_int iTriggerType)
 	case 4:
 		strCaption = L"별바라기를 사용한다.";
 		break;
+	case 5:
+		strCaption = L"획득한다.";
+		break;
 	default:
 		strCaption = L"????";
 		break;

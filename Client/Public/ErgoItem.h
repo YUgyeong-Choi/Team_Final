@@ -35,12 +35,18 @@ public:
 	virtual HRESULT Render();
 	virtual void Use(){};
 
+	_bool Check_Player_Close();
+
 
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
 	HRESULT Ready_Effect();
 
 	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
+
+	CGameObject* m_pTarget = {nullptr};
+
+	_bool		m_bDoOnce = { false };
 
 	//CShader* m_pShaderCom = { nullptr };
 	//CModel* m_pModelCom = { nullptr };

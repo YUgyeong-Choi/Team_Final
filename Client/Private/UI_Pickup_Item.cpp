@@ -57,8 +57,8 @@ void CUI_Pickup_Item::Priority_Update(_float fTimeDelta)
 
     __super::Priority_Update(fTimeDelta);
 
-
-    m_pDescription->Priority_Update(fTimeDelta);
+	if (nullptr != m_pDescription)
+		m_pDescription->Priority_Update(fTimeDelta);
 	
 }
 
@@ -66,14 +66,16 @@ void CUI_Pickup_Item::Update(_float fTimeDelta)
 {
     __super::Update(fTimeDelta);
 
-    m_pDescription->Update(fTimeDelta);
+	if (nullptr != m_pDescription)
+		m_pDescription->Update(fTimeDelta);
 }
 
 void CUI_Pickup_Item::Late_Update(_float fTimeDelta)
 {
     __super::Late_Update(fTimeDelta);
 
-    m_pDescription->Late_Update(fTimeDelta);
+	if (nullptr != m_pDescription)
+		m_pDescription->Late_Update(fTimeDelta);
 }
 
 HRESULT CUI_Pickup_Item::Render()
@@ -85,7 +87,8 @@ void CUI_Pickup_Item::Active_Update(_bool isActive)
 {
 	__super::Active_Update(isActive);
 
-	m_pDescription->Active_Update(isActive);
+	if(nullptr != m_pDescription)
+		m_pDescription->Active_Update(isActive);
 
 	if (isActive)
 	{
@@ -96,10 +99,19 @@ void CUI_Pickup_Item::Active_Update(_bool isActive)
 
 void CUI_Pickup_Item::Update_Description(string itemName, _int itemType)
 {
-
+	// 다시 넣어준다
 	Safe_Release(m_pDescription);
 
-	// 다시 넣어준다
+	UI_CONTAINER_DESC eDesc{};
+	eDesc.useLifeTime = false;
+	eDesc.fLifeTime = 2.f;
+
+
+	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Item_Pickup_Text.json");
+
+	m_pDescription = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
+	//
+
 }
 
 CUI_Pickup_Item* CUI_Pickup_Item::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

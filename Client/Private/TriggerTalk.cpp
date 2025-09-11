@@ -72,7 +72,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
 			eGuideDesc.fDelay = 1.25f;
 			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Belt.json") };
-			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+ 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
 
 			m_pPlayer->Add_Icon(TEXT("Prototype_GameObject_Lamp"));
@@ -100,23 +100,14 @@ void CTriggerTalk::Update(_float fTimeDelta)
 {
 	if (!m_bActive)
 		return;
-
-	// 대화 중 끌 수 있다면
-	if (KEY_DOWN(DIK_ESCAPE) || BUTTON_FINISH == CUI_Manager::Get_Instance()->Check_Script_Click_Button())
-	{
-		m_bDoOnce = false;
-		m_bTalkActive = false;
-		m_iSoundIndex = -1;
-		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);
-		m_pSoundCom->StopAll();
-		// UI 비활성화
-		CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-		CUI_Manager::Get_Instance()->On_Panel();
-	}
+	
+	
+	
 
 	if (m_bTalkActive && !m_bDoOnce)
 	{
+		
+
 		/* [ 대화 시작 ] */
    		if (KEY_DOWN(DIK_E))
 		{
@@ -127,6 +118,7 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			_float offSet = 1.7f;
 			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
 				offSet = 0.f;
+
 
 
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, false, offSet);
@@ -150,6 +142,24 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 	if (m_bDoOnce)
 	{
+		// 대화 중 끌 수 있다면
+		if (KEY_DOWN(DIK_ESCAPE) || BUTTON_FINISH == CUI_Manager::Get_Instance()->Check_Script_Click_Button())
+		{
+			m_bDoOnce = false;
+			m_bTalkActive = false;
+			m_iSoundIndex = -1;
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_pSoundCom->StopAll();
+			// UI 비활성화
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+			CUI_Manager::Get_Instance()->On_Panel();
+
+			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
+				m_pPlayer->Get_Animator()->SetTrigger("EndInteraction");
+			return;
+		}
+
 		_vector vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 		vDir = XMVector3Normalize(XMVectorSet(XMVectorGetX(vDir), 0, XMVectorGetZ(vDir), 0)); // Y 제거
 		_bool bFinish = m_pPlayer->Get_TransfomCom()->RotateToDirectionSmoothly(vDir, 0.005f);
