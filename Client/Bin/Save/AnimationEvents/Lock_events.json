@@ -1,13 +1,6 @@
 {
     "animations": [
         {
-            "ClipName": "AS_Back_Open",
-            "Duration": 200.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
-        },
-        {
             "ClipName": "AS_Close_Idle",
             "Duration": 60.0,
             "IsLoop": true,
@@ -15,22 +8,8 @@
             "TickPerSecond": 30.0
         },
         {
-            "ClipName": "AS_Front_Close_Idle",
-            "Duration": 60.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
-        },
-        {
             "ClipName": "AS_Open",
             "Duration": 200.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 30.0
-        },
-        {
-            "ClipName": "AS_Open_Fail",
-            "Duration": 60.0,
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 30.0

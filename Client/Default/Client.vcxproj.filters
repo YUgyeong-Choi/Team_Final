@@ -1138,6 +1138,9 @@
     <ClInclude Include="..\public\UI_Levelup.h">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ShortCutDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1696,6 +1699,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Levelup.cpp">
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ShortCutDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

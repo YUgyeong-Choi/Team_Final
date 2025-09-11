@@ -18,6 +18,7 @@
 #include "SlideDoor.h"
 #include "KeyDoor.h"
 #include "BossDoor.h"
+#include "ShortCutDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -1609,7 +1610,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
-	///* [ 축제의 인도자 문 ] */
+	/* [ 축제의 인도자 문 ] */
 	BossDoorDesc = {};
 	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	BossDoorDesc.szMeshID = TEXT("FestivalDoor");
@@ -1638,6 +1639,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
+	/* [ 야외 나가는 문 ] */
 	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
 	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
@@ -1659,6 +1661,30 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+		return E_FAIL;
+
+	/* [ 숏컷 문 ] */
+	CShortCutDoor::SHORTCUTDOORMESH_DESC ShortCutDoorDesc{};
+	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	KeyDoorDesc.szMeshID = TEXT("ShortCutDoor");
+	lstrcpy(KeyDoorDesc.szName, TEXT("ShortCutDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_ShortCutDoor");
+	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	vPosition = _float3(147.46f, 2.66f, -25.17f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	KeyDoorDesc.WorldMatrix = matWorldFloat;
+	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	KeyDoorDesc.vColliderSize = _vector({ 2.0f, 2.f, 0.2f, 0.f });
+
+	KeyDoorDesc.eInteractType = INTERACT_TYPE::SHORTCUT;
+	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &KeyDoorDesc)))
 		return E_FAIL;
 
 	return S_OK;
