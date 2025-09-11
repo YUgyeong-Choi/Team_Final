@@ -44,6 +44,9 @@ HRESULT CLegionArm_Steel::Initialize(void* pArg)
 void CLegionArm_Steel::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bHitRegActive)
+		Update_HitReg(fTimeDelta);
 }
 
 void CLegionArm_Steel::Update(_float fTimeDelta)
@@ -115,6 +118,10 @@ void CLegionArm_Steel::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 {
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
+		// 히트랙
+		if (static_cast<CPlayer*>(m_pOwner)->GetAnimCategory() == CPlayer::eAnimCategory::ARM_ATTACKCHARGE)
+			StartHitReg(0.01f, 0.075f, 0.075f);
+
 		// m_pOwner 설정 후 주석 풀 것 
 		_vector vPlayerPos = XMVectorSetY(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
 		_vector vOtherPos = XMVectorSetY(pOther->Get_TransfomCom()->Get_State(STATE::POSITION), 0.f);
@@ -153,6 +160,9 @@ void CLegionArm_Steel::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 		if (pEffect == nullptr)
 			return;
+
+	
+
 	}
 
 	return ;

@@ -492,6 +492,10 @@ void CPlayer::Reset()
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	SetbIsGroggyAttack(false);
+	SetIsFatalBoss(false);
+	SetFatalTargetNull();
+
 }
 
 CAnimController* CPlayer::GetCurrentAnimContrller()
@@ -584,7 +588,7 @@ void CPlayer::HPSubtract()
 	if (m_fHp <= 0.f)
 		m_fHp = 0.f;
 
-	Callback_HP();
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 }
 
 
@@ -2757,7 +2761,7 @@ HRESULT CPlayer::Ready_UIParameters()
 			if (m_fHp > m_fMaxHp)
 				m_fHp = m_fMaxHp;
 
-			Callback_HP();
+			m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 		}
 			
 		
@@ -2933,6 +2937,7 @@ void CPlayer::Callback_Mana()
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentMana"), &m_fMana);
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
+
 
 void CPlayer::Add_Mana(_float fMana)
 {

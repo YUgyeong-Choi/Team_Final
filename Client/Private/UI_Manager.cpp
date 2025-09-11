@@ -4,6 +4,7 @@
 #include "UI_Popup.h"
 #include "UI_Script_Text.h"
 #include "UI_Script_Talk.h"
+#include "UI_Pickup_Item.h"
 
 IMPLEMENT_SINGLETON(CUI_Manager)
 
@@ -198,6 +199,17 @@ _int CUI_Manager::Check_Script_Click_Button()
 void CUI_Manager::Sound_Play(string soundTag)
 {
 	m_pSoundCom->Play(soundTag);
+}
+
+void CUI_Manager::Update_PickUpItem(_int iItemType)
+{
+	if (m_UImap.find(L"Pickup_Item") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"Pickup_Item")->second)
+		return;
+
+	static_cast<CUI_Pickup_Item*>(m_UImap.find(L"Pickup_Item")->second)->Update_Description(iItemType);
 }
 
 void CUI_Manager::Free()

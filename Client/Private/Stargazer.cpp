@@ -262,6 +262,10 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		CUI_Manager::Get_Instance()->On_Panel();
 		CUI_Manager::Get_Instance()->Activate_Popup(false);
 		CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+
+
+
 	}
 
 

@@ -79,7 +79,7 @@
             "ProtoTag": "Prototype_GameObject_Dynamic_UI",
             "RotationZ": 0.0,
             "SizeX": 0.4,
-            "SizeY": 0.002,
+            "SizeY": 0.0015,
             "Texturetag": "Prototype_Component_Texture_Bar_Gradation_Side",
             "fAlpha": 1.0,
             "fDuration": 0.01600000075995922,
@@ -93,9 +93,9 @@
           {
             "Color": {
               "A": 1.0,
-              "B": 1.0,
-              "G": 1.0,
-              "R": 1.0
+              "B": 0.800000011920929,
+              "G": 0.800000011920929,
+              "R": 0.800000011920929
             },
             "Features": [
 
@@ -120,7 +120,7 @@
             "ProtoTag": "Prototype_GameObject_Dynamic_UI",
             "RotationZ": 0.0,
             "SizeX": 0.4,
-            "SizeY": 0.002,
+            "SizeY": 0.0015,
             "Texturetag": "Prototype_Component_Texture_Bar_Gradation_Side",
             "fAlpha": 1.0,
             "fDuration": 0.01600000075995922,
