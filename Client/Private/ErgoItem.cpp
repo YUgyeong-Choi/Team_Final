@@ -73,6 +73,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			}
 			else
 			{
+				// ÆÞ½º´Â °ü·Ã guide ui ¶ç¿ì±â
 
 			}
 

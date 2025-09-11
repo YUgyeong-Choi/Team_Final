@@ -36,11 +36,11 @@
                 "fX": 0.6639999151229858,
                 "fY": 0.5239999890327454,
                 "iPassIndex": 1,
-                "iTextureIndex": 7,
+                "iTextureIndex": 6,
                 "iTextureLevel": 0
             },
             {
-                "Caption": "페이탈 어택",
+                "Caption": "그로기 가능",
                 "Color": {
                     "A": 1.0,
                     "B": 0.10000000149011612,
@@ -74,7 +74,7 @@
                 "iTextureLevel": 0
             },
             {
-                "Caption": "페이탈 어택 : 그로기 상태인 적의 정면에서 + \n\n그로기 상태의 적에게 페이탈 어택을 사용할 수 있다.\n성공할 경우 적에게 큰 피해를 입힐 수 있다.",
+                "Caption": "     : 길게 눌러 차치 공격 \n\n공격을 하다 보면 적의 HP바에 흰색 테두리가 표시되는 \n순간이 발생하며 이 때 차지 공격이나 페이블 아츠로\n적을 그로기로 만드는 것이 가능해진다.",
                 "Color": {
                     "A": 1.0,
                     "B": 0.20000000298023224,
@@ -108,7 +108,7 @@
                 "iTextureLevel": 0
             },
             {
-                "Caption": "2 / 2",
+                "Caption": "1 / 2",
                 "Color": {
                     "A": 1.0,
                     "B": 0.20000000298023224,
@@ -141,27 +141,37 @@
                 "iTextureIndex": 0,
                 "iTextureLevel": 0
             },
-            {
-                "Color": {
-                    "A": 1.0,
-                    "B": 1.0,
-                    "G": 1.0,
-                    "R": 1.0
-                },
-                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
-                "RotationZ": 0.0,
-                "SizeX": 0.017999999225139618,
-                "SizeY": 0.029999999329447746,
-                "Texturetag": "Prototype_Component_Texture_Icon_Key_Mouse_Right",
-                "fAlpha": 1.0,
-                "fDuration": 0.01600000075995922,
-                "fOffset": 0.0,
-                "fX": 0.47999998927116394,
-                "fY": 0.4259999990463257,
-                "iPassIndex": 1,
-                "iTextureIndex": 0,
-                "iTextureLevel": 0
-            }
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 0.017999999225139618,
+            "SizeY": 0.029999999329447746,
+            "Texturetag": "Prototype_Component_Texture_Icon_Key_Mouse_Right",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 0.25,
+            "fY": 0.4259999990463257,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
         ],
         "ProtoTag": "Prototype_GameObject_UI_Container",
         "RotationZ": 0.0,
