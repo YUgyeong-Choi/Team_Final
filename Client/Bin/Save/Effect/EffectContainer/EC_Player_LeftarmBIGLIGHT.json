@@ -25,10 +25,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 21,
+            "Duration": 57,
             "EffectType": 1,
             "EmissiveIntensity": 5.800000190734863,
-            "EndTrack": 24,
+            "EndTrack": 59,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1651.80029296875,
+            "LifeTime": 1657.6690673828125,
             "LifeTime_Particle": [
                 0.30000001192092896,
                 0.4000000059604645
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Circlelightning_BIG1",
-            "NumInstance": 4,
+            "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -116,7 +116,7 @@
                 0.0
             ],
             "Spin": false,
-            "StartTrack": 3,
+            "StartTrack": 2,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
@@ -162,10 +162,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 9,
+            "Duration": 42,
             "EffectType": 1,
             "EmissiveIntensity": 10.0,
-            "EndTrack": 42,
+            "EndTrack": 50,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
@@ -198,7 +198,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5127.75,
+            "LifeTime": 5129.80712890625,
             "LifeTime_Particle": [
                 0.30000001192092896,
                 0.4000000059604645
@@ -253,281 +253,7 @@
                 0.0
             ],
             "Spin": false,
-            "StartTrack": 33,
-            "StretchFactor": 0.014999999664723873,
-            "TextureTags": [
-                "",
-                "T_SubUV_Lightning_01_4x4_SC_LGS",
-                "T_Waterfall_Foam_01_SC_RSW",
-                ""
-            ],
-            "TextureUsage": [
-                false,
-                true,
-                true,
-                false
-            ],
-            "Threshold": 0.0,
-            "TickPerSecond": 60.0,
-            "TileTickPerSec": 10.0,
-            "TileX": 4,
-            "TileY": 4,
-            "isTileLoop": false
-        },
-        {
-            "Accel": [
-                0.0,
-                0.0
-            ],
-            "Animation": true,
-            "Billboard": false,
-            "Center": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "CenterColor": [
-                0.42408376932144165,
-                0.5205724239349365,
-                1.0,
-                1.0
-            ],
-            "Color": [
-                0.0,
-                0.0418848991394043,
-                1.0,
-                1.0
-            ],
-            "DistortionStrength": 10.0,
-            "Duration": 24,
-            "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
-            "EndTrack": 80,
-            "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
-            "KeyFrames": [
-                {
-                    "Color": [
-                        0.0,
-                        0.0418848991394043,
-                        1.0,
-                        1.0
-                    ],
-                    "Intensity": 2.7899999618530273,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            ],
-            "LifeTime": 1584.2506103515625,
-            "LifeTime_Particle": [
-                0.30000001192092896,
-                0.4000000059604645
-            ],
-            "Local": true,
-            "Loop": true,
-            "MaxLifeTime": 0.5,
-            "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Circlelightning_BIG2",
-            "NumInstance": 4,
-            "NumKeyFrames": 1,
-            "Orbit": false,
-            "OrbitAxis": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "OrbitSpeed": [
-                0.0,
-                0.0
-            ],
-            "PType": 0,
-            "Pivot": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Range": [
-                0.05000000074505806,
-                0.05000000074505806,
-                0.30000001192092896
-            ],
-            "RenderGroup": 8,
-            "RotationAxis": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "RotationSpeed": [
-                0.0,
-                0.0
-            ],
-            "ShaderPass": 3,
-            "ShrinkThreshold": 0.009999999776482582,
-            "Size": [
-                0.4000000059604645,
-                0.6000000238418579
-            ],
-            "Speed": [
-                0.0,
-                0.0
-            ],
-            "Spin": false,
-            "StartTrack": 56,
-            "StretchFactor": 0.014999999664723873,
-            "TextureTags": [
-                "",
-                "T_SubUV_Thunder_06_2x2_SC_HJS",
-                "T_Waterfall_Foam_01_SC_RSW",
-                ""
-            ],
-            "TextureUsage": [
-                false,
-                true,
-                true,
-                false
-            ],
-            "Threshold": 0.0,
-            "TickPerSecond": 60.0,
-            "TileTickPerSec": 22.0,
-            "TileX": 2,
-            "TileY": 2,
-            "isTileLoop": false
-        },
-        {
-            "Accel": [
-                0.0,
-                0.0
-            ],
-            "Animation": true,
-            "Billboard": false,
-            "Center": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "CenterColor": [
-                0.282722532749176,
-                0.44795936346054077,
-                1.0,
-                1.0
-            ],
-            "Color": [
-                0.14659643173217773,
-                0.0,
-                1.0,
-                1.0
-            ],
-            "DistortionStrength": 10.0,
-            "Duration": 36,
-            "EffectType": 1,
-            "EmissiveIntensity": 10.0,
-            "EndTrack": 114,
-            "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
-            "KeyFrames": [
-                {
-                    "Color": [
-                        0.14659643173217773,
-                        0.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Intensity": 10.609999656677246,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            ],
-            "LifeTime": 5127.78662109375,
-            "LifeTime_Particle": [
-                0.30000001192092896,
-                0.4000000059604645
-            ],
-            "Local": true,
-            "Loop": true,
-            "MaxLifeTime": 4.0,
-            "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
-            "Name": "Lightning_BIG2",
-            "NumInstance": 4,
-            "NumKeyFrames": 1,
-            "Orbit": false,
-            "OrbitAxis": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "OrbitSpeed": [
-                0.0,
-                0.0
-            ],
-            "PType": 0,
-            "Pivot": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "Range": [
-                0.05000000074505806,
-                0.05000000074505806,
-                0.30000001192092896
-            ],
-            "RenderGroup": 8,
-            "RotationAxis": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "RotationSpeed": [
-                0.0,
-                0.0
-            ],
-            "ShaderPass": 7,
-            "ShrinkThreshold": 0.009999999776482582,
-            "Size": [
-                0.4000000059604645,
-                0.699999988079071
-            ],
-            "Speed": [
-                0.0,
-                0.0
-            ],
-            "Spin": false,
-            "StartTrack": 78,
+            "StartTrack": 8,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
