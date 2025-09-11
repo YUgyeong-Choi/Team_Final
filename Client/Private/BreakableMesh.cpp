@@ -289,7 +289,7 @@ HRESULT CBreakableMesh::Render_Model()
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 			return E_FAIL;
-
+			
 		if (FAILED(m_pShaderCom->Begin(0)))
 			return E_FAIL;
 
@@ -464,6 +464,11 @@ HRESULT CBreakableMesh::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	_bool bUseTiling = false;
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &bUseTiling, sizeof(_bool))))
 		return E_FAIL;
 
 	//이미시브 끄기

@@ -519,17 +519,18 @@ HRESULT CMapTool::Save(const _char* Map)
 				json ObjectJson;
 				ObjectJson["WorldMatrix"] = MatrixJson;
 
-				// 모델 그룹 JSON이 object인지 확인하고 없으면 초기화
+				// 모델 그룹 JSON이 없으면 초기화
 				if (!BreakableJsonMap.contains(pMapToolObject->m_ModelName))
 				{
 					BreakableJsonMap[pMapToolObject->m_ModelName] = json::object();
 					BreakableJsonMap[pMapToolObject->m_ModelName]["Instances"] = json::array();
 
-					// 파일 탐색으로 프래그먼트 수 결정
+					// --- 파일 탐색으로 FragmentCount 결정 ---
 					_uint minDenom = UINT_MAX;
 					_uint maxDenom = 0;
 
-					regex pattern(pMapToolObject->m_ModelName + "_([0-9]+)of([0-9]+)\\.bin");
+					string modelNameStr = pMapToolObject->m_ModelName;
+					regex pattern(modelNameStr + "_([0-9]+)of([0-9]+)\\.bin");
 
 					for (auto& entry : filesystem::directory_iterator(PATH_NONANIM))
 					{
@@ -541,22 +542,18 @@ HRESULT CMapTool::Save(const _char* Map)
 
 						if (regex_match(filename, match, pattern))
 						{
-							_uint denom = stoi(match[2]);
+							_uint denom = stoi(match[2]); // 분모
 							minDenom = min(minDenom, denom);
 							maxDenom = max(maxDenom, denom);
 						}
 					}
 
-					_uint finalDenom;
-
-#ifdef FRAGMENT_MIN
-					finalDenom = minDenom;
-#endif // FRAGMENT_MIN
-
-
-#ifndef FRAGMENT_MIN
-					finalDenom = maxDenom;
-#endif // !FRAGMENT_MIN
+					_uint finalDenom = 0;
+					if (maxDenom != 0 && minDenom != UINT_MAX)
+					{
+						// bMaxFragment 전역/인자 플래그로 결정
+						finalDenom = (m_bMaxFragment ? maxDenom : minDenom);
+					}
 
 					BreakableJsonMap[pMapToolObject->m_ModelName]["FragmentCount"] = finalDenom;
 				}
@@ -569,8 +566,6 @@ HRESULT CMapTool::Save(const _char* Map)
 
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 			}
-
-
 		}
 
 		ModelJson["ObjectCount"] = iObjectCount;
@@ -584,10 +579,7 @@ HRESULT CMapTool::Save(const _char* Map)
 	MapDataFile << MapDataJson.dump(4);
 	StargazerFile << StargazerJsonArray.dump(4);
 	ErgoItemFile << ErgoItemJsonArray.dump(4);
-
-	json BreakableRoot;
-	BreakableRoot["Breakables"] = BreakableJsonMap;
-	BreakableFile << BreakableRoot.dump(4);
+	BreakableFile << BreakableJsonMap.dump(4);
 
 	MapDataFile.close();
 	ReadyModelFile.close();
@@ -849,18 +841,13 @@ HRESULT CMapTool::Load_Breakable(const _char* Map)
 	inFile >> DataJson;
 	inFile.close();
 
-	if (!DataJson.contains("Breakables"))
-		return S_OK;
-
-	const json& Breakables = DataJson["Breakables"];
-
-	// 모델별로 순회
-	for (auto it = Breakables.begin(); it != Breakables.end(); ++it)
+	// 최상위 바로 ModelName 확인
+	for (auto it = DataJson.begin(); it != DataJson.end(); ++it)
 	{
-		string strModelName = it.key();       // 모델 이름
-		const json& ModelData = it.value();   // { FragmentCount, Instances }
+		string strModelName = it.key();          // 모델 이름
+		const json& ModelData = it.value();     // { FragmentCount, Instances }
 
-		// FragmentCount 읽기 (안 쓰면 무시해도 됨)
+		// FragmentCount 읽기
 		_int iFragmentCount = 0;
 		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
 			iFragmentCount = ModelData["FragmentCount"].get<_int>();

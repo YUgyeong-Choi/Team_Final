@@ -70,7 +70,7 @@ private:
 	HRESULT Loading_Decal_Textures(_uint iLevelIndex, const _char* Map);
 
 	//부서질 수 있는 메쉬를 로딩한다.
-	HRESULT Loading_Breakable(_uint iLevelIndex, const _char* Map, _bool Maxfragment = false);
+	HRESULT Loading_Breakable(_uint iLevelIndex, const _char* Map);
 
 private:
 	//맵 소환(메쉬, 네비, 데칼 등...)

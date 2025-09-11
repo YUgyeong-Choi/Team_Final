@@ -4,8 +4,6 @@
 
 #include "MapToolObject.h"
 
-//#define FRAGMENT_MIN //이것이 켜져있으면 부서지는 오브젝트의 조각 수를 최소로 줄인다.
-
 NS_BEGIN(Client)
 
 class CMapTool final : public CYWTool
@@ -136,6 +134,10 @@ private:
 		"ERGO_SHARD", //희미한 에르고 조각
 		"PASSENGER_NOTE", //승객의 쪽지
 	};
+
+private:
+	//조각을 최대 갯수로 저장할지?
+	_bool m_bMaxFragment = { true };
 
 private:
 	//마우스 드랙 시작 포인트

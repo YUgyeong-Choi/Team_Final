@@ -1845,7 +1845,7 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 
 #include <regex>
 
-HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map, _bool Maxfragment)
+HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
 {
 	_matrix PreTransformMatrix = XMMatrixScaling(
 		PRE_TRANSFORMMATRIX_SCALE,
@@ -1862,23 +1862,20 @@ HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map, _bool Ma
 	json j;
 	ifs >> j;
 
-	// 최상위에 "Breakables" 체크
-	if (!j.contains("Breakables") || !j["Breakables"].is_object())
-		return S_OK;
-
-	for (auto& [ModelName, ModelData] : j["Breakables"].items())
+	// JSON 최상위 바로 ModelName 확인
+	for (auto& [ModelName, ModelData] : j.items())
 	{
-		// 푸오코 기둥은 무시
+		// 푸오코 기둥 무시
 		if (ModelName == "SM_Factory_BasePipe_07")
 			continue;
 
-		// JSON에 저장된 FragmentCount 사용
+		// FragmentCount 읽기
 		if (!ModelData.contains("FragmentCount"))
 			continue;
 
 		_uint finalDenom = ModelData["FragmentCount"].get<_uint>();
 
-		// --- 1 ~ finalDenom 범위의 조각들을 등록 ---
+		// 1 ~ finalDenom 범위의 조각 등록
 		for (_uint num = 1; num <= finalDenom; ++num)
 		{
 			wstring wsPrototypeTag =
@@ -1888,7 +1885,7 @@ HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map, _bool Ma
 			if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTag) == nullptr)
 			{
 				filesystem::path modelPath = filesystem::path(PATH_NONANIM) /
-					(ModelName + "_" + to_string(num) + "of" + to_string(finalDenom) + ".bin");
+					(ModelName + "_" + std::to_string(num) + "of" + std::to_string(finalDenom) + ".bin");
 
 				if (filesystem::exists(modelPath))
 				{
@@ -2189,14 +2186,8 @@ HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
 	inFile >> Json;
 	inFile.close();
 
-	// "Breakables" 오브젝트 접근
-	if (!Json.contains("Breakables") || !Json["Breakables"].is_object())
-		return E_FAIL;
-
-	auto& Breakables = Json["Breakables"];
-
-	// 모델명(key) - 데이터(value) 순회
-	for (auto& [ModelNameStr, ModelData] : Breakables.items())
+	// JSON에서 ModelName 바로 접근
+	for (auto& [ModelNameStr, ModelData] : Json.items())
 	{
 		wstring ModelName = StringToWString(ModelNameStr);
 
@@ -2223,12 +2214,15 @@ HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
 				for (_int col = 0; col < 4; ++col)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
-			// 푸오코 기둥 예외 처리
+			CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+			Desc.iLevelID = iLevelIndex;
+			Desc.WorldMatrix = WorldMatrix;
+			Desc.wsNavName = StringToWString(Map);
+
 			if (ModelNameStr == "SM_Factory_BasePipe_07")
 			{
-				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+				// 푸오코 기둥 예외 처리
 				Desc.bFireEaterBossPipe = true;
-				Desc.iLevelID = iLevelIndex;
 				Desc.iPartModelCount = 3;
 				Desc.ModelName = TEXT("Main");
 				Desc.vOffsets = {
@@ -2237,45 +2231,34 @@ HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
 					_float3(4.09f, -2.89f, 1.21f)
 				};
 				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
-				Desc.WorldMatrix = WorldMatrix;
-				Desc.wsNavName = StringToWString(Map);
-
-				if (FAILED(m_pGameInstance->Add_GameObject(
-					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-					return E_FAIL;
 			}
 			else
 			{
 				// 일반적인 부서짐
-				CBreakableMesh::BREAKABLEMESH_DESC Desc{};
 				Desc.bFireEaterBossPipe = false;
-				Desc.iLevelID = iLevelIndex;
 				Desc.iPartModelCount = FragmentCount;
 				Desc.ModelName = ModelName;
 
 				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
 				{
-					wstring PartName = ModelName + L'_' +
+					wstring PartName = ModelName + L"_" +
 						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
 
 					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
 					Desc.PartModelNames.push_back(PartName);
 				}
-
-				Desc.WorldMatrix = WorldMatrix;
-				Desc.wsNavName = StringToWString(Map);
-
-				if (FAILED(m_pGameInstance->Add_GameObject(
-					Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-					Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-					return E_FAIL;
 			}
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+				Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+				return E_FAIL;
 		}
 	}
 
 	return S_OK;
 }
+
 #pragma endregion
 
 
