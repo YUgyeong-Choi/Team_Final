@@ -613,6 +613,8 @@ void CButtler_Train::Reset()
 		m_isPatrol = true;
 
 	}
+
+	m_pWeapon->SetDamage(40.f);
 }
 
 HRESULT CButtler_Train::Ready_Weapon()

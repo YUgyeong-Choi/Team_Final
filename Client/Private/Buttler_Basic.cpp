@@ -560,6 +560,8 @@ void CButtler_Basic::Reset()
 		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
 
 	}
+
+	m_pWeapon->SetDamage(50.f);
 }
 
 HRESULT CButtler_Basic::Ready_Weapon()
