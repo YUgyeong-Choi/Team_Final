@@ -613,6 +613,7 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 
 	
 
+
 	Delete_Script();
 
 	m_bUseTeleport = true;
@@ -666,13 +667,21 @@ void CStargazer::Update_Button()
 	if (m_pSelectButtons.empty())
 		return;
 
-	if (!m_bUseScript)
+	if (!m_bUseScript || m_bUseOtherUI)
 		return;
 
+
 	if (m_iSelectButtonIndex < 0)
+	{
 		m_iSelectButtonIndex = 0;
+		return;
+	}
 	else if (m_iSelectButtonIndex >= static_cast<_int>(m_pSelectButtons.size()))
+	{
 		m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+		return;
+	}
+		
 
 	if (m_pGameInstance->Key_Down(DIK_W))
 	{
@@ -736,6 +745,8 @@ void CStargazer::Button_Interaction()
 			if (nullptr != pButton)
 				pButton->Active_Update(false);
 
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+
 		m_iSelectButtonIndex = -1;
 
 		m_bUseScript = false;
@@ -761,6 +772,8 @@ void CStargazer::Button_Interaction()
 		for (auto& pButton : m_pSelectButtons)
 			if (nullptr != pButton)
 				pButton->Active_Update(false);
+
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
 
 		m_iSelectButtonIndex = -1;
 
