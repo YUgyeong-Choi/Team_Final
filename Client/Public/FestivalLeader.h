@@ -189,11 +189,11 @@ private:
 
 	class CWeapon_Monster* m_pHammer{ nullptr };
 
+	_bool m_bSwitchHeadSpace = false;
 	_int m_iOriginBoneIndex = -1;
 	_int m_iNewParentIndex = -1;
-	_float4x4 m_StoredHeadLocalMatrix{};
 	_float4x4 m_HeadLocalInit{};
-	_bool m_bSwitchHeadSpace = false;
+	_float4x4 m_StoredHeadLocalMatrix{};
 
 	// 상태 관련
 	_bool m_bPhase2Processed = false;
@@ -203,11 +203,12 @@ private:
 
 
 	// 공격 관련
-	_float4 m_vCenterPos{ -0.195f, 0.f,-213.f ,1.f };
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
 	_int    m_iSwingComboCount = 0;
-	_int    m_iSwingComboLimit = 3;
+	_int    m_iSwingComboLimit = 4;
+	_float  m_fCanSmashDistance = 6.f;
+
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
@@ -232,10 +233,10 @@ private:
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
 	const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-	const _float DAMAGE_LIGHT = 10.f;
-	const _float DAMAGE_MEDIUM = 15.f;
-	const _float DAMAGE_HEAVY = 20.f;
-	const _float DAMAGE_FURY = 30.f;
+	const _float DAMAGE_LIGHT = 20.f;
+	const _float DAMAGE_MEDIUM = 25.f;
+	const _float DAMAGE_HEAVY = 30.f;
+	const _float DAMAGE_FURY = 35.f;
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

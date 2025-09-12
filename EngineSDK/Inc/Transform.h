@@ -40,10 +40,11 @@ public:
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[ENUM_CLASS(eState)]), vState);
 	}
 
-	void Set_SpeedPreSec(_float _fSpeeed) { m_fSpeedPerSec = _fSpeeed;}
-	_float Get_SpeedPreSec() { return m_fSpeedPerSec; }
-	void Set_RotationPreSec(_float _fSpeeed) { m_fRotationPerSec = _fSpeeed; }
+	void Set_SpeedPerSec(_float _fSpeeed) { m_fSpeedPerSec = _fSpeeed;}
+	_float Get_SpeedPerSec() { return m_fSpeedPerSec; }
 
+	void Set_RotationPerSec(_float _fSpeeed) { m_fRotationPerSec = _fSpeeed; }
+	_float Get_RotationPerSec() const { return m_fRotationPerSec; }
 	_matrix Get_WorldMatrix() {
 		return XMLoadFloat4x4(&m_WorldMatrix);
 	}
@@ -143,11 +144,7 @@ public:
 	void UpdateOrbit(_float fTimeDelta);
 
 public:
-	void SetfSpeedPerSec(_float fSpeedPerSec) { m_fSpeedPerSec = fSpeedPerSec; }
-	_float GetfSpeedPerSec() const { return m_fSpeedPerSec; }
 
-	void SetfRotationPerSec(_float fRotationPerSec) { m_fRotationPerSec = fRotationPerSec; }
-	_float GetfRotationPerSec() const { return m_fRotationPerSec; }
 
 	void SetbSpecialMoving() { m_bSpecialMoving = false; m_fSpecialMoveDuration = 0.f; }
 

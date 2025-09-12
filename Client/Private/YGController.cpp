@@ -69,7 +69,7 @@ void CYGController::Priority_Update(_float fTimeDelta)
 		vMoveDir = XMVector3Normalize(vMoveDir);
 
 		// 속도 * 시간 만큼 스케일
-		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+		_float fSpeed = m_pTransformCom->Get_SpeedPerSec();
 		_float fDist = fSpeed * fTimeDelta;
 		vMoveDir *= fDist;
 

@@ -51,11 +51,11 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_bSlow = (m_pGameInstance->Key_Pressing(DIK_LALT)) != 0;
 		// 속도 설정
 		if (m_bSprint)
-			m_pTransformCom->Set_SpeedPreSec(100.f);
+			m_pTransformCom->Set_SpeedPerSec(100.f);
 		else if (m_bSlow)
-			m_pTransformCom->Set_SpeedPreSec(1.f);
+			m_pTransformCom->Set_SpeedPerSec(1.f);
 		else
-			m_pTransformCom->Set_SpeedPreSec(10.f);
+			m_pTransformCom->Set_SpeedPerSec(10.f);
 
 		if (m_pGameInstance->Key_Pressing(DIK_A))
 		{

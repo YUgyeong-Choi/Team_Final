@@ -44,6 +44,7 @@ public:
 		_bool bSkill = false;
 		_bool bSpaceUP = false;
 		_bool bSpaceDown = false;
+		_bool bGetItem = false;
 
 	} m_Input;
 	

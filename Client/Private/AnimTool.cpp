@@ -1848,7 +1848,10 @@ HRESULT CAnimTool::Render_Spawn_Object()
 			if (pObj)
 			{
 				m_vecObjects.emplace_back(pObj);
+				if (m_vecObjects.back()->Get_Name() != L"Player")
+				{
 				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+				}
 				//pObj->Get_TransfomCom()->Scaling(_float3(5.f, 5.f, 5.f));
 			}
 		}

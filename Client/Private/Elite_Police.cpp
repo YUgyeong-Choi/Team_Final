@@ -387,7 +387,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 		_vector vDir = XMVector3Normalize(vTarget - vPos);
 
 		m_pAnimator->SetFloat("Distance ", abs(fDistance));
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_pAnimator->SetBool("Move", true);
 		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
 		m_eCurrentState = EEliteState::WALK;
@@ -519,12 +519,12 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(EliteMonsterStateID::Walk_R):
 	case ENUM_CLASS(EliteMonsterStateID::Walk_L):
 	{
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_eCurrentState = EEliteState::WALK;
 		break;
 	}
 	case ENUM_CLASS(EliteMonsterStateID::Run_F):
-		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fRunSpeed);
 		m_eCurrentState = EEliteState::RUN;
 		break;
 	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo1):

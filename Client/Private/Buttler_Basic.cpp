@@ -332,7 +332,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		{
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;	
-
+			m_isLookAt = false;
 			
 			return;
 		}

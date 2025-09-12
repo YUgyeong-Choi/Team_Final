@@ -43,6 +43,8 @@ public:
 	/* [ 직접 주는 pitch & yaw 값대로 오비탈 위치 가져옴 ] */
 	_matrix Get_OrbitalWorldMatrix(_float fPitch, _float fYaw);
 
+	_bool Get_bActive() { return m_bActive; }
+	void Set_bActive(_bool bActive) { m_bActive = bActive; }
 
 	/* [ 방향 벡터로 Yaw Pich 가지고오기 ] */
 	void Set_TargetYawPitch(_vector vDir, _float fLerpSpeed, _bool bActivePitch = true);
@@ -96,6 +98,9 @@ private:
 	_float m_fDistanceDelayElapsed = 0.f;  
 
 	_bool m_bActive = false;
+
+
+	_float m_fAlwaysDistanceTarget = 3.f;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.5f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수

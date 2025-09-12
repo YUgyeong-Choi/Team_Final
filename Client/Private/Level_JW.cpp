@@ -43,11 +43,7 @@ HRESULT CLevel_JW::Initialize()
 
 void CLevel_JW::Priority_Update(_float fTimeDelta)
 {
-	if (m_pGameInstance->Key_Down(DIK_F1))
-	{
-		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
-			return;
-	}
+
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
 }
 
@@ -60,7 +56,13 @@ void CLevel_JW::Update(_float fTimeDelta)
 
 void CLevel_JW::Late_Update(_float fTimeDelta)
 {
+	if (m_pGameInstance->Key_Down(DIK_F1))
+	{
+		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
+			return;
+	}
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
+
 }
 
 HRESULT CLevel_JW::Render()
@@ -124,10 +126,10 @@ HRESULT CLevel_JW::Ready_Lights()
 {
 	LIGHT_DESC			LightDesc{};
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.3f;
-	LightDesc.fIntensity = 1.f;
+	LightDesc.fAmbient = 0.6f;
+	LightDesc.fIntensity = 0.8f;
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDirection = _float4(0.f, 1.f, 0.f, 0.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.fFogDensity = 0.f;
 

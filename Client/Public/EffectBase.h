@@ -35,6 +35,9 @@ public:
 	// Keyframes
 	typedef struct tagEffectKeyFrame : public Engine::ISerializable
 	{
+		tagEffectKeyFrame() = default;
+		virtual ~tagEffectKeyFrame() = default;
+
 		_float3			vScale = { 1.f, 1.f, 1.f };
 		_float4			vRotation = { 0.f, 0.f, 0.f, 0.f };
 		_float3			vTranslation = { 0.f, 0.f, 0.f };

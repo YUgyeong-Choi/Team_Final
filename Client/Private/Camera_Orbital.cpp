@@ -53,9 +53,6 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 
 void CCamera_Orbital::Priority_Update(_float fTimeDelta)
 {
-	if (KEY_DOWN(DIK_T))
-		m_bActive = !m_bActive;
-
 
 	//if (KEY_DOWN(DIK_CAPSLOCK))
 	//	PrintMatrix("OribitalCameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
@@ -72,6 +69,13 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 
 	if (!m_pPlayer)
 		return;
+
+	
+	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
+	//if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
+	//	m_fAlwaysDistanceTarget = 3.f;
+	//else
+	//	m_fAlwaysDistanceTarget = 2.5f;
 
 	Update_LerpDistacne(fTimeDelta);
 
@@ -441,6 +445,7 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 		{
 			m_fDistance = 1.7f;
 			m_bTalkStart = false;
+			return;
 		}
 	}
 
@@ -452,6 +457,7 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 		{
 			m_fDistance = 3.f;
 			m_bTalkEnd = false;
+			return;
 		}
 	}
 
@@ -464,12 +470,14 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 		{
 			_float t = m_fDistnaceStartSpeed <= 0.f ? 1.f : (m_fDistanceLerpElapsed / m_fDistnaceStartSpeed);
 			m_fDistance = LerpFloat(3.f, m_fDistanceTarget, t);
+			return;
 		}
 		// delay hold
 		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime))
 		{
 			m_fDistanceDelayElapsed += fTimeDelta;
 			m_fDistance = m_fDistanceTarget;
+			return;
 		}
 		// phase 2: target -> 3.0
 		else if (m_fDistanceLerpElapsed <= (m_fDistnaceStartSpeed + m_fDistanceDelayTime + m_fDistnaceEndSpeed))
@@ -479,11 +487,13 @@ void CCamera_Orbital::Update_LerpDistacne(_float fTimeDelta)
 				: ((m_fDistanceLerpElapsed - (m_fDistnaceStartSpeed + m_fDistanceDelayTime)) / m_fDistnaceEndSpeed);
 
 			m_fDistance = LerpFloat(m_fDistanceTarget, 3.f, t);
+			return;
 		}
 		else
 		{
 			m_bDistanceLerp = false;
 			m_fDistance = 3.f;
+			return;
 		}
 	}
 }
