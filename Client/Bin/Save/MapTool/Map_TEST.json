@@ -1,5 +1,5 @@
 {
-    "ModelCount": 14,
+    "ModelCount": 18,
     "Models": [
         {
             "Collision": false,
@@ -387,7 +387,31 @@
         },
         {
             "Collision": false,
+            "ModelName": "SM_Exhibition_Box_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_02",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_04",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
             "ModelName": "SM_Factory_BasePipe_07",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Box_01",
             "ObjectCount": 0,
             "Objects": []
         },

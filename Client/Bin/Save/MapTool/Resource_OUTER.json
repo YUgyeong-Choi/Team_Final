@@ -981,6 +981,27 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Exhibition_Box_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_02",
+        "NoInstancing": false,
+        "ObjectCount": 4,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_04.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Exhibition_Pillar_06",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -1536,7 +1557,7 @@
         "Collision": false,
         "ModelName": "SM_OldTown_WoodBoard_03",
         "NoInstancing": false,
-        "ObjectCount": 16,
+        "ObjectCount": 15,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_WoodBoard_03.bin"
     },
     {

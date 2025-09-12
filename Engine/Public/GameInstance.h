@@ -282,6 +282,43 @@ public:
 	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
+#pragma region LOAD, READY MAP FUCTION
+public:
+	//여기서 맵에 필요한것들 모두 로드(맵, 데칼, 네비 등등...)
+	HRESULT Load_Map(_uint iLevelIndex, const _char* Map);
+
+	//<맵>에 필요한 메쉬들을 로딩한다.
+	HRESULT Loading_Meshs(_uint iLevelIndex, const _char* Map);
+	HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
+
+	//네비게이션을 로딩한다.
+	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool bForTool = false*/);
+
+	//필요한 데칼 텍스쳐를 로딩한다.
+	HRESULT Loading_Decal_Textures(_uint iLevelIndex, const _char* Map);
+
+	//부서질 수 있는 메쉬를 로딩한다.
+	HRESULT Loading_Breakable(_uint iLevelIndex, const _char* Map);
+
+public:
+	//맵 소환(메쉬, 네비, 데칼 등...)
+	HRESULT Ready_Map(_uint iLevelIndex, const _char* Map);
+
+	//메쉬 소환
+	HRESULT Ready_Meshs(_uint iLevelIndex, const _char* Map);
+	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
+	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
+
+	//네비게이션 소환
+	HRESULT Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map);
+
+	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
+	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);
+
+	//부서질 수 있는 메쉬를 소환한다.
+	HRESULT Ready_Breakable(_uint iLevelIndex, const _char* Map);
+#pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };

@@ -1822,6 +1822,7 @@ HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool
 
 	return S_OK;
 }
+
 HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 {
 	string ResourcePath = string("../Bin/Save/DecalTool/Resource_") + Map + ".json";
@@ -1862,8 +1863,6 @@ HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
 
 	return S_OK;
 }
-
-#include <regex>
 
 HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
 {
@@ -2194,6 +2193,7 @@ HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
 	return S_OK;
 
 }
+
 HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
 {
 	// JSON 경로
