@@ -624,23 +624,28 @@ void CShortCutDoor::Play_Sounds(_float fTimeDelta)
 
 	if (m_bCanOpen) // ¹® ¿°
 	{
-		if (m_fSoundTime > 1.6f && !m_bSoundPlay[0])
+		if (m_fSoundTime > 2.f && !m_bSoundPlay[0])
 		{
 			m_bSoundPlay[0] = true;
 			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Gear_", 3);
+		}
+		if (m_fSoundTime > 4.f && !m_bSoundPlay[1])
+		{
+			m_bSoundPlay[1] = true;
+			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Drop_", 3);
+		}
+		if (m_fSoundTime > 5.f && !m_bSoundPlay[2])
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Back_Drop_", 3);
+			m_bSoundPlay[2] = true;
+		}
+
+		if (m_fSoundTime > 6.3f && !m_bSoundPlay[3])
+		{
+			m_pSoundCom->Play("AMB_OJ_DR_Metal_Squeak_Open2");
+			m_bSoundPlay[3] = true;
 			m_bSoundActive = false;
 		}
-		//if (m_fSoundTime > 1.6f && !m_bSoundPlay[1])
-		//{
-		//	m_bSoundPlay[1] = true;
-		//	m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Drop_", 3);
-		//}
-		//if (m_fSoundTime > 1.8f && !m_bSoundPlay[2])
-		//{
-		//	m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Back_Drop_", 3);
-		//	m_bSoundPlay[2] = true;
-		//	m_bSoundActive = false;
-		//}
 	}
 	else
 	{

@@ -41,7 +41,7 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
-	void Play_Sound();
+	void Play_Sound(_float fTimeDelta);
 
 	void OpenDoor();
 
@@ -67,6 +67,9 @@ private:
 	_bool m_bStartCutScene = false;
 	_bool m_bRotationStart = false;
 
+	// 사운드 관련
+	_bool m_bStartSound = false;
+	_float m_fSoundDelta = {};
 public:
 	static CKeyDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

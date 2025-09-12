@@ -76,6 +76,9 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = false;
 	}
 #endif // _DEBUG
+
+	if (m_bStartSound)
+		Play_Sound(fTimeDelta);
 }
 
 void CKeyDoor::Update(_float fTimeDelta)
@@ -190,18 +193,25 @@ void CKeyDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
-void CKeyDoor::Play_Sound()
+void CKeyDoor::Play_Sound(_float fTimeDelta)
 {
-	//switch (m_eInteractType)
-	//{
-	//case Client::TUTORIALDOOR:
-	//	m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
-	//	m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
-	//	break;
-	//default:
-	//	break;
-	//}
-
+	m_fSoundDelta += fTimeDelta;
+	switch (m_eInteractType)
+	{
+	case Client::OUTDOOR:
+	{
+		if (m_fSoundDelta > 5.f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Metal_Bridge_Door", 0.7f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_Metal_Bridge_Door");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
+	default:
+		break;
+	}
 }
 
 void CKeyDoor::OpenDoor()
@@ -258,6 +268,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
+		m_bStartSound = true;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
