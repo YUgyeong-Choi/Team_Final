@@ -580,6 +580,7 @@ void CEliteUnit::UpdateNormalMove(_float fTimeDelta)
 			else if (iMoveDir == ENUM_CLASS(EMoveDirection::RIGHT))
 				m_pTransformCom->Go_Right(fTimeDelta, nullptr, m_pNaviCom);
             break;
+			m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
         }
 
         _float fY = m_pNaviCom->Compute_NavigationY(m_pTransformCom->Get_State(STATE::POSITION));
@@ -658,11 +659,27 @@ void CEliteUnit::Register_Events()
         });
 }
 
-PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
+PxTransform CEliteUnit::ToPxPose(const _fmatrix& W, const _matrix* pOffset )
 {
     _vector S, R, T;
     XMMatrixDecompose(&S, &R, &T, W);
     R = XMQuaternionNormalize(R);
+
+    // 로컬 오프셋 있으면: 회전만 적용해 T에 더함(스케일 영향 X),
+    //    회전 오프셋은 쿼터니언 합성
+    if (pOffset)
+    {
+        _vector So, Ro, To;
+        XMMatrixDecompose(&So, &Ro, &To, *pOffset);
+        Ro = XMQuaternionNormalize(Ro);
+
+        // 로컬 오프셋 벡터를 월드로 회전 후 위치에 더하기
+        _vector worldOff = XMVector3Rotate(To, R); 
+        T = XMVectorAdd(T, worldOff);
+
+        // 로컬 회전 오프셋도 반영
+        R = XMQuaternionMultiply(R, Ro);
+    }
 
     _float4 q; 
     XMStoreFloat4(&q, R);
@@ -673,24 +690,33 @@ PxTransform CEliteUnit::ToPxPose(const _fmatrix& W)
 
 PxTransform CEliteUnit::GetBonePose(CBone* pBone, const _matrix* pOffset) 
 {
-    if (!pBone) 
-        return PxTransform(PxIdentity);
+    //if (!pBone) 
+    //    return PxTransform(PxIdentity);
 
-    _matrix local = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix());
-    if (pOffset)
-    {
-		local = (*pOffset)* local;
-    }
+    //_matrix local = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix());
+    //if (pOffset)
+    //{
+    //    local = local*(*pOffset);
+    //}
 
 
-    _matrix mat = local *
+    //_matrix mat = local *
+    //    m_pTransformCom->Get_WorldMatrix();
+
+    ////if (pOffset)
+    ////    mat = (*pOffset)*mat;
+
+
+    //return ToPxPose(mat);
+   // bone(model) -> world
+    if (!pBone) return PxTransform(PxIdentity);
+
+    _matrix boneToWorld =
+        XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) *
         m_pTransformCom->Get_WorldMatrix();
 
-    //if (pOffset)
-    //    mat =  mat* (*pOffset);
-
-
-    return ToPxPose(mat);
+    // 오프셋은 ToPxPose에서 '회전만 적용' 방식으로 처리됨
+    return ToPxPose(boneToWorld, pOffset);
 }
 
 void CEliteUnit::ApplyAttackTypeToPlayer(EAttackType type)

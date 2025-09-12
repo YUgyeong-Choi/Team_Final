@@ -704,7 +704,7 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
-            m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+            m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
             if (m_pOwner->m_bWeaponEquipped)
             {
@@ -753,7 +753,7 @@ public:
         {
             if (KEY_PRESSING(DIK_R))
             {
-                m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+                m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
                 if (!m_pOwner->m_pAnimator->CheckBool("Grinding"))
                 {
                     m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -1128,7 +1128,7 @@ public:
             m_pOwner->m_bWeaponEquipped = false;
         }
 
-        m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+        m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
         m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */

@@ -951,7 +951,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::IDLE:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -962,7 +962,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::WALK:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -981,7 +981,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::RUN:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fRunSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -1006,7 +1006,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::SPRINT:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		if (m_fStamina >= 0.f)
 		{
@@ -1025,12 +1025,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::EQUIP:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::GUARD:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::ITEM:
@@ -1040,12 +1040,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::ITEM_WALK:
 	{
 
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::DASH_BACK:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.4f;
@@ -1075,7 +1075,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::DASH_FRONT:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
@@ -1104,7 +1104,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::DASH_FOCUS:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
@@ -1388,7 +1388,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GRINDER:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::PULSE:
@@ -1460,7 +1460,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 					MSG_BOX("이펙트 생성 실패함");
 			} 
 		}
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 
 
@@ -1905,7 +1905,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 	m_pAnimator->SetBool("Sprint", false);
 	m_pAnimator->SetBool("Run", false);
 
-	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
 	SyncTransformWithController();
@@ -2996,7 +2996,7 @@ void CPlayer::GetWeapon()
 {
 	m_pAnimator->SetTrigger("EquipWeapon");
 	m_pAnimator->ApplyOverrideAnimController("TwoHand");
-	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 	m_bWeaponEquipped = true;
 	m_bWalk = true;
 }
@@ -3032,7 +3032,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		/* [ 위치로 이동 ] */
 		m_Input.bMove = true;
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 		_bool SetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ 53.8f, XMVectorGetY(vPosition), -1.6f, 1.f}, m_pControllerCom);
 		if (SetPosition)
@@ -3665,7 +3665,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	/* [ 이동을 한다. ] */
 	_float3 moveVec = {};
-	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+	_float fSpeed = m_pTransformCom->Get_SpeedPerSec();
 	if (!m_bMovable){fSpeed = 0.f;}
 	string strName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 	if (m_MovableStates.find(strName) == m_MovableStates.end())

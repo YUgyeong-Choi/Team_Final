@@ -41,10 +41,10 @@ HRESULT CPreviewObject::Initialize(void* pArg)
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Preview"), TEXT("Target_Preview"))))
 		return E_FAIL;
 
-	m_pCameraTransformCom->Set_RotationPreSec(1.f);
-	m_pCameraTransformCom->Set_SpeedPreSec(1.f);
+	m_pCameraTransformCom->Set_RotationPerSec(1.f);
+	m_pCameraTransformCom->Set_SpeedPerSec(1.f);
 
-	m_pTransformCom->Set_RotationPreSec(3.f);
+	m_pTransformCom->Set_RotationPerSec(3.f);
 
 	Reset_CameraWorldMatrix();
 
