@@ -119,7 +119,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Balcony_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingA_Border_03",
         "NoInstancing": false,
         "ObjectCount": 12,
@@ -231,7 +231,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_RBorder_05.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingA_RoofWall_01",
         "NoInstancing": false,
         "ObjectCount": 16,
@@ -406,7 +406,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Store_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingA_Store_03",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -532,7 +532,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_23.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingA_Wall_24",
         "NoInstancing": false,
         "ObjectCount": 77,
@@ -658,7 +658,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingC_Wall_04",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -721,7 +721,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_22.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingC_Wall_23",
         "NoInstancing": false,
         "ObjectCount": 11,
@@ -784,7 +784,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_WoodPanel_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingC_WoodStore_02",
         "NoInstancing": false,
         "ObjectCount": 8,
@@ -798,7 +798,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_WoodStore_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingD_Border_08",
         "NoInstancing": false,
         "ObjectCount": 10,
@@ -1323,7 +1323,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_GateRoof_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Gate_GateWall_02",
         "NoInstancing": false,
         "ObjectCount": 6,
@@ -1435,7 +1435,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_LampRope_02.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Interior_Stall_01",
         "NoInstancing": false,
         "ObjectCount": 4,
@@ -1995,7 +1995,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_ClownPanel_04.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_ClownPanel_05",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -2226,7 +2226,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Vehicle_Carriage_13.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Vehicle_Stagecoach_01",
         "NoInstancing": false,
         "ObjectCount": 6,
@@ -2366,7 +2366,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Wall_VMBottomA_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Wall_VMBottomB",
         "NoInstancing": false,
         "ObjectCount": 4,
@@ -2422,7 +2422,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_BrickFloor_Circle_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "T_Tile_Soil",
         "NoInstancing": false,
         "ObjectCount": 1,
@@ -2436,7 +2436,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_Soil_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "T_Tile_StoneFloor_03",
         "NoInstancing": false,
         "ObjectCount": 7,

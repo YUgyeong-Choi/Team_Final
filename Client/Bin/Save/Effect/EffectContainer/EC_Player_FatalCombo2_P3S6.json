@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 2.0,
+            "EmissiveIntensity": 1.0,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -43,10 +43,10 @@
                     "Intensity": 2.450000047683716,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2269.79052734375,
+            "LifeTime": 2286.422607421875,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -106,6 +106,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.019999999552965164,
                 0.03999999910593033
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -145,10 +147,10 @@
                 0.0
             ],
             "Color": [
-                0.6544502973556519,
-                0.06167594715952873,
+                1.0,
                 0.0,
-                1.0
+                0.0,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 120,
@@ -212,7 +214,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1798.646728515625,
+            "LifeTime": 1815.3927001953125,
             "Loop": true,
             "Name": "Player_FatalCombo2_CircleFlareSprite1",
             "NumKeyFrames": 2,
@@ -248,8 +250,8 @@
             ],
             "Color": [
                 1.0,
-                0.3015816807746887,
-                0.10471206903457642,
+                1.0,
+                1.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -269,10 +271,10 @@
                     "Intensity": 2.259999990463257,
                     "Interpolation": 4,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         2.299999952316284,
@@ -314,7 +316,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1775.041259765625,
+            "LifeTime": 1791.7872314453125,
             "Loop": true,
             "Name": "Player_FatalCombo2_LensFlareSprite1",
             "NumKeyFrames": 2,
@@ -349,10 +351,10 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                0.0,
+                0.0,
+                0.0,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 120,
@@ -416,7 +418,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1650.052734375,
+            "LifeTime": 1666.7987060546875,
             "Loop": true,
             "Name": "Player_FatalCombo2_Distortion1",
             "NumKeyFrames": 2,
@@ -452,8 +454,8 @@
             ],
             "Color": [
                 1.0,
-                0.0,
-                0.0,
+                1.0,
+                1.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -518,7 +520,7 @@
                     ]
                 }
             ],
-            "LifeTime": 692.2340698242188,
+            "LifeTime": 708.9234619140625,
             "Loop": true,
             "Name": "Player_FatalCombo2_SlashSprite1",
             "NumKeyFrames": 2,
@@ -553,10 +555,10 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                0.0,
+                0.0,
+                0.0,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 120,
@@ -620,7 +622,7 @@
                     ]
                 }
             ],
-            "LifeTime": 692.2340698242188,
+            "LifeTime": 708.9234619140625,
             "Loop": true,
             "Name": "Player_FatalCombo2_Distortion2",
             "NumKeyFrames": 2,
@@ -672,7 +674,7 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 3.4000000953674316,
+            "EmissiveIntensity": 1.7000000476837158,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 15.0,
@@ -688,10 +690,10 @@
                     "Intensity": 2.25,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -706,7 +708,7 @@
                     ]
                 }
             ],
-            "LifeTime": 480.3118591308594,
+            "LifeTime": 497.001220703125,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -751,6 +753,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.05000000074505806
@@ -761,6 +764,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_03_C_HJS",
@@ -909,7 +913,7 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 3.4000000953674316,
+            "EmissiveIntensity": 1.7000000476837158,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -925,10 +929,10 @@
                     "Intensity": 2.2300000190734863,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -943,7 +947,7 @@
                     ]
                 }
             ],
-            "LifeTime": 525.628662109375,
+            "LifeTime": 542.3180541992188,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.8299999833106995
@@ -988,6 +992,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.05000000074505806
@@ -998,6 +1003,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_04_C_HJS",

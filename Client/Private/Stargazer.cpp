@@ -117,6 +117,50 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 			}
 
+			if (m_pGameInstance->Key_Down(DIK_F))
+			{
+				if (m_bTalkActive)
+				{
+					m_bAutoTalk = !m_bAutoTalk;
+
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+				}
+				
+			}
+
+			if (m_bAutoTalk && m_bTalkActive)
+			{
+				_bool bIsPlaying = false;
+				bIsPlaying = m_pSoundCom->IsPlaying(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+
+				if (!bIsPlaying)
+				{
+					++m_iScriptIndex;
+					// 대화 끝 인 경우.
+					if (m_iScriptIndex >= m_eScriptDatas.size())
+					{
+
+						m_iScriptIndex = 0;
+						m_bTalkActive = false;
+						m_eScriptDatas.clear();
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+						Ready_Script();
+						return;
+					}
+
+
+
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+
+					m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+					m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+				}
+
+			}
+
+
 			if (m_pGameInstance->Key_Down(DIK_SPACE))
 			{
 				// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
@@ -129,6 +173,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 				if (m_bTalkActive)
 				{
+					m_pSoundCom->StopAll();
 					if (nullptr != m_pGuide)
 					{
 						m_bUseOtherUI = true;
@@ -152,7 +197,11 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 					
 
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+
+					m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+					m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+
 				}
 
 			}
@@ -166,6 +215,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 					//m_eState = STARGAZER_STATE::FUNCTIONAL;
 					CUI_Manager::Get_Instance()->Activate_Popup(false);
 					m_pEffectSet->Activate_Stargazer_Reassemble();
+
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
+
+					
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
+
 					return;
 				}
 				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
@@ -217,17 +274,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 							}
 
 
-							m_bTalkActive = true;
-							CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
-							CCamera_Manager::Get_Instance()->SetbMoveable(false);
-
-							//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
-
-
-							CUI_Manager::Get_Instance()->Off_Panel();
-							CUI_Manager::Get_Instance()->Activate_Popup(false);
-							CUI_Manager::Get_Instance()->Activate_TalkScript(true);
-							CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
+						
 
 
 						}
@@ -250,6 +297,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				m_bUseOtherUI = false;
 
 				Delete_Script();
+				m_pSoundCom->StopAll();
 				return;
 			}
 
@@ -305,6 +353,24 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			m_pGuide = nullptr;
 
 			m_bUseOtherUI = false;
+
+			if (!m_eScriptDatas.empty())
+			{
+				m_bTalkActive = true;
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+				CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+				CUI_Manager::Get_Instance()->Off_Panel();
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				CUI_Manager::Get_Instance()->Activate_TalkScript(true);
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+
+				m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+				m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+			}
+
+		
+
 		}
 	}
 
@@ -511,6 +577,9 @@ void CStargazer::Register_Events()
 
 			static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
 
+			
+
+
 		});
 }
 
@@ -600,31 +669,43 @@ void CStargazer::Update_Button()
 	if (!m_bUseScript)
 		return;
 
+	if (m_iSelectButtonIndex < 0)
+		m_iSelectButtonIndex = 0;
+	else if (m_iSelectButtonIndex >= static_cast<_int>(m_pSelectButtons.size()))
+		m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+
 	if (m_pGameInstance->Key_Down(DIK_W))
 	{
-		if (m_iSelectButtonIndex < 0)
-			m_iSelectButtonIndex = 0;
-
+		// 이전 버튼 해제
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+
+		// 인덱스 감소 + 보정
 		--m_iSelectButtonIndex;
 		if (m_iSelectButtonIndex < 0)
 			m_iSelectButtonIndex = 0;
 
+		// 새로운 버튼 선택
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 	}
 	else if (m_pGameInstance->Key_Down(DIK_S))
 	{
-		if (m_iSelectButtonIndex >= m_pSelectButtons.size())
+		// 이전 버튼 해제
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+
+		// 인덱스 증가 + 보정
+		++m_iSelectButtonIndex;
+		if (m_iSelectButtonIndex >= static_cast<_int>(m_pSelectButtons.size()))
 			m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
 
-		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
-		++m_iSelectButtonIndex;
-		if (m_iSelectButtonIndex >= m_pSelectButtons.size())
-			m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+		// 새로운 버튼 선택
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 	}
 
-
+	
 }
 
 void CStargazer::Button_Interaction()
@@ -660,6 +741,12 @@ void CStargazer::Button_Interaction()
 		m_bUseScript = false;
 
 		m_bUseOtherUI = true;
+
+		// 버튼 입력 소리 추가
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
+
+
 	}
 	else if ("LevelUp" == m_ButtonEvents[m_iSelectButtonIndex])
 	{
@@ -681,6 +768,10 @@ void CStargazer::Button_Interaction()
 
 
 		m_bUseOtherUI = true;
+
+		// 버튼 입력 소리 추가
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
+
 	}
 
 	
@@ -859,6 +950,9 @@ HRESULT CStargazer::Ready_Components(void* pArg)
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Stargazer"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -905,4 +999,6 @@ void CStargazer::Free()
 	Safe_Release(m_pScript);
 	for (auto& pButton : m_pSelectButtons)
 		Safe_Release(pButton);
+
+	Safe_Release(m_pSoundCom);
 }

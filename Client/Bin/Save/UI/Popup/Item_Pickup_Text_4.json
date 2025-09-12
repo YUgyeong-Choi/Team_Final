@@ -1,0 +1,141 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 360,
+                        "iStartFrame": 300,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.013000000268220901,
+                "SizeY": 0.02500000037252903,
+                "Texturetag": "Prototype_Component_Texture_ItemType",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.4180000424385071,
+                "fY": 0.75,
+                "iPassIndex": 1,
+                "iTextureIndex": 2,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "크라트 기차역 정문 열쇠",
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 0.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 1.0,
+                        "iEndFrame": 360,
+                        "iStartFrame": 300,
+                        "isLoop": false
+                    },
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 30,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 0,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.25,
+                "SizeY": 0.32499998807907104,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.4410000145435333,
+                "fY": 0.7369999885559082,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 0.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 1.0,
+                "iEndFrame": 360,
+                "iStartFrame": 300,
+                "isLoop": false
+              },
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 30,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 0.03500000014901161,
+            "SizeY": 0.05999999865889549,
+            "Texturetag": "Prototype_Component_Texture_ItemIcon",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 0.36899998784065247,
+            "fY": 0.75,
+            "iPassIndex": 1,
+            "iTextureIndex": 3,
+            "iTextureLevel": 0
+          }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

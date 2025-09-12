@@ -7,7 +7,10 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CSoundController;
 NS_END
+
+
 
 NS_BEGIN(Client)
 
@@ -98,6 +101,7 @@ private:    /* [ 컴포넌트 ] */
 	CModel* m_pModelCom[ENUM_CLASS(STARGAZER_STATE::END)] = {nullptr};
 	CShader* m_pShaderCom = { nullptr };
 	CAnimator* m_pAnimator[ENUM_CLASS(STARGAZER_STATE::END)] = { nullptr };
+	CSoundController* m_pSoundCom = { nullptr };
 
 	// 대화가 있으면 따로 추가하기, npc처럼
 	vector<TALKDATA> m_eScriptDatas = { };
@@ -128,6 +132,8 @@ private:    /* [ 컴포넌트 ] */
 	//vector<CUIObject*> m_
 	class CUI_Guide* m_pGuide = {nullptr};
 	_bool m_isMakeGuide = {};
+
+	
 	
 protected:
 	HRESULT Ready_Components(void* pArg);

@@ -104,24 +104,26 @@ void CEffectContainer::Update(_float fTimeDelta)
 	// EC의 combinedworldmatrix 갱신
 	_matrix matSocket = XMMatrixIdentity();
 	_matrix matParent = XMMatrixIdentity();
-
-	if (m_pSocketMatrix != nullptr)
+	if (!m_bReadyDeath)
 	{
-		matSocket = XMLoadFloat4x4(m_pSocketMatrix);
-		for (_uint i = 0; i < 3; i++)
-			matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
+		if (m_pSocketMatrix != nullptr)
+		{
+			matSocket = XMLoadFloat4x4(m_pSocketMatrix);
+			for (_uint i = 0; i < 3; i++)
+				matSocket.r[i] = XMVector3Normalize(matSocket.r[i]);
+		}
+
+		if (m_pParentMatrix != nullptr)
+		{
+			matParent = XMLoadFloat4x4(m_pParentMatrix);
+			//for (_uint i = 0; i < 3; i++)
+			//	matParent.r[i] = XMVector3Normalize(matParent.r[i]);
+		}
+
+		_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
+
+		XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
 	}
-
-	if (m_pParentMatrix != nullptr)
-	{
-		matParent = XMLoadFloat4x4(m_pParentMatrix);
-		//for (_uint i = 0; i < 3; i++)
-		//	matParent.r[i] = XMVector3Normalize(matParent.r[i]);
-	}
-
-	_matrix matWorld = m_pTransformCom->Get_WorldMatrix();
-
-	XMStoreFloat4x4(&m_CombinedWorldMatrix, matWorld * matSocket * matParent);
 
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)

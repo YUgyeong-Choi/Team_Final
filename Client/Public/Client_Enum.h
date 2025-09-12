@@ -93,6 +93,7 @@ namespace Client
 		PULSE_CELL, //펄스 전지
 		ERGO_SHARD, //희미한 에르고 조각
 		PASSENGER_NOTE, //승객의 쪽지
+		KEY,
 		END
 	};
 #pragma endregion
