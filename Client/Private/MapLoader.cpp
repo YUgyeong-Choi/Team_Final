@@ -133,7 +133,7 @@ HRESULT CMapLoader::Ready_Map_Async()
 
 HRESULT CMapLoader::Load_Ready_Nav_All(_uint iLevelIndex)
 {
-	vector<const _char*> Maps = {"STATION", "HOTEL", "OUTER" /*FireEater*/ };
+	vector<const _char*> Maps = { "STATION", "HOTEL", "OUTER" , "FIRE_EATER" };
 
 	for (const _char* Map : Maps)
 	{

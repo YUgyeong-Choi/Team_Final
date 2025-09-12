@@ -85,7 +85,7 @@ public:
 	HRESULT Ready_Breakable(const _char* Map);
 
 private:
-	vector<const _char*> m_Maps = { "HOTEL", "OUTER"/*FireEater*/ };
+	vector<const _char*> m_Maps = { /*"HOTEL", "OUTER" ,*/"FIRE_EATER" };
 
 private:
 	// 완료된 맵 이름을 저장하는 스레드 안전 큐
