@@ -478,7 +478,7 @@ void CPlayer::Reset()
 	m_pWeapon->SetbIsActive(false);
 	m_bWeaponEquipped = false;
 	m_pWeapon->Reset();
-
+	m_bCanGetItem = false;
 	m_fHp = m_fMaxHp;
 	Callback_HP();
 	m_fStamina = m_fMaxStamina;
@@ -500,6 +500,7 @@ void CPlayer::Reset()
 	SetbIsGroggyAttack(false);
 	SetIsFatalBoss(false);
 	SetFatalTargetNull();
+
 
 }
 
@@ -1658,7 +1659,8 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
 	if (stateName == "Grinder") return eAnimCategory::GRINDER;
-	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0)
+	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0
+		||stateName.find("Item_Get_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
 	if (stateName.find("OnLamp") == 0 || stateName.find("FailItem") == 0)
 		return eAnimCategory::ITEM;
@@ -2074,6 +2076,7 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			pWeapon->Add_CollisonObj(this);
 			pUnit = pWeapon->Get_Owner();
+			m_eHitMotion = HITMOTION::NORMAL;
 		}
 		else
 		{

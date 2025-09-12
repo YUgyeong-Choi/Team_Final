@@ -97,7 +97,8 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fGroggyScale_Weak = 0.07f;
 	m_fGroggyScale_Strong = 0.09f;
 	m_fGroggyScale_Charge = 0.14f;
-
+	m_eCurrentState = EEliteState::CUTSCENE;
+	m_ePrevState = EEliteState::CUTSCENE;
 	return S_OK;
 }
 
@@ -409,6 +410,9 @@ void CFestivalLeader::Update_Collider()
 
 void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
+	if (m_eCurrentState == EEliteState::DEAD || m_bDead
+		|| m_eCurrentState == EEliteState::CUTSCENE)
+		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
 		m_fFirstChaseBeforeAttack -= fTimeDelta;
@@ -864,8 +868,9 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
+			cout << "Called SetRootStep" << endl;
 			m_fMaxRootMotionSpeed = 37.f;
-			m_fRootMotionAddtiveScale = 3.5f;
+			m_fRootMotionAddtiveScale = 4.f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()

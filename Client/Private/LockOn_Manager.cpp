@@ -281,7 +281,7 @@ CUnit* CLockOn_Manager::Find_ClosestToLookTarget()
     // ===== 설정 =====
     const _float wAngle = 0.35f;                     // 각도 가중치(정면 우선)
     const _float wDist = 0.65f;                     // 거리 가중치(가까운 대상 우선)
-    const _float cosHalfFov = cosf(XMConvertToRadians(60.f)); // 시야각에 있는 것만
+    const _float cosHalfFov = cosf(XMConvertToRadians(30.f)); // 시야각에 있는 것만
 
     // ===== 1) FOV 안의 타깃만 대상으로 최대 거리 계산 =====
     _float maxDist2 = 0.f;
