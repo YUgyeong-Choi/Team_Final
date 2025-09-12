@@ -910,83 +910,31 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	wcout << L"[MAP] STATION Ready 완료" << endl;
 
 
-	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	wcout << L"[MAP] HOTEL Load 완료" << endl;
+	//if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] HOTEL Load 완료" << endl;
 
-	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	wcout << L"[MAP] HOTEL Ready 완료" << endl;
-
-
-	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	wcout << L"[MAP] OUTER Load 완료" << endl;
-
-	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	wcout << L"[MAP] OUTER Ready 완료" << endl;
+	//if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] HOTEL Ready 완료" << endl;
 
 
-	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	wcout << L"[MAP] FIRE_EATER Load 완료" << endl;
+	//if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] OUTER Load 완료" << endl;
 
-	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	wcout << L"[MAP] FIRE_EATER Ready 완료" << endl;
+	//if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] OUTER Ready 완료" << endl;
 
 
-//#pragma region 멀티 스레드로 소환
-//	auto LoadAndReadyMap = [&](const char* mapName, _uint levelEnum)
-//		{
-//			return async(launch::async, [=]()
-//				{
-//					wcout << L"[" << StringToWString(mapName) << L"] Load 시작" << endl;
-//					auto start = chrono::high_resolution_clock::now();
-//
-//					if (FAILED(m_pMapLoader->Load_Map(levelEnum, mapName)))
-//						return E_FAIL;
-//
-//					auto afterLoad = chrono::high_resolution_clock::now();
-//					wcout << L"[" << StringToWString(mapName) << L"] Load 끝 ("
-//						<< chrono::duration<double>(afterLoad - start).count() << L"s)" << endl;
-//
-//					wcout << L"[" << StringToWString(mapName) << L"] Ready 시작" << endl;
-//					if (FAILED(m_pMapLoader->Ready_Map(levelEnum, mapName)))
-//						return E_FAIL;
-//
-//					auto afterReady = chrono::high_resolution_clock::now();
-//					wcout << L"[" << StringToWString(mapName) << L"] Ready 끝 ("
-//						<< chrono::duration<double>(afterReady - afterLoad).count()
-//						<< L"s, Total: "
-//						<< chrono::duration<double>(afterReady - start).count() << L"s)" << endl;
-//
-//					return S_OK;
-//				});
-//		};
-//
-//	//맵 생성 시작 로그
-//	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
-//	auto futureStation = LoadAndReadyMap("STATION", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	//lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
-//	//auto futureHotel = LoadAndReadyMap("HOTEL", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	//lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
-//	//auto futureOuter = LoadAndReadyMap("OUTER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	//lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
-//	//auto futureFireEater = LoadAndReadyMap("FIRE_EATER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-//
-//	//결과 확인
-//	if (FAILED(futureStation.get()))   return E_FAIL;
-//	//if (FAILED(futureHotel.get()))     return E_FAIL;
-//	//if (FAILED(futureOuter.get()))     return E_FAIL;
-//	//if (FAILED(futureFireEater.get())) return E_FAIL;
-//#pragma endregion
+	//if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] FIRE_EATER Load 완료" << endl;
+
+	//if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+	//	return E_FAIL;
+	//wcout << L"[MAP] FIRE_EATER Ready 완료" << endl;
 
 #endif // !TESTMAP
 

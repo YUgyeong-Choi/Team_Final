@@ -16,6 +16,7 @@ private:
 
 public:
 	HRESULT Initialize();
+	_bool Check_MapLoadComplete();
 
 public:
 	/*
@@ -25,7 +26,7 @@ public:
 	*/
 	HRESULT Ready_Map_Async();
 
-	HRESULT Ready_Etc();
+	HRESULT Ready_Etc(const _char* Map);
 
 public:
 	//여기서 맵에 필요한것들 모두 로드(맵, 데칼, 네비 등등...)
@@ -78,6 +79,11 @@ public:
 
 	HRESULT Ready_Breakable();
 	HRESULT Ready_Breakable(const _char* Map);
+
+private:
+	// 완료된 맵 이름을 저장하는 스레드 안전 큐
+	std::queue<const char*> m_ReadyQueue;
+	std::mutex m_QueueMutex;
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

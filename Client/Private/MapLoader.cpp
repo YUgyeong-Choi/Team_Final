@@ -11,6 +11,8 @@
 #include "ErgoItem.h"
 #include "Stargazer.h"
 
+#include <future>
+
 CMapLoader::CMapLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -26,37 +28,117 @@ HRESULT CMapLoader::Initialize()
 	return S_OK;
 }
 
+_bool CMapLoader::Check_MapLoadComplete()
+{
+	const char* mapName = nullptr;
+
+	{
+		std::lock_guard<std::mutex> lock(m_QueueMutex);
+		if (!m_ReadyQueue.empty())
+		{
+			mapName = m_ReadyQueue.front();
+			m_ReadyQueue.pop();
+		}
+	}
+
+	if (mapName)
+	{
+		Ready_Etc(mapName); // 메인 스레드에서 안전하게 호출
+		return true;
+	}
+
+	return false;
+	//else
+	//{
+	//	break; // 큐가 비어있으면 종료
+	//}
+}
+
+//HRESULT CMapLoader::Ready_Map_Async()
+//{
+//	#pragma region 멀티 스레드로 소환
+//	auto LoadAndReadyMap = [&](const _char* mapName, _uint levelEnum)
+//		{
+//			return async(launch::async, [=]()
+//				{
+//					wcout << L"[" << StringToWString(mapName) << L"] Load 시작" << endl;
+//					auto start = chrono::high_resolution_clock::now();
+//
+//					if (FAILED(Load_Map(levelEnum, mapName)))
+//						return E_FAIL;
+//
+//					auto afterLoad = chrono::high_resolution_clock::now();
+//					wcout << L"[" << StringToWString(mapName) << L"] Load 끝 ("
+//						<< chrono::duration<_double>(afterLoad - start).count() << L"s)" << endl;
+//
+//					wcout << L"[" << StringToWString(mapName) << L"] Ready 시작" << endl;
+//					if (FAILED(Ready_Map(levelEnum, mapName)))
+//						return E_FAIL;
+//
+//					auto afterReady = chrono::high_resolution_clock::now();
+//					wcout << L"[" << StringToWString(mapName) << L"] Ready 끝 ("
+//						<< chrono::duration<_double>(afterReady - afterLoad).count()
+//						<< L"s, Total: "
+//						<< chrono::duration<_double>(afterReady - start).count() << L"s)" << endl;
+//
+//					//기타 등등 준비
+//					Ready_Etc(mapName);
+//
+//					return S_OK;
+//				});
+//		};
+//
+//
+//	auto futureHotel = LoadAndReadyMap("HOTEL", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+//
+//	auto futureOuter = LoadAndReadyMap("OUTER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+//
+//	//auto futureFireEater = LoadAndReadyMap("FIRE_EATER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+//
+//
+//	//결과 확인
+//	//if (FAILED(futureHotel.get()))     return E_FAIL;
+//	//if (FAILED(futureOuter.get()))     return E_FAIL;
+//	//if (FAILED(futureFireEater.get())) return E_FAIL;
+//#pragma endregion
+//
+//	return S_OK;
+//}
+
 HRESULT CMapLoader::Ready_Map_Async()
 {
+	std::vector<const char*> maps = { "HOTEL", "OUTER"/*FireEater*/};
 
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
+	for (const char* mapName : maps)
+	{
+		std::thread([=]()
+			{
+				cout << "[" << mapName << "] Load 시작" << endl;
+				if (FAILED(Load_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
+					return;
 
+				cout << "[" << mapName << "] Ready 시작" << endl;
+				if (FAILED(Ready_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
+					return;
 
+				// 스레드 종료 시 큐에 mapName 등록
+				{
+					std::lock_guard<std::mutex> lock(m_QueueMutex);
+					m_ReadyQueue.push(mapName);
+				}
 
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
+			}).detach();
+	}
 
 	return S_OK;
 }
-
-HRESULT CMapLoader::Ready_Etc()
+HRESULT CMapLoader::Ready_Etc(const _char* Map)
 {
+	Add_MapActor(Map);
+	Ready_Monster(Map);
+	Ready_Stargazer(Map);
+	Ready_Breakable(Map);
+
 	return S_OK;
 }
 
@@ -770,12 +852,12 @@ HRESULT CMapLoader::Ready_Monster()
 #ifndef TESTMAP
 	if (FAILED(Ready_Monster("STATION")))
 		return E_FAIL;
-	if (FAILED(Ready_Monster("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Monster("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Monster("FIRE_EATER")))
-		return E_FAIL;
+	//if (FAILED(Ready_Monster("HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Monster("OUTER")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Monster("FIRE_EATER")))
+		//return E_FAIL;
 #endif // !TESTMAP
 
 #pragma endregion
@@ -849,12 +931,12 @@ HRESULT CMapLoader::Ready_Stargazer()
 #ifndef TESTMAP
 	if (FAILED(Ready_Stargazer("STATION")))
 		return E_FAIL;
-	if (FAILED(Ready_Stargazer("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Stargazer("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Stargazer("FIRE_EATER")))
-		return E_FAIL;
+	//if (FAILED(Ready_Stargazer("HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Stargazer("OUTER")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Stargazer("FIRE_EATER")))
+	//	return E_FAIL;
 #endif // !TESTMAP
 
 	return S_OK;
@@ -939,12 +1021,12 @@ HRESULT CMapLoader::Ready_ErgoItem()
 #ifndef TESTMAP
 	if (FAILED(Ready_ErgoItem("STATION")))
 		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("FIRE_EATER")))
-		return E_FAIL;
+	//if (FAILED(Ready_ErgoItem("HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_ErgoItem("OUTER")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_ErgoItem("FIRE_EATER")))
+	//	return E_FAIL;
 #endif // !TESTMAP
 
 	return S_OK;
@@ -1034,12 +1116,12 @@ HRESULT CMapLoader::Ready_Breakable()
 #ifndef TESTMAP
 	if (FAILED(Ready_Breakable("STATION")))
 		return E_FAIL;
-	if (FAILED(Ready_Breakable("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Breakable("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Breakable("FIRE_EATER")))
-		return E_FAIL;
+	//if (FAILED(Ready_Breakable("HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Breakable("OUTER")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Breakable("FIRE_EATER")))
+	//	return E_FAIL;
 #endif // !TESTMAP
 
 	return S_OK;

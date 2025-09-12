@@ -50,6 +50,9 @@ CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D
 HRESULT CLevel_KratCentralStation::Initialize()
 {
 	m_pMapLoader = CMapLoader::Create(m_pDevice, m_pContext);
+	
+	//첫 맵(스테이션은 로딩완료), 게임중에 다른 맵 로딩 시작
+	m_pMapLoader->Ready_Map_Async();
 
 	/* [ 레벨 셋팅 ] */
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
@@ -131,6 +134,9 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+	if (m_pMapLoader->Check_MapLoadComplete())
+		Ready_OctoTree();
+
 	if (!m_bEndVideo)
 		return;
 
@@ -240,16 +246,17 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	/* [ 해야할 준비들 ] */
 	/*if (FAILED(Ready_Dummy()))
 		return E_FAIL;*/
+
 	if (FAILED(m_pMapLoader->Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(m_pMapLoader->Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
-	if (FAILED(m_pMapLoader->Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
-	if (FAILED(m_pMapLoader->Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
+	//if (FAILED(m_pMapLoader->Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
+	//	return E_FAIL;
+	//if (FAILED(m_pMapLoader->Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
+	//	return E_FAIL;
+	//if (FAILED(m_pMapLoader->Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
+	//	return E_FAIL;
 
 	//고사양 모드
 	if (FAILED(Ready_Lights()))
