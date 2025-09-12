@@ -16,8 +16,8 @@ class CFestivalLeader final : public CBossUnit
 
 		Idle = 100008,
 
-		CutScene_Start = 1001170,
-		CutScene_End = 1001171,
+		CutScene_Start = 100170,
+		CutScene_End = 100171,
 
 
 		Atk_Jump_Start = 100010,

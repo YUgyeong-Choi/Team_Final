@@ -564,7 +564,7 @@
                 {
                     "EventName": "SetRootStep",
                     "Time": 1.0
-                },       
+                },
                 {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 22.0
@@ -603,7 +603,6 @@
                     "EventName": "SetRootStep",
                     "Time": 1.0
                 },
-               
                 {
                     "EventName": "ColliderLeftHandOn",
                     "Time": 31.0
@@ -1274,6 +1273,14 @@
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 92.0
+                },
+                {
+                    "EventName": "ColliderHammerOff",
+                    "Time": 115.0
+                },
+                {
+                    "EventName": "ColliderHammerOn",
+                    "Time": 120.0
                 },
                 {
                     "EventName": "ColliderHammerOff",

@@ -265,6 +265,7 @@ public: /* [ 특수 모션 관련 ] */
 	void IsPerfectGard(_float fTimeDelta);
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
+	void NotifyCanGetItem(_bool bCanGet) { m_bCanGetItem = bCanGet; }
 public: /* [ 부여 속성 관련 ] */
 	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
 	void SetElementTypeWeight(EELEMENT eElement, _float fValue);
@@ -464,6 +465,7 @@ private: /* [ 아이템 사용 관련 변수 ] */
 	_float	 m_fItemTime = {};
 	_bool	 m_bLampSwitch = {};
 	_float	 m_fLampTime = {};
+	_bool    m_bCanGetItem = { false };
 	
 private: /* [ 벨트 슬롯 ] */
 	_bool	 m_bUseLamp = {};
