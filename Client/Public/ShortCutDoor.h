@@ -44,8 +44,10 @@ public:
 	void Play_Sound();
 
 	void OpenDoor();
+	void ActivateUnlock(); // 자물쇠 해제 애니메이션 재생
 
 	void Move_Player(_float fTimeDelta);
+	void Register_Events();
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(SHORTCUTDOORMESH_DESC* pDesc);
@@ -55,6 +57,7 @@ protected:
 	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 private:
 	HRESULT Render_Key();
+	void Start_Effect(_float fTimeDelta);
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	class CAnimator* m_pAnimator = { nullptr };
@@ -70,6 +73,13 @@ private:
 	_bool m_bRotationStart = false;
 
 	_bool m_bCanOpen = false;
+
+	// 플레이어 move 풀기 위한 
+	_float m_fEscapeTime = 0.f;
+	_bool m_bCanMovePlayer = false;
+
+	_bool m_bEffectActive = false;
+	_float m_fEffectTime = 0.f;
 
 	// 자물쇠
 	class CModel* m_pModelComFrontKey = { nullptr };

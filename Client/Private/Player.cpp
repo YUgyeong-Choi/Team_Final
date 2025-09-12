@@ -39,6 +39,7 @@
 #include "Client_Calculation.h"
 
 #include "SpringBoneSys.h"
+#include <ShortCutDoor.h>
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -239,10 +240,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 		if (KEY_DOWN(DIK_Z))
 		{
-			static _bool bEfActv = { true };
-			bEfActv = !bEfActv;
-
-			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), bEfActv);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
+		}
+		if (KEY_DOWN(DIK_X))
+		{
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
 		}
 	}
 	/* [ 플레이어가 속한 구역탐색 ] */
@@ -263,6 +265,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
+	if (fTimeDelta < 0.0002f)
+		return;
+
+
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
@@ -491,6 +497,10 @@ void CPlayer::Reset()
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	SetbIsGroggyAttack(false);
+	SetIsFatalBoss(false);
+	SetFatalTargetNull();
+
 }
 
 CAnimController* CPlayer::GetCurrentAnimContrller()
@@ -583,7 +593,7 @@ void CPlayer::HPSubtract()
 	if (m_fHp <= 0.f)
 		m_fHp = 0.f;
 
-	Callback_HP();
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 }
 
 
@@ -632,6 +642,7 @@ void CPlayer::HandleInput()
 	m_Input.bSkill = KEY_DOWN(DIK_F);
 	m_Input.bSpaceUP = KEY_UP(DIK_SPACE);
 	m_Input.bSpaceDown = KEY_DOWN(DIK_SPACE);
+	m_Input.bGetItem = KEY_DOWN(DIK_E);
 	
 	/* [ 뛰기 걷기를 토글합니다. ] */
 	if (KEY_DOWN(DIK_Z))
@@ -945,7 +956,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::IDLE:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -956,7 +967,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::WALK:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -975,7 +986,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::RUN:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fRunSpeed);
 
 		if (m_fStamina <= m_fMaxStamina)
 		{
@@ -1000,7 +1011,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::SPRINT:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		if (m_fStamina >= 0.f)
 		{
@@ -1019,12 +1030,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::EQUIP:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::GUARD:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::ITEM:
@@ -1034,12 +1045,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	case eAnimCategory::ITEM_WALK:
 	{
 
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::DASH_BACK:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.4f;
@@ -1069,7 +1080,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::DASH_FRONT:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
@@ -1098,7 +1109,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::DASH_FOCUS:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fSprintSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fSprintSpeed);
 
 		m_fMoveTime += fTimeDelta;
 		_float  m_fTime = 0.5f;
@@ -1235,6 +1246,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_pLegionArm->Use_LegionEnergy(20.f);
 			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
+
+			CEffectContainer::DESC Lightdesc = {};
+			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_LeftarmBIGLIGHT"), &Lightdesc))
+				MSG_BOX("이펙트 생성 실패함");
 		}
 
 		RootMotionActive(fTimeDelta);
@@ -1382,7 +1400,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::GRINDER:
 	{
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
 	case eAnimCategory::PULSE:
@@ -1454,7 +1472,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 					MSG_BOX("이펙트 생성 실패함");
 			} 
 		}
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
 
 
@@ -1735,8 +1753,9 @@ void CPlayer::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnSwordSkillTrail", [this]()
 		{
-			if (m_pWeapon)
+			if (m_pWeapon&& Get_PlayerState() == EPlayerState::MAINSKILL)
 			{
+				
 				m_pWeapon->Set_WeaponTrail_Active(true,TRAIL_SKILL_BLUE);
 			}
 		});
@@ -1878,6 +1897,16 @@ void CPlayer::Register_Events()
 					pKeyDoor->OpenDoor();
 				}
 			});
+
+		m_pAnimator->RegisterEventListener("OnInteractionShortCutDoor", [this]()
+			{
+				if (auto pShortCutDoor = dynamic_cast<CShortCutDoor*>(m_pInterectionStuff))
+				{
+					pShortCutDoor->ActivateUnlock();
+				}
+			});
+
+		
 }
 
 _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
@@ -1888,10 +1917,11 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 	m_pAnimator->SetBool("Sprint", false);
 	m_pAnimator->SetBool("Run", false);
 
-	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 	_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 	_bool bFinishSetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ XMVectorGetX(vTargetPos), XMVectorGetY(vPosition), XMVectorGetZ(vTargetPos), 1.f}, m_pControllerCom);
-	
+
+	SyncTransformWithController();
 	return bFinishSetPosition;
 }
 
@@ -1905,6 +1935,12 @@ _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 
 void CPlayer::RootMotionActive(_float fTimeDelta)
 {
+#ifdef _DEBUG
+	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
+	if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+		return;
+#endif
+
 	CAnimation* pCurAnim = m_pAnimator->GetCurrentAnim();
 	_bool bUseRoot = (pCurAnim && pCurAnim->IsRootMotionEnabled());
 	if (bUseRoot)
@@ -1997,7 +2033,7 @@ void CPlayer::Update_Collider_Actor()
 void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	/* [ 플레이어 피격 ] */
-	if (m_bIsInvincible)
+	if (m_bIsInvincible || m_fHp <= 0.f)
 		return;
 
 
@@ -2195,7 +2231,7 @@ void CPlayer::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	/* [ 플레이어 피격 ] */
-	if (m_bIsInvincible)
+	if (m_bIsInvincible || m_fHp <= 0.f)
 		return;
 
 
@@ -2313,6 +2349,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		CBossUnit* pBoss = dynamic_cast<CBossUnit*>(pOther);
 		if (pBoss)
 		{
+			if (pBoss->HasCollided())
+				return;
 			//필요한 정보를 수집한다.
 			m_eHitedTarget = eHitedTarget::BOSS;
 			m_pHitedTarget = pBoss;
@@ -2739,7 +2777,7 @@ HRESULT CPlayer::Ready_UIParameters()
 			if (m_fHp > m_fMaxHp)
 				m_fHp = m_fMaxHp;
 
-			Callback_HP();
+			m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 		}
 			
 		
@@ -2836,9 +2874,9 @@ HRESULT CPlayer::Ready_Effect()
 {
 	CEffectContainer::DESC desc = {};
 	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(1.f, 6.f, 0.f)); // 조금 더 플레이어 전방에 있었으면 좋겠어서,,
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 6.f, 0.f)); // 조금 더 플레이어 전방에 있었으면 좋겠어서,,
 	CEffectContainer* pEffect = { nullptr };
-	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Rain_PlayerFollow"), &desc));
+	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Rain_NewPlayerFollow"), &desc));
 
 	if (pEffect == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
@@ -2916,6 +2954,7 @@ void CPlayer::Callback_Mana()
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"MaxMana"), &m_fMaxMana);
 }
 
+
 void CPlayer::Add_Mana(_float fMana)
 {
 	m_fMana += fMana;
@@ -2954,9 +2993,9 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 		break;
 	case Client::SHORTCUT:
 		if (bOpen)
-			stateName = "";
+			stateName = "LiftDoor_Activate";
 		else
-			stateName = "";
+			stateName = "LiftDoor_Fail";
 		break;
 	default:
 		break;
@@ -2970,7 +3009,7 @@ void CPlayer::GetWeapon()
 {
 	m_pAnimator->SetTrigger("EquipWeapon");
 	m_pAnimator->ApplyOverrideAnimController("TwoHand");
-	m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+	m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 	m_bWeaponEquipped = true;
 	m_bWalk = true;
 }
@@ -3006,7 +3045,7 @@ void CPlayer::SlidDoorMove(_float fTimeDelta)
 	{
 		/* [ 위치로 이동 ] */
 		m_Input.bMove = true;
-		m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		_vector vPosition = m_pTransformCom->Get_State(STATE::POSITION);
 		_bool SetPosition = m_pTransformCom->Go_FrontByPosition(fTimeDelta, _fvector{ 53.8f, XMVectorGetY(vPosition), -1.6f, 1.f}, m_pControllerCom);
 		if (SetPosition)
@@ -3136,7 +3175,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 			m_bIsForceDead = true;
 		}
 
-		Callback_HP();
+		m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 		
@@ -3500,6 +3539,7 @@ void CPlayer::Create_LeftArm_Lightning()
 
 void CPlayer::Movement(_float fTimeDelta)
 {
+
 	SyncTransformWithController();
 
 	if (!CCamera_Manager::Get_Instance()->GetbMoveable())
@@ -3572,11 +3612,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 
 void CPlayer::SetMoveState(_float fTimeDelta)
 {
-#ifdef _DEBUG
-	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
-	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
-		return;
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	_int iCurLevel = m_pGameInstance->GetCurrentLevelIndex();
+//	if (iCurLevel == ENUM_CLASS(LEVEL::JW))
+//		return;
+//#endif // _DEBUG
 
 	_vector vCamLook = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::LOOK);
 	_vector vCamRight = m_pCamera_Orbital->Get_TransfomCom()->Get_State(STATE::RIGHT);
@@ -3638,7 +3678,7 @@ void CPlayer::SetMoveState(_float fTimeDelta)
 
 	/* [ 이동을 한다. ] */
 	_float3 moveVec = {};
-	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+	_float fSpeed = m_pTransformCom->Get_SpeedPerSec();
 	if (!m_bMovable){fSpeed = 0.f;}
 	string strName = m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
 	if (m_MovableStates.find(strName) == m_MovableStates.end())

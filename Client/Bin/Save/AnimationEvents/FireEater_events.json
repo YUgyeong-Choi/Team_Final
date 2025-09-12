@@ -12,22 +12,6 @@
             "Duration": 142.0,
             "Events": [
                 {
-                    "EventName": "ColliderArmOn",
-                    "Time": 36.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 59.0
-                },
-                {
-                    "EventName": "OnGroundScratchEffect",
-                    "Time": 41.0
-                },
-                {
-                    "EventName": "OffGroundScratchEffect",
-                    "Time": 43.0
-                },
-                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 21.0
                 },
@@ -38,6 +22,22 @@
                 {
                     "EventName": "SwingAfterSalmSound",
                     "Time": 33.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 36.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 41.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 43.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 59.0
                 }
             ],
             "IsLoop": false,
@@ -53,14 +53,6 @@
                     "Time": 10.0
                 },
                 {
-                    "EventName": "ColliderArmOn",
-                    "Time": 55.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 61.0
-                },
-                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 33.0
                 },
@@ -69,12 +61,20 @@
                     "Time": 38.0
                 },
                 {
+                    "EventName": "ColliderArmOn",
+                    "Time": 55.0
+                },
+                {
                     "EventName": "OnSlamEffect",
                     "Time": 56.0
                 },
                 {
                     "EventName": "SlamSound",
                     "Time": 56.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,
@@ -86,20 +86,20 @@
             "Duration": 125.0,
             "Events": [
                 {
-                    "EventName": "ColliderArmOn",
-                    "Time": 45.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 55.0
-                },
-                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 30.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 45.0
+                },
+                {
+                    "EventName": "SwingAfterSalmSound",
+                    "Time": 45.0
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
@@ -110,8 +110,8 @@
                     "Time": 51.0
                 },
                 {
-                    "EventName": "SwingAfterSalmSound",
-                    "Time": 45.0
+                    "EventName": "ColliderArmOff",
+                    "Time": 55.0
                 }
             ],
             "IsLoop": false,
@@ -137,16 +137,12 @@
             "Duration": 106.0,
             "Events": [
                 {
-                    "EventName": "IsFront",
-                    "Time": 90.0
-                },
-                {
                     "EventName": "ColliderArmOn",
                     "Time": 54.0
                 },
                 {
-                    "EventName": "ColliderArmOff",
-                    "Time": 79.0
+                    "EventName": "SwingAfterSalmSound",
+                    "Time": 56.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -157,8 +153,12 @@
                     "Time": 76.0
                 },
                 {
-                    "EventName": "SwingAfterSalmSound",
-                    "Time": 56.0
+                    "EventName": "ColliderArmOff",
+                    "Time": 79.0
+                },
+                {
+                    "EventName": "IsFront",
+                    "Time": 90.0
                 }
             ],
             "IsLoop": false,
@@ -188,8 +188,8 @@
                     "Time": 25.0
                 },
                 {
-                    "EventName": "ColliderArmOff",
-                    "Time": 48.0
+                    "EventName": "SwingImpactSound",
+                    "Time": 29.0
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
@@ -200,8 +200,8 @@
                     "Time": 43.0
                 },
                 {
-                    "EventName": "SwingImpactSound",
-                    "Time": 29.0
+                    "EventName": "ColliderArmOff",
+                    "Time": 48.0
                 }
             ],
             "IsLoop": false,
@@ -224,20 +224,20 @@
                     "Time": 46.0
                 },
                 {
-                    "EventName": "OnRollingSparkEffect",
-                    "Time": 47.0
-                },
-                {
                     "EventName": "OnSlamEffect",
                     "Time": 46.0
                 },
                 {
-                    "EventName": "SwingAtkStartSound",
+                    "EventName": "SlamSound",
+                    "Time": 46.0
+                },
+                {
+                    "EventName": "OnRollingSparkEffect",
                     "Time": 47.0
                 },
                 {
-                    "EventName": "SlamSound",
-                    "Time": 46.0
+                    "EventName": "SwingAtkStartSound",
+                    "Time": 47.0
                 }
             ],
             "IsLoop": false,
@@ -257,24 +257,24 @@
                     "Time": 33.0
                 },
                 {
-                    "EventName": "ColliderArmOff",
-                    "Time": 55.0
+                    "EventName": "SwingImpactSound",
+                    "Time": 34.0
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
                     "Time": 39.0
                 },
                 {
-                    "EventName": "OffGroundScratchEffect",
-                    "Time": 50.0
-                },
-                {
                     "EventName": "DecalScratchEffect",
                     "Time": 44.0
                 },
                 {
-                    "EventName": "SwingImpactSound",
-                    "Time": 34.0
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 50.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 55.0
                 }
             ],
             "IsLoop": false,
@@ -286,16 +286,16 @@
             "Duration": 40.0,
             "Events": [
                 {
+                    "EventName": "SlamSound",
+                    "Time": 5.0
+                },
+                {
                     "EventName": "CameraShake",
                     "Time": 28.0
                 },
                 {
                     "EventName": "OnSlamEffect",
                     "Time": 28.0
-                },
-                {
-                    "EventName": "SlamSound",
-                    "Time": 5.0
                 }
             ],
             "IsLoop": false,
@@ -315,24 +315,16 @@
                     "Time": 48.0
                 },
                 {
-                    "EventName": "CameraShake",
-                    "Time": 106.0
-                },
-                {
-                    "EventName": "ColliderArmOn",
-                    "Time": 99.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 106.0
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 82.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 88.0
                 },
                 {
-                    "EventName": "SlowAnimSpeed",
-                    "Time": 82.0
+                    "EventName": "ColliderArmOn",
+                    "Time": 99.0
                 },
                 {
                     "EventName": "OnSlamEffect",
@@ -341,6 +333,14 @@
                 {
                     "EventName": "SlamSound",
                     "Time": 99.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 106.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 106.0
                 }
             ],
             "IsLoop": false,
@@ -369,14 +369,6 @@
             "Duration": 40.0,
             "Events": [
                 {
-                    "EventName": "CameraShake",
-                    "Time": 14.0
-                },
-                {
-                    "EventName": "CameraShake",
-                    "Time": 35.0
-                },
-                {
                     "EventName": "FastAnimSpeed",
                     "Time": 1.0
                 },
@@ -387,6 +379,14 @@
                 {
                     "EventName": "ActivateFuryState",
                     "Time": 4.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 14.0
+                },
+                {
+                    "EventName": "CameraShake",
+                    "Time": 35.0
                 }
             ],
             "IsLoop": false,
@@ -398,32 +398,32 @@
             "Duration": 106.0,
             "Events": [
                 {
-                    "EventName": "CameraShake",
-                    "Time": 18.0
-                },
-                {
                     "EventName": "Turnning",
                     "Time": 6.0
-                },
-                {
-                    "EventName": "ColliderFootOn",
-                    "Time": 37.0
-                },
-                {
-                    "EventName": "ColliderFootOff",
-                    "Time": 51.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
+                    "EventName": "CameraShake",
+                    "Time": 18.0
+                },
+                {
                     "EventName": "FastAnimSpeed",
                     "Time": 30.0
                 },
                 {
+                    "EventName": "ColliderFootOn",
+                    "Time": 37.0
+                },
+                {
                     "EventName": "ResetAnimSpeed",
                     "Time": 48.0
+                },
+                {
+                    "EventName": "ColliderFootOff",
+                    "Time": 51.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -467,28 +467,24 @@
             "Duration": 145.0,
             "Events": [
                 {
-                    "EventName": "CameraShake",
-                    "Time": 42.0
-                },
-                {
                     "EventName": "Turnning",
                     "Time": 13.0
                 },
                 {
-                    "EventName": "ColliderArmOn",
-                    "Time": 42.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 47.0
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 19.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 32.0
                 },
                 {
-                    "EventName": "SlowAnimSpeed",
-                    "Time": 19.0
+                    "EventName": "CameraShake",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "ColliderArmOn",
+                    "Time": 42.0
                 },
                 {
                     "EventName": "OnSlamEffect",
@@ -497,6 +493,10 @@
                 {
                     "EventName": "SlamSound",
                     "Time": 42.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 47.0
                 }
             ],
             "IsLoop": false,
@@ -508,20 +508,12 @@
             "Duration": 210.0,
             "Events": [
                 {
-                    "EventName": "ColliderArmOn",
-                    "Time": 82.0
+                    "EventName": "ActivateFuryState",
+                    "Time": 1.0
                 },
                 {
-                    "EventName": "BeginStrikeFuryCollisionFlag",
-                    "Time": 82.0
-                },
-                {
-                    "EventName": "SlowAnimSpeed",
-                    "Time": 155.0
-                },
-                {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 166.0
+                    "EventName": "OnFury",
+                    "Time": 3.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
@@ -532,22 +524,6 @@
                     "Time": 58.0
                 },
                 {
-                    "EventName": "EndStrikeFuryCollisionFlag",
-                    "Time": 145.0
-                },
-                {
-                    "EventName": "ColliderArmOff",
-                    "Time": 145.0
-                },
-                {
-                    "EventName": "OnFury",
-                    "Time": 3.0
-                },
-                {
-                    "EventName": "OffFury",
-                    "Time": 158.0
-                },
-                {
                     "EventName": "StrikeSound",
                     "Time": 58.0
                 },
@@ -556,8 +532,32 @@
                     "Time": 58.0
                 },
                 {
-                    "EventName": "ActivateFuryState",
-                    "Time": 1.0
+                    "EventName": "ColliderArmOn",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "BeginStrikeFuryCollisionFlag",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "EndStrikeFuryCollisionFlag",
+                    "Time": 145.0
+                },
+                {
+                    "EventName": "ColliderArmOff",
+                    "Time": 145.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 155.0
+                },
+                {
+                    "EventName": "OffFury",
+                    "Time": 158.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 166.0
                 },
                 {
                     "EventName": "DeactivateFuryState",
@@ -581,12 +581,12 @@
                     "Time": 82.0
                 },
                 {
-                    "EventName": "FireOilSecond",
-                    "Time": 126.0
-                },
-                {
                     "EventName": "FireOilSound",
                     "Time": 82.0
+                },
+                {
+                    "EventName": "FireOilSecond",
+                    "Time": 126.0
                 },
                 {
                     "EventName": "FireOilSound",
@@ -617,12 +617,12 @@
                     "Time": 50.0
                 },
                 {
-                    "EventName": "FireBallCombo",
-                    "Time": 75.0
-                },
-                {
                     "EventName": "FireBallSound",
                     "Time": 50.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 75.0
                 }
             ],
             "IsLoop": false,
@@ -642,12 +642,12 @@
                     "Time": 15.0
                 },
                 {
-                    "EventName": "FireBallCombo",
-                    "Time": 60.029998779296875
-                },
-                {
                     "EventName": "FireBallSound",
                     "Time": 15.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 60.029998779296875
                 }
             ],
             "IsLoop": false,
@@ -667,12 +667,12 @@
                     "Time": 50.0
                 },
                 {
-                    "EventName": "FireBallCombo",
-                    "Time": 75.0
-                },
-                {
                     "EventName": "FireBallSound",
                     "Time": 50.0
+                },
+                {
+                    "EventName": "FireBallCombo",
+                    "Time": 75.0
                 }
             ],
             "IsLoop": false,
@@ -704,24 +704,24 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "Flamethrower",
-                    "Time": 17.0
+                    "EventName": "FlamethrowerLoopSound",
+                    "Time": 4.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 58.0
+                    "EventName": "Flamethrower",
+                    "Time": 35.0
                 },
                 {
                     "EventName": "OnFlamethrowerEffect",
-                    "Time": 27.0
+                    "Time": 37.0
                 },
                 {
-                    "EventName": "FlamethrowerLoopSound",
-                    "Time": 4.0
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
@@ -733,24 +733,24 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "Flamethrower",
-                    "Time": 17.0
+                    "EventName": "FlamethrowerLoopSound",
+                    "Time": 4.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 58.0
+                    "EventName": "Flamethrower",
+                    "Time": 35.0
                 },
                 {
                     "EventName": "OnFlamethrowerEffect",
-                    "Time": 27.0
+                    "Time": 37.0
                 },
                 {
-                    "EventName": "FlamethrowerLoopSound",
-                    "Time": 4.0
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 58.0
                 }
             ],
             "IsLoop": false,
@@ -787,12 +787,12 @@
                     "Time": 57.0
                 },
                 {
-                    "EventName": "FireBall",
-                    "Time": 89.0
-                },
-                {
                     "EventName": "FireBallSound",
                     "Time": 57.0
+                },
+                {
+                    "EventName": "FireBall",
+                    "Time": 89.0
                 },
                 {
                     "EventName": "FireBallSound",
@@ -808,20 +808,20 @@
             "Duration": 400.0,
             "Events": [
                 {
-                    "EventName": "SpawnFlameField",
-                    "Time": 208.0
-                },
-                {
-                    "EventName": "FurnaceCloseSound",
-                    "Time": 370.0
-                },
-                {
                     "EventName": "FurnaceOpenSound",
                     "Time": 49.0
                 },
                 {
                     "EventName": "BellyFireSpawn",
                     "Time": 57.0
+                },
+                {
+                    "EventName": "SpawnFlameField",
+                    "Time": 208.0
+                },
+                {
+                    "EventName": "FurnaceCloseSound",
+                    "Time": 370.0
                 }
             ],
             "IsLoop": false,
@@ -833,12 +833,12 @@
             "Duration": 248.0,
             "Events": [
                 {
-                    "EventName": "ResetRootStep",
-                    "Time": 25.0
-                },
-                {
                     "EventName": "SetRootStep",
                     "Time": 3.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 25.0
                 },
                 {
                     "EventName": "StandUpSound",
@@ -868,10 +868,6 @@
             "Duration": 651.0,
             "Events": [
                 {
-                    "EventName": "CameraShake",
-                    "Time": 252.0
-                },
-                {
                     "EventName": "ColliderArmOff",
                     "Time": 1.0
                 },
@@ -880,32 +876,36 @@
                     "Time": 1.0
                 },
                 {
-                    "EventName": "ActiveHpBar",
-                    "Time": 440.0
-                },
-                {
                     "EventName": "StandUpSound",
                     "Time": 27.0
-                },
-                {
-                    "EventName": "SlamSound",
-                    "Time": 252.0
-                },
-                {
-                    "EventName": "StartPhase1Sound",
-                    "Time": 351.0
-                },
-                {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 260.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 250.0
                 },
                 {
+                    "EventName": "CameraShake",
+                    "Time": 252.0
+                },
+                {
+                    "EventName": "SlamSound",
+                    "Time": 252.0
+                },
+                {
                     "EventName": "OnCutSceneEffect",
                     "Time": 252.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 260.0
+                },
+                {
+                    "EventName": "StartPhase1Sound",
+                    "Time": 351.0
+                },
+                {
+                    "EventName": "ActiveHpBar",
+                    "Time": 440.0
                 }
             ],
             "IsLoop": false,
@@ -1055,12 +1055,12 @@
             "Duration": 541.0,
             "Events": [
                 {
-                    "EventName": "CollidersOff",
-                    "Time": 10.0
-                },
-                {
                     "EventName": "DeadSoundEffect",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "CollidersOff",
+                    "Time": 10.0
                 }
             ],
             "IsLoop": false,
@@ -1132,15 +1132,15 @@
             "Events": [
                 {
                     "EventName": "MoveSound",
+                    "Time": 0.0
+                },
+                {
+                    "EventName": "MoveSound",
                     "Time": 10.0
                 },
                 {
                     "EventName": "MoveSound",
                     "Time": 61.0
-                },
-                {
-                    "EventName": "MoveSound",
-                    "Time": 0.0
                 }
             ],
             "IsLoop": true,

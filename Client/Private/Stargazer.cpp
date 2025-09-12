@@ -9,6 +9,7 @@
 #include "UI_SelectLocation.h"
 #include "UI_Levelup.h"
 #include "StargazerEffect.h"
+#include "UI_Guide.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -123,10 +124,16 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				{
 					Button_Interaction();
 
+					
 				}
 
 				if (m_bTalkActive)
 				{
+					if (nullptr != m_pGuide)
+					{
+						m_bUseOtherUI = true;
+					}
+					
 					++m_iScriptIndex;
 
 					// 대화 끝 인 경우.
@@ -143,6 +150,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 						return;
 					}
 
+					
 
 					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), false);
 				}
@@ -157,6 +165,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 					m_bChange = true;
 					//m_eState = STARGAZER_STATE::FUNCTIONAL;
 					CUI_Manager::Get_Instance()->Activate_Popup(false);
+					m_pEffectSet->Activate_Stargazer_Reassemble();
 					return;
 				}
 				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
@@ -193,6 +202,21 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 						// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
 						if (!m_bTalkActive)
 						{
+							if (!m_isMakeGuide)
+							{
+								CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
+								eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Stargazer.json") };
+
+								m_pGuide = static_cast<CUI_Guide*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
+																	ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), &eGuideDesc));
+					
+
+
+								m_isMakeGuide = true;
+								return;
+							}
+
+
 							m_bTalkActive = true;
 							CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
 							CCamera_Manager::Get_Instance()->SetbMoveable(false);
@@ -251,6 +275,10 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	{
 		m_pScript->Priority_Update(fTimeDelta);
 	}
+	if (nullptr != m_pGuide)
+	{
+		m_pGuide->Priority_Update(fTimeDelta);
+	}
 
 	if (m_bUseTeleport)
 	{
@@ -262,8 +290,23 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		CUI_Manager::Get_Instance()->On_Panel();
 		CUI_Manager::Get_Instance()->Activate_Popup(false);
 		CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+
+
+
 	}
 
+
+	if (m_pGameInstance->Key_Down(DIK_SPACE))
+	{
+		if (nullptr != m_pGuide)
+		{
+			Safe_Release(m_pGuide);
+			m_pGuide = nullptr;
+
+			m_bUseOtherUI = false;
+		}
+	}
 
 
 
@@ -289,7 +332,8 @@ void CStargazer::Update(_float fTimeDelta)
 
 	}
 
-	
+	if (nullptr != m_pGuide)
+		m_pGuide->Update(fTimeDelta);
 
 }
 
@@ -305,6 +349,8 @@ void CStargazer::Late_Update(_float fTimeDelta)
 	}
 
 
+	if (nullptr != m_pGuide)
+		m_pGuide->Late_Update(fTimeDelta);
 
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
@@ -452,6 +498,19 @@ void CStargazer::Register_Events()
 				m_eState = STARGAZER_STATE::FUNCTIONAL;
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
 			m_pEffectSet->Activate_Stargazer_Spread();
+
+			CUI_Container::UI_CONTAINER_DESC eDesc{};
+			eDesc.fLifeTime = 8.f;
+			eDesc.useLifeTime = true;
+			eDesc.strFilePath = TEXT("../Bin/Save/UI/StargazerActivated.json");
+
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated"), &eDesc);
+
+			CUI_Container* pObj = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated")));
+
+			static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
+
 		});
 }
 

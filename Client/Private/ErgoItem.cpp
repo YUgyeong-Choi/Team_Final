@@ -64,11 +64,25 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			Set_bDead();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			// 아이템 태그에 맞춰서 어떤 아이템을 먹었는지 알려주기
+			if (m_eItemTag != ITEM_TAG::PULSE_CELL)
+			{
+				// 아이템 태그에 맞춰서 어떤 아이템을 먹었는지 알려주기
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(m_eItemTag));
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+			}
+			else
+			{
+				// 펄스는 관련 guide ui 띄우기
 
-			CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+			}
+
+			
 
 			// 이펙트 삭제 로직 필요
+			if (m_pEffect)
+				m_pEffect->End_Effect();
+			// 없어지는 이펙트 추가할 것 - 채영
 		}
 
 	}
@@ -132,7 +146,7 @@ _bool CErgoItem::Check_Player_Close()
 	_vector vDiff = vPos - vPlayerPos;
 	_float fDist = XMVectorGetX(XMVector3Length(vDiff));
 
-	if (fDist < 1.f)
+	if (fDist < 1.5f)
 		return true;
 	else
 		return false;
@@ -171,7 +185,9 @@ HRESULT CErgoItem::Ready_Effect()
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc);
+	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+	if (m_pEffect == nullptr)
+		return E_FAIL;
 
 	return S_OK;
 }

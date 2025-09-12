@@ -6,6 +6,7 @@
 #include "LockOn_Manager.h"
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
+#include "UI_Guide.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CEliteUnit{ pDevice, pContext }
@@ -73,7 +74,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHp = 500.f;
+	m_fMaxHp = 1000.f;
 	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
@@ -204,6 +205,27 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
+
+
+	if (!m_isFirstGroggy)
+	{
+		if (m_eCurrentState == EEliteState::GROGGY)
+		{
+			// 두개 생성 시작
+			CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+			eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Groggy.json") ,  TEXT("../Bin/Save/UI/Guide/Guide_Fatal.json") };
+
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Guide"), &eDesc);
+
+			
+			m_pGameInstance->Set_GameTimeScale(0.000001f);
+
+			m_isFirstGroggy = true;
+		}
+	}
+
 }
 
 void CElite_Police::Update(_float fTimeDelta)
@@ -351,7 +373,7 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 		_vector vDir = XMVector3Normalize(vTarget - vPos);
 
 		m_pAnimator->SetFloat("Distance ", abs(fDistance));
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_pAnimator->SetBool("Move", true);
 		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
 		m_eCurrentState = EEliteState::WALK;
@@ -483,12 +505,12 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(EliteMonsterStateID::Walk_R):
 	case ENUM_CLASS(EliteMonsterStateID::Walk_L):
 	{
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_eCurrentState = EEliteState::WALK;
 		break;
 	}
 	case ENUM_CLASS(EliteMonsterStateID::Run_F):
-		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fRunSpeed);
 		m_eCurrentState = EEliteState::RUN;
 		break;
 	case ENUM_CLASS(EliteMonsterStateID::Atk_Combo1):

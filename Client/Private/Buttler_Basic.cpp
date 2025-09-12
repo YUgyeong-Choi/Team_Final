@@ -40,7 +40,7 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 	m_fDetectDist = 10.f;
 	m_fGroggyThreshold = 100;
 
-	m_fHp = 300;
+	m_fHp = 500;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
@@ -332,7 +332,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		{
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;	
-
+			m_isLookAt = false;
 			
 			return;
 		}
@@ -351,6 +351,8 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 		
+		if (m_isFatal)
+			return;
 		
 
 		if (!m_isCanGroggy)
@@ -419,7 +421,10 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
-		if (m_strStateName.find("Fatal") != m_strStateName.npos || m_strStateName.find("Down") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
+		if(m_strStateName.find("Fatal") != m_strStateName.npos ||
+			m_strStateName.find("Down") != m_strStateName.npos ||
+			m_strStateName.find("KnockBack") != m_strStateName.npos ||
+			m_strStateName.find("Hit") != m_strStateName.npos)
 		{
 			m_isLookAt = false;
 			m_isCollisionPlayer = false;
@@ -429,9 +434,10 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
+		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos && m_strStateName.find("Hit") == m_strStateName.npos)
 		{
 			m_fAwaySpeed = 1.f;
+			m_fKnockBackSpeed = 5.f;
 			RootMotionActive(fTimeDelta);
 
 			return;
@@ -440,7 +446,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-		if (m_strStateName.find("Away") != m_strStateName.npos)
+		if (m_strStateName.find("Away") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
 		{
 			m_fAwaySpeed -= fTimeDelta * 0.5f;
 
@@ -451,19 +457,21 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+			if(m_strStateName.find("Away") != m_strStateName.npos)
+				m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+			else 
+				m_pTransformCom->Go_Dir(vLook * -1.f, fTimeDelta * m_fAwaySpeed * 0.25f, nullptr, m_pNaviCom);
 		}
 		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 		{
-			m_fAwaySpeed -= fTimeDelta * 0.5f;
+			m_fKnockBackSpeed -= fTimeDelta * 10.f;
 
-			if (m_fAwaySpeed <= 0.f)
-				m_fAwaySpeed = 0.f;
+			if (m_fKnockBackSpeed <= 0.f)
+				m_fKnockBackSpeed = 0.f;
 
 			RootMotionActive(fTimeDelta);
 
-			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 		}
 
 	}
@@ -521,7 +529,7 @@ void CButtler_Basic::Start_Fatal_Reaction()
 
 void CButtler_Basic::Reset()
 {
-	m_fHp = 300;
+	m_fHp = 450;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
@@ -545,6 +553,13 @@ void CButtler_Basic::Reset()
 	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 
 	m_isFatal = false;
+
+	if (m_eSpawnType != SPAWN_TYPE::IDLE)
+	{
+		m_pAnimator->SetTrigger("ChangeSpawnPattern");
+		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
+
+	}
 }
 
 HRESULT CButtler_Basic::Ready_Weapon()

@@ -550,7 +550,7 @@
     <Filter Include="02.GameObjects\03.Item\ErgoItem">
       <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffects">
+    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffect">
       <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\Loading\MapLoader">
@@ -1144,6 +1144,9 @@
     <ClInclude Include="..\Public\ShortCutDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StargazerEffect.h">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h" />
     <ClInclude Include="..\public\MapLoader.h">
       <Filter>01.Levels\Loading\MapLoader</Filter>
@@ -1709,6 +1712,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ShortCutDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp" />
     <ClCompile Include="..\private\MapLoader.cpp">

@@ -26,12 +26,12 @@
       "damping": [ 0.96, 0.94 ]
     },
     "Item": {
-      "stiffness": [ 0.22, 0.27 ],
-      "gScale": [ 0.05, 0.1 ],
-      "downBias": [ 0.05, 0.1 ],
-      "follow": [ 0.55, 0.75 ],
-      "maxDeg": [ 120.0, 170.0 ],
-      "damping": [ 0.96, 0.93 ]
+      "stiffness": [ 0.07, 0.1 ],
+      "gScale": [ 0.2, 0.35 ],
+      "downBias": [ 0.1, 0.2 ],
+      "follow": [ 0.3, 0.5 ],
+      "maxDeg": [ 120.0, 160.0 ],
+      "damping": [ 0.95, 0.97 ]
     },
     "Other": {
       "downBias": [ 0.26, 0.44 ],

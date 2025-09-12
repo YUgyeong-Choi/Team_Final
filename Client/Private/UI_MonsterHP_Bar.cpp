@@ -49,6 +49,8 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
         m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
         m_pTransformCom->Scaling(0.1f * pDesc->fSizeX, 0.015f * pDesc->fSizeY, 1.f);
+
+        m_fOffset = 0.07f;
     }
     else
     {
@@ -68,10 +70,12 @@ HRESULT CUI_MonsterHP_Bar::Initialize(void* pArg)
 
         m_pTransformCom->Rotation(0.f, 0.f, XMConvertToRadians(m_fRotation));
 
+        m_fOffset = 0.07f;
+
         m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_fX - ViewportDesc.Width * 0.5f, -m_fY + ViewportDesc.Height * 0.5f, m_fOffset, 1.f));
 
 
-        m_fOffset = 0.1f;
+      
 
         m_fRenderTime = 1.f;
     }
@@ -102,22 +106,23 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
         else
         {
             m_fRenderTime = 0.f;
-            m_fDamage = 0.f;
+     
         }
+
+  
+    }
+    
+    if (m_fDamageRenderTime > 0.f)
+    {
+        m_fDamageRenderTime -= fTimeDelta;
     }
     else
     {
-        if (m_fDamageRenderTime > 0.f)
-        {
-            m_fDamageRenderTime -= fTimeDelta;
-        }
-        else
-        {
-            m_fDamageRenderTime = 0.f;
-            m_fDamage = 0.f;
-        }
-
+        m_fDamageRenderTime = 0.f;
+        m_fDamage = 0.f;
     }
+
+    
     
 
     _float fRatio = *m_pHP / (m_fMaxHp);
@@ -172,6 +177,7 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
             m_fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
             m_fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
+            m_fOffset = 0.07f + vDist * 0.001f;
 
             XMFLOAT4X4 world{};
             world._11 = vScale.m128_f32[0] * g_iWinSizeX;  // 픽셀 단위 스케일
@@ -180,11 +186,11 @@ void CUI_MonsterHP_Bar::Late_Update(_float fTimeDelta)
             world._44 = 1.f;
             world._41 = m_fX - 0.5f * g_iWinSizeX;
             world._42 = -m_fY + 0.5f * g_iWinSizeY;
-            world._43 = 0.f;
+            world._43 = m_fOffset;
 
 
             //  가까운게 그려질 수 있도록
-            m_fOffset = vDist * 0.001f;
+           
 
 
 
@@ -238,6 +244,7 @@ HRESULT CUI_MonsterHP_Bar::Render()
             m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.0375f , m_fY - g_iWinSizeY * 0.02f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
     }
 
+    // 보스 이름
     if (!m_strName.empty())
     {
         m_pGameInstance->Draw_Font_Centered(L"Font_Bold", m_strName.c_str(), { m_fX , m_fY - g_iWinSizeY * 0.03f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.625f, 0.f);
@@ -251,7 +258,8 @@ void CUI_MonsterHP_Bar::Reset()
 {
     m_fDamage = 0.f;
     m_fRenderTime = 0.f;
-
+    m_fDamageRenderTime = 0.f;
+    m_fCurrentRatio = 1.f;
 }
 
 HRESULT CUI_MonsterHP_Bar::Ready_Components()

@@ -53,6 +53,9 @@ protected:
 
 	_float	m_fElapsedTime = {};
 
+	// 아이템에 이펙트 하나는 있을 거라 가정하고 부모에 추가함
+	class CEffectContainer* m_pEffect = { nullptr };
+
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;
 	virtual void Free() override;

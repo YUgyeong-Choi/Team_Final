@@ -154,7 +154,9 @@ HRESULT CUI_Button::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
-	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX - 0.5f * m_fSizeX , m_fY - 0.5f * m_fSizeY + m_fPadding.y * 0.5f }, XMLoadFloat4(&m_vColor), 0.f, { 0.f,0.f }, m_fFontSize);
+
+
+	m_pGameInstance->Draw_Font(TEXT("Font_Medium"), m_strCaption.c_str(), { m_fX - 0.5f * m_fSizeX + m_fPadding.x * 0.5f, m_fY - 0.5f * m_fSizeY + m_fPadding.y * 0.5f }, XMLoadFloat4(&m_vColor), 0.f, { 0.f,0.f }, m_fFontSize);
 
 
 	return S_OK;

@@ -40,7 +40,7 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	m_fDetectDist = 15.f;
 	m_fGroggyThreshold = 100;
 
-	m_fHp = 300;
+	m_fHp = 400;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
@@ -49,7 +49,9 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine2");
 	m_vRayOffset = { 0.f, 1.f, 0.f, 0.f };
 
-	m_fDamage = 10.f;
+	m_fDamage = 50.f;
+
+	m_CanFatal = false;
 
 	return S_OK;
 }
@@ -391,14 +393,14 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 	}
 	else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 	{
-		m_fAwaySpeed -= fTimeDelta * 3.f;
+		m_fKnockBackSpeed -= fTimeDelta * 10.f;
 
-		if (m_fAwaySpeed <= 0.f)
-			m_fAwaySpeed = 0.f;
+		if (m_fKnockBackSpeed <= 0.f)
+			m_fKnockBackSpeed = 0.f;
 
-		//RootMotionActive(fTimeDelta);
+		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fAwaySpeed * 0.5f, nullptr, m_pNaviCom);
+		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Jump") != m_strStateName.npos)
 	{
@@ -408,6 +410,7 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 	}
 	else
 	{
+		m_fKnockBackSpeed = 5.f;
 		RootMotionActive(fTimeDelta);
 	}
 

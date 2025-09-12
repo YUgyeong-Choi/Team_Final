@@ -578,7 +578,7 @@ void CMonster_Base::Register_Events()
 		{ 
 			_float fErgo = {};
 
-			fErgo = GetRandomFloat(30.f, 50.f);
+			fErgo = GetRandomFloat(30.f, 50.f) * 10.f;
 
 			static_cast<CPlayer*>(m_pPlayer)->Add_Ergo(fErgo);
 		}

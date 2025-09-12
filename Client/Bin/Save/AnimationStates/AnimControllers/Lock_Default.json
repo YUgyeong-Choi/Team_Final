@@ -9,38 +9,23 @@
             "Name": "Idle",
             "NodeId": 6,
             "NodePos": [
-                91.0,
-                324.0
+                0.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
         },
         {
             "BlendWeight": 1.0,
-            "Clip": "AS_Back_Open",
+            "Clip": "AS_Open",
             "LowerClip": "",
-            "LowerStartTime": 0.0,
+            "LowerStartTime": 0.3100000023841858,
             "MaskBone": "",
             "Name": "Open",
             "NodeId": 7,
             "NodePos": [
-                399.0,
-                327.0
-            ],
-            "UpperClip": "",
-            "UpperStartTime": 0.0
-        },
-        {
-            "BlendWeight": 1.0,
-            "Clip": "AS_Open_Idle",
-            "LowerClip": "",
-            "LowerStartTime": 0.0,
-            "MaskBone": "",
-            "Name": "Open_Idle",
-            "NodeId": 8,
-            "NodePos": [
-                685.0,
-                363.0
+                750.0,
+                0.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -79,28 +64,6 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 7
-        },
-        {
-            "Conditions": [
-                {
-                    "Op": "None",
-                    "ParamName": "",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 7,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 72,
-                "LinkId": 10,
-                "ToNodeId": 81
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 8
         }
     ]
 }

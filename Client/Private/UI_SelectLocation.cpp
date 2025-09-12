@@ -144,7 +144,7 @@ HRESULT CUI_SelectLocation::Ready_Button()
 	eButtonDesc.vColor = { 0.8f,0.f,0.f,0.8f };
 	eButtonDesc.fPadding = {};
 	eButtonDesc.fFontSize = 0.75f;
-	
+
 
 
 
@@ -152,6 +152,8 @@ HRESULT CUI_SelectLocation::Ready_Button()
 	eButtonDesc.strCaption = {};
 
 	list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Stargazer"));
+
+	_float2 fSize = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Medium"), TEXT("크라트 기차역 광장"));
 
 	for (CGameObject* pObj : ObjList)
 	{
@@ -172,14 +174,16 @@ HRESULT CUI_SelectLocation::Ready_Button()
 			case STARGAZER_TAG::FIRE_EATER:
 				eButtonDesc.strCaption = TEXT("베니니 공장 중심부");
 				break;
-
+				
 			default:
 				break;
 			}
-
+			
 			vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Medium"), eButtonDesc.strCaption.c_str());
-			eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize + eButtonDesc.fPadding.x;
-			eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize + eButtonDesc.fPadding.y;
+			//eButtonDesc.fPadding.x = vRange.x * 1.5f ;
+			eButtonDesc.fX -= (fSize.x - vRange.x) * 0.5f * 0.7f;
+			eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize ;
+			eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize ;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Button"),
 				static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_SelectLocation_Button"), &eButtonDesc)))
