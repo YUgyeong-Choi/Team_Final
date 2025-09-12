@@ -86,6 +86,10 @@ namespace Engine
 	const unsigned int g_iSmallHeight = 450;
 
 	extern _bool g_bSceneChanging;
+
+	const float g_fBGMSoundVolume = 1.f; // BGM º¼·ý
+	const float g_fInteractSoundVolume = 0.7f; // NPC´ëÈ­ º¼·ý
+	const float g_fPlayerSoundVolume = 0.6f; // OBJECT º¼·ý
 }
 
 using namespace Engine;

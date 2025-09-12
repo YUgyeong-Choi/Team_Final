@@ -306,6 +306,7 @@ HRESULT CMainApp::Ready_Sound()
 {
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGMIntro/", false, false);
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
 
 	/* [ 플레이어 사운드 ] */

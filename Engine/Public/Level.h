@@ -19,6 +19,10 @@ public:
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
 	virtual HRESULT Reset() { return S_OK; }
+
+	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="");
+	void Update_ChangeBGM(_float fTimeDelta);
+	class CSound_Core* Get_BGM() { return m_pBGM; }
 protected:
 	void HoldMouse();
 
@@ -27,6 +31,15 @@ protected:
 	ID3D11DeviceContext*	m_pContext = { nullptr };
 	class CGameInstance*	m_pGameInstance = { nullptr };
 
+	class CSound_Core* m_pBGM = { nullptr };
+	
+	_bool m_bBGMToZero = false;
+	_bool m_bBGMToVolume = false;
+	_float m_fBGMVolume = 1.f;
+	string m_strWillChangeBGM;
+
+	_bool m_bCheckBGMFinish = false;
+	string m_strWillMainBGM;
 public:	
 	virtual void Free() override;
 
