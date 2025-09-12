@@ -918,75 +918,61 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #ifndef TESTMAP
 
+#ifndef TESTMAP
+
 #pragma region 멀티 스레드로 소환
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
-
-	auto futureStation = async(launch::async, [&]
+	auto LoadAndReadyMap = [&](const char* mapName, _uint levelEnum)
 		{
-			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
+			return async(launch::async, [=]()
+				{
+					wcout << L"[" << StringToWString(mapName) << L"] Load 시작" << endl;
+					auto start = chrono::high_resolution_clock::now();
 
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
+					if (FAILED(Load_Map(levelEnum, mapName)))
+						return E_FAIL;
 
-			return S_OK;
-		});
+					auto afterLoad = chrono::high_resolution_clock::now();
+					wcout << L"[" << StringToWString(mapName) << L"] Load 끝 ("
+						<< chrono::duration<double>(afterLoad - start).count() << L"s)" << endl;
+
+					wcout << L"[" << StringToWString(mapName) << L"] Ready 시작" << endl;
+					if (FAILED(Ready_Map(levelEnum, mapName)))
+						return E_FAIL;
+
+					auto afterReady = chrono::high_resolution_clock::now();
+					wcout << L"[" << StringToWString(mapName) << L"] Ready 끝 ("
+						<< chrono::duration<double>(afterReady - afterLoad).count()
+						<< L"s, Total: "
+						<< chrono::duration<double>(afterReady - start).count() << L"s)" << endl;
+
+					return S_OK;
+				});
+		};
+
+	// 맵 생성 시작 로그
+	/*lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
+	auto futureStation = LoadAndReadyMap("STATION", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
 	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
-	auto futureHotel = async(launch::async, [&]
-		{
-			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-
-			return S_OK;
-		});
+	auto futureHotel = LoadAndReadyMap("HOTEL", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
 	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
-	auto futureOuter = async(launch::async, [&]
-		{
-			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
+	auto futureOuter = LoadAndReadyMap("OUTER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
 	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
-	auto futureFireEater = async(launch::async, [&]
-		{
-			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
+	auto futureFireEater = LoadAndReadyMap("FIRE_EATER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));*/
 
-			return S_OK;
-		});
-
-
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-
-	if (FAILED(futureStation.get()))
-		return E_FAIL;
-
-	if (FAILED(futureHotel.get()))
-		return E_FAIL;
-
-	if (FAILED(futureOuter.get()))
-		return E_FAIL;
-
-	if (FAILED(futureFireEater.get()))
-		return E_FAIL;
+	// 결과 확인
+	/*if (FAILED(futureStation.get()))   return E_FAIL;
+	if (FAILED(futureHotel.get()))     return E_FAIL;
+	if (FAILED(futureOuter.get()))     return E_FAIL;
+	if (FAILED(futureFireEater.get())) return E_FAIL;*/
 #pragma endregion
+#endif
+
+
 
 #endif // !TESTMAP
 
