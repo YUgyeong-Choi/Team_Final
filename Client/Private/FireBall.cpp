@@ -96,8 +96,8 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 #endif
 	}
 	
-	if(m_pEffect)
-		m_pEffect->End_Effect();
+	//if(m_pEffect)
+	//	m_pEffect->End_Effect();
 }
 
 void CFireBall::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

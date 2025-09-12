@@ -1076,6 +1076,7 @@ HRESULT CLoader::Loading_For_DH()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
+
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_TestMap"),
@@ -1154,6 +1155,13 @@ HRESULT CLoader::Loading_For_DH()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FireEater"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FireEater/FireEater.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
 	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
@@ -1166,6 +1174,11 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	//FIRE EATER로 바꿧어요 (영웅)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireEater"),
+		CFuoco::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	/* 상호 작용 문 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_SlideDoor"),

@@ -119,6 +119,9 @@ void CShortCutDoor::Update(_float fTimeDelta)
 	Move_Player(fTimeDelta);
 	if(m_bEffectActive)
 		Start_Effect(fTimeDelta);
+
+	if (m_bSoundActive)
+		Play_Sounds(fTimeDelta);
 }
 
 void CShortCutDoor::Late_Update(_float fTimeDelta)
@@ -305,8 +308,12 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		m_bStartCutScene = false;
 		m_bCanMovePlayer = true;
 		m_bEffectActive = true;
+		m_bSoundActive = true;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
+
+		m_fSoundTime = 0.f;
+		m_fEffectTime = 0.f;
 	}
 
 	if (m_bCanMovePlayer)
@@ -349,7 +356,7 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_ShortCutDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
@@ -609,6 +616,41 @@ void CShortCutDoor::Start_Effect(_float fTimeDelta)
 			m_bEffectActive = false;
 		}
 	}
+}
+
+void CShortCutDoor::Play_Sounds(_float fTimeDelta)
+{
+	m_fSoundTime += fTimeDelta;
+
+	if (m_bCanOpen) // 문 염
+	{
+		if (m_fSoundTime > 1.6f && !m_bSoundPlay[0])
+		{
+			m_bSoundPlay[0] = true;
+			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Gear_", 3);
+			m_bSoundActive = false;
+		}
+		//if (m_fSoundTime > 1.6f && !m_bSoundPlay[1])
+		//{
+		//	m_bSoundPlay[1] = true;
+		//	m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Drop_", 3);
+		//}
+		//if (m_fSoundTime > 1.8f && !m_bSoundPlay[2])
+		//{
+		//	m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Back_Drop_", 3);
+		//	m_bSoundPlay[2] = true;
+		//	m_bSoundActive = false;
+		//}
+	}
+	else
+	{
+		if (m_fSoundTime > 1.4f)
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_FX_Crane_Spark_S_",3);
+			m_bSoundActive = false;
+		}
+	}
+
 }
 
 

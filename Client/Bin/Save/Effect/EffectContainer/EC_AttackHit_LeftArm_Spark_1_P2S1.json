@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 5.0,
+            "EmissiveIntensity": 3.799999952316284,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1556.058349609375,
+            "LifeTime": 1567.1356201171875,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.18000000715255737
@@ -106,6 +106,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.019999999552965164,
                 0.03999999910593033
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -162,7 +164,7 @@
             "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 1.2999999523162842,
+            "EmissiveIntensity": 1.0,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": -0.30000001192092896,
@@ -196,7 +198,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1352.012451171875,
+            "LifeTime": 1363.0897216796875,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.6700000166893005
@@ -241,6 +243,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.03999999910593033
@@ -251,6 +254,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -347,7 +351,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1290.0408935546875,
+            "LifeTime": 1301.1181640625,
             "Loop": true,
             "Name": "Hit_BasicSprite1",
             "NumKeyFrames": 2,

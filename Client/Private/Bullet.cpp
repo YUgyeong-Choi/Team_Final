@@ -83,8 +83,8 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
     Set_bDead();
 
-    if (m_pEffect)
-        m_pEffect->Set_bDead();
+    //if (m_pEffect)
+    //    m_pEffect->Set_bDead();
 }
 
 void CBullet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

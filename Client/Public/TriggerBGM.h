@@ -15,11 +15,8 @@ public:
 	typedef struct tagTriggerBGMDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
 		CSound_Core* pBGM;
-		CSound_Core* pBGM2;
 		string strInBGM;
 		string strOutBGM;
-		string strInBGM2;
-		string strOutBGM2;
 	}TRIGGERBGM_DESC;
 
 protected:
@@ -42,10 +39,8 @@ private:
 	HRESULT Ready_Components();
 	void Play_BGM(_float fTimeDelta);
 private:
-
 	// 레벨에서 받아온 BGM
 	CSound_Core* m_pBGM = { nullptr };
-	CSound_Core* m_pBGM2 = { nullptr };
 
 	_bool m_bInSound = false;
 	_bool m_bBGMToZero = false;
@@ -55,8 +50,6 @@ private:
 
 	string m_strInBGM;
 	string m_strOutBGM;
-	string m_strInBGM2;
-	string m_strOutBGM2;
 public:
 	static CTriggerBGM* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

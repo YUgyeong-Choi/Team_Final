@@ -244,6 +244,7 @@ void CUI_SelectLocation::Update_Button()
 			++m_iButtonIndex;
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
 		}
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 
 	}
 	else if (m_pGameInstance->Key_Down(DIK_W))
@@ -255,7 +256,7 @@ void CUI_SelectLocation::Update_Button()
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
 
 		}
-
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 	}
 
 	for (int i = 0; i < m_pButtons.size(); ++i)
@@ -311,6 +312,8 @@ void CUI_SelectLocation::Interation_Button(_int iButtonIndex)
 		pButton->Set_bDead();
 
 	m_pSelectUI->Set_bDead();
+
+	CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 }
 
 CUI_SelectLocation* CUI_SelectLocation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

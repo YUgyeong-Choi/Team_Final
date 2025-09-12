@@ -281,6 +281,17 @@ void CGameInstance::Reset_LevelUnits()
 {
 	m_pLevel_Manager->Get_CurrentLevel()->Reset();
 }
+void CGameInstance::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Start_BGM(soundName, bNowPlaying, bNotLoop, willMainBGM);
+}
+
+CSound_Core* CGameInstance::Get_CurrentBGM()
+{
+	return m_pLevel_Manager->Get_CurrentLevel()->Get_BGM();
+}
+
+
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

@@ -41,11 +41,6 @@ namespace Client
 
 	const unsigned int			g_iWinSizeX = 1600; //1920 1600
 	const unsigned int			g_iWinSizeY = 900; //1080 900
-
-
-	const float g_fBGMSoundVolume = 1.f; // BGM 볼륨
-	const float g_fInteractSoundVolume = 0.7f; // NPC대화 볼륨
-	const float g_fPlayerSoundVolume = 0.6f; // OBJECT 볼륨
 }
 
 extern HWND g_hWnd;
@@ -54,7 +49,7 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 
-#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP //여러 개 켜도 됨
 
