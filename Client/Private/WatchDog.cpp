@@ -368,7 +368,7 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 	_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
 
-	if (m_strStateName.find("Hit") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos)
+	if (m_strStateName.find("Hit") != m_strStateName.npos || m_strStateName.find("KnockBack") != m_strStateName.npos || m_strStateName.find("Dead") != m_strStateName.npos)
 	{
 		m_isLookAt = false;
 		m_isCollisionPlayer = false;
