@@ -2846,7 +2846,7 @@ HRESULT CPlayer::Ready_Effect()
 	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 6.f, 0.f)); // 조금 더 플레이어 전방에 있었으면 좋겠어서,,
 	CEffectContainer* pEffect = { nullptr };
-	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Rain_PlayerFollow"), &desc));
+	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Rain_NewPlayerFollow"), &desc));
 
 	if (pEffect == nullptr)
 		MSG_BOX("이펙트 생성 실패함");

@@ -589,7 +589,7 @@ technique11 DefaultTechnique
         
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
-        GeometryShader = compile gs_5_0 GS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
         PixelShader = compile ps_5_0 PS_MAIN_RAINONLY();
     }
 

@@ -590,7 +590,7 @@ HRESULT CCYTool::Window_Particle()
 	m_tPCB.isTileLoop = m_bIsTileLoop == true ? 1 : 0;
 
 	// stretch 시에 늘어나는 정도
-	if (*pPE->Get_ShaderPass_Ptr() == PE_WB_VSTRETCH)
+	if (*pPE->Get_ShaderPass_Ptr() == PE_WB_VSTRETCH || *pPE->Get_ShaderPass_Ptr() == PE_RAIN)
 	{
 		ImGui::DragFloat("StretchFactor", pPE->Get_StretchFactor_Ptr(), 0.001f, 0.001f, 10.f, "%.3f");
 	}
