@@ -25,15 +25,11 @@ HRESULT CTriggerBGM::Initialize(void* pArg)
 {
 	CTriggerBGM::TRIGGERBGM_DESC* TriggerBGMDESC = static_cast<TRIGGERBGM_DESC*>(pArg);
 	m_pBGM = TriggerBGMDESC->pBGM;
-	m_pBGM2 = TriggerBGMDESC->pBGM2;
 	m_strInBGM = TriggerBGMDESC->strInBGM;
 	m_strOutBGM = TriggerBGMDESC->strOutBGM;
-	m_strInBGM2 = TriggerBGMDESC->strInBGM2;
-	m_strOutBGM2 = TriggerBGMDESC->strOutBGM2;
 
 
 	Safe_AddRef(m_pBGM);
-	Safe_AddRef(m_pBGM2);
 
 	if (FAILED(__super::Initialize(TriggerBGMDESC)))
 		return E_FAIL;
@@ -104,10 +100,6 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 			// m_fBGMVolume 이 1일텐데 0으로 lerp할거임
 			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
 			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-			if (m_pBGM2)
-			{
-				m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-			}
 
 			if (m_fBGMVolume < 0.01f)
 			{
@@ -117,27 +109,6 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 				m_pBGM->Play();
 
-				if (m_strOutBGM2 != "")
-				{
-					if (m_pBGM2)
-					{
-						m_pBGM2->Stop();
-						Safe_Release(m_pBGM2);
-					}
-
-					m_pBGM2 = m_pGameInstance->Get_Single_Sound(m_strOutBGM2);
-					m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-					m_pBGM2->Play();
-				}
-				else
-				{
-					if (m_pBGM2)
-					{
-						m_pBGM2->Stop();
-						Safe_Release(m_pBGM2);
-					}
-
-				}
 
 				m_bBGMToZero = false;
 				m_bBGMToVolume = true;
@@ -157,26 +128,6 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 				m_pBGM->Play();
 
-				if (m_strInBGM2 != "")
-				{
-					if (m_pBGM2)
-					{
-						m_pBGM2->Stop();
-						Safe_Release(m_pBGM2);
-					}
-					m_pBGM2 = m_pGameInstance->Get_Single_Sound(m_strInBGM2);
-					m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-					m_pBGM2->Play();
-				}
-				else
-				{
-					if (m_pBGM2)
-					{
-						m_pBGM2->Stop();
-						Safe_Release(m_pBGM2);
-					}
-				}
-
 				m_bBGMToZero = false;
 				m_bBGMToVolume = true;
 			}
@@ -190,8 +141,6 @@ void CTriggerBGM::Play_BGM(_float fTimeDelta)
 		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
 		m_fBGMVolume = LerpFloat(m_fBGMVolume, 2.f, fTimeDelta * 3.f);
 		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-		if(m_pBGM2)
-			m_pBGM2->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
 		// 만약에 m_fBGMVolume가 1이 되면
 		if (m_fBGMVolume > 0.99f)
@@ -240,5 +189,4 @@ void CTriggerBGM::Free()
 	__super::Free();
 
 	Safe_Release(m_pBGM);
-	Safe_Release(m_pBGM2);
 }

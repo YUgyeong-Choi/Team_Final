@@ -41,11 +41,6 @@ namespace Client
 
 	const unsigned int			g_iWinSizeX = 1600; //1920 1600
 	const unsigned int			g_iWinSizeY = 900; //1080 900
-
-
-	const float g_fBGMSoundVolume = 1.f; // BGM º¼·ý
-	const float g_fInteractSoundVolume = 0.7f; // NPC´ëÈ­ º¼·ý
-	const float g_fPlayerSoundVolume = 0.6f; // OBJECT º¼·ý
 }
 
 extern HWND g_hWnd;

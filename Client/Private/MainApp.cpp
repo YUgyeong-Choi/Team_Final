@@ -306,6 +306,7 @@ HRESULT CMainApp::Ready_Sound()
 {
 	/* [ 사운드 생성 ] (is3D / isLoop / isStreaming) */
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
+	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGMIntro/", false, false);
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
 
 	/* [ 플레이어 사운드 ] */
@@ -328,6 +329,9 @@ HRESULT CMainApp::Ready_Sound()
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 
 	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
+
+	/* [ 숏컷 사운드 ] */ 
+	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
 
 	return S_OK;
 }

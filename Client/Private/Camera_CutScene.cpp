@@ -873,6 +873,10 @@ void CCamera_CutScene::Event()
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
 		}
+
+		if (m_iCurrentFrame == 1700)
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
