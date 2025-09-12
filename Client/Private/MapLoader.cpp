@@ -26,25 +26,72 @@ HRESULT CMapLoader::Initialize()
 	return S_OK;
 }
 
+HRESULT CMapLoader::Ready_Map_Async()
+{
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+
+
+
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMapLoader::Ready_Etc()
+{
+	return S_OK;
+}
+
 HRESULT CMapLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 {
 	//맵
 	if (FAILED(Loading_Meshs(iLevelIndex, Map)))
+	{
+		MSG_BOX("메쉬 로딩 실패!");
 		return E_FAIL;
+	}
 
 	//네비
 	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
+	{
+		MSG_BOX("네비게이션 로딩 실패!");
 		return E_FAIL;
+	}
 
 	//데칼
 	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
+	{
+		MSG_BOX("데칼 텍스처 로딩 실패!");
 		return E_FAIL;
+	}
 
 	//부서질 수 있는 메쉬 조각들, 또는 본메쉬 로드
 	if (FAILED(Loading_Breakable(iLevelIndex, Map)))
+	{
+		MSG_BOX("브레이커블 메쉬 로딩 실패!");
 		return E_FAIL;
+	}
 
 	return S_OK;
+
 }
 
 HRESULT CMapLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
@@ -270,7 +317,7 @@ HRESULT CMapLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
 
 	ifstream ifs(wsPath);
 	if (!ifs.is_open())
-		return E_FAIL;
+		return S_OK;
 
 	json j;
 	ifs >> j;

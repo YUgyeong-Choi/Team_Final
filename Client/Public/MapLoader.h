@@ -18,6 +18,16 @@ public:
 	HRESULT Initialize();
 
 public:
+	/*
+	 스테틱 메쉬 로딩, 배치
+	 맵 액터 등록
+	 네비, 데칼, 부서지는 메쉬, 아이템, 스타게이저 등등...
+	*/
+	HRESULT Ready_Map_Async();
+
+	HRESULT Ready_Etc();
+
+public:
 	//여기서 맵에 필요한것들 모두 로드(맵, 데칼, 네비 등등...)
 	HRESULT Load_Map(_uint iLevelIndex, const _char* Map);
 
