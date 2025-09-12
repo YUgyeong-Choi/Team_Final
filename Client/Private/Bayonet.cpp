@@ -102,14 +102,14 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 
 	if (m_bHitRegActive)
 		Update_HitReg(fTimeDelta);
-	if (KEY_PRESSING(DIK_LALT) && KEY_DOWN(DIK_Q))
-	{
+	//if (KEY_PRESSING(DIK_LALT) && KEY_DOWN(DIK_Q))
+	//{
 
-		static _bool bTEactive = true;
-		bTEactive = !bTEactive;
-		Set_WeaponTrail_Active(bTEactive, TRAIL_BLOOD);
+	//	static _bool bTEactive = true;
+	//	bTEactive = !bTEactive;
+	//	Set_WeaponTrail_Active(bTEactive, TRAIL_BLOOD);
 
-	}
+	//}
 
 	CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 }
@@ -533,6 +533,8 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 			XMStoreFloat4x4(&desc.PresetMatrix,
 				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
 			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+			Set_WeaponTrail_Active(true, TRAIL_BLOOD);
+
 		}
 	}
 
@@ -543,7 +545,6 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	if (pEffect == nullptr)
 		return E_FAIL;
 
-	Set_WeaponTrail_Active(true, TRAIL_BLOOD);
 
 	return S_OK;
 }
