@@ -7,6 +7,7 @@
 #include "Client_Calculation.h"
 #include <PhysX_IgnoreSelfCallback.h>
 #include "UI_Guide.h"
+#include "UI_Manager.h"
 
 CElite_Police::CElite_Police(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CEliteUnit{ pDevice, pContext }
@@ -202,6 +203,8 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
+	
+	
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
@@ -224,6 +227,17 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 
 			m_isFirstGroggy = true;
 		}
+	}
+
+	if (m_isFirstGroggy && m_eCurrentState == EEliteState::DEAD)
+	{
+		// 
+		static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
+		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+		CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
+		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+
+		m_isFirstGroggy = false;
 	}
 
 }
