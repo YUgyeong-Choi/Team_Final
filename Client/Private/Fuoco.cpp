@@ -31,7 +31,7 @@ HRESULT CFuoco::Initialize_Prototype()
 
 HRESULT CFuoco::Initialize(void* pArg)
 {
-	
+ 	
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};

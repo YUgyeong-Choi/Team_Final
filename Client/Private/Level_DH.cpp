@@ -9,6 +9,8 @@
 #include "StaticMesh.h"
 #include "StaticMesh_Instance.h"
 
+#include "Unit.h"
+
 CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 		: CLevel { pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -18,6 +20,10 @@ CLevel_DH::CLevel_DH(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_DH::Initialize()
 {
+
+	/* [ 레벨 셋팅 ] */
+	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::DH));
+
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
 
@@ -45,18 +51,28 @@ HRESULT CLevel_DH::Initialize()
 	if (FAILED(Separate_Area()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Monster("FIRE_EATER")))
+		return E_FAIL;
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	//6번구역
 	//m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
 	//1번구역
-	m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
+	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
+	//5번구역
+	m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
 
 	m_pGameInstance->FindAreaContainingPoint();
 
 	//if (FAILED(Ready_Layer_StaticMesh(TEXT("Layer_StaticMesh"))))
 	//	return E_FAIL;
 
-	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::DH));
+	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::DH), L"Layer_FireEater");
+	for (auto& obj : objList)
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
+
 	return S_OK;
 }
 
@@ -841,6 +857,78 @@ HRESULT CLevel_DH::Ready_Layer_Sky(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Sky"),
 		ENUM_CLASS(LEVEL::DH), strLayerTag)))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+
+HRESULT CLevel_DH::Ready_Monster(const _char* Map)
+{
+	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
+	ifstream inFile(MonsterFilePath);
+	if (!inFile.is_open())
+	{
+		wstring ErrorMessage = L"Monster_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
+		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
+		return S_OK;
+	}
+
+	json MonsterJson;
+	inFile >> MonsterJson;
+	inFile.close();
+
+	// 몬스터 종류별로 반복
+	for (auto& [MonsterName, MonsterArray] : MonsterJson.items())
+	{
+		wstring wstrMonsterName = StringToWString(MonsterName);
+
+		for (auto& MonsterData : MonsterArray)
+		{
+			// 월드 행렬 로드
+			const json& WorldMatrixJson = MonsterData["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			wstring wsLayer = {};
+
+			if (wstrMonsterName == TEXT("FireEater"))
+			{
+				wsLayer = TEXT("Layer_FireEater");
+			}
+			else if (wstrMonsterName == TEXT("FestivalLeader"))
+			{
+				wsLayer = TEXT("Layer_FestivalLeader");
+			}
+			else
+			{
+				wsLayer = TEXT("Layer_Monster_Normal");
+			}
+
+			// 오브젝트 생성 Desc 채우기
+			CUnit::UNIT_DESC UnitDesc{};
+			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+			UnitDesc.wsNavName = StringToWString(Map);
+			UnitDesc.WorldMatrix = WorldMatrix;
+			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::DH);
+			UnitDesc.szMeshID = wstrMonsterName.c_str();
+
+			if (MonsterData.contains("SpawnType"))
+				UnitDesc.eSpawnType = static_cast<SPAWN_TYPE>(MonsterData["SpawnType"].get<_int>());
+			else
+				UnitDesc.eSpawnType = SPAWN_TYPE::IDLE;
+
+
+			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
+
+			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &UnitDesc));
+			m_pGameInstance->Add_PoolObject(wsLayer, pObj);
+
+			if (pObj == nullptr)
+				return E_FAIL;
+		}
+	}
 
 	return S_OK;
 }

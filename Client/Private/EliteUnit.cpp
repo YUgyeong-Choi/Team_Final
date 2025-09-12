@@ -195,7 +195,7 @@ HRESULT CEliteUnit::Ready_Components(void* pArg)
         return E_FAIL;
 
     _int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-    if (iLevelIndex == ENUM_CLASS(LEVEL::JW))
+    if (iLevelIndex == ENUM_CLASS(LEVEL::JW) || iLevelIndex == ENUM_CLASS(LEVEL::DH))
     {
         return S_OK;
     }

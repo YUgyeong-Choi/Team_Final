@@ -655,7 +655,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a21p0, a21p1, a21Min, a21Max);
 
 	// Area 22
-	_float3 a22p0 = _float3{ 185.0822f, 0.f, -4.3780f };
+	_float3 a22p0 = _float3{ 190.0822f, 0.f, -4.3780f };
 	_float3 a22p1 = _float3{ 181.0464f, 48.1307f, -12.5612f };
 	_float3 a22Min, a22Max;
 	FnToAABB(a22p0, a22p1, a22Min, a22Max);
@@ -891,7 +891,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 22번 구역 ] */
-		const vector<_uint> vecAdj22 = { 20, 50, 52 };
+		const vector<_uint> vecAdj22 = { 7, 20, 50, 52 };
 		if (!m_pGameInstance->AddArea_AABB(
 			22, a22Min, a22Max, vecAdj22, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
