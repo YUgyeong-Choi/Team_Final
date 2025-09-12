@@ -34,7 +34,7 @@ public:
 
 	virtual void Active_Update(_bool isActive);
 	
-	void Update_Description(string itemName, _int itemType);
+	void Update_Description(_int itemType);
 
 protected:
 

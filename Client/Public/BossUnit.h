@@ -24,7 +24,7 @@ public:
 	void EnterCutScene();
 	virtual void Reset() override;
 	EFuryState GetFuryState() const { return m_eFuryState; }
-
+	_bool HasCollided() const { return m_bPlayerCollided; }
 protected:
 	virtual void Ready_AttackPatternWeightForPhase1();
 	virtual void Ready_AttackPatternWeightForPhase2();

@@ -44,6 +44,7 @@ public:
 		_bool bSkill = false;
 		_bool bSpaceUP = false;
 		_bool bSpaceDown = false;
+		_bool bGetItem = false;
 
 	} m_Input;
 	
@@ -153,6 +154,8 @@ public: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
+
+
 
 	void Add_Mana(_float fMana);
 

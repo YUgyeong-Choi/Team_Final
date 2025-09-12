@@ -41,6 +41,8 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
 
+	Register_Events();
+
 	//m_pAnimator->SetPlaying(true);
 	//m_pAnimatorFrontKey->SetPlaying(true);
 	//m_pAnimatorBackKey->SetPlaying(true);
@@ -85,7 +87,7 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 		//m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 		m_bFinish = false;
 		m_bCanActive = false;
-		m_bCanOpen = false;
+		m_bCanOpen = true;
 	}
 #endif // _DEBUG
 }
@@ -203,7 +205,7 @@ void CShortCutDoor::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 	{
 		m_bCanActive = true;
 		CUI_Manager::Get_Instance()->Activate_Popup(true);
-  		CUI_Manager::Get_Instance()->Set_Popup_Caption(2);
+		CUI_Manager::Get_Instance()->Set_Popup_Caption(2);
 	}
 }
 
@@ -238,6 +240,15 @@ void CShortCutDoor::OpenDoor()
 	}
 }
 
+void CShortCutDoor::ActivateUnlock()
+{
+	if (m_bCanOpen)
+	{
+		m_pAnimatorFrontKey->SetTrigger("Open");
+		m_pAnimatorBackKey->SetTrigger("Open");
+	}
+}
+
 void CShortCutDoor::Move_Player(_float fTimeDelta)
 {
 	if (m_bMoveStart)
@@ -246,10 +257,10 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::SHORTCUT:
-			if(m_bCanOpen)
-				vTargetPos = _vector({ 147.56f, 2.6f, -25.81f, 1.f });
+			if (m_bCanOpen)
+				vTargetPos = _vector({ 147.56f, 1.f, -25.81f, 1.f });
 			else
-				vTargetPos = _vector({ 147.28f, 2.6f, -24.30f, 1.f });
+				vTargetPos = _vector({ 147.28f, 1.f, -24.30f, 1.f });
 			break;
 		default:
 			break;
@@ -289,14 +300,21 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 	{
 		m_bStartCutScene = false;
 		// 문 여는 거 활성화
-		
+
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
 
-		m_pAnimatorFrontKey->SetTrigger("Open");
-		m_pAnimatorBackKey->SetTrigger("Open");
+
 
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 	}
+}
+
+void CShortCutDoor::Register_Events()
+{
+	m_pAnimatorBackKey->RegisterEventListener("UnlockDoor", [this]()
+		{
+			OpenDoor();
+		});
 }
 
 
@@ -313,7 +331,7 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
@@ -389,6 +407,12 @@ HRESULT CShortCutDoor::LoadFromJson()
 	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimatorFrontKey)))
 		return E_FAIL;
 	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimatorBackKey)))
+		return E_FAIL;
+
+	modelName = m_pModelCom->Get_ModelName();
+	if (FAILED(LoadAnimationEventsFromJson(modelName, m_pModelCom)))
+		return E_FAIL;
+	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimator)))
 		return E_FAIL;
 	return S_OK;
 }

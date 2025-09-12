@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "EliteUnit.h"
+#include "Monster_Base.h"
+#include "LockOn_Manager.h"
 
 CPlayerFrontCollider::CPlayerFrontCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject(pDevice, pContext)
@@ -136,6 +138,7 @@ void CPlayerFrontCollider::Update_Collider_Actor()
 
 }
 
+
 void CPlayerFrontCollider::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 }
@@ -208,7 +211,25 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 	if (fHP <= 0.f)
 		return;
 
+	CMonster_Base* pMonster = dynamic_cast<CMonster_Base*>(pUnit);
 
+	if (nullptr == pMonster)
+		return;
+	
+	if (pMonster)
+	{
+		if (!pMonster->Get_CanFatal() || pMonster->Get_StateName().find("Dead") != string::npos)
+		{
+			m_pOwner->SetbIsBackAttack(false);
+			m_pOwner->SetIsFatalBoss(false);
+			m_pOwner->SetFatalTargetNull();
+			return;
+		}
+		
+
+
+
+	}
 
 	
 	/* [ 뒤를 잡았을 때 ] */
@@ -227,7 +248,7 @@ void CPlayerFrontCollider::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eC
 }
 void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
+ 	if ((m_pOwner)->Get_PlayerState() == EPlayerState::FATAL)
 	{
 		return;
 	}
@@ -252,17 +273,11 @@ void CPlayerFrontCollider::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eC
 	CUnit* pUnit = dynamic_cast<CUnit*>(pOther);
 	if (pUnit)
 	{
-		m_pOwner->SetbIsGroggyAttack(false);
+		m_pOwner->SetbIsBackAttack(false);
 		m_pOwner->SetIsFatalBoss(false);
 		m_pOwner->SetFatalTargetNull();
 	}
 
-	if (nullptr == pOther)
-	{
-		m_pOwner->SetbIsGroggyAttack(false);
-		m_pOwner->SetIsFatalBoss(false);
-		m_pOwner->SetFatalTargetNull();
-	}
 }
 
 void CPlayerFrontCollider::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

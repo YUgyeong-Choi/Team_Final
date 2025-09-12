@@ -21,7 +21,7 @@ HRESULT CUI_Pickup_Item::Initialize(void* pArg)
 {
     UI_CONTAINER_DESC eDesc{};
 	eDesc.useLifeTime = false;
-	eDesc.fLifeTime = 2.f;
+	eDesc.fLifeTime = 8.f;
 
 	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Item_Pickup_BG.json");
 
@@ -46,13 +46,13 @@ HRESULT CUI_Pickup_Item::Initialize(void* pArg)
 
 void CUI_Pickup_Item::Priority_Update(_float fTimeDelta)
 {
-	if (m_fLifeTime < 0)
+	if (m_fLifeTime <= 0.f)
 	{
 		Active_Update(false);
 		return;
 	}
 
-
+	if(m_fLifeTime > 0.f)
 	m_fLifeTime -= fTimeDelta;
 
     __super::Priority_Update(fTimeDelta);
@@ -64,6 +64,13 @@ void CUI_Pickup_Item::Priority_Update(_float fTimeDelta)
 
 void CUI_Pickup_Item::Update(_float fTimeDelta)
 {
+	if (m_fLifeTime <= 0)
+	{
+		
+		return;
+	}
+
+
     __super::Update(fTimeDelta);
 
 	if (nullptr != m_pDescription)
@@ -72,6 +79,10 @@ void CUI_Pickup_Item::Update(_float fTimeDelta)
 
 void CUI_Pickup_Item::Late_Update(_float fTimeDelta)
 {
+	if (m_fLifeTime <= 0)
+	{
+		return;
+	}
     __super::Late_Update(fTimeDelta);
 
 	if (nullptr != m_pDescription)
@@ -87,29 +98,44 @@ void CUI_Pickup_Item::Active_Update(_bool isActive)
 {
 	__super::Active_Update(isActive);
 
-	if(nullptr != m_pDescription)
+	if (nullptr != m_pDescription)
+	{
 		m_pDescription->Active_Update(isActive);
+	}
+	
 
 	if (isActive)
 	{
-		m_fLifeTime = 8.f;
 		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_RewardItem_02");
 	}
 }
 
-void CUI_Pickup_Item::Update_Description(string itemName, _int itemType)
+void CUI_Pickup_Item::Update_Description(_int itemType)
 {
+	if (itemType == 1 || ENUM_CLASS(ITEM_TAG::END) == itemType)
+		return;
+
 	// 다시 넣어준다
 	Safe_Release(m_pDescription);
 
 	UI_CONTAINER_DESC eDesc{};
 	eDesc.useLifeTime = false;
-	eDesc.fLifeTime = 2.f;
+	eDesc.fLifeTime = 8.f;
+
+	_wstring strFilePath = L"../Bin/Save/UI/Popup/Item_Pickup_Text_" + to_wstring(itemType) + L".json";
 
 
-	eDesc.strFilePath = TEXT("../Bin/Save/UI/Popup/Item_Pickup_Text.json");
+	eDesc.strFilePath = strFilePath;
 
 	m_pDescription = static_cast<CUI_Container*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), &eDesc));
+
+	m_fLifeTime = 8.f;
+
+	for (auto& pPart : m_PartObjects)
+		pPart->Reset();
+
+	for (auto& pPart : m_pDescription->Get_PartUI())
+		pPart->Reset();
 	//
 
 }

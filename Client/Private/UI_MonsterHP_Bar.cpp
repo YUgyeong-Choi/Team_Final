@@ -102,22 +102,23 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
         else
         {
             m_fRenderTime = 0.f;
-            m_fDamage = 0.f;
+     
         }
+
+  
+    }
+    
+    if (m_fDamageRenderTime > 0.f)
+    {
+        m_fDamageRenderTime -= fTimeDelta;
     }
     else
     {
-        if (m_fDamageRenderTime > 0.f)
-        {
-            m_fDamageRenderTime -= fTimeDelta;
-        }
-        else
-        {
-            m_fDamageRenderTime = 0.f;
-            m_fDamage = 0.f;
-        }
-
+        m_fDamageRenderTime = 0.f;
+        m_fDamage = 0.f;
     }
+
+    
     
 
     _float fRatio = *m_pHP / (m_fMaxHp);
@@ -238,6 +239,7 @@ HRESULT CUI_MonsterHP_Bar::Render()
             m_pGameInstance->Draw_Font_Righted(L"Font_Medium", strDamage.c_str(), { m_fX + g_iWinSizeX * 0.0375f , m_fY - g_iWinSizeY * 0.02f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.7f, 0.f);
     }
 
+    // 보스 이름
     if (!m_strName.empty())
     {
         m_pGameInstance->Draw_Font_Centered(L"Font_Bold", m_strName.c_str(), { m_fX , m_fY - g_iWinSizeY * 0.03f }, { 1.f,1.f,1.f,1.f }, 0.f, { 0.f,0.f }, 0.625f, 0.f);

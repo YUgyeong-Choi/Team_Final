@@ -44,8 +44,10 @@ public:
 	void Play_Sound();
 
 	void OpenDoor();
+	void ActivateUnlock(); // 자물쇠 해제 애니메이션 재생
 
 	void Move_Player(_float fTimeDelta);
+	void Register_Events();
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(SHORTCUTDOORMESH_DESC* pDesc);

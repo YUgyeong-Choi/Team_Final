@@ -32,10 +32,10 @@ private:
 	virtual ~CUI_MonsterHP_Bar() = default;
 
 public:
-	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime; }
+	void Set_RenderTime(_float fTime) { m_fRenderTime = fTime;  }
 	void Set_MaxHp(_float iHp) { m_fMaxHp = iHp; }
 
-	void Add_Damage(_float fDamage) { m_fDamage += fDamage; if (m_isBoss) { m_fDamageRenderTime = 2.f; } }
+	void Add_Damage(_float fDamage) { m_fDamage += fDamage;  m_fDamageRenderTime = 2.f;  }
 
 public:
 	virtual HRESULT Initialize_Prototype();

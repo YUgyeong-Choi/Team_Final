@@ -64,6 +64,10 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 			_float fMaxHp = m_fMaxHp;
 			_float fPreScaleRatio = m_fScaleRatio;
 			m_fMaxHp = *static_cast<_float*>(data);
+			m_fCurrentHP = m_fMaxHp;
+
+			m_fCurrentRatio = 1.f;
+			m_fRatio = 1.f;
 
 			if (fMaxHp != 0.f)
 				m_fScaleRatio = m_fMaxHp / fMaxHp;
@@ -100,6 +104,29 @@ HRESULT CHP_Bar::Initialize(void* pArg)
 
 				//Set_Position(fPos.x, fPos.y);
 				
+			}
+			else if (eventType == L"AddHp")
+			{
+				m_fCurrentHP = *static_cast<_float*>(data);
+
+				if (m_fCurrentHP < 0.f)
+				{
+					m_fCurrentHP = 0.f;
+					m_fRatio = 0.f;
+					m_fCurrentRatio = 0.f;
+					m_fEffectTime = 0.5f;
+					return;
+				}
+
+
+				m_fRatio = (m_fCurrentHP) / m_fMaxHp;
+
+				if (m_fRatio > m_fCurrentRatio)
+					m_isPlus = true;
+				else
+					m_isPlus = false;
+
+				m_fEffectTime = 0.5f;
 			}
 
 			//m_fCurrentRatio = m_fMaxHp / m_fMaxHp;
