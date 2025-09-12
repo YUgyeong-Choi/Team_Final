@@ -1,0 +1,21 @@
+{
+    "Anim States": [
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Square_Statue_Anim",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Idle",
+            "NodeId": 1,
+            "NodePos": [
+                325.0,
+                0.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        }
+    ],
+    "ControllerName": "SquareStatue_Default",
+    "EntryState": "Idle"
+}

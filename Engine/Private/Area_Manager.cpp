@@ -123,10 +123,12 @@ _int CArea_Manager::FindAreaContainingPoint()
                 {
                     switch (static_cast<AREA::EAreaType>(iTypeVal))
                     {
-                    case AREA::EAreaType::ROOM:    return static_cast<_int>(0);
-                    case AREA::EAreaType::LOBBY:   return static_cast<_int>(1);
-                    case AREA::EAreaType::INDOOR:  return static_cast<_int>(2);
-                    case AREA::EAreaType::OUTDOOR: return static_cast<_int>(3);
+                    case AREA::EAreaType::PART:    return static_cast<_int>(0);
+                    case AREA::EAreaType::ROOM:    return static_cast<_int>(1);
+                    case AREA::EAreaType::LOBBY:   return static_cast<_int>(2);
+                    case AREA::EAreaType::HOUSE:   return static_cast<_int>(3);
+                    case AREA::EAreaType::INDOOR:  return static_cast<_int>(4);
+                    case AREA::EAreaType::OUTDOOR: return static_cast<_int>(5);
                     default:                 return static_cast<_int>(9999);
                     }
                 };
@@ -284,7 +286,7 @@ void CArea_Manager::GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const
 AREAMGR CArea_Manager::GetCurrentAreaMgr()
 {
     // 현재 활성화된 지역이 호텔입니다.
-    vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18 };
+    vector<_uint> vecHotelIds = { 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 20, 21 };
 
     // 현재 활성화된 지역이 스테이션입니다.
     vector<_uint> vecStationIds = { 1, 2, 3, 4, 5 };
@@ -293,7 +295,7 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     vector<_uint> vecFuocoIds = { 19 };
 
     // 현재 활성화된 지역이 외부지역입니다.
-    vector<_uint> vecOuterIds = { 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 };
+    vector<_uint> vecOuterIds = { 22, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 };
 
     // 현재 활성화된 지역이 디버깅입니다.
     vector<_uint> vecDebugIds = { 98, 99 };
@@ -386,7 +388,9 @@ XMFLOAT4 CArea_Manager::BaseColorByType(AREA::EAreaType eType)
 {
     switch (eType)
     {
-    case AREA::EAreaType::ROOM:    return XMFLOAT4(0.20f, 0.80f, 1.00f, 1.0f);
+    case AREA::EAreaType::PART:    return XMFLOAT4(0.20f, 0.80f, 1.00f, 1.0f);
+    case AREA::EAreaType::ROOM:    return XMFLOAT4(0.40f, 0.80f, 1.00f, 1.0f);
+    case AREA::EAreaType::HOUSE:   return XMFLOAT4(0.80f, 0.80f, 1.00f, 1.0f);
     case AREA::EAreaType::INDOOR:  return XMFLOAT4(0.60f, 0.40f, 0.95f, 1.0f);
     case AREA::EAreaType::LOBBY:   return XMFLOAT4(1.00f, 0.55f, 0.10f, 1.0f);
     case AREA::EAreaType::OUTDOOR: return XMFLOAT4(0.15f, 0.00f, 0.85f, 1.0f);

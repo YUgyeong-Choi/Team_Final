@@ -45,27 +45,6 @@ struct VS_OUT
     float2 vTileOffset : TEXCOORD3;
 };
 
-//float2 RotateSubUV(float2 baseUV, float2 tileSize, float2 tileOffset, float angle)
-//{                                                                                                   1
-//    // (1) 아틀라스 절대UV → 타일 로컬UV(0~1)
-//    float2 uvLocal = (baseUV - tileOffset) / tileSize;
-
-//    // (2) 중심 기준 회전
-//    float2 p = uvLocal - 0.5;
-//    float s, c;
-//    sincos(angle, s, c);
-//    float2 pr = float2(p.x * c - p.y * s, p.x * s + p.y * c);
-//    uvLocal = pr + 0.5;
-
-//    // (선택) 타일 경계 샘플링 누수 방지용 소축(bleeding 방지)
-//    // float2 border = 1.0 / g_AtlasTexSize; // 텍스처 해상도 기반으로 조절
-//    // uvLocal = saturate(lerp(0.5, uvLocal, 1.0 - 2.0 * max(border.x, border.y)));
-
-//    // (3) 타일 로컬UV → 아틀라스 절대UV
-//    return tileOffset + uvLocal * tileSize;
-//}
-
-
 
 float2 RotateSubUV_Local(float2 uvLocal, float angle)
 {

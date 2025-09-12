@@ -1686,7 +1686,7 @@
                 },
                 {
                     "EventName": "OffSwordTrail",
-                    "Time": 53.0
+                    "Time": 30.0
                 }
             ],
             "IsLoop": false,
@@ -1743,7 +1743,7 @@
                 },
                 {
                     "EventName": "OffSwordTrail",
-                    "Time": 62.0
+                    "Time": 42.0
                 }
             ],
             "IsLoop": false,

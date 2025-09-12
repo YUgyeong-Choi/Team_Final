@@ -11,7 +11,7 @@ CEffectBase::CEffectBase(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CEffectBase::CEffectBase(const CEffectBase& Prototype)
 	: CBlendObject( Prototype )
-	, m_KeyFrames(Prototype.m_KeyFrames)
+	, m_KeyFrames(Prototype.m_KeyFrames) // 이거 괜찮나?
 {
 
 }
@@ -252,6 +252,9 @@ void CEffectBase::Update_Keyframes()
 
 	_matrix			TransformationMatrix{};
 
+	if (m_KeyFrames.empty())
+		MSG_BOX("비상!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 	EFFKEYFRAME		LastKeyFrame = m_KeyFrames.back();
 
 	_vector			vScale, vRotation, vPosition, vColor, fIntensity;
@@ -267,6 +270,8 @@ void CEffectBase::Update_Keyframes()
 	}
 	else
 	{
+		if (m_KeyFrames.size() <= m_iCurKeyFrameIndex + 1)
+			MSG_BOX("비상!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 		if (m_fCurrentTrackPosition >= m_KeyFrames[m_iCurKeyFrameIndex + 1].fTrackPosition)
 			++m_iCurKeyFrameIndex;
 

@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                2.0,
-                3.0
+                0.0,
+                1.5
             ],
             "Animation": true,
             "Billboard": false,
@@ -30,8 +30,8 @@
             "EmissiveIntensity": 0.6000000238418579,
             "EndTrack": 200,
             "FlipUV": false,
-            "Gravity": -0.20000000298023224,
-            "IsGravity": false,
+            "Gravity": 0.0,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
@@ -61,15 +61,15 @@
                     ]
                 }
             ],
-            "LifeTime": 6315.841796875,
+            "LifeTime": 7691.83154296875,
             "LifeTime_Particle": [
-                0.699999988079071,
-                1.2000000476837158
+                1.2000000476837158,
+                2.5
             ],
             "Local": true,
             "Loop": false,
             "MaxLifeTime": 4.0,
-            "MaxSpeed": 2.0,
+            "MaxSpeed": 100.0,
             "MinSpeed": 0.0,
             "Name": "Stargazer_SpinParticle1",
             "NumInstance": 1000,
@@ -81,19 +81,19 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -360.0,
-                -360.0
+                -480.0,
+                -90.0
             ],
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.004999999888241291,
+                -0.7300000190734863,
                 0.0
             ],
             "Range": [
-                0.07000000029802322,
-                0.009999999776482582,
-                0.07000000029802322
+                0.800000011920929,
+                1.0,
+                0.800000011920929
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -112,8 +112,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                0.03999999910593033,
-                0.05000000074505806
+                0.019999999552965164,
+                0.30000001192092896
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -138,6 +138,6 @@
             "isTileLoop": false
         }
     ],
-    "Loop": true,
-    "MaxFrame": 60
+    "Loop": false,
+    "MaxFrame": 200
 }

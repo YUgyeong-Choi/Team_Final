@@ -126,6 +126,8 @@ private:    /* [ ÄÄÆ÷³ÍÆ® ] */
 	_bool m_bCheckPopup = {};
 
 	//vector<CUIObject*> m_
+	class CUI_Guide* m_pGuide = {nullptr};
+	_bool m_isMakeGuide = {};
 	
 protected:
 	HRESULT Ready_Components(void* pArg);

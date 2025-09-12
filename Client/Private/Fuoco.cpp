@@ -75,13 +75,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pHPBar->Set_bDead();
 
 #ifdef _DEBUG
+	static _int i = 0;
+	static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
 	if (KEY_DOWN(DIK_X))
 	{
 
-		static _int i = 0;
-		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
-
+		
 
 		/*cout << "현재 공격 인덱스 " << i << endl;*/
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
@@ -130,13 +130,14 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			cout << "Unknown" << endl;;
 			break;
 		}
-		m_pAnimator->SetInt("SkillType", testArray[i++]);
+		i++;
 		if (i >= 13)
 			i = 0;
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
+		m_pAnimator->SetInt("SkillType", testArray[i]);
 		m_pAnimator->SetTrigger("Attack");
 	}
 
@@ -164,7 +165,7 @@ void CFuoco::Update(_float fTimeDelta)
 	if (m_fFireFlameDuration > 0.f)
 	{
 		m_fFireFlameDuration -= fTimeDelta;
-		FlamethrowerAttack();
+		FlamethrowerAttack(20.f);
 		{
 			if (m_fFireFlameDuration <= 0.f)
 				m_fFireFlameDuration = 0.f;
@@ -426,12 +427,12 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::WALK_R):
 	case ENUM_CLASS(BossStateID::WALK_L):
 	{
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_eCurrentState = EEliteState::WALK;
 	}
 	break;
 	case ENUM_CLASS(BossStateID::RUN_F):
-		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fRunSpeed);
 		m_eCurrentState = EEliteState::RUN;
 		break;
 	case ENUM_CLASS(BossStateID::GROGGY_START):
@@ -916,7 +917,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
 			m_fFireFlameDuration = 1.5f;
-			FlamethrowerAttack();
+			FlamethrowerAttack(20.f);
 		});
 
 	m_pAnimator->RegisterEventListener("IgnorePlayerCollision", [this]()
@@ -1387,9 +1388,12 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 
 	PxVec3 origin(XMVectorGetX(vOrigin), XMVectorGetY(vOrigin), XMVectorGetZ(vOrigin));
 	PxVec3 vDir = PxVec3(worldMatrix._31, worldMatrix._32, worldMatrix._33); // 손의 Look 방향
-	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Up 방향
+	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Right 방향
 	vDir.normalize();
 	vRight.normalize();
+	const _float pitchBiasDeg = -5.f;                
+	PxQuat qBias(XMConvertToRadians(pitchBiasDeg), vRight);
+	PxVec3 vDirBiased = qBias.rotate(vDir);
 
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
@@ -1405,7 +1409,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	{
 		_float fCurAngle = -fConeAngle * 0.5f + (fConeAngle / (iRayCount - 1)) * i; // -세타 ~ 세타
 		PxQuat vRot = PxQuat(XMConvertToRadians(fCurAngle), vRight); // 회전 쿼터니언 생성
-		PxVec3 vRayDir = vRot.rotate(vDir); // Look 방향을 회전
+		PxVec3 vRayDir = vRot.rotate(vDirBiased); // Look 방향을 회전
 
 		PxRaycastBuffer hit;
 		if (m_pGameInstance->Get_Scene()->raycast(origin, vRayDir, fDistance, hit, hitFlags, filterData, &callback))
@@ -1426,7 +1430,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 					{
 						if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 						{
-							pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.025f);
+							pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.4f);
 							pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 						}
 						cout << "플레이어 화염방사 맞음" << endl;

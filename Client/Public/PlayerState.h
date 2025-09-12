@@ -260,6 +260,11 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+    /*    if (m_pOwner->m_Input.bGetItem)
+        {
+			m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        }*/
     }
 
     virtual void Exit() override
@@ -402,6 +407,11 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+        //if (m_pOwner->m_Input.bGetItem)
+        //{
+        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        //}
 
         LockOnMovement();        
     }
@@ -556,6 +566,12 @@ public:
                     m_bChargeArm = true;
             }
         }
+
+      /*  if (m_pOwner->m_Input.bGetItem)
+        {
+            m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        }*/
+
 		LockOnMovement();
     }
 
@@ -688,7 +704,7 @@ public:
         }
         else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
-            m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+            m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
             if (m_pOwner->m_bWeaponEquipped)
             {
@@ -737,7 +753,7 @@ public:
         {
             if (KEY_PRESSING(DIK_R))
             {
-                m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+                m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
                 if (!m_pOwner->m_pAnimator->CheckBool("Grinding"))
                 {
                     m_pOwner->m_pAnimator->SetTrigger("Grinder");
@@ -1112,7 +1128,7 @@ public:
             m_pOwner->m_bWeaponEquipped = false;
         }
 
-        m_pOwner->m_pTransformCom->SetfSpeedPerSec(g_fWalkSpeed);
+        m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
         m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */
@@ -1197,6 +1213,10 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
+        //if (m_pOwner->m_Input.bGetItem)
+        //{
+        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
+        //}
     }
 
     virtual void Exit() override
@@ -3098,7 +3118,7 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("Hited");
         }
 
-
+        //m_pOwner->m_pAnimator->ResetTrigger("GetItem");
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
 
@@ -3233,7 +3253,9 @@ public:
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
         m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
-
+        m_pOwner->SetIsFatalBoss(false);
+        m_pOwner->SetbIsBackAttack(false);
+        m_pOwner->SetFatalTargetNull();
 
     }
 
@@ -3291,6 +3313,8 @@ public:
 
             m_bDoTwo = true;
 
+            // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
+            EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
         }
 
 

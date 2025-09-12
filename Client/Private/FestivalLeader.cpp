@@ -83,20 +83,20 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	// 0번 메시는 다리,1번은 몸통, 4번 양팔, 5번 머리
 	// 2,3번은 바스켓
 
-	m_fMaxHp = 1400.f;
+	m_fMaxHp = 1300.f;
 	m_fHp = m_fMaxHp;
 	m_fDamage = 15.f;
 	m_fAttckDleay = 1.5f;
 	m_iPatternLimit = 1;
-	m_fChasingDistance = 3.f;
+	m_fChasingDistance = 3.5f;
 	m_fMinimumTurnAngle = 45.f;
 	m_fPhase2HPThreshold = 0.65f;
 	m_fMaxRootMotionSpeed = 18.f;
 	m_fChangeMoveDirCooldown = 2.5f;
 
 	m_fGroggyScale_Weak = 0.07f;
-	m_fGroggyScale_Strong = 0.1f;
-	m_fGroggyScale_Charge = 0.15f;
+	m_fGroggyScale_Strong = 0.09f;
+	m_fGroggyScale_Charge = 0.14f;
 
 	return S_OK;
 }
@@ -295,8 +295,8 @@ HRESULT CFestivalLeader::Ready_Actor()
 		_vector offset = XMVectorZero();
 	};
 
-	std::vector<ColliderSetup> setupList = {
-		{EBossCollider::Hammer,      PxBoxGeometry(1.6f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
+	vector<ColliderSetup> setupList = {
+		{EBossCollider::Hammer,      PxBoxGeometry(1.75f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
 		{EBossCollider::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
 		{EBossCollider::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
 		{EBossCollider::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
@@ -365,6 +365,29 @@ void CFestivalLeader::Ready_BoneInformation()
 void CFestivalLeader::Update_Collider()
 {
 	__super::Update_Collider();
+	// static 변수로 오프셋 값을 선언하여 키 입력에 따라 값이 유지되도록 함
+	static _float fOffsetX = 0.f;
+	static _float fOffsetY = 0.f;
+	static _float fOffsetZ = 0.f;
+
+	if (KEY_DOWN(DIK_W)) { // W 키: Z축 증가 (Up)
+		fOffsetZ += 0.1f;
+	}
+	if (KEY_DOWN(DIK_S)) { // S 키: Z축 감소 (Down)
+		fOffsetZ -= 0.1f;
+	}
+	if (KEY_DOWN(DIK_A)) { // A 키: X축 감소 (Left)
+		fOffsetX -= 0.1f;
+	}
+	if (KEY_DOWN(DIK_D)) { // D 키: X축 증가 (Right)
+		fOffsetX += 0.1f;
+	}
+	if (KEY_DOWN(DIK_E)) { // E 키: Y축 증가 (Page Up)
+		fOffsetY += 0.1f;
+	}
+	if (KEY_DOWN(DIK_Q)) { // Q 키: Y축 감소 (Page Down)
+		fOffsetY -= 0.1f;
+	}
 
 	for (_int i = 0; i < EBossCollider::Count; i++)
 	{
@@ -372,7 +395,8 @@ void CFestivalLeader::Update_Collider()
 
 		if (i == EBossCollider::Hammer)
 		{
-			_vector vWorldOffset = XMVectorSet(-2.5f, 0.f, 0.f, 1.f);
+			//_vector vWorldOffset = XMVectorSet(fOffsetX, fOffsetY, fOffsetZ, 1.f);
+			_vector vWorldOffset = XMVectorSet(0.800000072f, 0.f,1.49011612e-08f, 1.f);
 			_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
 			m_Colliders[i]->Set_Transform(GetBonePose(m_BoneRefs[i], &matWorldOffset));
 		}
@@ -405,6 +429,7 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			pPlayer->SetHitedAttackType(EAttackType::AIRBORNE);
 			pPlayer->SetHitMotion(HITMOTION::UP);
 		}
+		m_bRootMotionClamped = true;
 		return;
 	}
 
@@ -486,12 +511,12 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Walk_R):
 	case ENUM_CLASS(BossStateID::Walk_L):
 	{
-		m_pTransformCom->SetfSpeedPerSec(m_fWalkSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
 		m_eCurrentState = EEliteState::WALK;
 	}
 	break;
 	case ENUM_CLASS(BossStateID::Run_F):
-		m_pTransformCom->SetfSpeedPerSec(m_fRunSpeed);
+		m_pTransformCom->Set_SpeedPerSec(m_fRunSpeed);
 		m_eCurrentState = EEliteState::RUN;
 		break;
 	case ENUM_CLASS(BossStateID::Groggy_Start):
@@ -649,7 +674,7 @@ void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
 
 void CFestivalLeader::SetupAttackByType(_int iPattern)
 {
-	_bool bIsCombo = (GetRandomFloat(0.f, 1.f) < 0.8f);
+	_bool bIsCombo = static_cast<_int>((GetRandomFloat(0.f, 1.f) < 0.85f));
 	switch (iPattern)
 	{
 	case Client::CFestivalLeader::Slam:
@@ -670,11 +695,12 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	}
 	break;
 	case Client::CFestivalLeader::JumpAttack:
-		//m_eAttackType = EAttackType::FURY_STAMP;
+		m_bRootMotionClamped = true;
 		break;
 	case Client::CFestivalLeader::Strike:
 	{
-		_int iStrikeCombo = (GetRandomFloat(0.f, 1.f) < 0.8f);
+		m_bRootMotionClamped = true;
+		_int iStrikeCombo = static_cast<_int>((GetRandomFloat(0.f, 1.f) < 0.85f));
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
 		m_pAnimator->SetInt("StrikeCombo", iStrikeCombo);
 	//	m_eAttackType = EAttackType::AIRBORNE;
@@ -683,7 +709,8 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	case Client::CFestivalLeader::AlternateSmash:
 	{
 		_int iSmashCount = GetRandomInt(0, 2);
-		m_pAnimator->SetInt("SmashCount", iSmashCount);
+		if(m_fCanSmashDistance>=Get_DistanceToPlayer())
+			m_pAnimator->SetInt("SmashCount", iSmashCount);
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
 	//	m_eAttackType = EAttackType::STAMP;
 	}
@@ -744,7 +771,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
-			SetTurnTimeDuringAttack(1.f, 1.15f);
+			SetTurnTimeDuringAttack(0.9f, 1.f);
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
@@ -837,8 +864,8 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
-			m_fRootMotionAddtiveScale = 6.f;
-			m_fMaxRootMotionSpeed = 35.f;
+			m_fMaxRootMotionSpeed = 37.f;
+			m_fRootMotionAddtiveScale = 3.5f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
@@ -1223,7 +1250,11 @@ void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			pPlayer->SetHitedAttackType(EAttackType::STAMP);
 			break;
-
+		case ENUM_CLASS(BossStateID::Atk_Phase2Start):
+			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
+			pPlayer->SetHitedAttackType(EAttackType::STAMP);
+			break;
 		default:
 			break;
 		}

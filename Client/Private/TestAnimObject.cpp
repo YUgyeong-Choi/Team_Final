@@ -571,7 +571,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	{
 		_float3 moveVec = {};
 
-		_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+		_float fSpeed = m_pTransformCom->Get_SpeedPerSec();
 		_float fDist = fSpeed * fTimeDelta;
 		vInputDir *= fDist;
 		XMStoreFloat3(&moveVec, vInputDir);
@@ -620,7 +620,7 @@ void CTestAnimObject::SetMoveState(_float fTimeDelta)
 	// 7. 이동
 	_float3 moveVec = {};
 
-	_float fSpeed = m_pTransformCom->Get_SpeedPreSec();
+	_float fSpeed = m_pTransformCom->Get_SpeedPerSec();
 	_float fDist = fSpeed * fTimeDelta;
 	vInputDir *= fDist;
 	//어느방향으로 몇만큼 이동한 벡터를 구함

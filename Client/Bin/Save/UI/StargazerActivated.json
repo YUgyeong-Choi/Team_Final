@@ -1,0 +1,173 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+      "Parts": [
+        {
+          "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+          },
+          "Features": [
+            {
+              "EndScale": {
+                "X": 0.375,
+                "Y": 0.07500000298023224
+              },
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Scale",
+              "StartScale": {
+                "X": 0.25,
+                "Y": 0.05000000074505806
+              },
+              "iEndFrame": 60,
+              "iStartFrame": 0,
+              "isLoop": false
+            },
+            {
+              "EndAlpha": 1.0,
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+              "StartAlpha": 0.0,
+              "iEndFrame": 60,
+              "iStartFrame": 0,
+              "isLoop": false
+            },
+            {
+              "EndAlpha": 0.0,
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+              "StartAlpha": 1.0,
+              "iEndFrame": 240,
+              "iStartFrame": 90,
+              "isLoop": false
+            }
+          ],
+          "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+          "RotationZ": 0.0,
+          "SizeX": 0.3499999940395355,
+          "SizeY": 0.07500000298023224,
+          "Texturetag": "Prototype_Component_Texture_Activated",
+          "fAlpha": 1.0,
+          "fDuration": 0.01600000075995922,
+          "fOffset": 0.0,
+          "fX": 0.5,
+          "fY": 0.2750000059604645,
+          "iPassIndex": 1,
+          "iTextureIndex": 0,
+          "iTextureLevel": 0
+        },
+
+        {
+          "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+          },
+          "Features": [
+            {
+              "EndAlpha": 0.0,
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+              "StartAlpha": 1.0,
+              "iEndFrame": 120,
+              "iStartFrame": 60,
+              "isLoop": false
+            },
+            {
+              "EndScale": {
+                "X": 0.5,
+                "Y": 0.07500000298023224
+              },
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Scale",
+              "StartScale": {
+                "X": 0.375,
+                "Y": 0.07500000298023224
+              },
+              "iEndFrame": 120,
+              "iStartFrame": 60,
+              "isLoop": false
+            }
+          ],
+          "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+          "RotationZ": 0.0,
+          "SizeX": 0.0010000000474974513,
+          "SizeY": 0.0010000000474974513,
+          "Texturetag": "Prototype_Component_Texture_Activated",
+          "fAlpha": 0.0,
+          "fDuration": 0.01600000075995922,
+          "fOffset": 0.0,
+          "fX": 0.5,
+          "fY": 0.2750000059604645,
+          "iPassIndex": 1,
+          "iTextureIndex": 0,
+          "iTextureLevel": 0
+        },
+        {
+          "Color": {
+            "A": 0.5,
+            "B": 1.0,
+            "G": 0.6000000238418579,
+            "R": 0.10000000149011612
+          },
+          "Features": [
+            {
+              "EndPos": {
+                "X": 0.5,
+                "Y": 0.2750000059604645
+              },
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Pos",
+              "StartPos": {
+                "X": -0.5,
+                "Y": 0.2750000059604645
+              },
+              "iEndFrame": 60,
+              "iStartFrame": 0,
+              "isLoop": false
+            },
+            {
+              "EndAlpha": 1.0,
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+              "StartAlpha": 0.0,
+              "iEndFrame": 60,
+              "iStartFrame": 0,
+              "isLoop": false
+            },
+            {
+              "EndAlpha": 0.0,
+              "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+              "StartAlpha": 1.0,
+              "iEndFrame": 240,
+              "iStartFrame": 90,
+              "isLoop": false
+            }
+          ],
+          "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+          "RotationZ": 0.0,
+          "SizeX": 1.0,
+          "SizeY": 0.35,
+          "Texturetag": "Prototype_Component_Texture_BeamLightning",
+          "fAlpha": 1.0,
+          "fDuration": 0.01600000075995922,
+          "fOffset": 0.009999999776482582,
+          "fX": 0.5,
+          "fY": 0.2750000059604645,
+          "iPassIndex": 14,
+          "iTextureIndex": 0,
+          "iTextureLevel": 0
+        }
+      ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

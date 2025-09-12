@@ -127,11 +127,10 @@ protected:
 	virtual void Register_Events() override;
 	virtual void Ready_SoundEvents() {};
 
-	PxTransform ToPxPose(const _fmatrix& W);
-	PxTransform GetBonePose(CBone* pBone, const _matrix* pOffset = nullptr) ;
+	PxTransform ToPxPose(const _fmatrix& W, const _matrix* pOffset = nullptr);
+	PxTransform GetBonePose(CBone* pBone, const _matrix* pOffset = nullptr);
 
 	void ApplyAttackTypeToPlayer(EAttackType type);
-
 public:
 	EEliteState GetCurrentState() const { return m_eCurrentState; }
 

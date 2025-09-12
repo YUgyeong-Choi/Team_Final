@@ -472,9 +472,6 @@
     <Filter Include="02.GameObjects\99.UI\Container\DeBuff">
       <UniqueIdentifier>{5640eb68-dfc9-46e1-8966-982cf3b6ff2b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03. Item\Lamp">
-      <UniqueIdentifier>{0e6399e2-beac-4311-99a1-8584f53d5f03}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\DropItem">
       <UniqueIdentifier>{2c3d912b-b147-46ab-9d4a-e9049f9614e7}</UniqueIdentifier>
     </Filter>
@@ -553,7 +550,7 @@
     <Filter Include="02.GameObjects\03.Item\ErgoItem">
       <UniqueIdentifier>{4ed67012-dbc5-4f8e-85ab-5b50c41aed27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffects">
+    <Filter Include="02.GameObjects\16.Stargazer\StargazerEffect">
       <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1144,7 +1141,9 @@
     <ClInclude Include="..\Public\ShortCutDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\StargazerEffect.h" />
+    <ClInclude Include="..\public\StargazerEffect.h">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1707,7 +1706,9 @@
     <ClCompile Include="..\Private\ShortCutDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\StargazerEffect.cpp" />
+    <ClCompile Include="..\private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

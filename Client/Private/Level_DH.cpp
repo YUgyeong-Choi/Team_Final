@@ -56,9 +56,9 @@ HRESULT CLevel_DH::Initialize()
 
 	/* [ 플레이어가 속한 구역탐색 ] */
 	//6번구역
-	m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
+	//m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
 	//1번구역
-	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
+	m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
 
 	m_pGameInstance->FindAreaContainingPoint();
 

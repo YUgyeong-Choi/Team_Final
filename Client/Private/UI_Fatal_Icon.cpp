@@ -25,7 +25,7 @@ HRESULT CUI_Fatal_Icon::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_fOffset = 0.005f;
+	m_fOffset = 0.1f;
 
 	m_vColor = { 1.f, 0.27f, 0.f, 1.f };
 
@@ -93,7 +93,7 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 			_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
 			_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
-			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.f,1.f };
+			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.1f,1.f };
 
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
@@ -132,7 +132,7 @@ void CUI_Fatal_Icon::Update(_float fTimeDelta)
 			_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
 			_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
-			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.f,1.f };
+			_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.1f,1.f };
 
 			m_pTransformCom->Set_State(STATE::POSITION, vPos);
 
