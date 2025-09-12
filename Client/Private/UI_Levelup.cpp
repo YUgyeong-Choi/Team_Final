@@ -5,6 +5,7 @@
 #include "Mana_Bar.h"
 #include "Client_Calculation.h"
 #include "Weapon.h"
+#include "UI_Manager.h"
 
 CUI_Levelup::CUI_Levelup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -118,6 +119,7 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 		if (m_isRenderCorfirmUI)
 		{
 			m_isRenderCorfirmUI = false;
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 			return;
 		}
 		else
@@ -127,8 +129,10 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 			CStargazer* pStar = static_cast<CStargazer*>(m_pTarget);
 
 			pStar->Script_Activate();
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 			return;
 		}
+
 
 		
 	}
@@ -208,11 +212,13 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 
 				_wstring strErgo = to_wstring(static_cast<_int>(m_fErgo - m_fCurrentErgo));
 				static_cast<CDynamic_Text_UI*>(m_pConfirmUI->Get_PartUI().back())->Set_Caption(strErgo);
+
+				
 			}
 				
 		}
 
-		
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 
 		return;
 	}
@@ -489,6 +495,10 @@ void CUI_Levelup::Update_Button()
 		auto& part1 = m_pStatButtons[m_iButtonIndex]->Get_PartUI();
 		part1[0]->Set_Color({ 0.8f,0.1f,0.1f,1 });
 		static_cast<CDynamic_UI*>(part1[1])->Set_iTextureIndex(1);
+
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
+
 	}
 	else if (m_pGameInstance->Key_Down(DIK_S))
 	{
@@ -542,7 +552,7 @@ void CUI_Levelup::Update_Button()
 				static_cast<CDynamic_UI*>(part1[1])->Set_iTextureIndex(1);
 			}
 
-		
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 		}
 
 		
@@ -783,14 +793,12 @@ void CUI_Levelup::Update_Stat(_bool isPlus)
 	
 	
 	
-
+	CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 
 }
 
 _bool CUI_Levelup::Check_Ergo()
 {
-
-	m_pPlayer->Check_LevelUp(m_iLevel);
 
 
 	return m_pPlayer->Check_LevelUp(m_iLevel);

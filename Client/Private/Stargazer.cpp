@@ -216,11 +216,11 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 					CUI_Manager::Get_Instance()->Activate_Popup(false);
 					m_pEffectSet->Activate_Stargazer_Reassemble();
 
-					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", 0.5f * g_fInteractSoundVolume);
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
 					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
 
 					
-					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", 0.5f * g_fInteractSoundVolume);
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
 					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
 
 					return;
@@ -669,31 +669,43 @@ void CStargazer::Update_Button()
 	if (!m_bUseScript)
 		return;
 
+	if (m_iSelectButtonIndex < 0)
+		m_iSelectButtonIndex = 0;
+	else if (m_iSelectButtonIndex >= static_cast<_int>(m_pSelectButtons.size()))
+		m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+
 	if (m_pGameInstance->Key_Down(DIK_W))
 	{
-		if (m_iSelectButtonIndex < 0)
-			m_iSelectButtonIndex = 0;
-
+		// 이전 버튼 해제
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+
+		// 인덱스 감소 + 보정
 		--m_iSelectButtonIndex;
 		if (m_iSelectButtonIndex < 0)
 			m_iSelectButtonIndex = 0;
 
+		// 새로운 버튼 선택
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 	}
 	else if (m_pGameInstance->Key_Down(DIK_S))
 	{
-		if (m_iSelectButtonIndex >= m_pSelectButtons.size())
+		// 이전 버튼 해제
+		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
+
+		// 인덱스 증가 + 보정
+		++m_iSelectButtonIndex;
+		if (m_iSelectButtonIndex >= static_cast<_int>(m_pSelectButtons.size()))
 			m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
 
-		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(false);
-		++m_iSelectButtonIndex;
-		if (m_iSelectButtonIndex >= m_pSelectButtons.size())
-			m_iSelectButtonIndex = static_cast<_int>(m_pSelectButtons.size()) - 1;
+		// 새로운 버튼 선택
 		m_pSelectButtons[m_iSelectButtonIndex]->Set_isSelect(true);
+
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 	}
 
-
+	
 }
 
 void CStargazer::Button_Interaction()
