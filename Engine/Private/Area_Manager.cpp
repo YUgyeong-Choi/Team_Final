@@ -295,7 +295,7 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     vector<_uint> vecFuocoIds = { 19 };
 
     // 현재 활성화된 지역이 외부지역입니다.
-    vector<_uint> vecOuterIds = { 22, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60 };
+    vector<_uint> vecOuterIds = { 22, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 };
 
     // 현재 활성화된 지역이 디버깅입니다.
     vector<_uint> vecDebugIds = { 98, 99 };
