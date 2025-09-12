@@ -58,6 +58,7 @@ protected:
 private:
 	HRESULT Render_Key();
 	void Start_Effect(_float fTimeDelta);
+	void Play_Sounds(_float fTimeDelta);
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	class CAnimator* m_pAnimator = { nullptr };
@@ -87,6 +88,10 @@ private:
 
 	class CModel* m_pModelComBackKey = { nullptr };
 	class CAnimator* m_pAnimatorBackKey = { nullptr };
+
+	_bool m_bSoundActive = false;
+	_bool m_bSoundPlay[5] = {};
+	_float m_fSoundTime = {};
 public:
 	static CShortCutDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

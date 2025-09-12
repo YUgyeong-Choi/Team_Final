@@ -32,6 +32,9 @@ HRESULT CDHTool::Initialize(void* pArg)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxAnimMesh")),
+		TEXT("Com_ShaderAnim"), reinterpret_cast<CComponent**>(&m_pAnimShaderCom))))
+		return E_FAIL;
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxMesh_Instance")),
 		TEXT("Com_ShaderInstance"), reinterpret_cast<CComponent**>(&m_pShaderComInstance))))
 		return E_FAIL;
@@ -187,45 +190,63 @@ HRESULT CDHTool::Render_ShaderTool()
 		{
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDiffuseIntensity", &fDiffuseIntensity, sizeof(_float))))
 				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fDiffuseIntensity", &fDiffuseIntensity, sizeof(_float))))
+				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fDiffuseIntensity", &fDiffuseIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDiffuseTint", &vDiffuseTint, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_vDiffuseTint", &vDiffuseTint, sizeof(_float4))))
 				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_vDiffuseTint", &vDiffuseTint, sizeof(_float4))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fNormalIntensity", &fNormalIntensity, sizeof(_float))))
 				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fNormalIntensity", &fNormalIntensity, sizeof(_float))))
+				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fNormalIntensity", &fNormalIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fAOIntensity", &fAOIntensity, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fAOIntensity", &fAOIntensity, sizeof(_float))))
 				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fAOIntensity", &fAOIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
 				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
+				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fAOPower", &fAOPower, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fRoughnessIntensity", &fRoughnessIntensity, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fRoughnessIntensity", &fRoughnessIntensity, sizeof(_float))))
 				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fRoughnessIntensity", &fRoughnessIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fMetallicIntensity", &fMetallicIntensity, sizeof(_float))))
 				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fMetallicIntensity", &fMetallicIntensity, sizeof(_float))))
+				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fMetallicIntensity", &fMetallicIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fReflectionIntensity", &fReflectionIntensity, sizeof(_float))))
 				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fReflectionIntensity", &fReflectionIntensity, sizeof(_float))))
+				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fReflectionIntensity", &fReflectionIntensity, sizeof(_float))))
 				return E_FAIL;
 
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fSpecularIntensity", &fSpecularIntensity, sizeof(_float))))
+				return E_FAIL;
+			if (FAILED(m_pAnimShaderCom->Bind_RawValue("g_fSpecularIntensity", &fSpecularIntensity, sizeof(_float))))
 				return E_FAIL;
 			if (FAILED(m_pShaderComInstance->Bind_RawValue("g_fSpecularIntensity", &fSpecularIntensity, sizeof(_float))))
 				return E_FAIL;
@@ -980,5 +1001,6 @@ void CDHTool::Free()
 	__super::Free();
 
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pAnimShaderCom);
 	Safe_Release(m_pShaderComInstance);
 }

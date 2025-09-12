@@ -38,6 +38,84 @@ HRESULT CLevel::Render()
     return S_OK;
 }
 
+void CLevel::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
+{
+    if (!bNowPlaying)
+    {
+        m_pBGM = m_pGameInstance->Get_Single_Sound(soundName);
+        m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
+        m_pBGM->Play();
+    }
+    else
+    {
+		m_bBGMToZero = true;
+		m_strWillChangeBGM = soundName;
+    }
+
+    if (bNotLoop) {
+        m_bCheckBGMFinish = true;
+		m_strWillMainBGM = willMainBGM;
+    }
+
+        
+}
+
+static _float LerpFloat(_float a, _float b, _float t)
+{
+	return a + (b - a) * t;
+}
+
+void CLevel::Update_ChangeBGM(_float fTimeDelta)
+{
+	if (m_bBGMToZero)
+	{
+        m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
+        m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+
+        if (m_fBGMVolume < 0.01f)
+        {
+            m_pBGM->Stop();
+            Safe_Release(m_pBGM);
+            m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillChangeBGM);
+            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+            m_pBGM->Play();
+
+
+            m_bBGMToZero = false;
+            m_bBGMToVolume = true;
+        }
+	}
+
+	if (m_bBGMToVolume)
+	{
+		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
+		m_fBGMVolume = LerpFloat(m_fBGMVolume, 1.f, fTimeDelta * 4.f);
+		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+
+		// 만약에 m_fBGMVolume가 1이 되면
+        if (m_fBGMVolume > 0.99f)
+        {
+			m_fBGMVolume = 1.f;
+            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+            m_bBGMToVolume = false;
+        }
+	}
+
+    if (m_bCheckBGMFinish)
+    {
+		if (m_pBGM && !m_pBGM->IsPlaying())
+		{
+            m_pBGM->Stop();
+            Safe_Release(m_pBGM);
+            m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillMainBGM);
+            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+            m_pBGM->Play();
+
+            m_bCheckBGMFinish = false;
+		}
+    }
+}
+
 void CLevel::HoldMouse()
 {
     // 화면 해상도 기준 중앙 좌표 구하기
@@ -52,6 +130,12 @@ void CLevel::HoldMouse()
 void CLevel::Free()
 {
     __super::Free();
+
+    if (m_pBGM)
+    {
+        m_pBGM->Stop();
+        Safe_Release(m_pBGM);
+    }
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);

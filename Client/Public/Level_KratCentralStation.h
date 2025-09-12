@@ -5,10 +5,6 @@
 #include "DHTool.h"
 #include "Monster_Base.h"
 
-NS_BEGIN(Engine)
-class CSound_Core;
-NS_END
-
 NS_BEGIN(Client)
 
 class CLevel_KratCentralStation final : public CLevel
@@ -81,8 +77,6 @@ private:
 
 private:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
-	CSound_Core* m_pBGM = { nullptr };
-	CSound_Core* m_pBGM2 = { nullptr };
 
 	class CUI_Video* m_pStartVideo = { nullptr };
 	_bool m_bEndVideo = {};

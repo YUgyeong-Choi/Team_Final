@@ -46,8 +46,9 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 	{
 		m_pTarget = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
 	}
+	_bool bCheckClose = Check_Player_Close();
 
-	if (Check_Player_Close())
+	if (bCheckClose)
 	{
 		// ÆË¾÷ Å°±â
 		if (!m_bDoOnce)
@@ -61,6 +62,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 		if (m_pGameInstance->Key_Down(DIK_E))
 		{
+			static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(bCheckClose);
 			Set_bDead();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 

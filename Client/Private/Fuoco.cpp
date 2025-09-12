@@ -1139,6 +1139,8 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 		return;
 	m_pAnimator->SetTrigger("Paralyzation");
 	m_pAnimator->SetPlayRate(1.f);
+	m_bGroggyActive = false;
+	m_fGroggyGauge = 0.f;
 	m_bStartPhase2 = true;
 	vector<EBossAttackPattern> m_vecBossPatterns = {
 		SlamCombo,SwingAtk,SwingAtkSeq,SlamFury,

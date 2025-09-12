@@ -1603,6 +1603,10 @@
             "Duration": 153.0,
             "Events": [
                 {
+                    "EventName": "OffSwordTrail",
+                    "Time": 3.0
+                },
+                {
                     "EventName": "OnWeaponCollider",
                     "Time": 28.0
                 },

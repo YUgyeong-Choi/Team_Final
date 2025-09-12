@@ -124,6 +124,8 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 		m_bEndVideo = true;
 	}
+
+	Update_ChangeBGM(fTimeDelta);
 }
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
@@ -1905,11 +1907,8 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
 			Desc.pBGM = m_pBGM;
-			Desc.pBGM2 = m_pBGM2;
 			Desc.strInBGM = strInBGM;
 			Desc.strOutBGM = strOutBGM;
-			Desc.strInBGM2 = strInBGM2;
-			Desc.strOutBGM2 = strOutBGM2;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerBGM"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerBGM"), &Desc)))
@@ -2109,17 +2108,6 @@ void CLevel_KratCentralStation::Free()
 {
 	__super::Free();
 
-	if (m_pBGM)
-	{
-		m_pBGM->Stop();
-		Safe_Release(m_pBGM);
-	}
-
-	if (m_pBGM2)
-	{
-		m_pBGM2->Stop();
-		Safe_Release(m_pBGM2);
-	}
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
 	Safe_Release(m_pShaderComInstance);

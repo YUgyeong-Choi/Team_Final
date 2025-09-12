@@ -261,10 +261,11 @@ public:
             }
         }
 
-    /*    if (m_pOwner->m_Input.bGetItem)
+        if (m_pOwner->m_Input.bGetItem&&m_pOwner->m_bCanGetItem)
         {
 			m_pOwner->m_pAnimator->SetTrigger("GetItem");
-        }*/
+            m_pOwner-> m_bCanGetItem = false;
+        }
     }
 
     virtual void Exit() override
@@ -408,10 +409,12 @@ public:
             }
         }
 
-        //if (m_pOwner->m_Input.bGetItem)
-        //{
-        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
-        //}
+
+        if (m_pOwner->m_Input.bGetItem && m_pOwner->m_bCanGetItem)
+        {
+            m_pOwner->m_pAnimator->SetTrigger("GetItem");
+            m_pOwner->m_bCanGetItem = false;
+        }
 
         LockOnMovement();        
     }
@@ -567,10 +570,12 @@ public:
             }
         }
 
-      /*  if (m_pOwner->m_Input.bGetItem)
+
+        if (m_pOwner->m_Input.bGetItem && m_pOwner->m_bCanGetItem)
         {
             m_pOwner->m_pAnimator->SetTrigger("GetItem");
-        }*/
+            m_pOwner->m_bCanGetItem = false;
+        }
 
 		LockOnMovement();
     }
@@ -1213,10 +1218,12 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
-        //if (m_pOwner->m_Input.bGetItem)
-        //{
-        //    m_pOwner->m_pAnimator->SetTrigger("GetItem");
-        //}
+
+        if (m_pOwner->m_Input.bGetItem && m_pOwner->m_bCanGetItem)
+        {
+            m_pOwner->m_pAnimator->SetTrigger("GetItem");
+            m_pOwner->m_bCanGetItem = false;
+        }
     }
 
     virtual void Exit() override
@@ -3030,6 +3037,7 @@ public:
 public:
     virtual void Enter() override
     {
+        m_pOwner->m_pAnimator->ResetTrigger("GetItem");
         /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
         m_pOwner->HPSubtract();
         if (m_pOwner->m_fHp <= 0.f)
@@ -3118,7 +3126,7 @@ public:
             m_pOwner->m_pAnimator->SetTrigger("Hited");
         }
 
-        //m_pOwner->m_pAnimator->ResetTrigger("GetItem");
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
 
