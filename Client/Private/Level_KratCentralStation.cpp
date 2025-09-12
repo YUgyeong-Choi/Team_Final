@@ -283,6 +283,11 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
+	//모든 몬스터, 스타게이저, 부수는 오브젝트, 별바라기 소환하자.
+	if (FAILED(m_pMapLoader->Load_Ready_All_Etc(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
+		return E_FAIL;
+	cout << "[MAP] Load_Ready_All_Etc 완료" << endl;
+
 	if (FAILED(m_pMapLoader->Ready_Monster()))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_ErgoItem()))

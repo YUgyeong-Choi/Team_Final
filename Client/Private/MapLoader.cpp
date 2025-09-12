@@ -30,7 +30,7 @@ HRESULT CMapLoader::Initialize()
 
 _bool CMapLoader::Check_MapLoadComplete()
 {
-	const char* mapName = nullptr;
+	const _char* mapName = nullptr;
 
 	{
 		std::lock_guard<std::mutex> lock(m_QueueMutex);
@@ -107,9 +107,7 @@ _bool CMapLoader::Check_MapLoadComplete()
 
 HRESULT CMapLoader::Ready_Map_Async()
 {
-	std::vector<const char*> maps = { "HOTEL", "OUTER"/*FireEater*/};
-
-	for (const char* mapName : maps)
+	for (const _char* mapName : m_Maps)
 	{
 		std::thread([=]()
 			{
@@ -132,12 +130,57 @@ HRESULT CMapLoader::Ready_Map_Async()
 
 	return S_OK;
 }
+
+HRESULT CMapLoader::Load_Ready_Nav_All(_uint iLevelIndex)
+{
+	vector<const _char*> Maps = {"STATION", "HOTEL", "OUTER" /*FireEater*/ };
+
+	for (const _char* Map : Maps)
+	{
+		if (FAILED(Loading_Navigation(iLevelIndex, Map)))
+			return E_FAIL;
+
+		//네비 소환
+		if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
+			return E_FAIL;
+	}
+
+	return S_OK;
+}
+
+HRESULT CMapLoader::Load_Ready_All_Etc(_uint iLevelIndex)
+{
+	//for (const _char* Map : m_Maps)
+	//{
+	//	if(FAILED(Loading_Navigation(iLevelIndex, Map)))
+	//		return E_FAIL;
+
+	//	//네비 소환
+	//	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
+	//		return E_FAIL;
+	//}
+
+
+	for (const _char* Map : m_Maps)
+	{
+		//네비게이션
+
+		Ready_Monster(Map);
+		Ready_Stargazer(Map);
+		Ready_ErgoItem(Map);
+
+		//Ready_Breakable(Map);
+	}
+
+	return S_OK;
+}
 HRESULT CMapLoader::Ready_Etc(const _char* Map)
 {
 	Add_MapActor(Map);
-	Ready_Monster(Map);
-	Ready_Stargazer(Map);
-	Ready_Breakable(Map);
+
+	//Ready_Monster(Map);
+	//Ready_Stargazer(Map);
+	//Ready_Breakable(Map);
 
 	return S_OK;
 }
@@ -152,11 +195,11 @@ HRESULT CMapLoader::Load_Map(_uint iLevelIndex, const _char* Map)
 	}
 
 	//네비
-	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
-	{
-		MSG_BOX("네비게이션 로딩 실패!");
-		return E_FAIL;
-	}
+	//if (FAILED(Loading_Navigation(iLevelIndex, Map)))
+	//{
+	//	MSG_BOX("네비게이션 로딩 실패!");
+	//	return E_FAIL;
+	//}
 
 	//데칼
 	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
@@ -455,8 +498,8 @@ HRESULT CMapLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 		return E_FAIL;
 
 	//네비 소환
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
-		return E_FAIL;
+	//if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
+	//	return E_FAIL;
 
 	//어떤 데칼을 소환 시킬 것인지?
 	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION

@@ -26,6 +26,10 @@ public:
 	*/
 	HRESULT Ready_Map_Async();
 
+	HRESULT Load_Ready_Nav_All(_uint iLevelIndex);
+
+	HRESULT Load_Ready_All_Etc(_uint iLevelIndex);
+
 	HRESULT Ready_Etc(const _char* Map);
 
 public:
@@ -79,6 +83,9 @@ public:
 
 	HRESULT Ready_Breakable();
 	HRESULT Ready_Breakable(const _char* Map);
+
+private:
+	vector<const _char*> m_Maps = { "HOTEL", "OUTER"/*FireEater*/ };
 
 private:
 	// 완료된 맵 이름을 저장하는 스레드 안전 큐
