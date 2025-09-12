@@ -402,7 +402,7 @@ private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteractSound[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
 	_bool  m_bHaveKey = false;
-
+	eTriggerEvent m_ecurTriggerEvent = eTriggerEvent::END;
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",
 		"Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R",

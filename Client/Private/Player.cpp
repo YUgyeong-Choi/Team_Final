@@ -3019,6 +3019,8 @@ void CPlayer::GetWeapon()
 
 void CPlayer::OnTriggerEvent(eTriggerEvent eEvent)
 {
+	if (m_ecurTriggerEvent == eEvent)
+		return;
 	switch (eEvent)
 	{
 	case Client::CPlayer::eTriggerEvent::TALK:
@@ -3040,6 +3042,7 @@ void CPlayer::OnTriggerEvent(eTriggerEvent eEvent)
 	default:
 		break;
 	}
+	m_ecurTriggerEvent = eEvent;
 }
 
 void CPlayer::Play_CutScene_Door()

@@ -210,7 +210,8 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			{
 				if (m_eState == STARGAZER_STATE::DESTROYED)
 				{
-					// 나중에 트리거로 바꾸기
+					if (m_bIsRotatingToStargazer == false)
+						m_bIsRotatingToStargazer = true;
 					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_START);
 					m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
 					m_bChange = true;
@@ -229,6 +230,9 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				}
 				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
 				{
+	
+					if(m_bIsRotatingToStargazer == false)
+						m_bIsRotatingToStargazer = true;
 					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
 					if (m_eScriptDatas.empty())
 					{
@@ -377,9 +381,22 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	if (m_bIsRotatingToStargazer)
+	{
+		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vStargazerPos = this->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+		// Y축은 고정시켜서 바닥 기준으로만 회전
+		vStargazerPos = XMVectorSetY(vStargazerPos, XMVectorGetY(vPlayerPos));
 
-	 
+		_vector vDir = XMVector3Normalize(vStargazerPos - vPlayerPos);
+
+		// 이제 방향 벡터를 넣어줌
+		if (m_pPlayer->Get_TransfomCom()->RotateToDirectionSmoothly(vDir, fTimeDelta))
+		{
+			m_bIsRotatingToStargazer = false;
+		}
+	}
 }
 
 void CStargazer::Update(_float fTimeDelta)
