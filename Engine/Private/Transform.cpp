@@ -250,10 +250,10 @@ bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CPhysX
 
 	// 목표까지의 거리
 	_float fDistance = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPosition, vMyPos)));
-	if (fDistance <= 0.1f)
+	if (fDistance <= 0.05f)
 		return true;
 
-	if (fDistance > 0.1f)
+	if (fDistance > 0.05f)
 	{
 		Go_Front(fTimeDelta, pController, pNavigation);
 	}

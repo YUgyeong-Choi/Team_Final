@@ -643,14 +643,14 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_HeavyLock"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLock/HeavyLock.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_HeavyLockSmall"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
@@ -1106,6 +1106,54 @@ HRESULT CLoader::Loading_For_DH()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Floor_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	/* 상호 작용 문 */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_FacotoryDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FacotoryDoor/FacotoryDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_FestivalDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalDoor/FestivalDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_FestivalCrashDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalCrashDoor/FestivalCrashDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_StationDoubleDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/StationDoubleDoor/StationDoubleDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_ShortCutDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShortCutDoor/ShortCutDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_HeavyLock"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLock/HeavyLock.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_HeavyLockSmall"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
 	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
@@ -1118,6 +1166,23 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
+	/* 상호 작용 문 */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_SlideDoor"),
+		CSlideDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_KeyDoor"),
+		CKeyDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_BossDoor"),
+		CBossDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ShortCutDoor"),
+		CShortCutDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 //#pragma region 맵 오브젝트
 //	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
@@ -1154,6 +1219,7 @@ HRESULT CLoader::Loading_For_DH()
 //#pragma endregion
 
 #pragma region YW
+
 	//부술수있는 메쉬 테스트용 모델
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
@@ -1173,12 +1239,10 @@ HRESULT CLoader::Loading_For_DH()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-
 	//부술수 있는 메쉬(푸오코 기둥 등...)
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_BreakableMesh"),
 		CBreakableMesh::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
 
 //스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
@@ -3094,6 +3158,33 @@ HRESULT CLoader::Loading_For_YG()
 #pragma endregion
 
 #pragma region YW
+
+	//부술수있는 메쉬 테스트용 모델
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
+
+	//파트2
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part2"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//파트1
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part1"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
+		return E_FAIL;
+	//SM_Interior_Table_07_3of8
+	//본 모델
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Main"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	//부술수 있는 메쉬(푸오코 기둥 등...)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BreakableMesh"),
+		CBreakableMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -3118,20 +3209,77 @@ HRESULT CLoader::Loading_For_YG()
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
 
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
+#ifdef TESTMAP
 
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+
+#ifdef TEST_STATION_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
+
+
+#endif // TESTMAP
+
+
+
+
+	/*if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+
+	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;*/
+
+#ifndef TESTMAP
+
+#pragma region 멀티 스레드로 소환
 	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 
 	auto futureStation = async(launch::async, [&]
 		{
+			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
+
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
 				return E_FAIL;
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
@@ -3143,6 +3291,8 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
 	auto futureHotel = async(launch::async, [&]
 		{
+			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
+
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
 				return E_FAIL;
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
@@ -3154,6 +3304,8 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
 	auto futureOuter = async(launch::async, [&]
 		{
+			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
+
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
 				return E_FAIL;
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
@@ -3165,6 +3317,8 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
 	auto futureFireEater = async(launch::async, [&]
 		{
+			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
+
 			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
 				return E_FAIL;
 			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
@@ -3187,6 +3341,13 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(futureFireEater.get()))
 		return E_FAIL;
+#pragma endregion
+
+#endif // !TESTMAP
+
+
+
+#pragma endregion
 
 #pragma endregion
 

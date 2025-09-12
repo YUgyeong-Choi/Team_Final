@@ -43,10 +43,6 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 
 	Register_Events();
 
-	//m_pAnimator->SetPlaying(true);
-	//m_pAnimatorFrontKey->SetPlaying(true);
-	//m_pAnimatorBackKey->SetPlaying(true);
-
 	return S_OK;
 }
 
@@ -70,6 +66,8 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 				m_bFinish = true;
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
+
+				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(true);
 			}
 			else
 			{
@@ -88,6 +86,10 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 		m_bFinish = false;
 		m_bCanActive = false;
 		m_bCanOpen = true;
+		m_fEscapeTime = 0.f;
+
+		m_bEffectActive = false;
+		m_fEffectTime = 0.f;
 	}
 #endif // _DEBUG
 }
@@ -115,6 +117,8 @@ void CShortCutDoor::Update(_float fTimeDelta)
 		m_pModelComBackKey->Update_Bones();
 
 	Move_Player(fTimeDelta);
+	if(m_bEffectActive)
+		Start_Effect(fTimeDelta);
 }
 
 void CShortCutDoor::Late_Update(_float fTimeDelta)
@@ -260,7 +264,7 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 			if (m_bCanOpen)
 				vTargetPos = _vector({ 147.56f, 1.f, -25.81f, 1.f });
 			else
-				vTargetPos = _vector({ 147.28f, 1.f, -24.30f, 1.f });
+				vTargetPos = _vector({ 147.15f, 2.66f, -24.52f, 1.f });
 			break;
 		default:
 			break;
@@ -299,13 +303,27 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
+		m_bCanMovePlayer = true;
+		m_bEffectActive = true;
 		// 문 여는 거 활성화
-
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
+	}
 
+	if (m_bCanMovePlayer)
+	{
+		m_fEscapeTime += fTimeDelta;
+		if (m_bCanOpen && m_fEscapeTime > 8.5f)
+		{
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(false);
+			m_bCanMovePlayer = false;
+		}
 
-
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);
+		if(!m_bCanOpen)
+		{
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_bCanMovePlayer = false;
+		}
 	}
 }
 
@@ -570,6 +588,27 @@ HRESULT CShortCutDoor::Render_Key()
 	}
 
 	return  S_OK;
+}
+
+void CShortCutDoor::Start_Effect(_float fTimeDelta)
+{
+	m_fEffectTime += fTimeDelta;
+
+
+	if (m_bCanOpen) // 문 염
+	{
+		if (m_fEffectTime > 1.3f)
+		{
+			m_bEffectActive = false;
+		}
+	}
+	else 	
+	{
+		if (m_fEffectTime > 1.4f)
+		{
+			m_bEffectActive = false;
+		}
+	}
 }
 
 
