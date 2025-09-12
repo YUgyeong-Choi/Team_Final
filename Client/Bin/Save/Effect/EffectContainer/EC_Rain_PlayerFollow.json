@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 264.3665771484375,
+            "LifeTime": 477.88226318359375,
             "LifeTime_Particle": [
                 1.0,
                 3.0
@@ -72,7 +72,7 @@
             "MaxSpeed": 300.0,
             "MinSpeed": 0.0,
             "Name": "PlayerRainVolumeParticle1",
-            "NumInstance": 10000,
+            "NumInstance": 15000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -84,16 +84,16 @@
                 -20.0,
                 20.0
             ],
-            "PType": 1,
+            "PType": 0,
             "Pivot": [
                 -0.009999999776482582,
-                0.05000019073486328,
+                21.719999313354492,
                 0.009999999776482582
             ],
             "Range": [
-                10.0,
-                2.0,
-                10.0
+                13.0,
+                1.0,
+                13.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -106,16 +106,18 @@
                 0.0
             ],
             "ShaderPass": 5,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.10000000149011612
             ],
             "Speed": [
-                3.0,
-                6.0
+                2.0,
+                5.0
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "T_Decal_015_Emssive01_C_HJS",
                 "T_Rain_Drip_Mask_01_C_RSW",

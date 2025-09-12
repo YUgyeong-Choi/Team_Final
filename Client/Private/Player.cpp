@@ -240,10 +240,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 		if (KEY_DOWN(DIK_Z))
 		{
-			static _bool bEfActv = { true };
-			bEfActv = !bEfActv;
-
-			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), bEfActv);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
+		}
+		if (KEY_DOWN(DIK_X))
+		{
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
 		}
 	}
 	/* [ 플레이어가 속한 구역탐색 ] */
@@ -1245,6 +1246,13 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_pLegionArm->Use_LegionEnergy(20.f);
 			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
+
+			CEffectContainer::DESC Lightdesc = {};
+			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_LeftarmBIGLIGHT"), &Lightdesc))
+				MSG_BOX("이펙트 생성 실패함");
 		}
 
 		RootMotionActive(fTimeDelta);
@@ -2866,7 +2874,7 @@ HRESULT CPlayer::Ready_Effect()
 {
 	CEffectContainer::DESC desc = {};
 	desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(1.f, 6.f, 0.f)); // 조금 더 플레이어 전방에 있었으면 좋겠어서,,
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 6.f, 0.f)); // 조금 더 플레이어 전방에 있었으면 좋겠어서,,
 	CEffectContainer* pEffect = { nullptr };
 	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Rain_PlayerFollow"), &desc));
 

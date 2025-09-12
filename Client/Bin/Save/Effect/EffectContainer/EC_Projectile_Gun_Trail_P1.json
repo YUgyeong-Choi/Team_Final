@@ -25,10 +25,10 @@
                 0.4554973840713501
             ],
             "DistortionStrength": 10.0,
-            "Duration": 13,
+            "Duration": 3,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 13,
+            "EndTrack": 3,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
@@ -61,10 +61,10 @@
                     ]
                 }
             ],
-            "LifeTime": 138.1531524658203,
+            "LifeTime": 344.8809814453125,
             "LifeTime_Particle": [
-                0.20000000149011612,
-                0.50000001192092896
+                0.009999999776482582,
+                0.5
             ],
             "Local": true,
             "Loop": true,
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Projectile_Gun_TrailParticle1",
-            "NumInstance": 10,
+            "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -88,7 +88,7 @@
             "Pivot": [
                 0.0,
                 0.0,
-                0.0
+                -0.10000000149011612
             ],
             "Range": [
                 0.009999999776482582,
@@ -106,16 +106,18 @@
                 0.0
             ],
             "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                3.05000000074505806,
-                4.05000000074505806
+                0.029999999329447746,
+                0.05000000074505806
             ],
             "Speed": [
-                0.10000000149011612,
-                0.30000001192092896
+                0.20000000298023224,
+                0.5
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Acid_Decal_C_KJS",
@@ -137,5 +139,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 10
+    "MaxFrame": 4
 }

@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 102,
             "EffectType": 1,
-            "EmissiveIntensity": 3.9000000953674316,
+            "EmissiveIntensity": 1.0499999523162842,
             "EndTrack": 102,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2342.662353515625,
+            "LifeTime": 2454.591552734375,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -70,9 +70,9 @@
             "Loop": false,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 1.0,
+            "MinSpeed": 4.0,
             "Name": "Hit_Spiral_Particle1",
-            "NumInstance": 50,
+            "NumInstance": 100,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -81,8 +81,8 @@
                 1.0
             ],
             "OrbitSpeed": [
-                700.0,
-                1000.0
+                500.0,
+                700.0
             ],
             "PType": 0,
             "Pivot": [
@@ -106,9 +106,10 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.019999999552965164,
-                0.029999999329447746
+                0.009999999776482582,
+                0.02500000037252903
             ],
             "Speed": [
                 12.0,
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -137,8 +139,8 @@
         },
         {
             "Accel": [
-                -10.0,
-                -10.0
+                -8.0,
+                -5.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -162,7 +164,7 @@
             "DistortionStrength": 10.0,
             "Duration": 73,
             "EffectType": 1,
-            "EmissiveIntensity": 3.9000000953674316,
+            "EmissiveIntensity": 0.8999999761581421,
             "EndTrack": 73,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -196,7 +198,7 @@
                     ]
                 }
             ],
-            "LifeTime": 374.6755065917969,
+            "LifeTime": 488.1679992675781,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -207,7 +209,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Hit_Spiral_SparkParticle2",
-            "NumInstance": 30,
+            "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -241,9 +243,10 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.019999999552965164,
-                0.029999999329447746
+                0.014999999664723873,
+                0.019999999552965164
             ],
             "Speed": [
                 3.0,
@@ -251,6 +254,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -281,9 +285,9 @@
             ],
             "Color": [
                 1.0,
-                0.1568627506494522,
+                0.1568506807088852,
                 0.0,
-                0.0
+                -0.05878329277038574
             ],
             "DistortionStrength": 10.0,
             "Duration": 69,
@@ -347,7 +351,7 @@
                     ]
                 }
             ],
-            "LifeTime": 50.97988510131836,
+            "LifeTime": 164.31988525390625,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,
