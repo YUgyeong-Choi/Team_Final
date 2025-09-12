@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 70,
             "EffectType": 1,
-            "EmissiveIntensity": 2.0,
+            "EmissiveIntensity": 0.44999998807907104,
             "EndTrack": 70,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2654.615234375,
+            "LifeTime": 2714.94970703125,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
             "Name": "SlashHit_Particle1",
-            "NumInstance": 50,
+            "NumInstance": 150,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -106,9 +106,10 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.03999999910593033,
-                0.07999999821186066
+                0.009999999776482582,
+                0.029999999329447746
             ],
             "Speed": [
                 10.0,
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -212,7 +214,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1085.4188232421875,
+            "LifeTime": 1146.6583251953125,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,

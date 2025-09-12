@@ -1,6 +1,7 @@
 #include "Bullet.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Client_Calculation.h"
 
 CBullet::CBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CProjectile{pDevice, pContext}
@@ -83,7 +84,7 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
     Set_bDead();
 
     if (m_pEffect)
-        m_pEffect->End_Effect();
+        m_pEffect->Set_bDead();
 }
 
 void CBullet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -116,10 +117,17 @@ HRESULT CBullet::Ready_Components()
 
 HRESULT CBullet::Ready_Effect()
 {
+    _vector vFrom = XMVectorSet(0.f, 0.f, 1.f, 0.f); // 기준: +Y
+    _vector vTo = XMVector3Normalize(m_vDirection);         // 원하는 방향
+
+    _vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
+    _matrix mRot = XMMatrixRotationQuaternion(qRot);
+
+
     CEffectContainer::DESC desc = {};
     desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-    m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Trail_P1"), &desc));
+    XMStoreFloat4x4(&desc.PresetMatrix, mRot);
+    m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Trail_P1"), &desc));
     if (nullptr == m_pEffect)
         MSG_BOX("이펙트 생성 실패함");
 

@@ -85,9 +85,9 @@ VS_OUT VS_MAIN_CS(uint instanceID : SV_InstanceID)
     // 로컬쓸려면 곱하고, 각자 월드상태 가지려면 처음부터 월드 상태의 좌표 든 채로 이부분스킵
     vector vPosition = mul(vector(0.f, 0.f, 0.f, 1.f), TransformMatrix);
     
-    if (g_bLocal == 0)
-        Out.vPosition = mul(vPosition, g_WorldMatrix);
-    else
+    //if (g_bLocal == 0)
+    //    Out.vPosition = mul(vPosition, g_WorldMatrix);
+    //else
         Out.vPosition = vPosition;
     
     Out.vPSize = float2(length(particle.Right.xyz), length(particle.Up.xyz));
@@ -589,7 +589,7 @@ technique11 DefaultTechnique
         
 
         VertexShader = compile vs_5_0 VS_MAIN_CS();
-        GeometryShader = compile gs_5_0 GS_MAIN_VSTRETCH();
+        GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_RAINONLY();
     }
 

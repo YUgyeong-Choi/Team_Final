@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                2.0,
-                4.0
+                0.0,
+                1.5
             ],
             "Animation": true,
             "Billboard": false,
@@ -30,7 +30,7 @@
             "EmissiveIntensity": 0.6000000238418579,
             "EndTrack": 200,
             "FlipUV": false,
-            "Gravity": -0.800000011920929,
+            "Gravity": 0.0,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -61,10 +61,10 @@
                     ]
                 }
             ],
-            "LifeTime": 7470.751953125,
+            "LifeTime": 7691.83154296875,
             "LifeTime_Particle": [
-                0.699999988079071,
-                1.5
+                1.2000000476837158,
+                2.5
             ],
             "Local": true,
             "Loop": false,
@@ -113,7 +113,7 @@
             ],
             "Speed": [
                 0.019999999552965164,
-                0.4000000059604645
+                0.30000001192092896
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -138,6 +138,6 @@
             "isTileLoop": false
         }
     ],
-    "Loop": true,
-    "MaxFrame": 120
+    "Loop": false,
+    "MaxFrame": 200
 }
