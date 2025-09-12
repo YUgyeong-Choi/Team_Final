@@ -455,3 +455,8 @@ Client/Default/imgui.ini
 Engine/Bin/ShaderFiles/Shader_Compute_Particle.cso
 Client/Bin/ShaderFiles/Shader_Compute_Particle.cso
 Client/Default/imgui.ini
+Client/Default/x64Debug/
+Client/Default/x64Release/
+Client/Default/x64Debug/Client.exe.recipe
+Client/Default/x64Debug/vc143.idb
+Client/Default/x64Release/Client.exe.recipe
