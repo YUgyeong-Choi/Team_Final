@@ -229,7 +229,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_isFirstGroggy && m_eCurrentState == EEliteState::DEAD)
+	if (m_eCurrentState == EEliteState::DEAD && m_fHp <= 0.f)
 	{
 		// 
 		static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();

@@ -542,7 +542,7 @@ void CButtler_Range::Start_Fatal_Reaction()
 
 void CButtler_Range::Reset()
 {
-	m_fHp = 300;
+	m_fHp = m_fMaxHp;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
