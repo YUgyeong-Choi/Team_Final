@@ -138,6 +138,10 @@ private:
 
     const _float ATTACK_DISTANCE_CLOSE = 0.f;
     const _float ATTACK_DISTANCE_MIDDLE = 5.f;
+
+private:
+    _bool m_isFirstGroggy = { false };
+
 public:
 	static CElite_Police* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

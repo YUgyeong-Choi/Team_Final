@@ -40,7 +40,7 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 	m_fDetectDist = 10.f;
 	m_fGroggyThreshold = 100;
 
-	m_fHp = 300;
+	m_fHp = 500;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Set_MaxHp(m_fHp);
@@ -434,7 +434,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos)
+		if (m_strStateName.find("Away") == m_strStateName.npos && m_strStateName.find("KnockBack") == m_strStateName.npos && m_strStateName.find("Hit") == m_strStateName.npos)
 		{
 			m_fAwaySpeed = 1.f;
 			m_fKnockBackSpeed = 5.f;
@@ -446,7 +446,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-		if (m_strStateName.find("Away") != m_strStateName.npos)
+		if (m_strStateName.find("Away") != m_strStateName.npos || m_strStateName.find("Hit") != m_strStateName.npos)
 		{
 			m_fAwaySpeed -= fTimeDelta * 0.5f;
 
@@ -457,8 +457,10 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-
-			m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+			if(m_strStateName.find("Away") != m_strStateName.npos)
+				m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
+			else 
+				m_pTransformCom->Go_Dir(vLook * -1.f, fTimeDelta * m_fAwaySpeed * 0.25f, nullptr, m_pNaviCom);
 		}
 		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 		{

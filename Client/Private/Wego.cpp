@@ -156,7 +156,8 @@ void CWego::Update(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
 			m_bFinish = true;
 
-
+			for (auto& pButton : m_pSelectButtons)
+				pButton->Active_Update(false);
 
 			CUI_Manager::Get_Instance()->On_Panel();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
