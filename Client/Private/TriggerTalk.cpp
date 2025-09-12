@@ -136,7 +136,10 @@ void CTriggerTalk::Update(_float fTimeDelta)
 
 			// 모나드 관련 
 			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
-				m_pPlayer->Get_Animator()->SetTrigger("InactiveStargazer");
+			{
+				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::MONAD_GET_START);
+			}
+
 		}
 	}
 
@@ -156,7 +159,9 @@ void CTriggerTalk::Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->On_Panel();
 
 			if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::MONADLIGHT)
-				m_pPlayer->Get_Animator()->SetTrigger("EndInteraction");
+			{
+				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::MONAD_GET_END);
+			}
 			return;
 		}
 

@@ -60,6 +60,11 @@ public:
 		MONSTER, BOSS, RANGED, END
 	};
 
+	enum class eTriggerEvent
+	{
+		TALK, MONAD_GET_START, MONAD_GET_END, STARGAZER_RESTORE_START, STARGAZER_RESTORE_END, STARGAZER_ACTIVATE_START, STARGAZER_ACTIVATE_END,END
+	};
+
 protected:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& Prototype);
@@ -162,6 +167,7 @@ public: /* [ 옵저버 관련 ] */
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen = true);
 	void GetWeapon();
+	void OnTriggerEvent(eTriggerEvent eEvent);
 private:
 	void Play_CutScene_Door();
 	void ItemWeapOnOff(_float fTimeDelta);
