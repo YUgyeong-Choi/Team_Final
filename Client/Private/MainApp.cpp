@@ -328,6 +328,9 @@ HRESULT CMainApp::Ready_Sound()
 
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 
+	/* [ ¼ôÄÆ »ç¿îµå ] */ 
+	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
+
 	return S_OK;
 }
 
