@@ -327,6 +327,8 @@ HRESULT CMainApp::Ready_Sound()
 
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 
+	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
+
 	return S_OK;
 }
 
