@@ -44,6 +44,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	{
 		for (int vk = 0; vk <= 254; ++vk) 
 		{
+			// 아무 키나 먹게
 			_int keyState = m_pGameInstance->Get_DIKeyState(vk);
 			if (keyState & 0x8000)
 			{
@@ -230,10 +231,10 @@ HRESULT CLevel_Logo::Ready_Menu()
 	eButtonDesc.fX = g_iWinSizeX * 0.225f;
 	eButtonDesc.iTextureIndex = 0;
 	eButtonDesc.vColor = { 0.8f,0.f,0.f,0.8f };
-	eButtonDesc.fPadding = { 40.f, 15.f };
+	eButtonDesc.fPadding = {g_iWinSizeX * -0.0075f, 0.f };
 	eButtonDesc.fFontSize = 0.75f;
-	eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize + eButtonDesc.fPadding.x;
-	eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize + eButtonDesc.fPadding.y;
+	eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize ;
+	eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize ;
 
 	
 

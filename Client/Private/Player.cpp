@@ -263,6 +263,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
+	if (fTimeDelta < 0.0002f)
+		return;
+
+
 	/* [ 애니메이션 업데이트 ] */
 	__super::Update(fTimeDelta);
 
@@ -3141,7 +3145,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 			m_bIsForceDead = true;
 		}
 
-		Callback_HP();
+		m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentHP"), &m_fHp);
 		m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_BURN, this);
 		

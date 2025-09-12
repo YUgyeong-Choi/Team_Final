@@ -26,7 +26,7 @@ HRESULT CUI_LockOn_Icon::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	m_fOffset = 0.01f;
+	m_fOffset = 0.2f;
 
 	m_fInitSizeX = m_fSizeX * 2.f;
 	m_fInitSizeY = m_fSizeY * 2.f;
@@ -88,7 +88,7 @@ void CUI_LockOn_Icon::Update(_float fTimeDelta)
 		_float fX = (vClipPos.m128_f32[0] * 0.5f + 0.5f) * g_iWinSizeX;
 		_float fY = (1.f - (vClipPos.m128_f32[1] * 0.5f + 0.5f)) * g_iWinSizeY;
 
-		_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY,0.01f,1.f};
+		_vector vPos = { fX - 0.5f * g_iWinSizeX, -fY + 0.5f * g_iWinSizeY, 0.2f,1.f};
 	
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
 	}

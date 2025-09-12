@@ -114,6 +114,7 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
     if (m_isFade == false && m_fCurrentAlpha <= 0.f)
     {
         Set_bDead();
+        m_pGameInstance->Set_GameTimeScale(1.f);
         CCamera_Manager::Get_Instance()->SetbMoveable(true);
         return;
     }

@@ -109,6 +109,8 @@ protected:
 
 	_bool			m_isUVMove = {};
 	_float			m_fUVTime = {};
+
+	
 	
 
 private:
