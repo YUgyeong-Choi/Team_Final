@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "Bone.h"
 #include "Client_Defines.h"
+#include "Serializable.h"
 
 
 NS_BEGIN(Engine)

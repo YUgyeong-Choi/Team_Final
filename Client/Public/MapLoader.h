@@ -1,0 +1,81 @@
+#pragma once
+
+#include "Client_Defines.h"
+#include "Base.h"
+
+NS_BEGIN(Engine)
+class CGameInstance;
+NS_END
+
+NS_BEGIN(Client)
+class CMapLoader final :public CBase
+{
+private:
+	CMapLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CMapLoader() = default;
+
+public:
+	HRESULT Initialize();
+
+public:
+	//여기서 맵에 필요한것들 모두 로드(맵, 데칼, 네비 등등...)
+	HRESULT Load_Map(_uint iLevelIndex, const _char* Map);
+
+	//<맵>에 필요한 메쉬들을 로딩한다.
+	HRESULT Loading_Meshs(_uint iLevelIndex, const _char* Map);
+	HRESULT Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex);
+
+	//네비게이션을 로딩한다.
+	HRESULT Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool bForTool = false*/);
+
+	//필요한 데칼 텍스쳐를 로딩한다.
+	HRESULT Loading_Decal_Textures(_uint iLevelIndex, const _char* Map);
+
+	//부서질 수 있는 메쉬를 로딩한다.
+	HRESULT Loading_Breakable(_uint iLevelIndex, const _char* Map);
+
+public:
+	//맵 소환(메쉬, 네비, 데칼 등...)
+	HRESULT Ready_Map(_uint iLevelIndex, const _char* Map);
+
+	//메쉬 소환
+	HRESULT Ready_Meshs(_uint iLevelIndex, const _char* Map);
+	HRESULT Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
+	HRESULT Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map);
+
+	//네비게이션 소환
+	HRESULT Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map);
+
+	//스태틱 데칼을 소환한다. (true면 테스트 데칼 소환)
+	HRESULT Ready_Static_Decal(_uint iLevelIndex, const _char* Map);
+
+	//부서질 수 있는 메쉬를 소환한다.
+	HRESULT Ready_Breakable(_uint iLevelIndex, const _char* Map);
+
+public:
+	HRESULT Add_MapActor(const _char* Map); //맵 액터 추가(콜라이더 활성화)
+
+
+public:
+	HRESULT Ready_Monster();
+	HRESULT Ready_Monster(const _char* Map);//특정 맵의 몬스터를 소환한다. 그 맵의 네비게이션을 장착시킨다.
+
+	HRESULT Ready_Stargazer();
+	HRESULT Ready_Stargazer(const _char* Map);
+
+	HRESULT Ready_ErgoItem();
+	HRESULT Ready_ErgoItem(const _char* Map);
+
+	HRESULT Ready_Breakable();
+	HRESULT Ready_Breakable(const _char* Map);
+
+private:
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
+	CGameInstance* m_pGameInstance = { nullptr };
+
+public:
+	static CMapLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual void Free() override;
+};
+NS_END

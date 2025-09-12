@@ -20,6 +20,7 @@
 #include "UI_Video.h"
 #include "UI_Text.h"
 #include "UI_Container.h"
+#include "MapLoader.h"
 
 
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -213,7 +214,6 @@ void CLevel_Loading::Update_Loding_Bar()
 	m_pLoadingBar->Update_From_Feature_Ratio(m_fRatio);
 
 }
-
 
 
 CLevel_Loading* CLevel_Loading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID)
