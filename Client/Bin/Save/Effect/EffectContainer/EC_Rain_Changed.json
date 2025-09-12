@@ -16,7 +16,7 @@
                 1.0,
                 1.0,
                 1.0,
-                0.6335078477859497
+                0.0
             ],
             "Color": [
                 1.0,
@@ -24,7 +24,7 @@
                 1.0,
                 0.7958115339279175
             ],
-            "DistortionStrength": 23.5,
+            "DistortionStrength": 13.100000381469727,
             "Duration": 1017,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1424.2857666015625,
+            "LifeTime": 1720.107421875,
             "LifeTime_Particle": [
                 1.0,
                 3.0
@@ -72,7 +72,7 @@
             "MaxSpeed": 300.0,
             "MinSpeed": 0.0,
             "Name": "NEWRAIN",
-            "NumInstance": 3000,
+            "NumInstance": 1000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -91,9 +91,9 @@
                 0.0
             ],
             "Range": [
-                8.0,
+                5.0,
                 2.0,
-                8.0
+                5.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -108,16 +108,16 @@
             "ShaderPass": 5,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.029999999329447746,
-                0.10000000149011612
+                0.019999999552965164,
+                0.03500000014901161
             ],
             "Speed": [
-                20.0,
-                24.0
+                7.0,
+                12.0
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.03700000047683716,
+            "StretchFactor": 0.052000001072883606,
             "TextureTags": [
                 "T_Shere_05_C_HJS",
                 "T_Rain_Drip_Mask_01_C_RSW",

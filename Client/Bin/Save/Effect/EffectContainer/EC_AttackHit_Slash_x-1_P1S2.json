@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 70,
             "EffectType": 1,
-            "EmissiveIntensity": 0.44999998807907104,
+            "EmissiveIntensity": 1.0,
             "EndTrack": 70,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -43,10 +43,10 @@
                     "Intensity": 2.450000047683716,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2714.94970703125,
+            "LifeTime": 2749.27685546875,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -214,7 +214,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1146.6583251953125,
+            "LifeTime": 1181.2261962890625,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,
@@ -316,7 +316,7 @@
                     ]
                 }
             ],
-            "LifeTime": 164.73419189453125,
+            "LifeTime": 199.18548583984375,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,

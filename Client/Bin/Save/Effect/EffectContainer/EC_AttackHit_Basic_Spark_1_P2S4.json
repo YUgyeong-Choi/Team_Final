@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 5.0,
+            "EmissiveIntensity": 3.5,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -43,10 +43,10 @@
                     "Intensity": 2.2100000381469727,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1546.2225341796875,
+            "LifeTime": 1597.4246826171875,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.30000001192092896
@@ -164,7 +164,7 @@
             "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 0.3499999940395355,
+            "EmissiveIntensity": 0.800000011920929,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 1.5,
@@ -180,10 +180,10 @@
                     "Intensity": 2.450000047683716,
                     "Interpolation": 0,
                     "Rotation": [
+                        -0.0,
                         0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        -0.0,
+                        1.0
                     ],
                     "Scale": [
                         1.0,
@@ -198,7 +198,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1342.1766357421875,
+            "LifeTime": 1393.3787841796875,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.8999999761581421
@@ -285,9 +285,9 @@
             ],
             "Color": [
                 1.0,
-                0.5821259021759033,
-                0.2513089179992676,
-                0.0
+                0.5923184752464294,
+                0.2693050503730774,
+                -0.020245641469955444
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -351,7 +351,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1165.687744140625,
+            "LifeTime": 1216.889892578125,
             "Loop": true,
             "Name": "Hit_BasicSprite1",
             "NumKeyFrames": 2,
@@ -453,7 +453,7 @@
                     ]
                 }
             ],
-            "LifeTime": 895.6358032226563,
+            "LifeTime": 946.6626586914063,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,
@@ -555,7 +555,7 @@
                     ]
                 }
             ],
-            "LifeTime": 891.3221435546875,
+            "LifeTime": 942.3489990234375,
             "Loop": true,
             "Name": "Hit_BasicLensFlareSprite1",
             "NumKeyFrames": 2,
@@ -590,10 +590,10 @@
                 1.0
             ],
             "Color": [
-                -0.09957766532897949,
-                -0.09957766532897949,
-                -0.09957766532897949,
-                -0.09957766532897949
+                0.5728522539138794,
+                0.5728522539138794,
+                0.5728522539138794,
+                0.5728522539138794
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -657,7 +657,7 @@
                     ]
                 }
             ],
-            "LifeTime": 304.9432678222656,
+            "LifeTime": 355.97021484375,
             "Loop": true,
             "Name": "Hit_BasicDistortionSprite1",
             "NumKeyFrames": 2,
