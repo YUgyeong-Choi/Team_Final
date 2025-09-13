@@ -66,8 +66,6 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 				m_bFinish = true;
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-
-				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(true);
 			}
 			else
 			{
@@ -265,7 +263,7 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		{
 		case Client::SHORTCUT:
 			if (m_bCanOpen)
-				vTargetPos = _vector({ 147.56f, 1.f, -25.81f, 1.f });
+				vTargetPos = _vector({ 147.75f, 1.f, -25.81f, 1.f });
 			else
 				vTargetPos = _vector({ 147.15f, 2.66f, -24.52f, 1.f });
 			break;
@@ -322,7 +320,6 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		if (m_bCanOpen && m_fEscapeTime > 8.5f)
 		{
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
-			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_bActive(false);
 			m_bCanMovePlayer = false;
 		}
 
