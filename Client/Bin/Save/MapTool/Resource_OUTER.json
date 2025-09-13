@@ -721,7 +721,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_23.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingC_Wall_26",
         "NoInstancing": false,
         "ObjectCount": 31,
@@ -798,7 +798,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingD_Border_08.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingD_Pillar_05",
         "NoInstancing": false,
         "ObjectCount": 4,
@@ -1176,7 +1176,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_WoodBox_04.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Exterior_WoodCarving_01",
         "NoInstancing": false,
         "ObjectCount": 6,
@@ -1372,7 +1372,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_IronGate_02.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Gate_Pillar_01",
         "NoInstancing": false,
         "ObjectCount": 5,
@@ -1461,6 +1461,27 @@
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_07",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_07.bin"
     },
     {
         "Collision": false,
@@ -1939,7 +1960,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Sign_Sign_05.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_1FWallFillar_01",
         "NoInstancing": false,
         "ObjectCount": 36,
@@ -2198,7 +2219,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_WallDeco_03.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_WinWall_01",
         "NoInstancing": false,
         "ObjectCount": 19,
@@ -2464,7 +2485,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_StoneFloor_Circle_08.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "TreeA",
         "NoInstancing": false,
         "ObjectCount": 32,
