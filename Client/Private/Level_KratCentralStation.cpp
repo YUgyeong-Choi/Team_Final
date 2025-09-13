@@ -1138,6 +1138,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");
 
+	CUI_Manager::Get_Instance()->Off_Panel();
 
 	return S_OK;
 }

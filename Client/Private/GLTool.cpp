@@ -1026,7 +1026,8 @@ HRESULT CGLTool::Render_SelectOptionTool()
 						continue;
 
 					for(auto& pObj : pContainer->Get_PartUI())
-						pObj->Reset();
+						if(nullptr != pObj)
+							pObj->Reset();
 				}
 			}
 
