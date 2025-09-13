@@ -289,13 +289,13 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 
-	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-
-	////저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
+	////고사양 모드
+	//if (FAILED(Ready_Lights()))
 	//	return E_FAIL;
+
+	//저사양 모드
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;

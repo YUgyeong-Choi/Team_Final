@@ -1531,12 +1531,26 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
 	}
-	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2") || stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
+	else if (stEffectTag == TEXT("EC_Fuoco_SpinReady_HandSpark_P2"))
 	{
 		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	}
+	else if (stEffectTag == TEXT("EC_Fuoco_Slam_Imsi_P2"))
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_pFistBone->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+		
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
 #pragma region 영웅 데칼 생성코드
 		CStatic_Decal::DECAL_DESC DecalDesc = {};
@@ -1548,7 +1562,7 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		DecalDesc.fLifeTime = 5.f;
 
 		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(desc.pSocketMatrix) * XMLoadFloat4x4(desc.pParentMatrix);
+		_matrix World = XMLoadFloat4x4(socketPtr) * XMLoadFloat4x4(parentPtr);
 
 		// 스케일, 회전, 위치 분해
 		_vector vScale, vRotQuat, vTrans;
@@ -1608,9 +1622,16 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if(stEffectTag == TEXT("EC_Fuoco_Cutscene_Slam"))
 	{
-		desc.pSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		const _float4x4* socketPtr = m_pFistBone->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
 	else
 	{
