@@ -782,7 +782,7 @@ void CFestivalLeader::Register_Events()
 		{
 			if (m_pHPBar)
 				return;
-
+			SwitchEmissive(true, 0.9f);
 			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 			eDesc.strName = TEXT("축제 인도자");
 			eDesc.isBoss = true;
@@ -1140,6 +1140,13 @@ HRESULT CFestivalLeader::Ready_Effect()
 void CFestivalLeader::Ready_SoundEvents()
 {
 
+}
+
+void CFestivalLeader::EnterCutScene()
+{
+	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
+	m_pAnimator->SetPlaying(true);
+	m_bCutSceneOn = true;
 }
 
 void CFestivalLeader::UpdatePatternWeight(_int iPattern)

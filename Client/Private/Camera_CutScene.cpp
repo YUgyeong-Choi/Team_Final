@@ -572,14 +572,6 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 }
 
 // 각도 유틸(라디안)
-inline _float WrapPi(_float a) {
-	a = fmodf(a + XM_PI, XM_2PI);
-	if (a <= 0) a += XM_2PI;
-	return a - XM_PI;
-}
-inline _float ShortestDelta(_float from, _float to) {
-	return WrapPi(to - from);
-}
 inline _float LerpAngle(_float from, _float to, _float t) {
 	return from + ShortestDelta(from, to) * t;
 }

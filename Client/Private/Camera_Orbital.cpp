@@ -10,14 +10,6 @@
 #include "Unit.h"
 
 // ---- Angle helpers (radians) ----
-inline float WrapPi(float a) {
-	a = fmodf(a + XM_PI, XM_2PI);
-	if (a <= 0) a += XM_2PI;
-	return a - XM_PI;
-}
-inline float ShortestDelta(float from, float to) {
-	return WrapPi(to - from);
-}
 inline float MoveTargetNear(float current, float target) {
 	return current + ShortestDelta(current, target);
 }

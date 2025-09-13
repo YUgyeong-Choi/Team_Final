@@ -279,3 +279,13 @@ static _float ComputeLog(_float fValue, _float fBase)
 {
     return logf(fValue) / logf(fBase);
 }
+
+// ---- Angle helpers (radians) ----
+static inline float WrapPi(float a) {
+    a = fmodf(a + XM_PI, XM_2PI);
+    if (a <= 0) a += XM_2PI;
+    return a - XM_PI;
+}
+static inline float ShortestDelta(float from, float to) {
+    return WrapPi(to - from);
+}

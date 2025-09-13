@@ -176,6 +176,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\public\ActionType_Icon.h" />
+    <ClInclude Include="..\Public\AnimatedProp.h" />
     <ClInclude Include="..\public\AStar_Manager.h" />
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
@@ -376,6 +377,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\ActionType_Icon.cpp" />
+    <ClCompile Include="..\Private\AnimatedProp.cpp" />
     <ClCompile Include="..\private\AStar_Manager.cpp" />
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />

@@ -55,6 +55,8 @@ private:
 	HRESULT Ready_WaterPuddle();
 
 
+	HRESULT Ready_AnimatedProp();
+
 
 private:
 	HRESULT Load_Shader();
