@@ -1167,7 +1167,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 
 	//
-	/*CDynamic_UI::DYNAMIC_UI_DESC eDynamicDesc = {};
+	CDynamic_UI::DYNAMIC_UI_DESC eDynamicDesc = {};
 	eDynamicDesc.fAlpha = 0.f;
 	eDynamicDesc.fSizeX = g_iWinSizeX;
 	eDynamicDesc.fSizeY = g_iWinSizeY;
@@ -1184,7 +1184,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 	CGameObject* pBackGround = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"));
 
-	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");*/
+	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");
 
 	CUI_Manager::Get_Instance()->Off_Panel();
 
