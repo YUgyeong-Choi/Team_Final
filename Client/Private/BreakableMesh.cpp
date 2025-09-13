@@ -248,6 +248,33 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 }
 
+void CBreakableMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (m_bFireEaterBossPipe) //푸오코 기둥이면 푸오코에 의해서만 부서지고
+	{
+		//푸오코가 퓨리상태일 때
+		//pOther->퓨리일 때 트리거 트루
+		if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+			&& m_bBreakTriggered == false)
+		{
+			if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+			{
+				if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+	}
+	else //아니면 그냥 모두에게 부서지게한다.
+	{
+		if (m_bBreakTriggered == false)
+		{
+			m_bBreakTriggered = true;
+		}
+	}
+}
+
 void CBreakableMesh::Break()
 {
 	if (m_bIsBroken == true)
@@ -278,7 +305,7 @@ void CBreakableMesh::Break()
 		//pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
 		// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
 		// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
-		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
+		//pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bIsBroken);
 
 		PxActor* pActor = pPartActor->Get_Actor();

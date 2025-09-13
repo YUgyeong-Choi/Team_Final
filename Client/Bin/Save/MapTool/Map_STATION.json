@@ -1,5 +1,5 @@
 {
-    "ModelCount": 168,
+    "ModelCount": 170,
     "Models": [
         {
             "Collision": false,
@@ -3807,7 +3807,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.5,
@@ -3877,7 +3877,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.5,
@@ -3912,7 +3912,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.5,
@@ -4047,6 +4047,24 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_02",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_04",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": true,
@@ -16072,12 +16090,6 @@
                     ]
                 }
             ]
-        },
-        {
-            "Collision": false,
-            "ModelName": "SM_OldTown_WoodBoard_03",
-            "ObjectCount": 0,
-            "Objects": []
         },
         {
             "Collision": false,
