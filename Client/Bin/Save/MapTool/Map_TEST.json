@@ -1,5 +1,5 @@
 {
-    "ModelCount": 18,
+    "ModelCount": 23,
     "Models": [
         {
             "Collision": false,
@@ -417,6 +417,12 @@
         },
         {
             "Collision": false,
+            "ModelName": "SM_Interior_Table_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
             "ModelName": "SM_Interior_Table_02",
             "ObjectCount": 0,
             "Objects": []
@@ -498,6 +504,30 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_04",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_07",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_08",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Table_09",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": false,

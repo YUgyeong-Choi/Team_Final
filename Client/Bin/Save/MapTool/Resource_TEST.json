@@ -71,6 +71,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Interior_Table_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Interior_Table_02",
         "NoInstancing": false,
         "ObjectCount": 3,
@@ -89,6 +96,34 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_02_2of2.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_07",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_08",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_09",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_09.bin"
     },
     {
         "Collision": false,
