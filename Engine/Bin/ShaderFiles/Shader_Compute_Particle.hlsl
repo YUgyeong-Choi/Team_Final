@@ -224,62 +224,60 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         if (isFirst == 1)
         {
             /* 이펙트 랜덤 생성 없을 시(bake 하고 고정 생성) */
-            //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
-            //
-            //float3 localDir = gInitInst[i].Direction.xyz;
-            //float3 worldDir = RotateByQuat(localDir, vSocketRot);
-            //pp.Direction.xyz = normalize(worldDir);
+            pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
+            
+            float3 localDir = gInitInst[i].Direction.xyz;
+            float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
 
             /******************************************************************************/
 
             /* 이펙트 랜덤 생성 시 (bake 안 하고) */
 
-            float3 vCurPivot = Center + Pivot;
+           // float3 vCurPivot = Center + Pivot;
             
-            if (ParticleType == 0) // spread
-            {
-                pp.Translation = float4(
-			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			        Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
-			        1.f);
-                pp.Direction = float4(normalize(pp.Translation.xyz - vCurPivot.xyz), 0.f);
-            }
-            else if (ParticleType == 1) // directional
-            {
-                pp.Translation = float4(
-			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			        Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
-			        1.f);
-                pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
-            }
-            else if (ParticleType == 2) // random
-            {
-                pp.Translation = float4(
-			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			        Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
-			        1.f);
-                pp.Direction = float4(
-                    Random(i * 3    , -1.f, 1.f), 
-                    Random(i * 3 + 1, -1.f, 1.f),
-                    Random(i * 3 + 2, -1.f, 1.f),
-                    0.f
-                );
-            }
-            else if (ParticleType == 3) // to pivot
-            {
-
-
-                pp.Translation = float4(
-			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			        Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
-			        1.f);
+           // if (ParticleType == 0) // spread
+           // {
+           //     pp.Translation = float4(
+			        //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			        //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			        //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
+			        //1.f);
+           //     pp.Direction = float4(normalize(pp.Translation.xyz - vCurPivot.xyz), 0.f);
+           // }
+           // else if (ParticleType == 1) // directional
+           // {
+           //     pp.Translation = float4(
+			        //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			        //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			        //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
+			        //1.f);
+           //     pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
+           // }
+           // else if (ParticleType == 2) // random
+           // {
+           //     pp.Translation = float4(
+			        //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			        //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			        //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
+			        //1.f);
+           //     pp.Direction = float4(
+           //         Random(i * 3    , -1.f, 1.f), 
+           //         Random(i * 3 + 1, -1.f, 1.f),
+           //         Random(i * 3 + 2, -1.f, 1.f),
+           //         0.f
+           //     );
+           // }
+           // else if (ParticleType == 3) // to pivot
+           // {
+           //     pp.Translation = float4(
+			        //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			        //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			        //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f),
+			        //1.f);
                 
-                pp.Direction = float4(normalize(vCurPivot.xyz - pp.Translation.xyz), 0.f);
-            }
+           //     pp.Direction = float4(normalize(vCurPivot.xyz - pp.Translation.xyz), 0.f);
+           // }
             
             pp.vInitOffset = float3(
 			    pp.Translation.x,
@@ -294,8 +292,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
                 pp.RotationAngle = Random(pp.RotationSpeed, 0.f, 3.14f);
             
             //pp.Translation = float4(mul(float4(pp.Translation.xyz, 1.f), g_CombinedMatrix).xyz, 1.f);
-            float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
-            pp.Direction.xyz = normalize(worldDir);
+            //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
+            //pp.Direction.xyz = normalize(worldDir);
             
             // MeshEmitter 사용 시 함수 호출 하라는데
             // Spawn();
@@ -413,16 +411,16 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         {
             // initoffset을 사용해서 초기 모양 그대로 리셋할건지..
             pp.LifeTime.y = 0.0f;
-            //float3 offset0 = gInitInst[i].vInitOffset;
-            //pos = Center + offset0; // << 변경점
             pp.Speed = gInitInst[i].Speed; // 속도 초기화는 유지
-            
-            // === 뼈 회전 적용된 방향으로 다시 세팅 ===
-            //float3 localDir = gInitInst[i].Direction.xyz;
-            //float3 worldDir = RotateByQuat(localDir, vSocketRot);
-            //pp.Direction.xyz = normalize(worldDir);
             pp.bFirstLoopDiscard = 0;
             pp.fTileIdx = 0.f;
+            float3 offset0 = gInitInst[i].vInitOffset;
+            pos = Center + offset0; // << 변경점
+            
+            // === 뼈 회전 적용된 방향으로 다시 세팅 ===
+            float3 localDir = gInitInst[i].Direction.xyz;
+            float3 worldDir = RotateByQuat(localDir, vSocketRot);
+            pp.Direction.xyz = normalize(worldDir);
 
 
             float3 vCurPivot = Center + Pivot;
@@ -430,47 +428,47 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             // range를 다시 사용해서 새롭게 다시 만들 건지..
 
 
-            if (ParticleType == 0)
-            {
-                pos = float3(
-			    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+       //     if (ParticleType == 0)
+       //     {
+       //         pos = float3(
+			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
                 
-                pp.Direction = float4(normalize(pos.xyz - vCurPivot.xyz), 0.f);
-            }
-            else if (ParticleType == 1)
-            {
-                pos = float3(
-			    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+       //         pp.Direction = float4(normalize(pos.xyz - vCurPivot.xyz), 0.f);
+       //     }
+       //     else if (ParticleType == 1)
+       //     {
+       //         pos = float3(
+			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
                 
-                pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
-            }
-            else if (ParticleType == 2) // random
-            {
-                pos = float3(
-			    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+       //         pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
+       //     }
+       //     else if (ParticleType == 2) // random
+       //     {
+       //         pos = float3(
+			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
                 
-                pp.Direction = float4(
-                    Random(i * 3, -1.f, 1.f),
-                    Random(i * 3 + 1, -1.f, 1.f),
-                    Random(i * 3 + 2, -1.f, 1.f),
-                    0.f
-                );
-            }
-            else if (ParticleType == 3) // to center
-            {
-                pos = float3(
-			        Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			        Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			        Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+       //         pp.Direction = float4(
+       //             Random(i * 3, -1.f, 1.f),
+       //             Random(i * 3 + 1, -1.f, 1.f),
+       //             Random(i * 3 + 2, -1.f, 1.f),
+       //             0.f
+       //         );
+       //     }
+       //     else if (ParticleType == 3) // to center
+       //     {
+       //         pos = float3(
+			    //    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+			    //    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+			    //    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
                 
-                pp.Direction = float4(normalize(vCurPivot.xyz - pos.xyz), 0.f);
-            }
+       //         pp.Direction = float4(normalize(vCurPivot.xyz - pos.xyz), 0.f);
+       //     }
             
             pp.vInitOffset = float3(
 			    pos.x - Center.x,
@@ -479,8 +477,8 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
 		    );
             
             //float3 localDir = gInitInst[i].Direction.xyz;
-            float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
-            pp.Direction.xyz = normalize(worldDir);
+            //float3 worldDir = RotateByQuat(pp.Direction.xyz, vSocketRot);
+            //pp.Direction.xyz = normalize(worldDir);
             pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
         }
         pp.RotationAngle += pp.RotationSpeed;

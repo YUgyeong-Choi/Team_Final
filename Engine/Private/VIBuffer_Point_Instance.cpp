@@ -217,7 +217,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		);
 
 		/**** Position이랑 Direction 이제 최초 스폰 시에 초기화 하므로 주석처리함 ****/
-		/*
+		
 		m_pParticleParamDesc[i].vTranslation = _float4(
 			m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
 			m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
@@ -259,12 +259,20 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 					0.f)), 0.f);
 		}
 			break;
+		case Engine::PTYPE_SHRINK:
+		{
+			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
+			_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+			vDir = XMVectorSetW(XMVector3Normalize(vPivot - vStart), 0.f);
+		}
+		break;
+
 		default:
 			break;
 		}
 
 		XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
-		*/
+		
 
 
 	}

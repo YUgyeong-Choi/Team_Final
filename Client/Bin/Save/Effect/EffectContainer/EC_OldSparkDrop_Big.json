@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -30.0,
-                -28.0
+                1.0,
+                4.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -13,34 +13,34 @@
                 0.0
             ],
             "CenterColor": [
-                0.06806284189224243,
-                0.22419923543930054,
                 1.0,
+                0.3027055263519287,
+                0.17277485132217407,
                 1.0
             ],
             "Color": [
-                0.0,
-                0.010471343994140625,
                 1.0,
+                0.18848168849945068,
+                0.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 86,
+            "Duration": 22,
             "EffectType": 1,
-            "EmissiveIntensity": 1.0,
-            "EndTrack": 86,
+            "EmissiveIntensity": 3.0999999046325684,
+            "EndTrack": 22,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
             "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.0,
-                        0.010471343994140625,
                         1.0,
+                        0.18848168849945068,
+                        0.0,
                         1.0
                     ],
-                    "Intensity": 4.800000190734863,
+                    "Intensity": 5.380000114440918,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,23 +61,23 @@
                     ]
                 }
             ],
-            "LifeTime": 821.1253051757813,
+            "LifeTime": 6112.5849609375,
             "LifeTime_Particle": [
-                0.029999999329447746,
-                0.5
+                0.019999999552965164,
+                1.0
             ],
             "Local": true,
-            "Loop": true,
-            "MaxLifeTime": 4.0,
+            "Loop": false,
+            "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 1.5,
-            "Name": "Player_Skill_WeaponParticle1",
-            "NumInstance": 60,
+            "MinSpeed": 0.0,
+            "Name": "OldParticleDrop_Big",
+            "NumInstance": 300,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
                 0.0,
-                0.0,
+                1.0,
                 0.0
             ],
             "OrbitSpeed": [
@@ -87,13 +87,13 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                0.0,
-                -0.05000000074505806
+                0.15000000596046448,
+                0.0
             ],
             "Range": [
+                0.029999999329447746,
                 0.05000000074505806,
-                0.05000000074505806,
-                0.05000000074505806
+                0.029999999329447746
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -108,19 +108,19 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.0020000000949949026,
+                0.004999999888241291
             ],
             "Speed": [
-                3.0,
-                8.0
+                0.20000000298023224,
+                0.699999988079071
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.02500000037252903,
+            "StretchFactor": 0.019999999552965164,
             "TextureTags": [
                 "",
-                "T_Shere_04_C_HJS",
+                "T_Shere_02_C_LGS",
                 "",
                 ""
             ],
@@ -139,5 +139,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 83
+    "MaxFrame": 20
 }

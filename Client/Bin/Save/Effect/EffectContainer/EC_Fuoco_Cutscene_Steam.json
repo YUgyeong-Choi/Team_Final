@@ -16,13 +16,13 @@
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.38743454217910767
             ],
             "Color": [
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.4554973840713501
             ],
             "DistortionStrength": 10.0,
             "Duration": 20,
@@ -38,9 +38,9 @@
                         1.0,
                         1.0,
                         1.0,
-                        1.0
+                        0.4554973840713501
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 0.7699999809265137,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,10 +61,10 @@
                     ]
                 }
             ],
-            "LifeTime": 598.2030639648438,
+            "LifeTime": 1673.1761474609375,
             "LifeTime_Particle": [
                 0.10000000149011612,
-                0.4000000059604645
+                2.0
             ],
             "Local": true,
             "Loop": true,
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Fuoco_Cutscene_SteamErupt1",
-            "NumInstance": 30,
+            "NumInstance": 50,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -105,21 +105,22 @@
                 0.0,
                 0.0
             ],
-            "ShaderPass": 2,
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.5,
                 1.0
             ],
             "Speed": [
-                3.0,
-                6.0
+                6.0,
+                7.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Steam_01_8x8_SC_KMH",
+                "T_SubUV_Smoke_11_8x8_SC_GDH_2",
                 "",
                 ""
             ],
@@ -134,7 +135,7 @@
             "TileTickPerSec": 60.0,
             "TileX": 8,
             "TileY": 8,
-            "isTileLoop": false
+            "isTileLoop": true
         }
     ],
     "Loop": true,

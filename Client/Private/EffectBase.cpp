@@ -59,7 +59,7 @@ void CEffectBase::Priority_Update(_float fTimeDelta)
 
 void CEffectBase::Update(_float fTimeDelta)
 {
-	if (m_isEffectActive == false)
+	if (m_isActive == false || m_isEffectActive == false)
 		return;
 
 	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
@@ -253,7 +253,10 @@ void CEffectBase::Update_Keyframes()
 	_matrix			TransformationMatrix{};
 
 	if (m_KeyFrames.empty())
+	{
 		MSG_BOX("비상!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+		m_KeyFrames.push_back(EFFKEYFRAME{});
+	}
 
 	EFFKEYFRAME		LastKeyFrame = m_KeyFrames.back();
 
@@ -606,7 +609,7 @@ void CEffectBase::Deserialize(const json& j)
 		m_KeyFrames.clear();
 		for (const auto& keyJson : j["KeyFrames"])
 		{
-			tagEffectKeyFrame key;
+			EFFKEYFRAME key = {};
 			key.Deserialize(keyJson);
 			m_KeyFrames.push_back(key);
 		}
@@ -670,5 +673,5 @@ void CEffectBase::tagEffectKeyFrame::Deserialize(const json& j)
 		fTrackPosition = j["TrackPosition"].get<_float>();
 
 	if (j.contains("Interpolation"))
-		eInterpolationType = static_cast<INTERPOLATION>(j["Interpolation"].get<int>());
+		eInterpolationType = static_cast<INTERPOLATION>(j["Interpolation"].get<_int>());
 }
