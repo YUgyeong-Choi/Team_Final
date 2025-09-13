@@ -893,7 +893,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 22번 구역 ] */
-		const vector<_uint> vecAdj22 = { 20, 50, 52 };
+		const vector<_uint> vecAdj22 = { 7, 20, 50, 52 };
 		if (!m_pGameInstance->AddArea_AABB(
 			22, a22Min, a22Max, vecAdj22, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
@@ -995,7 +995,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 63번 구역 ] */
-		const vector<_uint> vecAdj63 = { 50, 51, 52, 61, 62 };
+		const vector<_uint> vecAdj63 = { 50, 51, 52, 53, 61, 62 };
 		if (!m_pGameInstance->AddArea_AABB(
 			63, a63Min, a63Max, vecAdj63, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;

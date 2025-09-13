@@ -137,6 +137,14 @@ HRESULT CUnit::Render()
 
 HRESULT CUnit::Render_Shadow()
 {
+	if (m_pPlayer)
+	{
+		_float vPlayerHeight = XMVectorGetY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
+		_float vMyHeight = XMVectorGetY(m_pTransformCom->Get_State(STATE::POSITION));
+		if (abs(vPlayerHeight - vMyHeight) >= 10.f)
+			return S_OK;
+	}
+
 	/* [ 월드 스페이스 넘기기 ] */
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
 		return E_FAIL;

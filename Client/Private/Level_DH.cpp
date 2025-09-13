@@ -61,6 +61,8 @@ HRESULT CLevel_DH::Initialize()
 	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
 	//5锅备开
 	m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
+	//3锅备开
+	//m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
 
 	m_pGameInstance->FindAreaContainingPoint();
 

@@ -57,7 +57,7 @@
     "RenderGroup": 8,
     "ShaderPass": 0,
     "StartTrack": 0,
-    "Subdivisions": 4,
+    "Subdivisions": 12,
     "TextureTags": [
         "T_Tile_Wave_05_C_LGS",
         "trail_tex",
