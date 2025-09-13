@@ -329,6 +329,9 @@ HRESULT CMainApp::Ready_Sound()
 
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 
+	/* [ Breakable 부서지는 사운드 ] */
+	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
+
 	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
 
 	/* [ 숏컷 사운드 ] */ 

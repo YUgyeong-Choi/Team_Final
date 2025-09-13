@@ -1648,6 +1648,7 @@ HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 	 403.78f, 15.7f, -49.5f, 1.0f 
 	);
 
+	//천막
 	Desc.vSecondWorldMatrix = _float4x4(
 		1.0f, 0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,

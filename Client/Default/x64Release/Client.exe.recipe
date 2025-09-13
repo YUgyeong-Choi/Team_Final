@@ -2,60 +2,60 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Client.exe</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Client.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_DynamicUI.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_DynamicUI.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_MeshEffect.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_MeshEffect.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_ParticleEffect.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_ParticleEffect.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_SpriteEffect.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_SpriteEffect.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_UI.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_UI.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxAnimMesh.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxAnimMesh.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxCube.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxCube.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxMesh.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxMesh.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxMesh_Instance.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxMesh_Instance.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxNorTex.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxNorTex.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxPBRMesh.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxPBRMesh.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_Decal.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_Decal.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxPosInstance.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxPosInstance.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxPosTex.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxPosTex.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_VtxRectInstance.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_VtxRectInstance.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_TrailEffect.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_TrailEffect.cso</FullPath>
     </ContentFile>
     <ContentFile>
-      <FullPath>C:\Users\JangWon\Desktop\Jusin\Team_Final\Client\Bin\Shader_WaterPuddle.cso</FullPath>
+      <FullPath>D:\Fork_Git\Team_Final\Client\Bin\Shader_WaterPuddle.cso</FullPath>
     </ContentFile>
   </ContentFiles>
   <SatelliteDlls />
