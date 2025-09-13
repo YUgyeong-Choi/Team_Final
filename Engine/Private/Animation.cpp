@@ -130,6 +130,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 {
 	constexpr _float fTargetTimeDelta = 1.f / 60.f;
 	_float fTimeScale = fTimeDelta / fTargetTimeDelta;
+	fTimeScale = min(fTimeScale, 3.f); // 너무 큰 값이 들어오는걸 방지
 	m_isLoop = isLoop;
 	_float prevPos = m_fCurrentTrackPosition;
 	m_fPrevTrackPosition = prevPos;

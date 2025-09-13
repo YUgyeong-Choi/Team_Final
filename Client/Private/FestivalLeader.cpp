@@ -3,6 +3,7 @@
 #include "Bone.h"
 #include "Player.h"
 #include "Static_Decal.h"
+#include "AnimatedProp.h"
 #include "GameInstance.h"
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
@@ -868,7 +869,6 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
-			cout << "Called SetRootStep" << endl;
 			m_fMaxRootMotionSpeed = 37.f;
 			m_fRootMotionAddtiveScale = 4.f;
 		});
@@ -937,6 +937,17 @@ void CFestivalLeader::Register_Events()
 			m_BoneRefs[Hammer]->Set_ParentBoneIndex(m_iOriginBoneIndex);
 			m_bSwitchHeadSpace = false;
 			m_bPlayerCollided = false; 
+		});
+
+
+	m_pAnimator->RegisterEventListener("BreakPanel", [this]()
+		{
+			auto panel = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"));
+
+			if (auto pPanel = dynamic_cast<CAnimatedProp*>(panel))
+			{
+				pPanel->NotifyPlayAnimation(true);
+			}
 		});
 
 }
