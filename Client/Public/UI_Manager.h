@@ -70,6 +70,8 @@ private:
     // 
     list<CUI_Container*> m_pPanel = {};
 
+    _bool m_PanelSwitch = {true};
+
     map<_wstring, CUIObject*> m_UImap = {};
     
     CSoundController* m_pSoundCom = { nullptr };

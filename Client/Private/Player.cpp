@@ -492,7 +492,7 @@ void CPlayer::Reset()
 	m_pBelt_Down->Reset();
 	m_pBelt_Up->Reset();
 	m_pPlayerLamp->Reset();
-
+	m_pWeapon->Reset();
 	m_pLegionArm->Reset();
 
 	Callback_DownBelt();
@@ -2499,6 +2499,7 @@ void CPlayer::Start_Teleport()
 	m_bTeleport = true;
 	m_bIsInvincible = true;
 	m_pAnimator->SetTrigger("Teleport");
+	CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
 }
 
 void CPlayer::IsTeleport(_float fTimeDelta)
@@ -2506,7 +2507,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 	if (m_bTeleport)
 	{
 		m_fTeleportTime += fTimeDelta;
-		if (m_fTeleportTime >= 2.5f)
+		if (m_fTeleportTime >= 2.f)
 		{
 			m_bTeleport = false;
 			m_bIsInvincible = false;
@@ -2517,7 +2518,11 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			// 플레이어 이동
 			PxTransform posTrans = PxTransform(pxPos);
 			Get_Controller()->Set_Transform(posTrans);
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.5f);
 		}
+
+		
+
 	}
 }
 
@@ -2784,6 +2789,7 @@ HRESULT CPlayer::Ready_UIParameters()
 {
 	m_fHp = 358.f;
 	m_fMaxHp = 358.f;
+	m_fMana = 300.f;
 
 	Callback_HP();
 	Callback_Mana();

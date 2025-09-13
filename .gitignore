@@ -460,3 +460,6 @@ Client/Default/x64Release/
 Client/Default/x64Debug/Client.exe.recipe
 Client/Default/x64Debug/vc143.idb
 Client/Default/x64Release/Client.exe.recipe
+Client/Default/x64Debug/Client.exe.recipe
+Client/Default/x64Debug/Client.vcxproj.FileListAbsolute.txt
+Client/Default/x64Debug/vc143.idb

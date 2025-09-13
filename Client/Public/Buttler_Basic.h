@@ -66,6 +66,8 @@ private:
 	// 날아가는 속도
 	_float m_fAwaySpeed = { 1.f };
 
+	_float4 m_vHitDir = {};
+
 	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
 	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);
 	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);

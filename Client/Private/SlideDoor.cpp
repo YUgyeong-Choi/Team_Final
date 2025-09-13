@@ -56,6 +56,7 @@ void CSlideDoor::Priority_Update(_float fTimeDelta)
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
 				pPlayer->Interaction_Door(m_eInteractType, this);
+				//CUI_Manager::Get_Instance()->Off_Panel();
 				break;
 			}
 			case Client::FUOCO:

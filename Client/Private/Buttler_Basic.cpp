@@ -363,12 +363,14 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			if (m_strStateName.find("Hit") != m_strStateName.npos)
 			{
-
 				m_pAnimator->Get_CurrentAnimController()->SetState(m_strStateName);
 
 			}
 			else
 			{
+				_vector vDir = m_pTransformCom->Get_State(STATE::POSITION) - m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+				vDir = XMVector3Normalize(vDir);
+				XMStoreFloat4(&m_vHitDir, vDir);
 				m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 				m_pAnimator->SetTrigger("Hit");
 			}
@@ -457,10 +459,14 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-			if(m_strStateName.find("Away") != m_strStateName.npos || m_strStateName.find("Hit_R") != m_strStateName.npos || m_strStateName.find("Hit_L") != m_strStateName.npos)
+			if(m_strStateName.find("Away") != m_strStateName.npos)
 				m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
-			else 
-				m_pTransformCom->Go_Dir(vLook * -1.f, fTimeDelta * m_fAwaySpeed * 0.25f, nullptr, m_pNaviCom);
+			else if (m_strStateName.find("Hit") != m_strStateName.npos)
+			{
+
+				m_pTransformCom->Go_Dir(XMLoadFloat4(&m_vHitDir) , fTimeDelta * m_fAwaySpeed * 0.3f, nullptr, m_pNaviCom);
+			}
+				
 		}
 		else if (m_strStateName.find("KnockBack") != m_strStateName.npos)
 		{
