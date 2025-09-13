@@ -327,7 +327,7 @@ HRESULT CBayonet::Ready_Actor()
 
 	PxFilterData filterData{};
 	filterData.word0 = WORLDFILTER::FILTER_PLAYERWEAPON; 
-	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY; 
+	filterData.word1 = WORLDFILTER::FILTER_MONSTERBODY;
 	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 	m_pPhysXActorCom->Set_QueryFilterData(filterData);
 	m_pPhysXActorCom->Set_Owner(this);

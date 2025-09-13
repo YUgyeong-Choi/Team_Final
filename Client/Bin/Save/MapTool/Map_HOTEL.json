@@ -1,5 +1,5 @@
 {
-    "ModelCount": 198,
+    "ModelCount": 199,
     "Models": [
         {
             "Collision": false,
@@ -2765,6 +2765,18 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_02",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": true,
@@ -8699,45 +8711,6 @@
                             7.899970054626465,
                             -59.21786117553711,
                             1.0
-                        ]
-                    ]
-                }
-            ]
-        },
-        {
-            "Collision": true,
-            "ModelName": "SM_Exterior_DecoBoxes_01",
-            "NoInstancing": false,
-            "ObjectCount": 1,
-            "Objects": [
-                {
-                    "ColliderType": 1,
-                    "IsFloor": false,
-                    "LightShape": 0,
-                    "WorldMatrix": [
-                        [
-                            -1.097922921180725,
-                            0.0,
-                            0.06756623089313507,
-                            0.0
-                        ],
-                        [
-                            0.0,
-                            1.100000023841858,
-                            0.0,
-                            0.0
-                        ],
-                        [
-                            -0.06756623089313507,
-                            0.0,
-                            -1.097922921180725,
-                            0.0
-                        ],
-                        [
-                            168.7672576904297,
-                            4.963161468505859,
-                            -25.578187942504883,
-                            1.000000238418579
                         ]
                     ]
                 }
@@ -52538,7 +52511,7 @@
             "Collision": true,
             "ModelName": "Tile_Marble_01",
             "NoInstancing": false,
-            "ObjectCount": 18,
+            "ObjectCount": 19,
             "Objects": [
                 {
                     "ColliderType": 1,
@@ -52647,7 +52620,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.15000000596046448,
@@ -53166,6 +53139,41 @@
                             148.79702758789063,
                             13.0649995803833,
                             -62.42515563964844,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 1,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "TileDensity": [
+                        0.30000001192092896,
+                        0.30000001192092896
+                    ],
+                    "WorldMatrix": [
+                        [
+                            0.24878448247909546,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.1348959356546402,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            7.133741855621338,
+                            0.0
+                        ],
+                        [
+                            186.65313720703125,
+                            8.509681701660156,
+                            -8.055313110351563,
                             1.0
                         ]
                     ]

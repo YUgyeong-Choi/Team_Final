@@ -60,62 +60,12 @@ _bool CMapLoader::Check_MapLoadComplete(_uint iLevelIndex)
 	return false;
 }
 
-//HRESULT CMapLoader::Ready_Map_Async()
-//{
-//	#pragma region 멀티 스레드로 소환
-//	auto LoadAndReadyMap = [&](const _char* mapName, _uint levelEnum)
-//		{
-//			return async(launch::async, [=]()
-//				{
-//					wcout << L"[" << StringToWString(mapName) << L"] Load 시작" << endl;
-//					auto start = chrono::high_resolution_clock::now();
-//
-//					if (FAILED(Load_Map(levelEnum, mapName)))
-//						return E_FAIL;
-//
-//					auto afterLoad = chrono::high_resolution_clock::now();
-//					wcout << L"[" << StringToWString(mapName) << L"] Load 끝 ("
-//						<< chrono::duration<_double>(afterLoad - start).count() << L"s)" << endl;
-//
-//					wcout << L"[" << StringToWString(mapName) << L"] Ready 시작" << endl;
-//					if (FAILED(Ready_Map(levelEnum, mapName)))
-//						return E_FAIL;
-//
-//					auto afterReady = chrono::high_resolution_clock::now();
-//					wcout << L"[" << StringToWString(mapName) << L"] Ready 끝 ("
-//						<< chrono::duration<_double>(afterReady - afterLoad).count()
-//						<< L"s, Total: "
-//						<< chrono::duration<_double>(afterReady - start).count() << L"s)" << endl;
-//
-//					//기타 등등 준비
-//					Ready_Etc(mapName);
-//
-//					return S_OK;
-//				});
-//		};
-//
-//
-//	auto futureHotel = LoadAndReadyMap("HOTEL", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	auto futureOuter = LoadAndReadyMap("OUTER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//	//auto futureFireEater = LoadAndReadyMap("FIRE_EATER", ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
-//
-//
-//	//결과 확인
-//	//if (FAILED(futureHotel.get()))     return E_FAIL;
-//	//if (FAILED(futureOuter.get()))     return E_FAIL;
-//	//if (FAILED(futureFireEater.get())) return E_FAIL;
-//#pragma endregion
-//
-//	return S_OK;
-//}
-
+//==================================================스레드 1개로 다른맵들 순차적 소환
 HRESULT CMapLoader::Ready_Map_Async()
 {
-	for (const _char* mapName : m_Maps)
-	{
-		std::thread([=]()
+	std::thread([&]()
+		{
+			for (const _char* mapName : m_Maps)
 			{
 				cout << "[" << mapName << "] Load 시작" << endl;
 				if (FAILED(Load_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
@@ -125,17 +75,42 @@ HRESULT CMapLoader::Ready_Map_Async()
 				if (FAILED(Ready_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
 					return;
 
-				// 스레드 종료 시 큐에 mapName 등록
 				{
-					std::lock_guard<std::mutex> lock(m_QueueMutex);
+					lock_guard<mutex> lock(m_QueueMutex);
 					m_ReadyQueue.push(mapName);
 				}
-
-			}).detach();
-	}
+			}
+		}).detach();
 
 	return S_OK;
 }
+
+//==================================================이것은 동시에 3개 다 소환(효과 없을거같아서 위로바꿈, 이미 디스크가 100% PULL임)
+//HRESULT CMapLoader::Ready_Map_Async()
+//{
+//	for (const _char* mapName : m_Maps)
+//	{
+//		thread([=]()
+//			{
+//				cout << "[" << mapName << "] Load 시작" << endl;
+//				if (FAILED(Load_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
+//					return;
+//
+//				cout << "[" << mapName << "] Ready 시작" << endl;
+//				if (FAILED(Ready_Map(m_pGameInstance->GetCurrentLevelIndex(), mapName)))
+//					return;
+//
+//				// 스레드 종료 시 큐에 mapName 등록
+//				{
+//					lock_guard<mutex> lock(m_QueueMutex);
+//					m_ReadyQueue.push(mapName);
+//				}
+//
+//			}).detach();
+//	}
+//
+//	return S_OK;
+//}
 
 HRESULT CMapLoader::Load_Ready_Nav_All(_uint iLevelIndex)
 {
