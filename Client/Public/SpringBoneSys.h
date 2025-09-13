@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Bone.h"
+#include "Serializable.h"
 #include "Client_Defines.h"
 
 
@@ -87,8 +88,8 @@ private:
 	SpringBonePart SetBonePart(const string& boneName);
 	string ReturnPartString(SpringBonePart part);
 
-	json Serialize() override;
-	void Deserialize(const json& j) override;
+	virtual json Serialize() override;
+	virtual void Deserialize(const json& j) override;
 private:
 	vector<SpringBone> m_SpringBones;
 	vector<_int>           m_SBRoots;        // 루트 인덱스들

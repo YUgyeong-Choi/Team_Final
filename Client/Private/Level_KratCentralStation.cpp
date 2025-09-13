@@ -39,6 +39,8 @@
 #include "LockOn_Manager.h"
 #include "UI_Manager.h"
 
+#include "AnimatedProp.h"
+
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 	, m_pCamera_Manager{ CCamera_Manager::Get_Instance() }
@@ -250,13 +252,13 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
 
-	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	////고사양 모드
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -286,6 +288,9 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 	// 문 같이 상호작용 하는 것들
 	if (FAILED(Ready_Interact()))
+		return E_FAIL;
+
+	if (FAILED(Ready_AnimatedProp()))
 		return E_FAIL;
 
 	return S_OK;
@@ -1926,6 +1931,50 @@ HRESULT CLevel_KratCentralStation::Ready_WaterPuddle()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_WaterPuddle"), &Desc)))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
+{
+	CAnimatedProp::ANIMTEDPROP_DESC Desc{};
+	Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	_float4x4 WorldMatrix = {};
+	Desc.WorldMatrix = _float4x4(
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		232.05f, 12.12f, -7.89f, 1.0f
+	);
+	Desc.bCullNone = true;
+	Desc.szMeshID = TEXT("SquareStatue");
+	Desc.bUseSecondMesh = false;
+	Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropLoop"), &Desc)))
+		return E_FAIL;
+
+	Desc.bUseSecondMesh = true;
+	Desc.bCullNone = false;
+	Desc.szMeshID = TEXT("ClownPanel");
+	Desc.szSecondMeshID = TEXT("ClownStationPanel");
+	Desc.WorldMatrix = _float4x4(
+	 1.0f, 0.0f, 0.0f, 0.0f ,
+	 0.0f, 1.0f, 0.0f, 0.0f ,
+	 0.0f, 0.0f, 1.0f, 0.0f ,
+	 403.78f, 15.7f, -49.5f, 1.0f 
+	);
+
+	Desc.vSecondWorldMatrix = _float4x4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		405.11f, 15.7f, -45.86f, 1.0f
+	);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"), &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

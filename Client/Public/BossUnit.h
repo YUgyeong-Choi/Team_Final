@@ -21,7 +21,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 
 public:
-	void EnterCutScene();
+	virtual void EnterCutScene();
 	virtual void Reset() override;
 	EFuryState GetFuryState() const { return m_eFuryState; }
 	_bool HasCollided() const { return m_bPlayerCollided; }

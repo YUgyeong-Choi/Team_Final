@@ -136,7 +136,7 @@ private:    /* [ ÄÄÆ÷³ÍÆ® ] */
 	_bool m_isMakeGuide = {};
 
 	
-	
+	_bool m_bIsRotatingToStargazer = false;
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

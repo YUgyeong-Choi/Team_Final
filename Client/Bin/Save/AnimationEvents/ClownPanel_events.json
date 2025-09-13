@@ -1,0 +1,11 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_StationA_ClownPanel_01_ClownF_C04",
+            "Duration": 200.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        }
+    ]
+}

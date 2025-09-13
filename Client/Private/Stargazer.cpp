@@ -163,6 +163,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 			if (m_pGameInstance->Key_Down(DIK_SPACE))
 			{
+
 				// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
 				if (nullptr != m_pScript)
 				{
@@ -209,7 +210,9 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			{
 				if (m_eState == STARGAZER_STATE::DESTROYED)
 				{
-					// 나중에 트리거로 바꾸기
+					if (m_bIsRotatingToStargazer == false)
+						m_bIsRotatingToStargazer = true;
+					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_START);
 					m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
 					m_bChange = true;
 					//m_eState = STARGAZER_STATE::FUNCTIONAL;
@@ -227,6 +230,10 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				}
 				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
 				{
+	
+					if(m_bIsRotatingToStargazer == false)
+						m_bIsRotatingToStargazer = true;
+					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
 					if (m_eScriptDatas.empty())
 					{
 						// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
@@ -291,7 +298,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->On_Panel();
 				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
+				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_END);
 				m_bTalkActive = false;
 				m_bUseScript = false;
 				m_bUseOtherUI = false;
@@ -374,9 +381,22 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	if (m_bIsRotatingToStargazer)
+	{
+		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		_vector vStargazerPos = this->Get_TransfomCom()->Get_State(STATE::POSITION);
 
+		// Y축은 고정시켜서 바닥 기준으로만 회전
+		vStargazerPos = XMVectorSetY(vStargazerPos, XMVectorGetY(vPlayerPos));
 
-	 
+		_vector vDir = XMVector3Normalize(vStargazerPos - vPlayerPos);
+
+		// 이제 방향 벡터를 넣어줌
+		if (m_pPlayer->Get_TransfomCom()->RotateToDirectionSmoothly(vDir, fTimeDelta))
+		{
+			m_bIsRotatingToStargazer = false;
+		}
+	}
 }
 
 void CStargazer::Update(_float fTimeDelta)
@@ -563,6 +583,7 @@ void CStargazer::Register_Events()
 			if (m_eState == STARGAZER_STATE::DESTROYED)
 				m_eState = STARGAZER_STATE::FUNCTIONAL;
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_END);
 			m_pEffectSet->Activate_Stargazer_Spread();
 
 			CUI_Container::UI_CONTAINER_DESC eDesc{};

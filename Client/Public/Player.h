@@ -60,6 +60,11 @@ public:
 		MONSTER, BOSS, RANGED, END
 	};
 
+	enum class eTriggerEvent
+	{
+		TALK, MONAD_GET_START, MONAD_GET_END, STARGAZER_RESTORE_START, STARGAZER_RESTORE_END, STARGAZER_ACTIVATE_START, STARGAZER_ACTIVATE_END,END
+	};
+
 protected:
 	CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CPlayer(const CPlayer& Prototype);
@@ -162,6 +167,7 @@ public: /* [ 옵저버 관련 ] */
 public: /* [ 상호작용 관련 ] */
 	void Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOpen = true);
 	void GetWeapon();
+	void OnTriggerEvent(eTriggerEvent eEvent);
 private:
 	void Play_CutScene_Door();
 	void ItemWeapOnOff(_float fTimeDelta);
@@ -405,7 +411,7 @@ private: /* [ 인터렉션 관련변수 ] */
 	_bool  m_bInteractSound[9] = { false };
 	_float m_fInteractionTime[9] = { 0 };
 	_bool  m_bHaveKey = false;
-
+	eTriggerEvent m_ecurTriggerEvent = eTriggerEvent::END;
 	unordered_set<string> m_MovableStates = {
 		"Walk_BL", "Walk_F", "Walk_FL", "Walk_FR", "Walk_B", "Walk_L", "Walk_R", "Walk_BR",
 		"Run_F", "Run_F_Stop", "Run_FR", "Run_FL", "Run_BR", "Run_BL", "Run_B", "Run_L", "Run_R",

@@ -3059,6 +3059,34 @@ void CPlayer::GetWeapon()
 	m_bWalk = true;
 }
 
+void CPlayer::OnTriggerEvent(eTriggerEvent eEvent)
+{
+	if (m_ecurTriggerEvent == eEvent)
+		return;
+	switch (eEvent)
+	{
+	case Client::CPlayer::eTriggerEvent::TALK:
+		break;
+	case Client::CPlayer::eTriggerEvent::MONAD_GET_START:
+	case Client::CPlayer::eTriggerEvent::STARGAZER_RESTORE_START:
+		m_pAnimator->SetTrigger("InactiveStargazer");
+		break;
+	case Client::CPlayer::eTriggerEvent::MONAD_GET_END:
+	case Client::CPlayer::eTriggerEvent::STARGAZER_RESTORE_END:
+	case Client::CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_END:
+		m_pAnimator->SetTrigger("EndInteraction");
+		break;
+	case Client::CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START:
+		m_pAnimator->SetTrigger("ActiveStargazer");
+		break;
+	case Client::CPlayer::eTriggerEvent::END:
+		break;
+	default:
+		break;
+	}
+	m_ecurTriggerEvent = eEvent;
+}
+
 void CPlayer::Play_CutScene_Door()
 {	
 	m_bInteraction[0] = true;

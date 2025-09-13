@@ -1,0 +1,11 @@
+{
+    "animations": [
+        {
+            "ClipName": "AS_Billboard_01_RSW",
+            "Duration": 119.0,
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 30.0
+        }
+    ]
+}

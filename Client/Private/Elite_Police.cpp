@@ -28,6 +28,7 @@ HRESULT CElite_Police::Initialize_Prototype()
 
 HRESULT CElite_Police::Initialize(void* pArg)
 {
+	m_fDamage = 10.f;
 	m_iPatternLimit = 1;
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;
@@ -360,7 +361,7 @@ HRESULT CElite_Police::Ready_Weapon()
 		return E_FAIL;
 
 	m_pWeapon = dynamic_cast<CWeapon_Monster*>(pGameObject);
-
+	m_pWeapon->SetDamage(m_fDamage);
 	Safe_AddRef(m_pWeapon);
 
 	m_pWeapon->SetisAttack(false);
@@ -967,7 +968,8 @@ void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 	{
 		if (m_bElbowHit)
 		{
-			static_cast<CPlayer*>(pOther)->SetfReceiveDamage(10.f);
+			static_cast<CPlayer*>(pOther)->SetfReceiveDamage(25.f);
+			static_cast<CPlayer*>(pOther)->SetHitMotion(HITMOTION::KNOCKBACK);
 		}
 	}
 }

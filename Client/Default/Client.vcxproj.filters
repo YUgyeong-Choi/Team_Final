@@ -553,6 +553,9 @@
     <Filter Include="02.GameObjects\16.Stargazer\StargazerEffect">
       <UniqueIdentifier>{1b81a926-f120-4b06-b623-20ce62fdaeb2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\18. AnimatedProp">
+      <UniqueIdentifier>{c46a2afe-d416-4ac9-8f1d-355ed5e4cdfc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1144,6 +1147,9 @@
     <ClInclude Include="..\public\StargazerEffect.h">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AnimatedProp.h">
+      <Filter>02.GameObjects\18. AnimatedProp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1708,6 +1714,9 @@
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AnimatedProp.cpp">
+      <Filter>02.GameObjects\18. AnimatedProp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

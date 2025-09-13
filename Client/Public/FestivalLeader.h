@@ -180,7 +180,7 @@ private:
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 	virtual void Ready_SoundEvents() override;
-
+	virtual void EnterCutScene() override;
 private:
 	array<CPhysXDynamicActor*, EBossCollider::Count> m_Colliders{};
 

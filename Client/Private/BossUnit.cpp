@@ -49,7 +49,7 @@ void CBossUnit::Update(_float fTimeDelta)
 	{
 		// Á×À½ Ã³¸®
 		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD)
+		if (m_eCurrentState != EEliteState::DEAD&& m_eCurrentState != EEliteState::FATAL)
 		{
 			m_eCurrentState = EEliteState::DEAD;
 			m_pAnimator->SetTrigger("SpecialDie");
