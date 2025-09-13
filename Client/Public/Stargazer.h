@@ -90,6 +90,8 @@ private:
 private:
 	STARGAZER_STATE m_eState = { STARGAZER_STATE::END };
 	
+private:
+	_float m_fTeleportTime = {};
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };

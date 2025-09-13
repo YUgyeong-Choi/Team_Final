@@ -68,23 +68,23 @@ protected:
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-	virtual void Priority_Update(_float fTimeDelta) override;
-	virtual void Update(_float fTimeDelta) override;
-	virtual void Late_Update(_float fTimeDelta) override;
+	virtual void	Priority_Update(_float fTimeDelta) override;
+	virtual void	Update(_float fTimeDelta) override;
+	virtual void	Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Burn() override;
 	virtual HRESULT Render_LimLight() override;
 
-	virtual void Reset() override;
+	virtual void	Reset() override;
+	void			WeaponReset();
 
 public:
 	CPhysXController*	Get_Controller() { return m_pControllerCom; }
 	EPlayerState		Get_PlayerState() { return m_eCurrentState; }
-
-	CAnimController* GetCurrentAnimContrller();
+	CAnimController*	GetCurrentAnimContrller();
 
 	// 몬스터가 죽을 때 불러줌
-	void Set_HitTarget(CUnit* pTarget, _bool bDead);
+	void			Set_HitTarget(CUnit* pTarget, _bool bDead);
 
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
@@ -103,13 +103,15 @@ private: /* [ 입력 처리 ] */
 
 public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
-	_vector ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
-	virtual void Register_Events() override;
+	_vector			ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
+	virtual void	Register_Events() override;
+
 public: /* [ 컷씬 용 ] */
-	_bool Get_HaveKey() { return m_bHaveKey; }
-	void Set_GetKey() { m_bHaveKey = true; }
-	_bool MoveToDoor(_float fTimeDelta, _vector vTargetPos);
-	_bool RotateToDoor(_float fTimeDelta, _vector vRotation);
+	_bool	Get_HaveKey() { return m_bHaveKey; }
+	void	Set_GetKey() { m_bHaveKey = true; }
+	_bool	MoveToDoor(_float fTimeDelta, _vector vTargetPos);
+	_bool	RotateToDoor(_float fTimeDelta, _vector vRotation);
+
 private: /* [ 루트모션 활성화 ] */
 	void	RootMotionActive(_float fTimeDelta);
 
@@ -146,16 +148,14 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Controller();
 	HRESULT Ready_UIParameters();
 	HRESULT Ready_Arm();
-	void LoadPlayerFromJson();
 	HRESULT Ready_Stat();
 	HRESULT Ready_Effect();
+	void LoadPlayerFromJson();
 
 public: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
 	void Callback_Mana();
-
-
 
 	void Add_Mana(_float fMana);
 
@@ -210,15 +210,15 @@ public:
 	void Create_LeftArm_Lightning();
 
 public: /* [ 페이탈 함수 ] */
-	void SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
-	_bool GetbIsBackAttack() const { return m_bIsBackAttack; }
-	void SetbIsGroggyAttack(_bool bIsGroggyAttack) { m_bIsGroggyAttack = bIsGroggyAttack; }
-	_bool GetbIsGroggyAttack() const { return m_bIsGroggyAttack; }
-	void SetFatalTarget(CUnit* pTarget) { m_pFatalTarget = pTarget; }
-	void SetFatalTargetNull() { m_pFatalTarget = nullptr; }
-	void SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
-	_bool GetIsFatalBoss() const { return m_bIsFatalBoss; }
-	CUnit* GetFatalTarget() { return m_pFatalTarget; }
+	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
+	_bool	GetbIsBackAttack() const { return m_bIsBackAttack; }
+	void	SetbIsGroggyAttack(_bool bIsGroggyAttack) { m_bIsGroggyAttack = bIsGroggyAttack; }
+	_bool	GetbIsGroggyAttack() const { return m_bIsGroggyAttack; }
+	void	SetFatalTarget(CUnit* pTarget) { m_pFatalTarget = pTarget; }
+	void	SetFatalTargetNull() { m_pFatalTarget = nullptr; }
+	void	SetIsFatalBoss(_bool bIsFatalBoss) { m_bIsFatalBoss = bIsFatalBoss; }
+	_bool	GetIsFatalBoss() const { return m_bIsFatalBoss; }
+	CUnit*	GetFatalTarget() { return m_pFatalTarget; }
 
 private:
     void InitializeSpringBones();
@@ -270,8 +270,12 @@ public: /* [ 부여 속성 관련 ] */
 	void SetElementTypeDuration(EELEMENT eElement, _float fValue) { m_vecElements[eElement].fDuration = fValue; }
 	void SetElementTypeWeight(EELEMENT eElement, _float fValue);
 	
-
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
+
+public: /* [ 텔레포트 ] */
+	void Start_Teleport();
+	void IsTeleport(_float fTimeDelta);
+	void SetTeleportPos(_float3 vPos) { m_vTeleportPos = vPos; }
 
 public:/*[스탯 관련]*/
 	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }
@@ -327,6 +331,11 @@ private: /* [ 림라이트 ] */
 	_float	m_fLimSpeed = 1.7f;
 	_bool	m_bLimSwitch = {};
 	_float4 m_vLimLightColor = { 1.f ,1.f ,1.f ,1.f };
+
+private: /* [ 텔레포트 ] */
+	_bool m_bTeleport = {};
+	_float m_fTeleportTime = {};
+	_float3 m_vTeleportPos = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

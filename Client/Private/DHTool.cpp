@@ -433,7 +433,7 @@ HRESULT CDHTool::Render_LightTool()
 			m_pSelectedObject->SetfInnerCosAngle(fInnerCosAngle);
 
 		if (ImGui::InputFloat("##InnerCosAngleInput", &fInnerCosAngle, 0.001f, 100.0f, "%.4f"))
-			m_pSelectedObject->SetfFogDensity(fInnerCosAngle);
+			m_pSelectedObject->SetfInnerCosAngle(fInnerCosAngle);
 	}
 	else
 	{
@@ -449,7 +449,7 @@ HRESULT CDHTool::Render_LightTool()
 			m_pSelectedObject->SetfOuterCosAngle(fOuterCosAngle);
 
 		if (ImGui::InputFloat("##fOuterCosAngleInput", &fOuterCosAngle, 0.001f, 100.0f, "%.4f"))
-			m_pSelectedObject->SetfFogDensity(fOuterCosAngle);
+			m_pSelectedObject->SetfOuterCosAngle(fOuterCosAngle);
 	}
 	else
 	{

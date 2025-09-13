@@ -38,6 +38,9 @@
 #include "Bullet.h"
 #include "Client_Calculation.h"
 
+#include "Fuoco.h"
+#include "FestivalLeader.h"
+
 #include "SpringBoneSys.h"
 #include <ShortCutDoor.h>
 
@@ -310,6 +313,9 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 가드시간(0.2f) ] */
 	IsPerfectGard(fTimeDelta);
 
+	/* [ 텔레포트 ] */
+	IsTeleport(fTimeDelta);
+
 	/* [ 플레이어 락온 위치  ] */
 	_matrix LockonMat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex));
 	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
@@ -473,11 +479,6 @@ HRESULT CPlayer::Render_LimLight()
 
 void CPlayer::Reset()
 {	
-	/* [ 무기 장착 해제 ] */
-	m_pAnimator->CancelOverrideAnimController();
-	m_pWeapon->SetbIsActive(false);
-	m_bWeaponEquipped = false;
-	m_pWeapon->Reset();
 	m_bCanGetItem = false;
 	m_fHp = m_fMaxHp;
 	Callback_HP();
@@ -500,8 +501,15 @@ void CPlayer::Reset()
 	SetbIsGroggyAttack(false);
 	SetIsFatalBoss(false);
 	SetFatalTargetNull();
+}
 
-
+void CPlayer::WeaponReset()
+{
+	/* [ 무기 장착 해제 ] */
+	m_pAnimator->CancelOverrideAnimController();
+	m_pWeapon->SetbIsActive(false);
+	m_bWeaponEquipped = false;
+	m_pWeapon->Reset();
 }
 
 CAnimController* CPlayer::GetCurrentAnimContrller()
@@ -590,6 +598,7 @@ void CPlayer::HPSubtract()
 
 
 	m_fHp -= m_fReceiveDamage;
+	printf("Player HP : %f \n", m_fHp);
 
 	if (m_fHp <= 0.f)
 		m_fHp = 0.f;
@@ -670,7 +679,7 @@ void CPlayer::UpdateCurrentState(_float fTimeDelta)
 		eNextState = EPlayerState::HITED;
 		m_bIsHit = false;
 	}
-	else if (m_bIsForceDead)
+	if (m_bIsForceDead || m_fHp <= 0.f)
 	{
 		eNextState = EPlayerState::DEAD;
 		m_bIsForceDead = false;
@@ -2045,9 +2054,6 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 		//히트한 몬스터타입
 		m_eHitedTarget = eHitedTarget::MONSTER;
 
-
-		// 
-
 		CBullet* pBullet = dynamic_cast<CBullet*>(pOther);
 
 		if (pBullet)
@@ -2287,7 +2293,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 
 		// 필요한 정보를 수집한다.
-		if (pUnit->Get_UnitType() == EUnitType::NORMAL_MONSTER)
+		if (pUnit->Get_UnitType() == EUnitType::NORMAL_MONSTER
+			|| pUnit->Get_UnitType() == EUnitType::ELITE_MONSTER)
 			CalculateDamage(pOther, eColliderType);
 		
 		_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -2355,7 +2362,16 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			if (pBoss->HasCollided())
 				return;
 			//필요한 정보를 수집한다.
-			m_eHitedTarget = eHitedTarget::BOSS;
+
+			CFestivalLeader* pFestival = dynamic_cast<CFestivalLeader*>(pBoss);
+			if (pFestival)
+			{
+				/* 축제인도자는 뒤로 밀리지않는다. */
+				m_eHitedTarget = eHitedTarget::MONSTER;
+			}
+			else
+				m_eHitedTarget = eHitedTarget::BOSS;
+
 			m_pHitedTarget = pBoss;
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -2394,7 +2410,6 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 				m_bIsHit = true;
 				m_eHitedAttackType = CBossUnit::EAttackType::NONE;
-				//Create_HitEffect();
 				return;
 			}
 
@@ -2476,6 +2491,33 @@ void CPlayer::Initialize_ElementConditions(const _float fDefaultDuration, const 
 		EELEMENTCONDITION& tElemCond = m_vecElements[uElemIndex];
 		tElemCond.fDuration = fDefaultDuration;
 		tElemCond.fElementWeight = fDefaultWeight;
+	}
+}
+
+void CPlayer::Start_Teleport()
+{
+	m_bTeleport = true;
+	m_bIsInvincible = true;
+	m_pAnimator->SetTrigger("Teleport");
+}
+
+void CPlayer::IsTeleport(_float fTimeDelta)
+{
+	if (m_bTeleport)
+	{
+		m_fTeleportTime += fTimeDelta;
+		if (m_fTeleportTime >= 2.5f)
+		{
+			m_bTeleport = false;
+			m_bIsInvincible = false;
+			m_fTeleportTime = 0.f;
+
+			PxVec3 pxPos(m_vTeleportPos.x, m_vTeleportPos.y, m_vTeleportPos.z);
+
+			// 플레이어 이동
+			PxTransform posTrans = PxTransform(pxPos);
+			Get_Controller()->Set_Transform(posTrans);
+		}
 	}
 }
 

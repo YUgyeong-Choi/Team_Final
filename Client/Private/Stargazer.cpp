@@ -593,19 +593,17 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 	{
 		if (static_cast<CStargazer*>(pObj)->m_eStargazerTag == eTag)
 		{
+			// 플레이어가 텔레포트 자세를 잡는다
+			m_pPlayer->Start_Teleport();
+
+			// 선택된 별바라기의 위치를 가져온다.
 			_float3 vPos;
 			XMStoreFloat3(&vPos, pObj->Get_TransfomCom()->Get_State(STATE::POSITION));
 
-			//살짝 위로
+			// 플레이어 위치 세팅
 			vPos.y += 1.f;
-			//살짝 뒤로
 			vPos.x -= 2.f;
-
-			PxVec3 pxPos(vPos.x, vPos.y, vPos.z);
-
-			PxTransform posTrans = PxTransform(pxPos);
-
-			m_pPlayer->Get_Controller()->Set_Transform(posTrans);
+			m_pPlayer->SetTeleportPos(vPos);
 
 			break;
 		}

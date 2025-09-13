@@ -319,8 +319,12 @@ public:
         if (input.bTap) // 무기교체
             return EPlayerState::EQUIP; 
 
-        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
-            return EPlayerState::MAINSKILL;
+        string stateName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(stateName) != m_StateNames.end())
+        {
+            if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
+                return EPlayerState::MAINSKILL;
+        }
 
 		if (input.bSpaceDown && IsStaminaEnough(20.f)) // 빽스탭
             return EPlayerState::BACKSTEP;
@@ -444,8 +448,12 @@ public:
         if (input.bItem) // 아이템 사용
             return EPlayerState::USEITEM;
 
-        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
-            return EPlayerState::MAINSKILL;
+        string stateName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(stateName) != m_StateNames.end())
+        {
+            if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
+                return EPlayerState::MAINSKILL;
+        }
 
         if (input.bCtrl) // 왼팔공격
         {
@@ -620,8 +628,12 @@ public:
                 return EPlayerState::ARMFAIL;
         }
 
-        if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
-            return EPlayerState::MAINSKILL;
+        string stateName = m_pOwner->m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->stateName;
+        if (m_StateNames.find(stateName) != m_StateNames.end())
+        {
+            if (input.bSkill && m_pOwner->m_bWeaponEquipped && IsManaEnough(100.f))
+                return EPlayerState::MAINSKILL;
+        }
 
         if (input.bRightMouseUp && m_pOwner->m_bWeaponEquipped && IsStaminaEnough(1.f)) // 강공
             return EPlayerState::STRONGATTACKA;
@@ -1297,6 +1309,9 @@ public:
 public:
     virtual void Enter() override
     {
+        if(m_pOwner->m_pAnimator->CheckBool("WasDead"))
+			return;
+
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
@@ -1424,6 +1439,9 @@ public:
 public:
     virtual void Enter() override
     {
+        if (m_pOwner->m_pAnimator->CheckBool("WasDead"))
+            return;
+
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
@@ -1548,6 +1566,9 @@ public:
 public:
     virtual void Enter() override
     {
+        if (m_pOwner->m_pAnimator->CheckBool("WasDead"))
+            return;
+
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
@@ -1675,6 +1696,9 @@ public:
 public:
     virtual void Enter() override
     {
+        if (m_pOwner->m_pAnimator->CheckBool("WasDead"))
+            return;
+
         m_fStateTime = 0.f;
 
         /* [ 애니메이션 설정 ] */
@@ -2788,6 +2812,7 @@ public:
     {
         m_fStateTime += fTimeDelta;
 
+        
         //1. F를 다시 눌렀을 경우 최대 3콤보까지 진행이된다.
         if (0.3f < m_fStateTime && m_iSkillCount == 0 && IsManaEnough(100.f))
         {
@@ -2798,9 +2823,9 @@ public:
             }
 
             if (MOUSE_DOWN(DIM::LBUTTON))
-				m_bAttackA = true;
+                m_bAttackA = true;
             else if (MOUSE_DOWN(DIM::RBUTTON))
-				m_bAttackB = true;
+                m_bAttackB = true;
         }
         else if (1.f < m_fStateTime && m_iSkillCount == 1 && IsManaEnough(100.f))
         {
@@ -3140,6 +3165,7 @@ public:
 
     virtual void Exit() override
     {
+        m_pOwner->m_eHitedAttackType = CBossUnit::EAttackType::NONE;
         m_pOwner->m_pAnimator->SetBool("IsUp", false);
         m_fStateTime = 0.f;
         m_bDead = false;
@@ -3211,6 +3237,9 @@ public:
         m_fStateTime = 0.f;
         m_pOwner->m_bIsInvincible = true;
 
+        /* [ 이펙트를 생성한다. ] */
+        m_pOwner->Create_HitEffect();
+
         /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
         {
@@ -3249,9 +3278,9 @@ public:
         }
 
         /* [ 죽는 애니메이션 ] */
-        m_pOwner->m_pAnimator->SetTrigger("Death");
-        m_pOwner->m_pAnimator->SetBool("WasDead", true);
         m_pOwner->m_pAnimator->SetBool("Sprint", false);
+        m_pOwner->m_pAnimator->SetBool("WasDead", true);
+        m_pOwner->m_pAnimator->SetTrigger("Death");
         m_pOwner->m_bWalk = true;
 
         /* [ 디버깅 ] */
@@ -3264,6 +3293,8 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
+
+        m_pOwner->WeaponReset();
 
     }
 
@@ -3345,6 +3376,7 @@ public:
 
     virtual void Exit() override
     {
+        m_pOwner->m_pAnimator->ResetParameters();
         m_pOwner->m_pAnimator->SetBool("WasDead", false);
         m_fStateTime = 0.f;
         m_fRrevivalTime = 0.f;
