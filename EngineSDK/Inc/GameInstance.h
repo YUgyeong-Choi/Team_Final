@@ -284,11 +284,13 @@ public:
 	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
+
 #pragma region CAMERA
 	void Set_CurCam(class CCamera* pCam) { m_pCurCam = pCam; }
 	class CCamera* Get_CurCam() { return m_pCurCam; }
 	HRESULT Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer);
 #pragma endregion
+
 
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };

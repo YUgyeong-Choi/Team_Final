@@ -43,7 +43,6 @@ private:
 
 
 	HRESULT Ready_AnimatedProp();
-
 #pragma region YW
 private:
 	//맵 로딩함수 모아두는 곳, 로더에서도 쓰고, 레벨에서도 써야해서 만듬

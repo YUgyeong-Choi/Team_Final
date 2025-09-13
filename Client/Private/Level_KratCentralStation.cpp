@@ -289,13 +289,13 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 
-	////고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
-
-	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
+	//고사양 모드
+	if (FAILED(Ready_Lights()))
 		return E_FAIL;
+
+	////저사양 모드
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -1167,7 +1167,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 
 	//
-	CDynamic_UI::DYNAMIC_UI_DESC eDynamicDesc = {};
+	/*CDynamic_UI::DYNAMIC_UI_DESC eDynamicDesc = {};
 	eDynamicDesc.fAlpha = 0.f;
 	eDynamicDesc.fSizeX = g_iWinSizeX;
 	eDynamicDesc.fSizeY = g_iWinSizeY;
@@ -1184,7 +1184,7 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 
 	CGameObject* pBackGround = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"));
 
-	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");
+	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");*/
 
 	CUI_Manager::Get_Instance()->Off_Panel();
 
@@ -1657,23 +1657,6 @@ HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"), &Desc)))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Add_MapActor(const _char* Map)
-{
-	//여기서 액터를 추가해준다. 메인스레드에서 액터를 추가하는 것이 안전하다고 한다.
-
-	wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map);
-
-	list<CGameObject*> ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), wsLayerTag);
-
-	for (CGameObject* pObj : ObjList)
-	{
-		if (FAILED(static_cast<CStaticMesh*>(pObj)->Add_Actor()))
-			return E_FAIL;
-	}
 
 	return S_OK;
 }
