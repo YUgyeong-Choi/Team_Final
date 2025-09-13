@@ -70,10 +70,10 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
 	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
-	if (m_bFireEaterBossPipe)
-	{
+	//if (m_bFireEaterBossPipe)
+	//{
 		Find_Player();
-	}
+	//}
 
 	//if (m_pGameInstance->Key_Down(DIK_L))
 	//{
@@ -638,15 +638,15 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
 		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
-		if (m_bFireEaterBossPipe)
-		{
+		//if (m_bFireEaterBossPipe)
+		//{
 			//플레이어 무시
 			IgnorePlayerCollider(pActorCom);
-		}
-		else
-		{
+		//}
+		//else
+		//{
 			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
-		}
+		//}
 
 		// 6) 필터 설정
 		PxFilterData fd{};
@@ -659,7 +659,7 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		else
 		{
 			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
-			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY;
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ /*| WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY*/;
 		}
 
 		pActorCom->Set_ShapeFlag(true, false, true);
