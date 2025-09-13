@@ -48,7 +48,7 @@
             ]
         }
     ],
-    "LifeDuration": 0.5,
+    "LifeDuration": 1.1,
     "LifeTime": 0.0,
     "Loop": true,
     "Name": "Player_BloodTrail",
@@ -57,7 +57,7 @@
     "RenderGroup": 8,
     "ShaderPass": 1,
     "StartTrack": 0,
-    "Subdivisions": 4,
+    "Subdivisions": 12,
     "TextureTags": [
         "T_WaterDrop_02_C_GDH",
         "T_BloodSlash_01_C_KMH",

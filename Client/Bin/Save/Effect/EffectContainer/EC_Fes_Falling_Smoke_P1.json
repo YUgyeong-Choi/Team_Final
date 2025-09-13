@@ -16,13 +16,13 @@
                 0.0,
                 0.0,
                 0.0,
-                0.2408376932144165
+                0.09424084424972534
             ],
             "Color": [
                 0.18324607610702515,
                 0.1761133372783661,
                 0.16405801475048065,
-                0.47120416164398193
+                0.3298429250717163
             ],
             "DistortionStrength": 10.0,
             "Duration": 124,
@@ -30,7 +30,7 @@
             "EmissiveIntensity": 0.0,
             "EndTrack": 124,
             "FlipUV": false,
-            "Gravity": -0.4000000059604645,
+            "Gravity": -0.6000000238418579,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -38,9 +38,9 @@
                         0.18324607610702515,
                         0.1761133372783661,
                         0.16405801475048065,
-                        0.47120416164398193
+                        0.3298429250717163
                     ],
-                    "Intensity": 0.6700000166893005,
+                    "Intensity": 0.6000000238418579,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,10 +61,10 @@
                     ]
                 }
             ],
-            "LifeTime": 2481.491455078125,
+            "LifeTime": 2565.41748046875,
             "LifeTime_Particle": [
-                0.8999999761581421,
-                0.8999999761581421
+                0.800000011920929,
+                1.2000000476837158
             ],
             "Local": true,
             "Loop": false,
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.5,
             "Name": "Fes_Falling_SmokeParticle1",
-            "NumInstance": 100,
+            "NumInstance": 130,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -106,8 +106,9 @@
                 0.0
             ],
             "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                2.0,
+                1.5,
                 3.5
             ],
             "Speed": [
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Smoke_04_C_LGS",

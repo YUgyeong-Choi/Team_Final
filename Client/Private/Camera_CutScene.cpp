@@ -862,8 +862,6 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
-		// 735
-
 		if (m_iCurrentFrame == 575)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
@@ -874,8 +872,11 @@ void CCamera_CutScene::Event()
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
 		}
 
-		// 765 
 
+		if (m_iCurrentFrame == 20)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+		}
 
 		if (m_iCurrentFrame == 860)
 		{

@@ -24,6 +24,7 @@
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 64,
             "EffectType": 1,
             "EmissiveIntensity": 1.75,
@@ -60,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 3012.8291015625,
+            "LifeTime": 3039.404541015625,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.20000000298023224
@@ -71,7 +72,7 @@
             "MaxSpeed": 500.0,
             "MinSpeed": 2.0,
             "Name": "Fuoco_Spin3_HandParticle1",
-            "NumInstance": 30,
+            "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -105,9 +106,10 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
-                0.02800000086426735
+                0.004999999888241291,
+                0.014999999664723873
             ],
             "Speed": [
                 10.0,
@@ -115,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_07_C_LGS",
@@ -131,7 +134,8 @@
             "TickPerSecond": 60.0,
             "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": false,

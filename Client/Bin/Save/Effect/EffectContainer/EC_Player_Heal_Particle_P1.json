@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 4532.95654296875,
+            "LifeTime": 5617.4267578125,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 1.0
@@ -72,7 +72,7 @@
             "MaxSpeed": 3.0,
             "MinSpeed": -0.30000001192092896,
             "Name": "Player_Heal_SkelEmitterParticle1",
-            "NumInstance": 1000,
+            "NumInstance": 2000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -106,6 +106,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.019999999552965164,
                 0.03999999910593033
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.10100000351667404,
             "TextureTags": [
                 "",
                 "T_LensFlare_04_C_RSW",

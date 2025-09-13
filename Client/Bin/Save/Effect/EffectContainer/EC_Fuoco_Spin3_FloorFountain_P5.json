@@ -61,9 +61,9 @@
                     ]
                 }
             ],
-            "LifeTime": 5383.6533203125,
+            "LifeTime": 5523.36328125,
             "LifeTime_Particle": [
-                0.10000000149011612,
+                0.019999999552965164,
                 0.5
             ],
             "Local": true,
@@ -72,7 +72,7 @@
             "MaxSpeed": 500.0,
             "MinSpeed": 4.0,
             "Name": "Fuoco_Spin3_FloorFountainParticle1",
-            "NumInstance": 100,
+            "NumInstance": 200,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -86,14 +86,14 @@
             ],
             "PType": 0,
             "Pivot": [
-                -0.009999999776482582,
-                -0.009999999776482582,
+                -0.10000000149011612,
+                -0.10000000149011612,
                 0.0
             ],
             "Range": [
-                0.009999999776482582,
-                0.009999999776482582,
-                0.009999999776482582
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -106,9 +106,10 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
-                0.02800000086426735
+                0.004999999888241291,
+                0.014999999664723873
             ],
             "Speed": [
                 18.0,
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_07_C_LGS",
@@ -223,7 +225,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1606.1956787109375,
+            "LifeTime": 1655.9742431640625,
             "LifeTime_Particle": [
                 0.800000011920929,
                 1.2000000476837158
@@ -268,6 +270,7 @@
                 0.0
             ],
             "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 1.0,
                 1.5
@@ -278,6 +281,7 @@
             ],
             "Spin": false,
             "StartTrack": 4,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "T_SubUV_FogLoop_01_7x7_SC_KMH",
                 "T_SubUV_FogLoop_01_7x7_SC_KMH",
@@ -358,7 +362,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1702.6065673828125,
+            "LifeTime": 1843.486083984375,
             "LifeTime_Particle": [
                 3.0,
                 4.0
@@ -403,6 +407,7 @@
                 4.0
             ],
             "ShaderPass": 4,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.15000000596046448
@@ -413,6 +418,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "T_Stone11",
                 "",
@@ -493,7 +499,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1696.9124755859375,
+            "LifeTime": 1837.7919921875,
             "LifeTime_Particle": [
                 3.0,
                 4.0
@@ -538,6 +544,7 @@
                 4.0
             ],
             "ShaderPass": 4,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.15000000596046448
@@ -548,6 +555,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "T_Stone3",
                 "",
@@ -628,7 +636,7 @@
                     ]
                 }
             ],
-            "LifeTime": 305.4247741699219,
+            "LifeTime": 446.21942138671875,
             "LifeTime_Particle": [
                 3.0,
                 4.0
@@ -673,6 +681,7 @@
                 4.0
             ],
             "ShaderPass": 4,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.15000000596046448
@@ -683,6 +692,7 @@
             ],
             "Spin": true,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "T_Stone6",
                 "",
