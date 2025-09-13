@@ -3,6 +3,21 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+
+#ifdef TESTMAP
+
+#define TEST_TEST_MAP // 이거 키면 테스트맵
+//#define TEST_STATION_MAP //이거 키면 스테이션 맵 생성됨
+//#define TEST_HOTEL_MAP //이거 키면   호텔 맵 생성됨
+//#define TEST_OUTER_MAP //이거 키면  외부 맵 생성됨
+//#define TEST_FIRE_EATER_MAP //이거 키면 푸오코 맵 생성됨
+
+#endif _TESTMAP
+
+#define START_MAP "STATION"
+
+
 NS_BEGIN(Engine)
 class CGameInstance;
 NS_END
@@ -85,12 +100,16 @@ public:
 	HRESULT Ready_Breakable(const _char* Map);
 
 private:
-	vector<const _char*> m_Maps = { /*"HOTEL", "OUTER" ,*/"FIRE_EATER" };
+	vector<const _char*> m_Maps = { "HOTEL", "OUTER" ,"FIRE_EATER" };
 
 private:
 	// 완료된 맵 이름을 저장하는 스레드 안전 큐
-	std::queue<const char*> m_ReadyQueue;
-	std::mutex m_QueueMutex;
+	queue<const char*> m_ReadyQueue;
+	mutex m_QueueMutex;
+
+	//맵 개수 관리용 멤버 추가
+	size_t m_TotalMapCount = 0;
+	atomic<size_t> m_LoadedCount = 0;
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

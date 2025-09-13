@@ -864,19 +864,41 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #ifdef TESTMAP
 
+#ifdef TEST_TEST_MAP
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+		return E_FAIL;
+
 	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
+#endif // TEST_TEST_MAP
 
-	#ifdef TEST_STATION_MAP
+#ifdef TEST_STATION_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+
 	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
 		return E_FAIL;
-	#endif // TEST_STATION_MAP
+#endif // TEST_STATION_MAP
 
 #ifdef TEST_HOTEL_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+
 	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
@@ -884,6 +906,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 #endif // TEST_HOTEL_MAP
 
 #ifdef TEST_OUTER_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+
 	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
@@ -891,6 +920,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 #endif // TEST_OUTER_MAP
 
 #ifdef TEST_FIRE_EATER_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+
 	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
 		return E_FAIL;
 	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
@@ -903,16 +939,16 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #ifndef TESTMAP
 
-	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	cout << "[MAP] STATION Load 완료" << endl;
-
-	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	cout << "[MAP] STATION Ready 완료" << endl;
-
 	if (FAILED(m_pMapLoader->Load_Ready_Nav_All(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
+
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), START_MAP)))
+		return E_FAIL;
+	cout << "[MAP] START_MAP Load 완료" << endl;
+
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), START_MAP)))
+		return E_FAIL;
+	cout << "[MAP] START_MAP Ready 완료" << endl;
 
 #endif // !TESTMAP
 

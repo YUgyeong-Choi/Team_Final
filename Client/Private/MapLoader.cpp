@@ -25,13 +25,15 @@ CMapLoader::CMapLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CMapLoader::Initialize()
 {
+	m_TotalMapCount = m_Maps.size();
+	m_LoadedCount = 0;
+
 	return S_OK;
 }
 
 _bool CMapLoader::Check_MapLoadComplete()
 {
 	const _char* mapName = nullptr;
-
 	{
 		std::lock_guard<std::mutex> lock(m_QueueMutex);
 		if (!m_ReadyQueue.empty())
@@ -43,15 +45,19 @@ _bool CMapLoader::Check_MapLoadComplete()
 
 	if (mapName)
 	{
-		Ready_Etc(mapName); // 메인 스레드에서 안전하게 호출
+		Ready_Etc(mapName);
+		++m_LoadedCount;
+
+		if (m_LoadedCount == m_TotalMapCount)
+		{
+			// 모든 맵 로드 완료
+			return false; // 더 이상 업데이트 필요 없음
+		}
+
 		return true;
 	}
 
 	return false;
-	//else
-	//{
-	//	break; // 큐가 비어있으면 종료
-	//}
 }
 
 //HRESULT CMapLoader::Ready_Map_Async()
@@ -450,6 +456,28 @@ HRESULT CMapLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
 	// JSON 최상위 바로 ModelName 확인
 	for (auto& [ModelName, ModelData] : j.items())
 	{
+		// 본 모델 로드
+		wstring wsPrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
+
+		if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTag) == nullptr)
+		{
+			filesystem::path modelPath = filesystem::path(PATH_NONANIM) /
+				(ModelName + ".bin");
+
+			if (filesystem::exists(modelPath))
+			{
+				if (FAILED(m_pGameInstance->Add_Prototype(
+					iLevelIndex, wsPrototypeTag,
+					CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,
+						modelPath.string().c_str(),
+						PreTransformMatrix))))
+				{
+					return E_FAIL;
+				}
+			}
+		}
+
+
 		// 푸오코 기둥 무시
 		if (ModelName == "SM_Factory_BasePipe_07")
 			continue;
@@ -480,7 +508,7 @@ HRESULT CMapLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
 							modelPath.string().c_str(),
 							PreTransformMatrix))))
 					{
-						return S_OK; // 실패해도 무시
+						return E_FAIL; // 실패해도 무시
 					}
 				}
 			}
@@ -867,8 +895,11 @@ HRESULT CMapLoader::Ready_Monster()
 #pragma region 몬스터 JSON 파일 받아서 소환
 
 #ifdef TESTMAP
+
+#ifdef TEST_TEST_MAP
 	if (FAILED(Ready_Monster("TEST")))
 		return E_FAIL;
+#endif // TEST_TEST_MAP
 
 #ifdef TEST_STATION_MAP
 	if (FAILED(Ready_Monster("STATION")))
@@ -893,7 +924,7 @@ HRESULT CMapLoader::Ready_Monster()
 #endif // TESTMAP
 
 #ifndef TESTMAP
-	if (FAILED(Ready_Monster("STATION")))
+	if (FAILED(Ready_Monster(START_MAP)))
 		return E_FAIL;
 	//if (FAILED(Ready_Monster("HOTEL")))
 	//	return E_FAIL;
@@ -946,8 +977,11 @@ HRESULT CMapLoader::Ready_Monster()
 HRESULT CMapLoader::Ready_Stargazer()
 {
 #ifdef TESTMAP
+
+#ifdef TEST_TEST_MAP
 	if (FAILED(Ready_Stargazer("TEST")))
 		return E_FAIL;
+#endif // TEST_TEST_MAP
 
 #ifdef TEST_STATION_MAP
 	if (FAILED(Ready_Stargazer("STATION")))
@@ -972,7 +1006,7 @@ HRESULT CMapLoader::Ready_Stargazer()
 #endif // TESTMAP
 
 #ifndef TESTMAP
-	if (FAILED(Ready_Stargazer("STATION")))
+	if (FAILED(Ready_Stargazer(START_MAP)))
 		return E_FAIL;
 	//if (FAILED(Ready_Stargazer("HOTEL")))
 	//	return E_FAIL;
@@ -1035,8 +1069,11 @@ HRESULT CMapLoader::Ready_Stargazer(const _char* Map)
 HRESULT CMapLoader::Ready_ErgoItem()
 {
 #ifdef TESTMAP
+
+#ifdef TEST_TEST_MAP
 	if (FAILED(Ready_ErgoItem("TEST")))
 		return E_FAIL;
+#endif // TEST_TEST_MAP
 
 #ifdef TEST_STATION_MAP
 	if (FAILED(Ready_ErgoItem("STATION")))
@@ -1062,7 +1099,7 @@ HRESULT CMapLoader::Ready_ErgoItem()
 #endif // TESTMAP
 
 #ifndef TESTMAP
-	if (FAILED(Ready_ErgoItem("STATION")))
+	if (FAILED(Ready_ErgoItem(START_MAP)))
 		return E_FAIL;
 	//if (FAILED(Ready_ErgoItem("HOTEL")))
 	//	return E_FAIL;
@@ -1131,8 +1168,11 @@ HRESULT CMapLoader::Ready_Breakable()
 	//아직 푸오코 기둥을 위한 것으로만
 
 #ifdef TESTMAP
+
+#ifdef TEST_TEST_MAP
 	if (FAILED(Ready_Breakable("TEST")))
 		return E_FAIL;
+#endif // TEST_TEST_MAP
 
 #ifdef TEST_STATION_MAP
 	if (FAILED(Ready_Breakable("STATION")))
@@ -1157,7 +1197,7 @@ HRESULT CMapLoader::Ready_Breakable()
 #endif // TESTMAP
 
 #ifndef TESTMAP
-	if (FAILED(Ready_Breakable("STATION")))
+	if (FAILED(Ready_Breakable(START_MAP)))
 		return E_FAIL;
 	//if (FAILED(Ready_Breakable("HOTEL")))
 	//	return E_FAIL;
