@@ -181,7 +181,7 @@ HRESULT CUI_SelectLocation::Ready_Button()
 			
 			vRange = m_pGameInstance->Calc_Draw_Range(TEXT("Font_Medium"), eButtonDesc.strCaption.c_str());
 			//eButtonDesc.fPadding.x = vRange.x * 1.5f ;
-			eButtonDesc.fX -= (fSize.x - vRange.x) * 0.5f * 0.7f;
+			eButtonDesc.fX = g_iWinSizeX * 0.125f - (fSize.x - vRange.x) * 0.5f * 0.7f;
 			eButtonDesc.fSizeX = vRange.x * eButtonDesc.fFontSize ;
 			eButtonDesc.fSizeY = vRange.y * eButtonDesc.fFontSize ;
 
