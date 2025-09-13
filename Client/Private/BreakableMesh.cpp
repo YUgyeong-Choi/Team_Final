@@ -30,7 +30,7 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
 	m_bFireEaterBossPipe = pDesc->bFireEaterBossPipe;
-	
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -63,6 +63,8 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 			Store_NavIndices();
 		}
 	}
+
+	m_pSoundCom->SetVolume(0.5f);
 
 	return S_OK;
 }
@@ -250,6 +252,11 @@ void CBreakableMesh::Break()
 {
 	if (m_bIsBroken == true)
 		return;
+
+	if (m_bFireEaterBossPipe == false)
+	{
+		m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3);
+	}
 
 	m_bIsBroken = true;
 
@@ -749,6 +756,12 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 		}
 	}
 
+	//사운드
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Breakable"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -795,4 +808,6 @@ void CBreakableMesh::Free()
 	Safe_Release(m_pPlayer);
 
 	Safe_Release(m_pNaviCom);
+
+	Safe_Release(m_pSoundCom);
 }

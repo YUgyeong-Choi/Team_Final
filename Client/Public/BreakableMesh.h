@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -112,6 +113,9 @@ private:
 
 	//영향을 줄 네비게이션
 	CNavigation* m_pNaviCom = { nullptr };
+
+	//사운드
+	CSoundController* m_pSoundCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);
