@@ -8,6 +8,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Exhibition_Box_01",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Exterior_Barrel_01",
         "NoInstancing": false,
         "ObjectCount": 20,

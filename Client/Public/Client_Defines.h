@@ -49,19 +49,6 @@ extern HINSTANCE g_hInst;
 using namespace Client;
 
 
-#define TESTMAP //Å×½ºÆ®¸Ê ÇÏ±â ½ÈÀ¸¸é ÁÖ¼®ÇÏ½Ã¿À (¿µ¿õ)
-
-#ifdef TESTMAP //¿©·¯ °³ ÄÑµµ µÊ
-
-
-//#define TEST_STATION_MAP //ÀÌ°Å Å°¸é Å×½ºÆ® ¸Ê¿¡ ½ºÅ×ÀÌ¼Ç ¸Ê »ý¼ºµÊ
-//#define TEST_HOTEL_MAP //ÀÌ°Å Å°¸é Å×½ºÆ® ¸Ê¿¡  È£ÅÚ ¸Ê »ý¼ºµÊ
-//#define TEST_OUTER_MAP //ÀÌ°Å Å°¸é Å×½ºÆ® ¸Ê¿¡ ¿ÜºÎ ¸Ê »ý¼ºµÊ
-//#define TEST_FIRE_EATER_MAP //ÀÌ°Å Å°¸é Å×½ºÆ® ¸Ê¿¡ Çª¿ÀÄÚ ¸Ê »ý¼ºµÊ
-
-
-#endif _TESTMAP
-
 #pragma region ÇÑ¿µ¿õ
 #define PATH_NONANIM "../Bin/Resources/Models/Bin_NonAnim"
 #define PRE_TRANSFORMMATRIX_SCALE 0.004f
@@ -75,7 +62,6 @@ using namespace Client;
 		EFFECT_MANAGER->Make_EffectContainer(LEVEL, EC_NAME, DESC)
 #define MAKE_SINGLEEFFECT(LEVEL, EFFECT_NAME, LAYER_NAME, PRESETPOSX, PRESETPOSY, PRESETPOSZ, PDESC) \
 		EFFECT_MANAGER->Make_Effect(LEVEL, EFFECT_NAME, LAYER_NAME, _float3{ PRESETPOSX, PRESETPOSY, PRESETPOSZ }, PDESC)
-
 
 #define CAMERA_MANAGER CCamera_Manager::Get_Instance()
 

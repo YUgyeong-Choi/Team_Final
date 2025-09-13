@@ -24,7 +24,6 @@ public:
 	HRESULT Ready_Level();
 
 private:
-	HRESULT Add_MapActor(const _char* Map); //맵 액터 추가(콜라이더 활성화)
 	HRESULT Ready_Player();
 	HRESULT Ready_Npc();
 	HRESULT Ready_Dummy();
@@ -35,18 +34,6 @@ private:
 	HRESULT Ready_UI();
 	HRESULT Ready_Video();
 
-	HRESULT Ready_Monster();
-	HRESULT Ready_Monster(const _char* Map);//특정 맵의 몬스터를 소환한다. 그 맵의 네비게이션을 장착시킨다.
-
-	HRESULT Ready_Stargazer();
-	HRESULT Ready_Stargazer(const _char* Map);
-
-	HRESULT Ready_ErgoItem();
-	HRESULT Ready_ErgoItem(const _char* Map);
-
-	HRESULT Ready_Breakable();
-	HRESULT Ready_Breakable(const _char* Map);
-
 	HRESULT Ready_Effect();
 	HRESULT Ready_OctoTree();
 	HRESULT Ready_Interact();
@@ -56,6 +43,12 @@ private:
 
 
 	HRESULT Ready_AnimatedProp();
+
+#pragma region YW
+private:
+	//맵 로딩함수 모아두는 곳, 로더에서도 쓰고, 레벨에서도 써야해서 만듬
+	class CMapLoader* m_pMapLoader = { nullptr };
+#pragma endregion
 
 
 private:

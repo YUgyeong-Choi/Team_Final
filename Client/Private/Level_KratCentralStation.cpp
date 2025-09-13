@@ -6,13 +6,14 @@
 #include "Client_Function.h"
 
 #pragma region YW
-#include "StaticMesh.h"
-#include "StaticMesh_Instance.h"
-#include "Nav.h"
-#include "Static_Decal.h"
-#include "Stargazer.h"
-#include "ErgoItem.h"
-#include "BreakableMesh.h"
+//#include "StaticMesh.h"
+//#include "StaticMesh_Instance.h"
+//#include "Nav.h"
+//#include "Static_Decal.h"
+//#include "Stargazer.h"
+//#include "ErgoItem.h"
+//#include "BreakableMesh.h"
+#include "MapLoader.h"
 #pragma endregion
 
 #include "SlideDoor.h"
@@ -51,6 +52,13 @@ CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D
 
 HRESULT CLevel_KratCentralStation::Initialize()
 {
+	m_pMapLoader = CMapLoader::Create(m_pDevice, m_pContext);
+	
+#ifndef TESTMAP
+	//첫 맵(스테이션은 로딩완료), 게임중에 다른 맵 로딩 시작
+	m_pMapLoader->Ready_Map_Async();
+#endif
+
 	/* [ 레벨 셋팅 ] */
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
 	m_pGameInstance->Set_IsChangeLevel(false);
@@ -133,6 +141,11 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
+#ifndef TESTMAP
+	if (m_pMapLoader->Check_MapLoadComplete(m_pGameInstance->GetCurrentLevelIndex()))
+		Ready_OctoTree();
+#endif
+
 	if (!m_bEndVideo)
 		return;
 
@@ -242,16 +255,39 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	/* [ 해야할 준비들 ] */
 	/*if (FAILED(Ready_Dummy()))
 		return E_FAIL;*/
-	if (FAILED(Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
+
+#ifndef TESTMAP
+
+	if (FAILED(m_pMapLoader->Add_MapActor(START_MAP)))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
+#endif // !TESTMAP
+
+#ifdef TEST_TEST_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
+#endif // TEST_TEST_MAP
+
+#ifdef TEST_STATION_MAP	
+	if (FAILED(m_pMapLoader->Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
+#endif //TEST_STATION_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
-	if (FAILED(Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
+#endif // TEST_FIRE_EATER_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
 		return E_FAIL;
+#endif // TEST_HOTEL
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+
 
 	////고사양 모드
 	//if (FAILED(Ready_Lights()))
@@ -278,13 +314,21 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_Player()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Monster()))
+
+#ifndef TESTMAP
+	//모든 몬스터, 스타게이저, 부수는 오브젝트, 별바라기 소환하자.
+	if (FAILED(m_pMapLoader->Load_Ready_All_Etc(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
-	if (FAILED(Ready_ErgoItem()))
+	cout << "[MAP] Load_Ready_All_Etc 완료" << endl;
+#endif
+
+	if (FAILED(m_pMapLoader->Ready_Monster()))
 		return E_FAIL;
-	if (FAILED(Ready_Breakable()))
+	if (FAILED(m_pMapLoader->Ready_ErgoItem()))
 		return E_FAIL;
-	if (FAILED(Ready_Stargazer()))
+	if (FAILED(m_pMapLoader->Ready_Breakable()))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Stargazer()))
 		return E_FAIL;
 
 	// 문 같이 상호작용 하는 것들
@@ -1177,391 +1221,6 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Monster()
-{
-#pragma region 몬스터 JSON 파일 받아서 소환
-
-#ifdef TESTMAP
-	if (FAILED(Ready_Monster("TEST")))
-		return E_FAIL;
-
-#ifdef TEST_STATION_MAP
-	if (FAILED(Ready_Monster("STATION")))
-		return E_FAIL;
-#endif // TEST_STATION_MAP
-
-#ifdef TEST_HOTEL_MAP
-	if (FAILED(Ready_Monster("HOTEL")))
-		return E_FAIL;
-#endif // TEST_HOTEL_MAP
-
-#ifdef TEST_OUTER_MAP
-	if (FAILED(Ready_Monster("OUTER")))
-		return E_FAIL;
-#endif // TEST_OUTER_MAP
-
-#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Ready_Monster("FIRE_EATER")))
-		return E_FAIL;
-#endif // TEST_FIRE_EATER_MAP
-
-#endif // TESTMAP
-
-#ifndef TESTMAP
-	if (FAILED(Ready_Monster("STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Monster("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Monster("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Monster("FIRE_EATER")))
-		return E_FAIL;
-#endif // !TESTMAP
-
-#pragma endregion
-
-
-#pragma region 전통적인 하드코드 방식으로 소환(지금 월드행렬로 몬스터 소환중이라 이걸로하면 항등행렬로 소환됨!!! 근데 항등행렬로 소환하니까 플레이어 충돌 문제 생김)
-
-	//CMonster_Base::MONSTER_BASE_DESC Desc{};
-	//Desc.fSpeedPerSec = 5.f;
-	//Desc.fRotationPerSec = XMConvertToRadians(180.0f);
-	//Desc.fHeight = 1.f;
-	//Desc.vExtent = { 0.5f,1.f,0.5f };
-	//Desc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-
-	////시작 위치에 네비게이션이 없으면 터진다 지금
-	//Desc.wsNavName = TEXT("STATION");
-	//Desc.InitPos =
-	//	//_float3(148.f, 2.47f, -7.38f); //호텔위치
-	//	_float3(85.5f, 0.f, -7.5f); //스테이션 위치
-	//Desc.szMeshID = TEXT("WatchDog");
-	//
-
-	////Desc.InitPos = _float3(80.5f, 0.f, -7.f); //스테이션 위치
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_WatchDog"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-	//	return E_FAIL;
-
-	//Desc.wsNavName = TEXT("HOTEL");
-	//Desc.InitPos =
-	//	_float3(148.f, 2.47f, -7.38f); //호텔위치
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Monster_Buttler_Train"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"), &Desc)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Fuoco"),
-	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster"))))
-	//	return E_FAIL;
-#pragma endregion
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Stargazer()
-{
-#ifdef TESTMAP
-	if (FAILED(Ready_Stargazer("TEST")))
-		return E_FAIL;
-
-#ifdef TEST_STATION_MAP
-	if (FAILED(Ready_Stargazer("STATION")))
-		return E_FAIL;
-#endif // TEST_STATION_MAP
-
-#ifdef TEST_HOTEL_MAP
-	if (FAILED(Ready_Stargazer("HOTEL")))
-		return E_FAIL;
-#endif // TEST_HOTEL_MAP
-
-#ifdef TEST_OUTER_MAP
-	if (FAILED(Ready_Stargazer("OUTER")))
-		return E_FAIL;
-#endif // TEST_OUTER_MAP
-
-#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Ready_Stargazer("FIRE_EATER")))
-		return E_FAIL;
-#endif // TEST_FIRE_EATER_MAP
-
-#endif // TESTMAP
-
-#ifndef TESTMAP
-	if (FAILED(Ready_Stargazer("STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Stargazer("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Stargazer("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Stargazer("FIRE_EATER")))
-		return E_FAIL;
-#endif // !TESTMAP
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Stargazer(const _char* Map)
-{
-	string StargazerFilePath = string("../Bin/Save/MapTool/Stargazer_") + Map + ".json";
-	ifstream inFile(StargazerFilePath);
-	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json StargazerJson;
-	inFile >> StargazerJson;
-	inFile.close();
-
-	// 배열 순회
-	for (auto& StargazerData : StargazerJson)
-	{
-		// 월드 행렬
-		const json& WorldMatrixJson = StargazerData["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		CStargazer::STARGAZER_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		Desc.WorldMatrix = WorldMatrix;
-		if (StargazerData.contains("Tag") && StargazerData["Tag"].is_number_unsigned())
-		{
-			Desc.eStargazerTag = static_cast<STARGAZER_TAG>(StargazerData["Tag"].get<_uint>());
-		}
-		else
-		{
-			MSG_BOX("별바라기 태그를 안달아줌!!!!");
-
-			return E_FAIL;
-		}
-
-		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_Stargazer"),
-			Desc.iLevelID, TEXT("Layer_Stargazer"), &Desc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_ErgoItem()
-{
-#ifdef TESTMAP
-	if (FAILED(Ready_ErgoItem("TEST")))
-		return E_FAIL;
-
-#ifdef TEST_STATION_MAP
-	if (FAILED(Ready_ErgoItem("STATION")))
-		return E_FAIL;
-#endif // TEST_STATION_MAP
-
-#ifdef TEST_HOTEL_MAP
-	if (FAILED(Ready_ErgoItem("HOTEL")))
-		return E_FAIL;
-#endif // TEST_HOTEL_MAP
-
-#ifdef TEST_OUTER_MAP
-	if (FAILED(Ready_ErgoItem("OUTER")))
-		return E_FAIL;
-#endif // TEST_OUTER_MAP
-
-#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Ready_ErgoItem("FIRE_EATER")))
-		return E_FAIL;
-#endif // TEST_FIRE_EATER_MAP
-
-
-#endif // TESTMAP
-
-#ifndef TESTMAP
-	if (FAILED(Ready_ErgoItem("STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_ErgoItem("FIRE_EATER")))
-		return E_FAIL;
-#endif // !TESTMAP
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_ErgoItem(const _char* Map)
-{
-	string ErgoItemFilePath = string("../Bin/Save/MapTool/ErgoItem_") + Map + ".json";
-	ifstream inFile(ErgoItemFilePath);
-	if (!inFile.is_open())
-	{
-		//wstring ErrorMessage = L"Stargazer_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		//MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json ErgoItemJson;
-	inFile >> ErgoItemJson;
-	inFile.close();
-
-	// 배열 순회
-	for (auto& ErgoItemData : ErgoItemJson)
-	{
-		// 월드 행렬
-		const json& WorldMatrixJson = ErgoItemData["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		CErgoItem::ERGOITEM_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		Desc.WorldMatrix = WorldMatrix;
-
-		if (ErgoItemData.contains("Tag") && ErgoItemData["Tag"].is_number_unsigned())
-		{
-			Desc.eItemTag = static_cast<ITEM_TAG>(ErgoItemData["Tag"].get<_uint>());
-		}
-		else
-		{
-			//태그 안달아주면 희미한 에르고로 하자
-			Desc.eItemTag = ITEM_TAG::ERGO_SHARD;
-			//MSG_BOX("아이템 태그를 안달아줌!!!!");
-
-			//return E_FAIL;
-		}
-
-
-		if (FAILED(m_pGameInstance->Add_GameObject(Desc.iLevelID, TEXT("Prototype_GameObject_ErgoItem"),
-			Desc.iLevelID, TEXT("Layer_ErgoItem"), &Desc)))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Breakable()
-{
-	//아직 푸오코 기둥을 위한 것으로만
-
-#ifdef TESTMAP
-	if (FAILED(Ready_Breakable("TEST")))
-		return E_FAIL;
-
-#ifdef TEST_STATION_MAP
-	if (FAILED(Ready_Breakable("STATION")))
-		return E_FAIL;
-#endif // TEST_STATION_MAP
-
-#ifdef TEST_HOTEL_MAP
-	if (FAILED(Ready_Breakable("HOTEL")))
-		return E_FAIL;
-#endif // TEST_HOTEL_MAP
-
-#ifdef TEST_OUTER_MAP
-	if (FAILED(Ready_Breakable("OUTER")))
-		return E_FAIL;
-#endif // TEST_OUTER_MAP
-
-#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Ready_Breakable("FIRE_EATER")))
-		return E_FAIL;
-#endif // TEST_FIRE_EATER_MAP
-
-#endif // TESTMAP
-
-#ifndef TESTMAP
-	if (FAILED(Ready_Breakable("STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Breakable("HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Breakable("OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Breakable("FIRE_EATER")))
-		return E_FAIL;
-#endif // !TESTMAP
-
-	return S_OK;
-}
-
-HRESULT CLevel_KratCentralStation::Ready_Breakable(const _char* Map)
-{
-	return S_OK;
-}
-
-
-HRESULT CLevel_KratCentralStation::Ready_Monster(const _char* Map)
-{
-	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
-	ifstream inFile(MonsterFilePath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Monster_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json MonsterJson;
-	inFile >> MonsterJson;
-	inFile.close();
-
-	// 몬스터 종류별로 반복
-	for (auto& [MonsterName, MonsterArray] : MonsterJson.items())
-	{
-		wstring wstrMonsterName = StringToWString(MonsterName);
-
-		for (auto& MonsterData : MonsterArray)
-		{
-			// 월드 행렬 로드
-			const json& WorldMatrixJson = MonsterData["WorldMatrix"];
-			_float4x4 WorldMatrix = {};
-			for (_int row = 0; row < 4; ++row)
-				for (_int col = 0; col < 4; ++col)
-					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-			wstring wsLayer = {};
-
-			if (wstrMonsterName == TEXT("FireEater"))
-			{
-				wsLayer = TEXT("Layer_FireEater");
-			}
-			else if (wstrMonsterName == TEXT("FestivalLeader"))
-			{
-				wsLayer = TEXT("Layer_FestivalLeader");
-			}
-			else
-			{
-				wsLayer = TEXT("Layer_Monster_Normal");
-			}
-
-			// 오브젝트 생성 Desc 채우기
-			CUnit::UNIT_DESC UnitDesc{};
-			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-			UnitDesc.wsNavName = StringToWString(Map);
-			UnitDesc.WorldMatrix = WorldMatrix;
-			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-			UnitDesc.szMeshID = wstrMonsterName.c_str();
-
-			if (MonsterData.contains("SpawnType"))
-				UnitDesc.eSpawnType = static_cast<SPAWN_TYPE>(MonsterData["SpawnType"].get<_int>());
-			else
-				UnitDesc.eSpawnType = SPAWN_TYPE::IDLE;
-			
-
-			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
-
-			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &UnitDesc));
-			m_pGameInstance->Add_PoolObject(wsLayer, pObj);
-
-			if (pObj == nullptr)
-				return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
-
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
 	_matrix presetmat = XMMatrixIdentity();
@@ -2183,5 +1842,7 @@ void CLevel_KratCentralStation::Free()
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
 	Safe_Release(m_pShaderComInstance);
+
+	Safe_Release(m_pMapLoader);
 	//	Safe_Release(m_pStartVideo);
 }

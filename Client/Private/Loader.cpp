@@ -28,6 +28,8 @@
 #include "MapToolObject.h"
 #include "PreviewObject.h"
 #include "MonsterToolObject.h"
+
+#include "MapLoader.h"
 #pragma endregion
 
 #pragma region LEVEL_CY
@@ -131,6 +133,7 @@
 #include "AnimatedProp.h"
 #include "FestivalLeader.h"
 #include "TestAnimObject.h"
+#include "MapLoader.h"
 #pragma endregion
 
 _bool CLoader::m_bLoadStatic = false;
@@ -167,6 +170,8 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelID)
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, LoadingMain, this, 0, nullptr);
 	if (0 == m_hThread)
 		return E_FAIL;
+
+	m_pMapLoader = CMapLoader::Create(m_pDevice, m_pContext);
 
 	return S_OK;
 }
@@ -213,10 +218,12 @@ HRESULT CLoader::Loading()
 		break;
 	}
 
-	
-
 	if (FAILED(hr))
+	{
+		MSG_BOX("로딩 실패");
 		return E_FAIL;
+	}
+
 
 	LeaveCriticalSection(&m_CriticalSection);
 
@@ -657,13 +664,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShortCutDoor/ShortCutDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_HeavyLock"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLock/HeavyLock.bin", PreTransformMatrix))))
 		return E_FAIL;
-
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
@@ -877,36 +882,72 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #ifdef TESTMAP
 
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+#ifdef TEST_TEST_MAP
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
 
-	#ifdef TEST_STATION_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
 		return E_FAIL;
-	#endif // TEST_STATION_MAP
+#endif // TEST_TEST_MAP
+
+#ifdef TEST_STATION_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
 
 #ifdef TEST_HOTEL_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
 		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
 		return E_FAIL;
 #endif // TEST_HOTEL_MAP
 
 #ifdef TEST_OUTER_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
 		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
 		return E_FAIL;
 #endif // TEST_OUTER_MAP
 
 #ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
 		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
 		return E_FAIL;
 #endif // TEST_FIRE_EATER_MAP
 
@@ -914,99 +955,18 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 #endif // TESTMAP
 
 
-
-
-	/*if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;*/
-
 #ifndef TESTMAP
 
-#pragma region 멀티 스레드로 소환
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
-
-	auto futureStation = async(launch::async, [&]
-		{
-			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
-	auto futureHotel = async(launch::async, [&]
-		{
-			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
-	auto futureOuter = async(launch::async, [&]
-		{
-			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
-	auto futureFireEater = async(launch::async, [&]
-		{
-			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-
-	if (FAILED(futureStation.get()))
+	if (FAILED(m_pMapLoader->Load_Ready_Nav_All(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION))))
 		return E_FAIL;
 
-	if (FAILED(futureHotel.get()))
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), START_MAP)))
 		return E_FAIL;
+	cout << "[MAP] START_MAP Load 완료" << endl;
 
-	if (FAILED(futureOuter.get()))
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), START_MAP)))
 		return E_FAIL;
-
-	if (FAILED(futureFireEater.get()))
-		return E_FAIL;
-#pragma endregion
+	cout << "[MAP] START_MAP Ready 완료" << endl;
 
 #endif // !TESTMAP
 
@@ -1127,6 +1087,7 @@ HRESULT CLoader::Loading_For_DH()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_Floor_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+
 	/* 상호 작용 문 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
@@ -1183,7 +1144,7 @@ HRESULT CLoader::Loading_For_DH()
 		return E_FAIL;
 
 	//맵을 생성하기위한 모델 프로토타입을 준비한다.
-	if (FAILED(Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
+	if (FAILED(m_pMapLoader->Loading_Meshs(ENUM_CLASS(LEVEL::DH), "STATION")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -1194,6 +1155,7 @@ HRESULT CLoader::Loading_For_DH()
 
 
 	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
+
 
 	//FIRE EATER로 바꿧어요 (영웅)
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FireEater"),
@@ -1216,6 +1178,7 @@ HRESULT CLoader::Loading_For_DH()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_ShortCutDoor"),
 		CShortCutDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 //#pragma region 맵 오브젝트
 //	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_StaticMesh"),
@@ -1252,31 +1215,6 @@ HRESULT CLoader::Loading_For_DH()
 //#pragma endregion
 
 #pragma region YW
-
-	//부술수있는 메쉬 테스트용 모델
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
-
-	//파트2
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Part2"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	//파트1
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Part1"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
-		return E_FAIL;
-	//SM_Interior_Table_07_3of8
-	//본 모델
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_Component_Model_Main"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	//부술수 있는 메쉬(푸오코 기둥 등...)
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_BreakableMesh"),
-		CBreakableMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 //스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::DH), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -1302,9 +1240,9 @@ HRESULT CLoader::Loading_For_DH()
 	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 	auto futureStation = async(launch::async, [&]
 		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::DH), "STATION")))
 				return E_FAIL;
 
 			return S_OK;
@@ -1313,9 +1251,9 @@ HRESULT CLoader::Loading_For_DH()
 	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
 	auto futureHotel = async(launch::async, [&]
 		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::DH), "HOTEL")))
 				return E_FAIL;
 
 			return S_OK;
@@ -1324,9 +1262,9 @@ HRESULT CLoader::Loading_For_DH()
 	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
 	auto futureFireEater = async(launch::async, [&]
 		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::DH), "FIRE_EATER")))
 				return E_FAIL;
 
 			return S_OK;
@@ -1335,9 +1273,9 @@ HRESULT CLoader::Loading_For_DH()
 	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
 	auto futureOuter = async(launch::async, [&]
 		{
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::DH), "OUTER")))
 				return E_FAIL;
 
 			return S_OK;
@@ -1727,19 +1665,19 @@ HRESULT CLoader::Loading_For_YW()
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YW), "STATION")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YW), "HOTEL")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "OUTER")))
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YW), "OUTER")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "FIRE_EATER")))
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YW), "FIRE_EATER")))
 		return E_FAIL;
 
-	if (FAILED(Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YW), "TEST")))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -1768,654 +1706,6 @@ HRESULT CLoader::Loading_For_YW()
 	m_isFinished = true;
 	return S_OK;
 }
-
-HRESULT CLoader::Load_Map(_uint iLevelIndex, const _char* Map)
-{
-	//맵
-	if(FAILED(Loading_Meshs(iLevelIndex, Map)))
-		return E_FAIL;
-
-	//네비
-	if (FAILED(Loading_Navigation(iLevelIndex, Map)))
-		return E_FAIL;
-	
-	//데칼
-	if (FAILED(Loading_Decal_Textures(iLevelIndex, Map)))
-		return E_FAIL;
-
-	//부서질 수 있는 메쉬 조각들, 또는 본메쉬 로드
-	if (FAILED(Loading_Breakable(iLevelIndex, Map)))
-		return E_FAIL;
-	
-	return S_OK;
-}
-
-HRESULT CLoader::Load_Mesh(const wstring& strPrototypeTag, const _char* pModelFilePath, _bool bInstance, _uint iLevelIndex)
-{
-	_matrix PreTransformMatrix = XMMatrixScaling(PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE, PRE_TRANSFORMMATRIX_SCALE);
-
-	// 파일 경로에서 디렉토리, 파일명, 확장자 분리
-	wstring wsBasePath = filesystem::path(pModelFilePath).parent_path();
-	wstring wsFilename = filesystem::path(pModelFilePath).stem();	// 확장자 뺀 파일명
-	wstring wsExtension = filesystem::path(pModelFilePath).extension();
-
-	// LOD0 모델 경로 생성
-	string strModelPathLod0 = (filesystem::path(wsBasePath) / filesystem::path(wsFilename + wsExtension)).string();
-
-	if (bInstance == false)
-	{
-		// LOD1, LOD2 파일명 생성 (_Lod1, _Lod2 붙임)
-		wstring wsLod1Name = wsFilename + L"_Lod1" + wsExtension;
-		wstring wsLod2Name = wsFilename + L"_Lod2" + wsExtension;
-
-		// LOD1, LOD2 경로 생성
-		filesystem::path Lod1Path = filesystem::path(wsBasePath) / wsLod1Name;
-		filesystem::path Lod2Path = filesystem::path(wsBasePath) / wsLod2Name;
-		string strModelPathLod1 = Lod1Path.string();
-		string strModelPathLod2 = Lod2Path.string();
-
-		// LOD0 프로토타입 존재 여부 확인 후 없으면 로드
-		if (m_pGameInstance->Find_Prototype(iLevelIndex, strPrototypeTag) == nullptr)
-		{
-			if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
-				CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod0.c_str(), PreTransformMatrix))))
-				return E_FAIL;
-		}
-
-		// LOD1 프로토타입 태그 생성 및 로드 (파일 존재하면)
-		wstring wsPrototypeTagLod1 = strPrototypeTag + L"_Lod1";
-		if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTagLod1) == nullptr)
-		{
-			if (filesystem::exists(strModelPathLod1))
-			{
-				if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, wsPrototypeTagLod1,
-					CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod1.c_str(), PreTransformMatrix))))
-					return S_OK; // 실패해도 무시
-			}
-		}
-
-		// LOD2 프로토타입 태그 생성 및 로드 (파일 존재하면)
-		wstring wsPrototypeTagLod2 = strPrototypeTag + L"_Lod2";
-		if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTagLod2) == nullptr)
-		{
-			if (filesystem::exists(strModelPathLod2))
-			{
-				if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, wsPrototypeTagLod2,
-					CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, strModelPathLod2.c_str(), PreTransformMatrix))))
-					return S_OK; // 실패해도 무시
-			}
-		}
-
-	}
-	else
-	{
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, strPrototypeTag,
-			CModel_Instance::Create(m_pDevice, m_pContext, MODEL::NONANIM, pModelFilePath, PreTransformMatrix))))
-			return E_FAIL;
-	}
-
-
-	return S_OK;
-}
-
-HRESULT CLoader::Loading_Meshs(_uint iLevelIndex, const _char* Map)
-{
-
-	string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json";
-
-	ifstream inFile(ResourcePath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-
-		return S_OK;
-	}
-
-	json ResourceJson;
-	try
-	{
-		inFile >> ResourceJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	// JSON 데이터 확인
-	for (const auto& element : ResourceJson)
-	{
-		string ModelName = element.value("ModelName", "");
-		string Path = element.value("Path", "");
-
-		//갯수도 저장해서 인스턴스용 모델 프로토타입을 만들지 결정해야할듯(충돌여부로 판단하자)
-		_uint iObjectCount = element["ObjectCount"];
-
-		_bool bCollision = element["Collision"];
-
-		_bool bNoInstancing = element["NoInstancing"];
-
-		wstring PrototypeTag = {};
-		_bool bInstance = false;
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD && bNoInstancing == false)
-		{
-			//인스턴싱용 모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_Instance_" + StringToWString(ModelName);
-			bInstance = true;
-
-		}
-		else
-		{
-			//모델 프로토 타입 생성
-			PrototypeTag = L"Prototype_Component_Model_" + StringToWString(ModelName);
-			bInstance = false;
-		}
-
-
-		const _char* pModelFilePath = Path.c_str();
-
-		if (FAILED(Load_Mesh(PrototypeTag, pModelFilePath, bInstance, iLevelIndex)))
-		{
-			return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CLoader::Loading_Navigation(_uint iLevelIndex, const _char* Map/*, _bool bForTool*/)
-{
-	//bForTool = true;//bForTool 없어질 예정
-
-	wstring wsResourcePath = L"../Bin/Save/NavTool/Nav_" + StringToWString(Map) + L".json";
-
-	// 파일 열기
-	ifstream inFile(wsResourcePath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Nav_" + StringToWString(Map) + L".json 파일을 열 수 없습니다.";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	wstring wsPrototypeTag = {};
-
-	//if(bForTool)
-		wsPrototypeTag = L"Prototype_Component_Navigation_" + StringToWString(Map);
-	//else
-	//	wsPrototypeTag = L"Prototype_Component_Navigation";//실제 맵을 위한 로딩(툴과 똑같이 적용할 예정)
-
-	/* Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Prototype(
-		iLevelIndex,
-		wsPrototypeTag.c_str(),
-		CNavigation::Create(m_pDevice, m_pContext, wsResourcePath.c_str())
-	)))
-		return E_FAIL;
-
-
-	return S_OK;
-}
-HRESULT CLoader::Loading_Decal_Textures(_uint iLevelIndex, const _char* Map)
-{
-	string ResourcePath = string("../Bin/Save/DecalTool/Resource_") + Map + ".json";
-
-	ifstream inFile(ResourcePath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Resource_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-
-		return S_OK;
-	}
-
-	json ReadyTextureJson;
-	try
-	{
-		inFile >> ReadyTextureJson;
-		inFile.close();
-	}
-	catch (const exception& e)
-	{
-		inFile.close();
-		MessageBoxA(nullptr, e.what(), "JSON 파싱 실패", MB_OK);
-		return E_FAIL;
-	}
-
-	//텍스쳐 프로토타입 생성
-	for (auto& [PrototypeTag, Path] : ReadyTextureJson.items())
-	{
-		//이미 있으면 넘기고
-		if (m_pGameInstance->Find_Prototype(iLevelIndex, StringToWString(PrototypeTag)) != nullptr)
-			continue;
-
-		if (FAILED(m_pGameInstance->Add_Prototype(iLevelIndex, StringToWString(PrototypeTag),
-			CTexture::Create(m_pDevice, m_pContext, StringToWString(Path).c_str()))))
-			return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-#include <regex>
-
-HRESULT CLoader::Loading_Breakable(_uint iLevelIndex, const _char* Map)
-{
-	_matrix PreTransformMatrix = XMMatrixScaling(
-		PRE_TRANSFORMMATRIX_SCALE,
-		PRE_TRANSFORMMATRIX_SCALE,
-		PRE_TRANSFORMMATRIX_SCALE);
-
-	// JSON 파일 경로
-	wstring wsPath = L"../Bin/Save/MapTool/Breakable_" + StringToWString(Map) + L".json";
-
-	ifstream ifs(wsPath);
-	if (!ifs.is_open())
-		return E_FAIL;
-
-	json j;
-	ifs >> j;
-
-	// JSON 최상위 바로 ModelName 확인
-	for (auto& [ModelName, ModelData] : j.items())
-	{
-		// 푸오코 기둥 무시
-		if (ModelName == "SM_Factory_BasePipe_07")
-			continue;
-
-		// FragmentCount 읽기
-		if (!ModelData.contains("FragmentCount"))
-			continue;
-
-		_uint finalDenom = ModelData["FragmentCount"].get<_uint>();
-
-		// 1 ~ finalDenom 범위의 조각 등록
-		for (_uint num = 1; num <= finalDenom; ++num)
-		{
-			wstring wsPrototypeTag =
-				L"Prototype_Component_Model_" + StringToWString(ModelName) +
-				L"_" + to_wstring(num) + L"of" + to_wstring(finalDenom);
-
-			if (m_pGameInstance->Find_Prototype(iLevelIndex, wsPrototypeTag) == nullptr)
-			{
-				filesystem::path modelPath = filesystem::path(PATH_NONANIM) /
-					(ModelName + "_" + std::to_string(num) + "of" + std::to_string(finalDenom) + ".bin");
-
-				if (filesystem::exists(modelPath))
-				{
-					if (FAILED(m_pGameInstance->Add_Prototype(
-						iLevelIndex, wsPrototypeTag,
-						CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM,
-							modelPath.string().c_str(),
-							PreTransformMatrix))))
-					{
-						return S_OK; // 실패해도 무시
-					}
-				}
-			}
-		}
-	}
-
-	return S_OK;
-}
-
-
-HRESULT CLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
-{
-	//어떤 맵을 소환 시킬 것인지?
-	if (FAILED(Ready_Meshs(iLevelIndex, Map))) //TEST, STAION
-		return E_FAIL;
-
-	//네비 소환
-	if (FAILED(Ready_Nav(TEXT("Layer_Nav"), iLevelIndex, Map)))
-		return E_FAIL;
-
-	//어떤 데칼을 소환 시킬 것인지?
-	if (FAILED(Ready_Static_Decal(iLevelIndex, Map))) //TEST, STATION
-		return E_FAIL;
-	 
-	//부서질 수 있는 오브젝트 소환
-	if (FAILED(Ready_Breakable(iLevelIndex, Map)))
-		return E_FAIL;
-	
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_Meshs(_uint iLevelIndex, const _char* Map)
-{
-	string MapPath = string("../Bin/Save/MapTool/Map_") + Map + ".json";
-
-	ifstream inFile(MapPath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Map_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	json MapDataJson;
-	inFile >> MapDataJson;
-	inFile.close();
-
-	_uint iModelCount = MapDataJson["ModelCount"];
-	const json& Models = MapDataJson["Models"];
-
-	for (_uint i = 0; i < iModelCount; ++i)
-	{
-		string ModelName = Models[i]["ModelName"];
-		_uint iObjectCount = Models[i]["ObjectCount"]; //오브젝트 갯수를보고 인스턴싱을 쓸지 말지 결정해야겠다.(아니 충돌여부로 인스턴싱 해야겠다.)
-
-		if (iObjectCount == 0)
-			continue;
-
-		const json& objects = Models[i]["Objects"];
-
-		_bool bCollision = Models[i]["Collision"];
-		_bool bNoInstancing = Models[i]["NoInstancing"];
-
-		//일정 갯수 이상이면 인스턴싱오브젝트로 로드(충돌이 없는 모델이면 인스턴싱)
-		if (bCollision == false && iObjectCount > INSTANCE_THRESHOLD && bNoInstancing == false)
-		{
-			if (FAILED(Ready_StaticMesh_Instance(iObjectCount, objects, ModelName, iLevelIndex, Map)))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(Ready_StaticMesh(iObjectCount, objects, ModelName, iLevelIndex, Map)))
-				return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map)
-{
-	for (_uint j = 0; j < iObjectCount; ++j)
-	{
-#pragma region 월드행렬
-		CStaticMesh::STATICMESH_DESC StaticMeshDesc = {};
-
-		const json& WorldMatrixJson = objects[j]["WorldMatrix"];
-		_float4x4 WorldMatrix = {};
-
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-		StaticMeshDesc.WorldMatrix = WorldMatrix;
-#pragma endregion
-
-#pragma region 타일링
-		//타일링
-		if (objects[j].contains("TileDensity"))
-		{
-			StaticMeshDesc.bUseTiling = true;
-
-			const json& TileDensityJson = objects[j]["TileDensity"];
-			StaticMeshDesc.vTileDensity = {
-				TileDensityJson[0].get<_float>(),
-				TileDensityJson[1].get<_float>()
-			};
-		}
-#pragma endregion
-
-#pragma region 콜라이더
-		//콜라이더
-		if (objects[j].contains("ColliderType") && objects[j]["ColliderType"].is_number_integer())
-		{
-			StaticMeshDesc.eColliderType = static_cast<COLLIDER_TYPE>(objects[j]["ColliderType"].get<_int>());
-		}
-		else
-			return E_FAIL;
-#pragma endregion
-
-#pragma region 라이트모양
-		StaticMeshDesc.iLightShape = objects[j].value("LightShape", 0);
-#pragma endregion
-
-#pragma region 바닥여부
-		if (objects[j].contains("IsFloor"))
-		{
-			StaticMeshDesc.bIsFloor = objects[j].value("IsFloor", false);
-		}
-		else
-		{
-			StaticMeshDesc.bIsFloor = false;
-		}
-#pragma endregion
-
-#pragma region 컬링 여부
-		if (objects[j].contains("CullNone"))
-			StaticMeshDesc.bCullNone = true;
-		else
-			StaticMeshDesc.bCullNone = false;
-#pragma endregion
-
-		StaticMeshDesc.iRender = 0;
-		StaticMeshDesc.iLevelID = iLevelIndex;
-
-		wstring wstrModelName = StringToWString(ModelName);
-		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_");
-		ModelPrototypeTag += wstrModelName;
-
-		lstrcpy(StaticMeshDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-		wstring wsLayerTag = TEXT("Layer_StaticMesh_") + StringToWString(Map); //Layer_StaticMesh_STATION, Layer_StaticMesh_HOTEL
-
-		// 락 걸기
-		//lock_guard<mutex> lock(m_mtx);
-
-
-		if (FAILED(m_pGameInstance->Add_GameObject_And_PushOctoTree(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, wsLayerTag, &StaticMeshDesc)))
-			return E_FAIL;
-
-	/*	CGameObject* pGameObject = nullptr;
-		if (FAILED(m_pGameInstance->Add_GameObjectReturn(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh"),
-			iLevelIndex, wsLayerTag, &pGameObject, &StaticMeshDesc)))
-			return E_FAIL;
-
-		m_pGameInstance->PushOctoTreeObjects(pGameObject);*/
-	}
-
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_StaticMesh_Instance(_uint iObjectCount, const json& objects, string ModelName, _uint iLevelIndex, const _char* Map)
-{
-	vector<_float4x4> InstanceMatixs(iObjectCount);
-
-	for (_uint i = 0; i < iObjectCount; ++i)
-	{
-		const json& WorldMatrixJson = objects[i]["WorldMatrix"];
-
-		for (_int row = 0; row < 4; ++row)
-			for (_int col = 0; col < 4; ++col)
-				InstanceMatixs[i].m[row][col] = WorldMatrixJson[row][col];
-	}
-
-
-	//오브젝트 생성, 배치
-	//LayerTag += StringToWString(ModelName);
-
-	CStaticMesh_Instance::STATICMESHINSTANCE_DESC StaticMeshInstanceDesc = {};
-	StaticMeshInstanceDesc.iNumInstance = iObjectCount;//인스턴스 갯수랑
-	StaticMeshInstanceDesc.pInstanceMatrixs = &InstanceMatixs;//월드행렬들을 넘겨줘야한다.
-
-	StaticMeshInstanceDesc.iRender = 0;
-	StaticMeshInstanceDesc.iLevelID = iLevelIndex;
-	//lstrcpy(StaticMeshInstanceDesc.szName, TEXT("SM_TEST_FLOOR"));
-
-	StaticMeshInstanceDesc.iLightShape = objects[0].value("LightShape", 0); //오브젝트중 하나 가져와서 라이트모양을 넣어주자.
-	//cout << StaticMeshInstanceDesc.iLightShape << endl;
-
-	wstring wstrModelName = StringToWString(ModelName);
-	wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_Instance_"); //인스턴스 용 모델을 준비해야겠는디?
-	ModelPrototypeTag += wstrModelName;
-
-	lstrcpy(StaticMeshInstanceDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-	wstring wsLayerTag = TEXT("Layer_StaticMesh_Instance_") + StringToWString(Map); //Layer_StaticMesh_Instance_STATION, Layer_StaticMesh_Instance_HOTEL
-	StaticMeshInstanceDesc.wsMap = StringToWString(Map);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_StaticMesh_Instance"),
-		iLevelIndex, wsLayerTag, &StaticMeshInstanceDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_Nav(const _wstring strLayerTag, _uint iLevelIndex, const _char* Map)
-{
-	CNav::NAV_DESC NavDesc = {};
-	NavDesc.iLevelIndex = iLevelIndex;
-	NavDesc.wsNavComName = StringToWString(Map);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Nav"),
-		iLevelIndex, strLayerTag, &NavDesc)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLoader::Ready_Static_Decal(_uint iLevelIndex, const _char* Map)
-{
-	//현재 맵에 필요한 데칼 텍스쳐를 로드한다.
-	string DecalDataPath = string("../Bin/Save/DecalTool/Decal_") + Map + ".json";
-	//string ResourcePath = string("../Bin/Save/MapTool/Resource_") + Map + ".json"; //나중에 쓸듯 맵 바꿀때
-
-	ifstream inFile(DecalDataPath);
-	if (!inFile.is_open())
-	{
-		wstring ErrorMessage = L"Decal_" + StringToWString(Map) + L".json 파일을 열 수 없습니다: ";
-		MessageBox(nullptr, ErrorMessage.c_str(), L"에러", MB_OK);
-		return S_OK;
-	}
-
-	// JSON 파싱
-	json JSON;
-	inFile >> JSON;
-
-	// 데이터 만큼 Decal 소환
-	for (auto& item : JSON)
-	{
-		// 4x4 행렬 읽기
-		_float4x4 WorldMatrix;
-		for (_int iRow = 0; iRow < 4; ++iRow)
-		{
-			for (_int iCol = 0; iCol < 4; ++iCol)
-			{
-				WorldMatrix.m[iRow][iCol] = item["WorldMatrix"][iRow][iCol].get<_float>();
-			}
-		}
-
-		//텍스쳐 프로토타입 이름 전달
-		CStatic_Decal::DECAL_DESC Desc = {};
-		Desc.WorldMatrix = WorldMatrix;
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::ARMT)] = StringToWString(item["ARMT"].get<string>());
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::N)] = StringToWString(item["N"].get<string>());
-		Desc.PrototypeTag[ENUM_CLASS(CDecal::TEXTURE_TYPE::BC)] = StringToWString(item["BC"].get<string>());
-		Desc.iLevelID = iLevelIndex;
-
-		// Decal 객체 생성
-		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Static_Decal"),
-			iLevelIndex, TEXT("Layer_Decal"), &Desc)))
-			return E_FAIL;
-
-	}
-
-	return S_OK;
-
-}
-HRESULT CLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
-{
-	// JSON 경로
-	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
-	ifstream inFile(FilePath);
-	if (!inFile.is_open())
-		return S_OK;
-
-	json Json;
-	inFile >> Json;
-	inFile.close();
-
-	// JSON에서 ModelName 바로 접근
-	for (auto& [ModelNameStr, ModelData] : Json.items())
-	{
-		wstring ModelName = StringToWString(ModelNameStr);
-
-		// FragmentCount 읽기
-		_int FragmentCount = 0;
-		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
-			FragmentCount = ModelData["FragmentCount"];
-
-		// Instances 배열 확인
-		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
-			continue;
-
-		const json& Instances = ModelData["Instances"];
-
-		for (const auto& Obj : Instances)
-		{
-			if (!Obj.contains("WorldMatrix"))
-				continue;
-
-			// 월드 행렬 읽기
-			const json& WorldMatrixJson = Obj["WorldMatrix"];
-			_float4x4 WorldMatrix = {};
-			for (_int row = 0; row < 4; ++row)
-				for (_int col = 0; col < 4; ++col)
-					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
-
-			CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-			Desc.iLevelID = iLevelIndex;
-			Desc.WorldMatrix = WorldMatrix;
-			Desc.wsNavName = StringToWString(Map);
-
-			if (ModelNameStr == "SM_Factory_BasePipe_07")
-			{
-				// 푸오코 기둥 예외 처리
-				Desc.bFireEaterBossPipe = true;
-				Desc.iPartModelCount = 3;
-				Desc.ModelName = TEXT("Main");
-				Desc.vOffsets = {
-					_float3(4.09f, -8.75f, 1.21f),
-					_float3(4.09f, -5.82f, 1.21f),
-					_float3(4.09f, -2.89f, 1.21f)
-				};
-				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
-			}
-			else
-			{
-				// 일반적인 부서짐
-				Desc.bFireEaterBossPipe = false;
-				Desc.iPartModelCount = FragmentCount;
-				Desc.ModelName = ModelName;
-
-				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
-				{
-					wstring PartName = ModelName + L"_" +
-						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
-
-					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
-					Desc.PartModelNames.push_back(PartName);
-				}
-			}
-
-			if (FAILED(m_pGameInstance->Add_GameObject(
-				Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
-				Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
-				return E_FAIL;
-		}
-	}
-
-	return S_OK;
-}
-
 #pragma endregion
 
 
@@ -2732,12 +2022,6 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemType"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemType_%d.dds"),3))))
 		return E_FAIL;
-
-	/* For.Prototype_Component_Texture_Button_Arrow*/
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemIcon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_%d.dds"), 4))))
-		return E_FAIL;
-
 
 	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Line_Vertical"),
@@ -3216,33 +2500,6 @@ HRESULT CLoader::Loading_For_YG()
 #pragma endregion
 
 #pragma region YW
-
-	//부술수있는 메쉬 테스트용 모델
-	PreTransformMatrix = XMMatrixIdentity();
-	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
-
-	//파트2
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part2"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-	//파트1
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part1"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
-		return E_FAIL;
-	//SM_Interior_Table_07_3of8
-	//본 모델
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Main"),
-		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
-		return E_FAIL;
-
-
-	//부술수 있는 메쉬(푸오코 기둥 등...)
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BreakableMesh"),
-		CBreakableMesh::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -3267,80 +2524,23 @@ HRESULT CLoader::Loading_For_YG()
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
+	//	return E_FAIL;
 
-#ifdef TESTMAP
+	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
+	//	return E_FAIL;
 
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "TEST")))
-		return E_FAIL;
-
-#ifdef TEST_STATION_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-#endif // TEST_STATION_MAP
-
-#ifdef TEST_HOTEL_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-#endif // TEST_HOTEL_MAP
-
-#ifdef TEST_OUTER_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-#endif // TEST_OUTER_MAP
-
-#ifdef TEST_FIRE_EATER_MAP
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-#endif // TEST_FIRE_EATER_MAP
-
-
-#endif // TESTMAP
-
-
-
-
-	/*if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "OUTER")))
-		return E_FAIL;
-
-	if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;
-	if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "FIRE_EATER")))
-		return E_FAIL;*/
-
-#ifndef TESTMAP
-
-#pragma region 멀티 스레드로 소환
 	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
 
 	auto futureStation = async(launch::async, [&]
 		{
-			wcout << L"[STATION] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
 				return E_FAIL;
 
 			return S_OK;
@@ -3349,11 +2549,9 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
 	auto futureHotel = async(launch::async, [&]
 		{
-			wcout << L"[HOTEL] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
 				return E_FAIL;
 
 			return S_OK;
@@ -3362,11 +2560,9 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
 	auto futureOuter = async(launch::async, [&]
 		{
-			wcout << L"[OUTER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
 				return E_FAIL;
 
 			return S_OK;
@@ -3375,11 +2571,9 @@ HRESULT CLoader::Loading_For_YG()
 	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
 	auto futureFireEater = async(launch::async, [&]
 		{
-			wcout << L"[FIRE_EATER] ThreadID: " << this_thread::get_id() << endl;
-
-			if (FAILED(Load_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
 				return E_FAIL;
-			if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
 				return E_FAIL;
 
 			return S_OK;
@@ -3399,13 +2593,6 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(futureFireEater.get()))
 		return E_FAIL;
-#pragma endregion
-
-#endif // !TESTMAP
-
-
-
-#pragma endregion
 
 #pragma endregion
 
@@ -3479,6 +2666,8 @@ HRESULT CLoader::Loading_For_YG()
 	return S_OK;
 }
 
+
+
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevelID, atomic<float>& fRatio)
 {
 	CLoader* pInstance = new CLoader(pDevice, pContext, fRatio);
@@ -3491,7 +2680,6 @@ CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, L
 
 	return pInstance;
 }
-
 
 void CLoader::Free()
 {
@@ -3511,4 +2699,6 @@ void CLoader::Free()
 	CoUninitialize();
 
 	DeleteCriticalSection(&m_CriticalSection);
+
+	Safe_Release(m_pMapLoader);
 }

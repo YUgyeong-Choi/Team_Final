@@ -289,6 +289,7 @@ public:
 	class CCamera* Get_CurCam() { return m_pCurCam; }
 	HRESULT Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer);
 #pragma endregion
+
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
