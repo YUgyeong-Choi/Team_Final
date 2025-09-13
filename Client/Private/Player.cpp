@@ -708,7 +708,7 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	//if (m_strPrevStateName != stateName)
 	if (m_eCategory != m_ePreCategory)
 	{
-		printf("Current State: %s\n", stateName.c_str());
+		//printf("Current State: %s\n", stateName.c_str());
 		m_ePreCategory = m_eCategory;
 		m_fMoveTime = 0.f;
 		m_fSetTime = 0.f;

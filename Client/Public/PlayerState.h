@@ -3293,9 +3293,6 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
-
-        m_pOwner->WeaponReset();
-
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3360,6 +3357,7 @@ public:
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
             m_pOwner->Reset();
+            m_pOwner->WeaponReset();
 
             m_pOwner->m_bIsRrevival = true;
 

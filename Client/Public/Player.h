@@ -263,12 +263,12 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Dead;
 
 public: /* [ 특수 모션 관련 ] */
-	void SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
-	HITMOTION GetHitMotion() const { return m_eHitMotion; }
-	void SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
-	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
-	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
-	void IsPerfectGard(_float fTimeDelta);
+	void		SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
+	HITMOTION	GetHitMotion() const { return m_eHitMotion; }
+	void		SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
+	_float		GetfReceiveDamage() const { return m_fReceiveDamage; }
+	void		SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
+	void		IsPerfectGard(_float fTimeDelta);
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
 	void NotifyCanGetItem(_bool bCanGet) { m_bCanGetItem = bCanGet; }
