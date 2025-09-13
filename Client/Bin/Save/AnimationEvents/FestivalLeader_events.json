@@ -445,6 +445,10 @@
                     "Time": 197.0
                 },
                 {
+                    "EventName": "BreakPanel",
+                    "Time": 193.0
+                },
+                {
                     "EventName": "ActiveHpBar",
                     "Time": 199.0
                 }

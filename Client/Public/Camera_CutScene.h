@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Camera.h"
+#include "UI_Manager.h"
 
 
 NS_BEGIN(Engine)
@@ -43,7 +44,7 @@ public:
 	void Set_CameraFrame(CUTSCENE_TYPE cutSceneType, const CAMERA_FRAMEDATA CameraFrameData, _int start, _int end);
 
 	/* [ ÄÆ¾À È°¼ºÈ­ ] */
-	void PlayCutScene() { m_bActive = true; }
+	void PlayCutScene() { m_bActive = true; CUI_Manager::Get_Instance()->Off_Panel(); }
 
 	/* [ ¿ÀºñÅ» ÃÊ±â À§Ä¡ ] */
 	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { m_initOrbitalMatrix = initOrbitalPos; }

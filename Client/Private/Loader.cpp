@@ -1762,87 +1762,87 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_LeftShift.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_LeftCtrl*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_LeftCtrl"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_LeftCtrl.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_R*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_R"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_R.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_T*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_T"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_T.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_G*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_G"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_G.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_F*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_F"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_F.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_E*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_E"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_E.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_C*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_C"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_C.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_W*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_W"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_W.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_S*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_S"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_S.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_A*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_A"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_A.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_D*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_D"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_D.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_Q*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Q"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_Q.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_ESC*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_ESC"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Key_ESC.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_Mouse_Move*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Mouse_Move"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Mouse_Move.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_Mouse_Middle*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Mouse_Middle"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Mouse_Middle.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_Mouse_Left*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Mouse_Left"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Mouse_Left.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Icon_Key_LeftShift*/
+	/* For.Prototype_Component_Texture_Icon_Key_Mouse_Right*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Icon_Key_Mouse_Right"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Key/Icon_Mouse_Right.dds")))))
 		return E_FAIL;
@@ -1867,26 +1867,26 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/Gradation.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bar_Background*/
+	/* For.Prototype_Component_Texture_Bar_Gradation_Side*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Gradation_Side"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/SideGra.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bar_Background*/
+	/* For.Prototype_Component_Texture_Bar_Paralyze*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Bar_Paralyze"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/UIT_Gauge_ParalyzeEnable.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bar_Gradation*/
+	/* For.Prototype_Component_Texture_Gradation_Right*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Gradation_Right"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Gradation_Right.dds")))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Bar_Gradation*/
+	/* For.Prototype_Component_Texture_Line_Center*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Line_Center"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Global/Line_Hor_Cen_Light.dds")))))
 		return E_FAIL;
-	/* For.Prototype_Component_Texture_Bar_Gradation*/
+	/* For.Prototype_Component_Texture_Line_Center_Gradation*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Line_Center_Gradation"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Bar/Gradation_Side.dds")))))
 		return E_FAIL;
@@ -1903,7 +1903,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/Item/Item_Potion_%d.dds"), 4))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Button_Arrow*/
+	/* For.Prototype_Component_Texture_Slot_Background*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Slot_Background"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Slot/SlotBg_%d.dds"), 2))))
 		return E_FAIL;
@@ -2022,6 +2022,12 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemType"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemType_%d.dds"),3))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Arrow*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemIcon"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_%d.dds"), 4))))
+		return E_FAIL;
+
 
 	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Line_Vertical"),

@@ -390,8 +390,8 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 	}
 
 
-	if (fDistance >= 25.f)
-		return;
+	//if (fDistance >= 25.f)
+	//	return;
 
 
 #ifdef _DEBUG
@@ -1902,37 +1902,19 @@ _bool CFuoco::CheckConditionFlameField()
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = true;
-		}
-	}
+
 }
 
 void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = true;
-		}
-	}
+
 }
 
 void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (pOther)
-	{
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			m_bPlayerCollided = false;
-		}
-	}
+
 }
 
 void CFuoco::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)

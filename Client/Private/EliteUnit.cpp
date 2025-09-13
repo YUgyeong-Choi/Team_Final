@@ -319,7 +319,7 @@ void CEliteUnit::UpdateMovement(_float fDistance, _float fTimeDelta)
     }
     else
     {
-          UpdateNormalMove(fTimeDelta);
+        UpdateNormalMove(fTimeDelta);
     }
 
     _vector vDir = GetTargetDirection();
@@ -466,6 +466,7 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
 {
     constexpr _float fFixedStep = 1.f / 60.f;
     _float fScaleFactor = fTimeDelta / fFixedStep;
+    fScaleFactor = min(fScaleFactor, 3.f);
     _float3 rootMotionDelta = m_pAnimator->GetRootMotionDelta();
 
     _vector vLocal = XMLoadFloat3(&rootMotionDelta);

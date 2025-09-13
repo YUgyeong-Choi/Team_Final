@@ -591,15 +591,6 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-
-	if (FAILED(Render_UI()))
-	{
-		MSG_BOX("Render_UI Failed");
-		return E_FAIL;
-	}
-
-
-
 #ifdef _DEBUG
 
 
@@ -610,6 +601,16 @@ HRESULT CRenderer::Draw()
 	}
 
 #endif
+
+	if (FAILED(Render_UI()))
+	{
+		MSG_BOX("Render_UI Failed");
+		return E_FAIL;
+	}
+
+
+
+
 
 
 	return S_OK;

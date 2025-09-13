@@ -67,8 +67,8 @@ _bool CUI_Manager::Find_Panel()
 
 	}
 	
-	
 
+	 
 	return true;
 }
 
@@ -77,6 +77,12 @@ void CUI_Manager::On_Panel()
 	
 	if (!Find_Panel())
 		return;
+
+	if (m_PanelSwitch)
+		return;
+
+	m_PanelSwitch = true;
+
 
 	for (auto& obj : m_pPanel)
 	{
@@ -90,6 +96,11 @@ void CUI_Manager::Off_Panel()
 	
 	if (!Find_Panel())
 		return;
+
+	if (!m_PanelSwitch)
+		return;
+
+	m_PanelSwitch = false;
 
 
 	for (auto& obj : m_pPanel)

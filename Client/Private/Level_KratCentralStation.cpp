@@ -288,7 +288,6 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 #endif // TEST_OUTER_MAP
 
 
-
 	////고사양 모드
 	//if (FAILED(Ready_Lights()))
 	//	return E_FAIL;
