@@ -26,6 +26,7 @@
 #include "ComputeShader.h"
 #include "Level.h"
 
+#include "Camera.h"
 
 IMPLEMENT_SINGLETON(CGameInstance);
 
@@ -1019,6 +1020,11 @@ void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* 
 void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
 { 	
 	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj);
+}
+HRESULT CGameInstance::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	if (!m_pCurCam) return E_FAIL;
+	return m_pCurCam->Render_DOF(pShader, pVIBuffer);
 }
 #pragma endregion
 

@@ -99,6 +99,14 @@ Texture2D g_UITexture;
 
 float g_fViewportSizeX, g_fViewportSizeY;
 
+
+float2 g_vpSize;
+float2 g_focusCenterPx;
+float  g_focusRadiusPx;
+float  g_featherPx;
+float  g_blurBoost;
+float  g_gamma;
+
 /* [ 볼륨메트리 포그 함수 ] */
 float Hash(float3 p)
 {
@@ -1370,6 +1378,23 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
     
 }
 
+PS_OUT PS_DOF_ROUND(PS_IN In)
+{
+    PS_OUT Out;
+    float2 px = In.vTexcoord * g_vpSize;
+    float  d = length(px - g_focusCenterPx);
+    float  r = g_focusRadiusPx;
+    float  f = max(g_featherPx, 1.0);
+    float  t = saturate((d - r) / f);   // 0: 선명, 1: 블러
+    t = pow(t, g_gamma);
+
+    float4 sharp = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
+    float4 blur = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord) * g_blurBoost;
+
+    Out.vBackBuffer = lerp(sharp, blur, t);
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass Debug //0
@@ -1556,5 +1581,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_DISTORTION();
+    }
+
+    pass DOF_Round // 17
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None, 0);
+        SetBlendState(BS_Default, float4(0,0,0,0), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_DOF_ROUND();
     }
 }

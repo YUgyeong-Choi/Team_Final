@@ -743,7 +743,6 @@ HRESULT CLevel_DH::Load_StaticMesh_Instance(_uint iObjectCount, const json& obje
 
 HRESULT CLevel_DH::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

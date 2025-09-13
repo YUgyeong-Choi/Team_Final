@@ -128,7 +128,6 @@ HRESULT CLevel_GL::Ready_ImGuiTools()
 
 HRESULT CLevel_GL::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

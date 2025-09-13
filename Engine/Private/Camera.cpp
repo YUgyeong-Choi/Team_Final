@@ -89,6 +89,33 @@ HRESULT CCamera::Render()
 	return S_OK;
 }
 
+HRESULT CCamera::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+{
+	if (!m_DOFDesc.bIsUse)
+		return S_OK;
+
+	// 카메라가 “값만” 바인딩한다. (MRT 시작/텍스처 바인딩은 렌더러가 함)
+	if (FAILED(pShader->Bind_RawValue("g_focusCenterPx", &m_DOFDesc.fCenterPx, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_focusRadiusPx", &m_DOFDesc.fRadiusPx, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_featherPx", &m_DOFDesc.fFeatherPx, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_blurBoost", &m_DOFDesc.fBlurBoost, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("g_gamma", &m_DOFDesc.fGamma, sizeof(_float))))
+		return E_FAIL;
+
+	// 패스 실행(렌더러가 Begin_MRT/텍스처 세팅을 끝내놓고 호출해줌)
+	if (FAILED(pShader->Begin(ENUM_CLASS(DEFEREDPASS::DOF_ROUND))))
+		return E_FAIL;
+
+	pVIBuffer->Bind_Buffers();
+	return pVIBuffer->Render();
+
+	return S_OK;
+}
+
 HRESULT CCamera::Update_Camera()
 {
 	m_vPureCamPos = m_pTransformCom->Get_State(STATE::POSITION);

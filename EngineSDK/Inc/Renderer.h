@@ -92,6 +92,9 @@ private:
 	HRESULT Render_Effect_WB_Composite();
 	HRESULT Render_Distortion();
 
+	HRESULT Render_DOF_Round();
+	HRESULT Resolve_DOF_To_Final();
+
 private:
 	HRESULT Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight);
 	//HRESULT Ready_DepthStencilView_Volumetric(_uint iWidth, _uint iHeight);

@@ -72,12 +72,15 @@ HRESULT CCamera_Manager::Initialize(LEVEL eLevel)
 
     /* [ 초기 카메라 설정 ] */
     m_pCurCamera = m_pCamera_Orbital;
+    m_pGameInstance->Set_CurCam(m_pCurCamera);
 
     return S_OK;
 }
 
 HRESULT CCamera_Manager::Update(_float fTimeDelta)
 {
+    m_pGameInstance->Set_CurCam(m_pCurCamera);
+
     /* [ 카메라를 전환하며 파이프라인에 넘긴다 ] */
     if (m_bCameraSwitchEnabled && m_pGameInstance->Key_Down(DIK_P))
     {
