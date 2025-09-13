@@ -1,5 +1,5 @@
 {
-    "ModelCount": 38,
+    "ModelCount": 39,
     "Models": [
         {
             "Collision": true,
@@ -78,6 +78,12 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Exhibition_Box_01",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": false,

@@ -3,7 +3,7 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
-#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP
 
@@ -31,7 +31,7 @@ private:
 
 public:
 	HRESULT Initialize();
-	_bool Check_MapLoadComplete();
+	_bool Check_MapLoadComplete(_uint iLevelIndex);
 
 public:
 	/*
@@ -45,7 +45,7 @@ public:
 
 	HRESULT Load_Ready_All_Etc(_uint iLevelIndex);
 
-	HRESULT Ready_Etc(const _char* Map);
+	HRESULT Ready_Etc(_uint iLevelIndex, const _char* Map);
 
 public:
 	//여기서 맵에 필요한것들 모두 로드(맵, 데칼, 네비 등등...)

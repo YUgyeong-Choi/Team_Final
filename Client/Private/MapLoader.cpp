@@ -31,8 +31,14 @@ HRESULT CMapLoader::Initialize()
 	return S_OK;
 }
 
-_bool CMapLoader::Check_MapLoadComplete()
+_bool CMapLoader::Check_MapLoadComplete(_uint iLevelIndex)
 {
+	if (m_LoadedCount == m_TotalMapCount)
+	{
+		// 모든 맵 로드 완료
+		return false; // 더 이상 업데이트 필요 없음
+	}
+
 	const _char* mapName = nullptr;
 	{
 		std::lock_guard<std::mutex> lock(m_QueueMutex);
@@ -45,14 +51,8 @@ _bool CMapLoader::Check_MapLoadComplete()
 
 	if (mapName)
 	{
-		Ready_Etc(mapName);
+		Ready_Etc(iLevelIndex, mapName);
 		++m_LoadedCount;
-
-		if (m_LoadedCount == m_TotalMapCount)
-		{
-			// 모든 맵 로드 완료
-			return false; // 더 이상 업데이트 필요 없음
-		}
 
 		return true;
 	}
@@ -180,13 +180,13 @@ HRESULT CMapLoader::Load_Ready_All_Etc(_uint iLevelIndex)
 
 	return S_OK;
 }
-HRESULT CMapLoader::Ready_Etc(const _char* Map)
+HRESULT CMapLoader::Ready_Etc(_uint iLevelIndex, const _char* Map)
 {
-	Add_MapActor(Map);
-
-	//Ready_Monster(Map);
-	//Ready_Stargazer(Map);
-	//Ready_Breakable(Map);
+	if (FAILED(Add_MapActor(Map)))
+		return E_FAIL;
+	
+	if (FAILED(Ready_Breakable(iLevelIndex, Map)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -534,8 +534,8 @@ HRESULT CMapLoader::Ready_Map(_uint iLevelIndex, const _char* Map)
 		return E_FAIL;
 
 	//부서질 수 있는 오브젝트 소환
-	if (FAILED(Ready_Breakable(iLevelIndex, Map)))
-		return E_FAIL;
+	/*if (FAILED(Ready_Breakable(iLevelIndex, Map)))
+		return E_FAIL;*/
 
 	return S_OK;
 }
@@ -884,6 +884,14 @@ HRESULT CMapLoader::Ready_Breakable(_uint iLevelIndex, const _char* Map)
 				Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
 				Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
 				return E_FAIL;
+
+			CGameObject* pLastObject = m_pGameInstance->Get_LastObject(Desc.iLevelID, TEXT("Layer_BreakableMesh"));
+
+			if (pLastObject)
+				pLastObject->Reset();
+			else
+				MSG_BOX("Ready_Breakable() 치명적 오류");
+
 		}
 	}
 
@@ -1212,6 +1220,86 @@ HRESULT CMapLoader::Ready_Breakable()
 
 HRESULT CMapLoader::Ready_Breakable(const _char* Map)
 {
+	// JSON 경로
+	string FilePath = string("../Bin/Save/MapTool/Breakable_") + Map + ".json";
+	ifstream inFile(FilePath);
+	if (!inFile.is_open())
+		return S_OK;
+
+	json Json;
+	inFile >> Json;
+	inFile.close();
+
+	// JSON에서 ModelName 바로 접근
+	for (auto& [ModelNameStr, ModelData] : Json.items())
+	{
+		wstring ModelName = StringToWString(ModelNameStr);
+
+		// FragmentCount 읽기
+		_int FragmentCount = 0;
+		if (ModelData.contains("FragmentCount") && ModelData["FragmentCount"].is_number_integer())
+			FragmentCount = ModelData["FragmentCount"];
+
+		// Instances 배열 확인
+		if (!ModelData.contains("Instances") || !ModelData["Instances"].is_array())
+			continue;
+
+		const json& Instances = ModelData["Instances"];
+
+		for (const auto& Obj : Instances)
+		{
+			if (!Obj.contains("WorldMatrix"))
+				continue;
+
+			// 월드 행렬 읽기
+			const json& WorldMatrixJson = Obj["WorldMatrix"];
+			_float4x4 WorldMatrix = {};
+			for (_int row = 0; row < 4; ++row)
+				for (_int col = 0; col < 4; ++col)
+					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
+
+			CBreakableMesh::BREAKABLEMESH_DESC Desc{};
+			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+			Desc.WorldMatrix = WorldMatrix;
+			Desc.wsNavName = StringToWString(Map);
+
+			if (ModelNameStr == "SM_Factory_BasePipe_07")
+			{
+				// 푸오코 기둥 예외 처리
+				Desc.bFireEaterBossPipe = true;
+				Desc.iPartModelCount = 3;
+				Desc.ModelName = TEXT("Main");
+				Desc.vOffsets = {
+					_float3(4.09f, -8.75f, 1.21f),
+					_float3(4.09f, -5.82f, 1.21f),
+					_float3(4.09f, -2.89f, 1.21f)
+				};
+				Desc.PartModelNames = { TEXT("Part2"), TEXT("Part1"), TEXT("Part1") };
+			}
+			else
+			{
+				// 일반적인 부서짐
+				Desc.bFireEaterBossPipe = false;
+				Desc.iPartModelCount = FragmentCount;
+				Desc.ModelName = ModelName;
+
+				for (_uint i = 0; i < Desc.iPartModelCount; ++i)
+				{
+					wstring PartName = ModelName + L"_" +
+						to_wstring(i + 1) + L"of" + to_wstring(Desc.iPartModelCount);
+
+					Desc.vOffsets.push_back(_float3(0.f, 0.f, 0.f));
+					Desc.PartModelNames.push_back(PartName);
+				}
+			}
+
+			if (FAILED(m_pGameInstance->Add_GameObject(
+				Desc.iLevelID, TEXT("Prototype_GameObject_BreakableMesh"),
+				Desc.iLevelID, TEXT("Layer_BreakableMesh"), &Desc)))
+				return E_FAIL;
+		}
+	}
+
 	return S_OK;
 }
 HRESULT CMapLoader::Ready_Monster(const _char* Map)

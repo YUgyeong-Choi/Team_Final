@@ -137,7 +137,7 @@ void CLevel_KratCentralStation::Priority_Update(_float fTimeDelta)
 void CLevel_KratCentralStation::Update(_float fTimeDelta)
 {
 #ifndef TESTMAP
-	if (m_pMapLoader->Check_MapLoadComplete())
+	if (m_pMapLoader->Check_MapLoadComplete(m_pGameInstance->GetCurrentLevelIndex()))
 		Ready_OctoTree();
 #endif
 
@@ -284,12 +284,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	/*if (FAILED(Ready_Lights()))
+		return E_FAIL;*/
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
