@@ -67,7 +67,7 @@
                 0.5
             ],
             "Local": true,
-            "Loop": true,
+            "Loop": false,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.5,
