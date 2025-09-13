@@ -116,6 +116,7 @@ HRESULT CLight::PBRRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	return S_OK;
 }
+
 HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	/* [ º¼·ý¸ÞÆ®¸¯ Àü¿ë ·»´õ ] */

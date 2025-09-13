@@ -92,6 +92,18 @@ namespace Engine
 
 	}LIGHT_DESC;
 
+	typedef struct tagDofDesc
+	{
+		_float2 fCenterPx = { 960.f, 540.f }; // 포커스 중심 (픽셀)
+		_float  fRadiusPx = 120.f;            // 선명(풀포커스) 반경
+		_float  fFeatherPx = 80.f;             // 경계 소프트
+		_float  fBlurBoost = 1.2f;             // 블러 강화
+		_float  fGamma = 1.5f;             // 전이 감마
+
+		_bool				bIsUse;
+	}DOF_DESC;
+
+
 
 	/* 화면에 그려야하는 최종적인 색 = Light.Diffuse * 재질.Diffuse */
 	typedef struct ENGINE_DLL tagVertexPosition

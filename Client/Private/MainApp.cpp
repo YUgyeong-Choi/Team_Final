@@ -74,6 +74,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	CUI_Manager::Get_Instance()->Initialize();
+	CCamera_Manager::Get_Instance()->Initialize(LEVEL::STATIC);
 
     return S_OK;
 }

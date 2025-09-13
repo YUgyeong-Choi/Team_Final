@@ -116,7 +116,6 @@ HRESULT CLevel_JW::Render()
 
 HRESULT CLevel_JW::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

@@ -1,4 +1,4 @@
-#include "Renderer.h"
+Ôªø#include "Renderer.h"
 #include "GameObject.h"
 #include "UIObject.h"
 #include "BlendObject.h"
@@ -30,7 +30,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shade"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 1.f, 0.f, -1.f)))) //wø°  -1.f∏¶√§øˆ id∞° -1¿Œ∞Õ «•«ˆ
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 1.f, 0.f, -1.f)))) //wÏóê  -1.fÎ•ºÏ±ÑÏõå idÍ∞Ä -1Ïù∏Í≤É ÌëúÌòÑ
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Specular"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -52,7 +52,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
-#pragma region µ•ƒÆ
+#pragma region Îç∞Ïπº
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_AMRT"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -63,7 +63,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	//∫º∑˝∏ﬁΩ¨ µπˆ±◊ ∑ª¥ıøÎ
+	//Î≥ºÎ•®Î©îÏâ¨ ÎîîÎ≤ÑÍ∑∏ Î†åÎçîÏö©
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal_VolumeMesh"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 #endif // _DEBUG
@@ -78,7 +78,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 #ifdef _DEBUG
-	//∫º∑˝∏ﬁΩ¨ µπˆ±◊ ∑ª¥ıøÎ
+	//Î≥ºÎ•®Î©îÏâ¨ ÎîîÎ≤ÑÍ∑∏ Î†åÎçîÏö©
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal_VolumeMesh"))))
 		return E_FAIL;
 #endif // _DEBUG
@@ -89,7 +89,7 @@ HRESULT CRenderer::Initialize()
 
 
 #pragma region RenderPBR
-	/* [ PBR ∑ª¥ı≈∏∞Ÿ ] */
+	/* [ PBR Î†åÎçîÌÉÄÍ≤ü ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Normal"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.5f, 0.5f, 1.f, 0.f))))
@@ -117,7 +117,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Final"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* [ ƒ…Ω∫ƒ…¿ÃµÂ Ω¶µµøÏ ] */
+	/* [ ÏºÄÏä§ÏºÄÏù¥Îìú ÏâêÎèÑÏö∞ ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowA"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowB"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
@@ -125,31 +125,31 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_ShadowC"), g_iMiddleWidth, g_iMiddleHeight, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.0f, 1.0f, 1.0f, 1.0f))))
 		return E_FAIL;
 	
-	/* [ «ª∏Æ ¿Ã∆Â∆Æ ] */
+	/* [ Ìì®Î¶¨ Ïù¥ÌéôÌä∏ ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_LimLight"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_InnerLine"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* [ »≠º”º∫ ¿Ã∆Â∆Æ ] */
+	/* [ ÌôîÏÜçÏÑ± Ïù¥ÌéôÌä∏ ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Burn"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_Black"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
-	/* [ «√∑π¿ÃæÓ ∏≤ ¿Ã∆Â∆Æ ] */
+	/* [ ÌîåÎ†àÏù¥Ïñ¥ Î¶º Ïù¥ÌéôÌä∏ ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_PlayerLim"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* [ π∞ øıµ¢¿Ã ºŒ¿Ã¥ı ] */
+	/* [ Î¨º ÏõÖÎç©Ïù¥ ÏÖ∞Ïù¥Îçî ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PBR_WaterPuddle"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* [ ∫º∑˝∏ﬁ∆Æ∏Ø ∆˜±◊ ] */
+	/* [ Î≥ºÎ•®Î©îÌä∏Î¶≠ Ìè¨Í∑∏ ] */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Volumetric"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* [ PBR ∏÷∆º∑ª¥ı≈∏∞Ÿ ] */
+	/* [ PBR Î©ÄÌã∞Î†åÎçîÌÉÄÍ≤ü ] */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Diffuse"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PBRGameObjects"), TEXT("Target_PBR_Normal"))))
@@ -210,25 +210,25 @@ HRESULT CRenderer::Initialize()
 #pragma endregion
 
 
-#pragma region ¿Ã∆Â∆ÆøÎ MRT
+#pragma region Ïù¥ÌéôÌä∏Ïö© MRT
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Diffuse"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlendObjects"), TEXT("Target_EffectBlend_Diffuse"))))
 		return E_FAIL;
 
-	// ¥Ÿ∏• ∞˜ø°º≠µµ ∫Ì∑Ø ªÁøÎ«“ ºˆµµ ¿÷¿∏¥œ±Ó ∫Ì∑ØøÎ ∑ª¥ı≈∏∞Ÿ¿∫ ∫∞µµ∑Œ µŒ∞Ì ±€∑ŒøÏ øÎ ∑ª¥ı≈∏∞Ÿ µ˚∑Œ µŒ∞⁄Ω¿¥œ¥Ÿ
+	// Îã§Î•∏ Í≥≥ÏóêÏÑúÎèÑ Î∏îÎü¨ ÏÇ¨Ïö©Ìï† ÏàòÎèÑ ÏûàÏúºÎãàÍπå Î∏îÎü¨Ïö© Î†åÎçîÌÉÄÍ≤üÏùÄ Î≥ÑÎèÑÎ°ú ÎëêÍ≥† Í∏ÄÎ°úÏö∞ Ïö© Î†åÎçîÌÉÄÍ≤ü Îî∞Î°ú ÎëêÍ≤†ÏäµÎãàÎã§
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_Glow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_Glow"), TEXT("Target_EffectBlend_Glow"))))
 		return E_FAIL;
 
-	// WBøÎ ±€∑ŒøÏ ≥™¥≤µŒ∞Ì ≈◊Ω∫∆Æ «‘ 
+	// WBÏö© Í∏ÄÎ°úÏö∞ ÎÇòÎà†ÎëêÍ≥† ÌÖåÏä§Ìä∏ Ìï® 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_EffectBlend_WBGlow"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_EffectBlend_WBGlow"), TEXT("Target_EffectBlend_WBGlow"))))
 		return E_FAIL;
 
-	// downscale πË¿≤
+	// downscale Î∞∞Ïú®
 	//m_fDownscaledRatio = 0.0625f; // 1/16
 	//m_fDownscaledRatio = 0.125f;	// 1/8
 	m_fDownscaledRatio = 0.25f;		// 1/4
@@ -256,16 +256,16 @@ HRESULT CRenderer::Initialize()
 
 	//ID3D11BlendState
 	/* [ Weighted Blend ] */
-	// ªˆªÛ «’ªÍ¿ª ¿ß«— ∑ª¥ı≈∏∞Ÿ.
+	// ÏÉâÏÉÅ Ìï©ÏÇ∞ÏùÑ ÏúÑÌïú Î†åÎçîÌÉÄÍ≤ü.
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Accumulation"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	// æÀ∆ƒ ø¨ªÍ¿ª ¿ß«— ∑ª¥ı≈∏∞Ÿ.
+	// ÏïåÌåå Ïó∞ÏÇ∞ÏùÑ ÏúÑÌïú Î†åÎçîÌÉÄÍ≤ü.
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Revealage"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
-	// ±€∑ŒøÏ∞° « ø‰«— ¿Ã∆Â∆Æ∏¶ µ˚∑Œ ∏æ∆µŒ¥¬ ∑ª¥ı≈∏∞Ÿ.
+	// Í∏ÄÎ°úÏö∞Í∞Ä ÌïÑÏöîÌïú Ïù¥ÌéôÌä∏Î•º Îî∞Î°ú Î™®ÏïÑÎëêÎäî Î†åÎçîÌÉÄÍ≤ü.
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Emissive"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.0f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	// µΩ∫≈‰º« øÎ ∑ª¥ı≈∏∞Ÿ.
+	// ÎîîÏä§ÌÜ†ÏÖò Ïö© Î†åÎçîÌÉÄÍ≤ü.
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect_WB_Distortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.5f, 0.5f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -279,7 +279,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Effect_WeightedBlend"), TEXT("Target_Effect_WB_Distortion"))))
 		return E_FAIL;
 
-	// µΩ∫≈‰º« ¿Ã»ƒ¿« √≥∏Æµµ ¿÷¿ª ºˆ ¿÷¿∏π«∑Œ ¿œ¥‹ ¿˚æÓµ“
+	// ÎîîÏä§ÌÜ†ÏÖò Ïù¥ÌõÑÏùò Ï≤òÎ¶¨ÎèÑ ÏûàÏùÑ Ïàò ÏûàÏúºÎØÄÎ°ú ÏùºÎã® Ï†ÅÏñ¥Îë†
 	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AfterDistortion"), static_cast<_uint>(ViewportDesc.Width), static_cast<_uint>(ViewportDesc.Height), DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.0f, 0.0f, 0.0f, 1.0f))))
 	//	return E_FAIL;
 	
@@ -290,6 +290,16 @@ HRESULT CRenderer::Initialize()
 
 #pragma endregion
 
+
+#pragma region DOF
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DOF_Out"),static_cast<_uint>(ViewportDesc.Width),static_cast<_uint>(ViewportDesc.Height),
+		DXGI_FORMAT_R16G16B16A16_FLOAT,_float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	// DOF MRT 
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DOF"), TEXT("Target_DOF_Out"))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region RenderUI
 
@@ -335,7 +345,7 @@ HRESULT CRenderer::Initialize()
 
 #ifdef _DEBUG
 
-	/* [ PBR µπˆ±Î ] */
+	/* [ PBR ÎîîÎ≤ÑÍπÖ ] */
 	_float fSizeX = ViewportDesc.Width / 5;
 	_float fSizeY = ViewportDesc.Height / 5;
 	_float fOffset = 3.f;
@@ -533,7 +543,7 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Effect_NonLight())) // ¿ßø°º≠ ∫–∏Æ«ﬂæÓø‰
+	if (FAILED(Render_Effect_NonLight())) // ÏúÑÏóêÏÑú Î∂ÑÎ¶¨ÌñàÏñ¥Ïöî
 	{
 		MSG_BOX("Render_Effect_NonLight Failed");
 		return E_FAIL;
@@ -557,14 +567,18 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	/* ∫Ì∑ªµ˘¿Ã¿¸ø° πÈπˆ∆€∏¶ øœº∫Ω√≈≤¥Ÿ.  */
+	/* Î∏îÎ†åÎî©Ïù¥Ï†ÑÏóê Î∞±Î≤ÑÌçºÎ•º ÏôÑÏÑ±ÏãúÌÇ®Îã§.  */
 	if (FAILED(Render_Blend()))
 	{
 		MSG_BOX("Render_Blend Failed");
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Distortion())) // ø©±‚º≠ Final∑ª¥ı≈∏∞Ÿ æ»æ≤∞Ì πÈπˆ∆€∑Œ µπæ∆∞® !!
+	if (FAILED(Render_Blur(TEXT("Target_Final"))))          return E_FAIL;
+	if (FAILED(Render_DOF_Round()))                         return E_FAIL;
+	if (FAILED(Resolve_DOF_To_Final()))                     return E_FAIL;
+
+	if (FAILED(Render_Distortion())) // Ïó¨Í∏∞ÏÑú FinalÎ†åÎçîÌÉÄÍ≤ü ÏïàÏì∞Í≥† Î∞±Î≤ÑÌçºÎ°ú ÎèåÏïÑÍ∞ê !!
 	{
 		MSG_BOX("Render_Distortion Failed");
 		return E_FAIL;
@@ -705,7 +719,7 @@ HRESULT CRenderer::Render_Decal()
 }
 HRESULT CRenderer::Render_PBRMesh()
 {
-	/* [ PBR ∑ª¥ı∏µ ] */
+	/* [ PBR Î†åÎçîÎßÅ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGameObjects"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_PBRMESH)])
@@ -791,7 +805,7 @@ HRESULT CRenderer::Render_Lights()
 
 	m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
 
-	/* ¿Âƒ°ø° πÈπˆ∆€∑Œ ∫π±∏«—¥Ÿ. */
+	/* Ïû•ÏπòÏóê Î∞±Î≤ÑÌçºÎ°ú Î≥µÍµ¨ÌïúÎã§. */
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 
@@ -802,7 +816,7 @@ HRESULT CRenderer::Render_PBRLights()
 {
 	m_iCurrentRenderLevel = m_pGameInstance->GetCurrentLevelIndex();
 
-	/* [ PBR √÷¡æ(∂Û¿Ã∆√ø°º≠ ≥°≥≤) ] */
+	/* [ PBR ÏµúÏ¢Ö(ÎùºÏù¥ÌåÖÏóêÏÑú ÎÅùÎÇ®) ] */
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PBRFinal"))))
 		return E_FAIL;
 
@@ -832,7 +846,7 @@ HRESULT CRenderer::Render_PBRLights()
 
 	m_pGameInstance->Render_PBR_Lights(m_pShader, m_pVIBuffer, m_iCurrentRenderLevel);
 
-	/* ¿Âƒ°ø° πÈπˆ∆€∑Œ ∫π±∏«—¥Ÿ. */
+	/* Ïû•ÏπòÏóê Î∞±Î≤ÑÌçºÎ°ú Î≥µÍµ¨ÌïúÎã§. */
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return E_FAIL;
 
@@ -841,7 +855,7 @@ HRESULT CRenderer::Render_PBRLights()
 
 HRESULT CRenderer::Render_PBRWaterPuddle()
 {
-	/* [ π∞ øıµ¢¿Ã ∑ª¥ı∏µ ] */
+	/* [ Î¨º ÏõÖÎç©Ïù¥ Î†åÎçîÎßÅ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_WaterPuddle"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_WATERPUDDLE)])
@@ -860,7 +874,7 @@ HRESULT CRenderer::Render_PBRWaterPuddle()
 
 HRESULT CRenderer::Render_Pury()
 {
-	/* [ «ª∏Æ ∑ª¥ı∏µ ] */
+	/* [ Ìì®Î¶¨ Î†åÎçîÎßÅ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_Fury"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_FURY)])
@@ -879,7 +893,7 @@ HRESULT CRenderer::Render_Pury()
 
 HRESULT CRenderer::Render_LimLight()
 {
-	/* [ ∏≤∂Û¿Ã∆Æ ∑ª¥ı∏µ ] */
+	/* [ Î¶ºÎùºÏù¥Ìä∏ Î†åÎçîÎßÅ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_PlayerLim"));
 	
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_LIMLIGHT)])
@@ -898,7 +912,7 @@ HRESULT CRenderer::Render_LimLight()
 
 HRESULT CRenderer::Render_Burn()
 {
-	/* [ ∫“∞¯∞› ∑ª¥ı∏µ ] */
+	/* [ Î∂àÍ≥µÍ≤© Î†åÎçîÎßÅ ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBR_Burn"));
 
 	for (auto& pGameObject : m_RenderObjects[ENUM_CLASS(RENDERGROUP::RG_BURN)])
@@ -917,10 +931,10 @@ HRESULT CRenderer::Render_Burn()
 
 HRESULT CRenderer::Render_Volumetric()
 {
-	/* [ ∑ª¥ı≈∏∞Ÿ ≈¨∏ÆæÓ x , µ™Ω∫ ≈¨∏ÆæÓ x ] */
+	/* [ Î†åÎçîÌÉÄÍ≤ü ÌÅ¥Î¶¨Ïñ¥ x , ÎéÅÏä§ ÌÅ¥Î¶¨Ïñ¥ x ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Volumetric"));
 
-	/* [ ∫º∑˝∏ﬁ∆Æ∏Æ∏¶ ¿ß«— ∏≈«Œ ] */
+	/* [ Î≥ºÎ•®Î©îÌä∏Î¶¨Î•º ÏúÑÌïú Îß§Ìïë ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
 		return E_FAIL;
 
@@ -931,11 +945,11 @@ HRESULT CRenderer::Render_Volumetric()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_ShadowC"), m_pShader, "g_ShadowTextureC")))
 		return E_FAIL;
 
-	/* [ ∆˜¿Œ∆Æ∂Û¿Ã∆Æ ∞≥ºˆ √ﬂ∞° ] */
+	/* [ Ìè¨Ïù∏Ìä∏ÎùºÏù¥Ìä∏ Í∞úÏàò Ï∂îÍ∞Ä ] */
 	_uint iPointNum = m_pGameInstance->Get_LightCount(2, m_iCurrentRenderLevel);
 	m_pShader->Bind_RawValue("g_iPointNum", &iPointNum, sizeof(_uint));
 
-	/* [ ∆˜±◊ æ÷¥œ∏ﬁ¿Ãº« √ﬂ∞° ] */
+	/* [ Ìè¨Í∑∏ Ïï†ÎãàÎ©îÏù¥ÏÖò Ï∂îÍ∞Ä ] */
 	auto now = std::chrono::steady_clock::now();
 	std::chrono::duration<float> elapsed = now - m_StartTime;
 
@@ -968,7 +982,7 @@ HRESULT CRenderer::Render_BackBuffer()
 {
 	m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, false, false);
 
-	//µ•ƒÆ ≈ÿΩ∫√ƒ
+	//Îç∞Ïπº ÌÖçÏä§Ï≥ê
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_AMRT"), m_pShader, "g_DecalAMRT")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Decal_N"), m_pShader, "g_DecalN")))
@@ -980,7 +994,7 @@ HRESULT CRenderer::Render_BackBuffer()
 		return E_FAIL;
 #endif _DEBUG
 
-	/* [ PBR ∑ª¥ı∏µøÎ ] */
+	/* [ PBR Î†åÎçîÎßÅÏö© ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Final"), m_pShader, "g_PBR_Final")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_DepthTexture")))
@@ -1010,7 +1024,7 @@ HRESULT CRenderer::Render_BackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_WaterPuddle"), m_pShader, "g_PBR_WaterPuddle")))
 		return E_FAIL;
 
-	/* [ ∫º∑˝∏ﬁ∆Æ∏Ø ∆˜±◊ ] */
+	/* [ Î≥ºÎ•®Î©îÌä∏Î¶≠ Ìè¨Í∑∏ ] */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Volumetric"), m_pShader, "g_VolumetricTexture")))
 		return E_FAIL;
 
@@ -1141,7 +1155,7 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 	_float fCurVPSizeY = { static_cast<_float>(m_iOriginalViewportHeight) };
 
 	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurX"), m_pBlurDSV, true, true);
-	// ∫‰∆˜∆Æ
+	// Î∑∞Ìè¨Ìä∏
 	if (FAILED(Change_ViewportDesc(static_cast<_uint>(m_iOriginalViewportWidth * m_fDownscaledRatio), static_cast<_uint>(m_iOriginalViewportHeight * m_fDownscaledRatio))))
 		return E_FAIL;
 
@@ -1169,7 +1183,7 @@ HRESULT CRenderer::Render_Blur(const _wstring& strTargetTag)
 
 	m_pGameInstance->Begin_MRT(TEXT("MRT_BlurY"), m_pBlurDSV, true, true);
 
-	/* πÈπˆ∆€ø° ¬Ô¥¬¥Ÿ. */
+	/* Î∞±Î≤ÑÌçºÏóê Ï∞çÎäîÎã§. */
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurX"), m_pShader, "g_BlurXTexture")))
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_RawValue("g_fViewportSizeY", &fCurVPSizeY, sizeof(_float))))
@@ -1234,7 +1248,7 @@ HRESULT CRenderer::Render_Effect_WBGlow()
 
 HRESULT CRenderer::Render_PBR_Glow()
 {
-	/* [ ∞°∑Œ∑Œ ¥√∏∞¥Ÿ. ] */
+	/* [ Í∞ÄÎ°úÎ°ú ÎäòÎ¶∞Îã§. ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlow"), m_pPBRBlurDSV, true, true);
 
 	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
@@ -1266,7 +1280,7 @@ HRESULT CRenderer::Render_PBR_Glow()
 		return E_FAIL;
 
 
-	/* [ ºº∑Œ∑Œ ¥√∏∞¥Ÿ. ] */
+	/* [ ÏÑ∏Î°úÎ°ú ÎäòÎ¶∞Îã§. ] */
 	m_pGameInstance->Begin_MRT(TEXT("MRT_PBRGlowFinal"), m_pPBRBlurDSV, true, true);
 
 	if (FAILED(Change_ViewportDesc(g_iSmallWidth, g_iSmallHeight)))
@@ -1358,8 +1372,8 @@ HRESULT CRenderer::Render_Distortion()
 		return E_FAIL;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	// final ∑ª¥ı≈∏∞Ÿ Ω·æﬂ«‘
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
+	// final Î†åÎçîÌÉÄÍ≤ü Ïç®ÏïºÌï®
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DOF_Out"), m_pShader, "g_FinalTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Distortion"), m_pShader, "g_Effect_Distort")))
 		return E_FAIL;
@@ -1372,6 +1386,51 @@ HRESULT CRenderer::Render_Distortion()
 	return S_OK;
 }
 
+HRESULT CRenderer::Render_DOF_Round()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DOF"))))
+		return E_FAIL;
+
+	// ÏõîÎìú/Î∑∞/ÌîÑÎ°úÏ†ùÏÖò
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix))) return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))  return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))  return E_FAIL;
+
+	// ÏÑ†Î™ÖÎ≥∏/Î∏îÎü¨Î≥∏
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))  return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurY"), m_pShader, "g_BlurYTexture"))) return E_FAIL;
+
+	// ÌîΩÏÖÄ-> UV Î≥ÄÌôòÏö© Î∑∞Ìè¨Ìä∏ ÏÇ¨Ïù¥Ï¶à (Ïó¨Í∏∞Îäî Î†åÎçîÎü¨Í∞Ä Í≥ÑÏÜç Î∞îÏù∏Îî©)
+	_float2 vpSize = { (_float)m_iOriginalViewportWidth, (_float)m_iOriginalViewportHeight };
+	if (FAILED(m_pShader->Bind_RawValue("g_vpSize", &vpSize, sizeof(_float2)))) return E_FAIL;
+
+	// ‚¨á Ïó¨Í∏∞ÏÑú Ïπ¥Î©îÎùºÏóêÍ≤å ÏúÑÏûÑ (ÎùºÏù¥Ìä∏ Ìå®ÌÑ¥Í≥º ÎèôÏùº)
+	if (FAILED(m_pGameInstance->Render_DOF(m_pShader, m_pVIBuffer)))
+		return E_FAIL;
+
+	return m_pGameInstance->End_MRT();
+}
+
+HRESULT CRenderer::Resolve_DOF_To_Final()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Final"), nullptr, true, false)))
+		return E_FAIL;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix))) return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))  return E_FAIL;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))  return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DOF_Out"), m_pShader, "g_UITexture")))
+		return E_FAIL;
+
+	// Îã®Ïàú copyÏö© Ìå®Ïä§(Í∏∞Ï°¥ VIGNETTING or Î≥ÑÎèÑ COPY Ìå®Ïä§)
+	m_pShader->Begin(ENUM_CLASS(DEFEREDPASS::VIGNETTING));
+	m_pVIBuffer->Bind_Buffers();
+	m_pVIBuffer->Render();
+
+	return m_pGameInstance->End_MRT();
+}
+
 HRESULT CRenderer::Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight)
 {
 	ID3D11Texture2D* pDepthStencilTexture = nullptr;
@@ -1379,8 +1438,8 @@ HRESULT CRenderer::Ready_DepthStencilView_Shadow(_uint iWidth, _uint iHeight)
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	/* ±Ì¿Ã πˆ∆€¿« «»ºø¿∫ πÈπˆ∆€¿« «»ºø∞˙ ∞πºˆ∞° µø¿œ«ÿæﬂ∏∏ ±Ì¿Ã ≈ÿΩ∫∆Æ∞° ∞°¥…«ÿ¡¯¥Ÿ. */
-	/* «»ºø¿« ºˆ∞° ¥Ÿ∏£∏È æ∆ø° ∑ª¥ı∏µ¿ª ∏¯«‘. */
+	/* ÍπäÏù¥ Î≤ÑÌçºÏùò ÌîΩÏÖÄÏùÄ Î∞±Î≤ÑÌçºÏùò ÌîΩÏÖÄÍ≥º Í∞ØÏàòÍ∞Ä ÎèôÏùºÌï¥ÏïºÎßå ÍπäÏù¥ ÌÖçÏä§Ìä∏Í∞Ä Í∞ÄÎä•Ìï¥ÏßÑÎã§. */
+	/* ÌîΩÏÖÄÏùò ÏàòÍ∞Ä Îã§Î•¥Î©¥ ÏïÑÏóê Î†åÎçîÎßÅÏùÑ Î™ªÌï®. */
 	TextureDesc.Width = iWidth;
 	TextureDesc.Height = iHeight;
 	TextureDesc.MipLevels = 1;
@@ -1523,7 +1582,7 @@ HRESULT CRenderer::Render_Debug()
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBR_WaterPuddle"), m_pShader, m_pVIBuffer);
 			break;
 		case Engine::CRenderer::DEBUGRT_YW:
-			/* ø©±‚ø° MRT ¿‘∑¬ */
+			/* Ïó¨Í∏∞Ïóê MRT ÏûÖÎ†• */
 			//m_pGameInstance->Render_MRT_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRFinal"), m_pShader, m_pVIBuffer);
 			m_pGameInstance->Render_MRT_Debug(TEXT("MRT_PBRGameObjects"), m_pShader, m_pVIBuffer);

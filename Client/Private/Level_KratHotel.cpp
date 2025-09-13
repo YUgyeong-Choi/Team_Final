@@ -388,7 +388,6 @@ HRESULT CLevel_KratHotel::Ready_Lights()
 
 HRESULT CLevel_KratHotel::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

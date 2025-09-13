@@ -284,6 +284,11 @@ public:
 	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
 #pragma endregion
 
+#pragma region CAMERA
+	void Set_CurCam(class CCamera* pCam) { m_pCurCam = pCam; }
+	class CCamera* Get_CurCam() { return m_pCurCam; }
+	HRESULT Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer);
+#pragma endregion
 private:
 	class CGraphic_Device*		m_pGraphic_Device = { nullptr };
 	class CInput_Device*		m_pInput_Device = { nullptr };
@@ -312,7 +317,7 @@ private:
 
 private: /* [ 플레이어 포지션 ] */
 	_vector m_vPlayerPosition = {};
-
+	class CCamera* m_pCurCam = {};
 public:
 	void Release_Engine();
 	virtual void Free() override;

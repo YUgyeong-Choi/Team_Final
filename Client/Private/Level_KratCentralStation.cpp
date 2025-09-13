@@ -1009,7 +1009,6 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 
 HRESULT CLevel_KratCentralStation::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

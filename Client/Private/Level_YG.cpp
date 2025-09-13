@@ -303,7 +303,6 @@ HRESULT CLevel_YG::Ready_Player()
 
 HRESULT CLevel_YG::Ready_Camera()
 {
-	m_pCamera_Manager->Initialize(LEVEL::STATIC);
 	m_pCamera_Manager->SetFreeCam();
 
 	return S_OK;

@@ -25,10 +25,17 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	HRESULT Render_DOF(CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 	HRESULT Update_Camera();
 	_fvector GetPosition();
 
+
+	DOF_DESC* Get_DOFDesc() {
+		return &m_DOFDesc;
+	}
+	void SetDOFDesc(const DOF_DESC& Desc) { m_DOFDesc = Desc; }
+	void EnableDOF(_bool bUse) { m_DOFDesc.bIsUse = bUse; }
 public:
 	_vector GetRightVector();
 	_vector GetUpVector();
@@ -87,6 +94,8 @@ protected:
 	_vector				m_vCurrentShakeRot = {};
 	_vector				m_vPureCamPos = {};
 
+
+	DOF_DESC				m_DOFDesc{};
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;	
 	virtual void Free() override;
