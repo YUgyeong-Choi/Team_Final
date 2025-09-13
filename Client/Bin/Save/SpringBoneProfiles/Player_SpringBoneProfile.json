@@ -31,7 +31,7 @@
       "downBias": [ 0.1, 0.2 ],
       "follow": [ 0.3, 0.5 ],
       "maxDeg": [ 120.0, 160.0 ],
-      "damping": [ 0.95, 0.97 ]
+      "damping": [ 0.93, 0.95 ]
     },
     "Other": {
       "downBias": [ 0.26, 0.44 ],
