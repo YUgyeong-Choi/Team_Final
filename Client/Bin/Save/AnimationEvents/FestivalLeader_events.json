@@ -414,6 +414,10 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "BreakPanel",
+                    "Time": 82.0
                 }
             ],
             "IsLoop": false,
@@ -443,10 +447,6 @@
                 {
                     "EventName": "ColliderBasketOff",
                     "Time": 197.0
-                },
-                {
-                    "EventName": "BreakPanel",
-                    "Time": 193.0
                 },
                 {
                     "EventName": "ActiveHpBar",
