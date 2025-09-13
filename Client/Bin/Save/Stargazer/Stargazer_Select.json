@@ -17,7 +17,7 @@
       "Event": "LevelUp"
     },
     {
-      "Label": "보관 함을 이용한다",
+      "Label": "보관함을 이용한다",
       "RequiredSize": 1,
       "Event": "UseInventory"
     }

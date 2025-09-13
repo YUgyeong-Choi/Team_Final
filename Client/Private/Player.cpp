@@ -492,7 +492,7 @@ void CPlayer::Reset()
 	m_pBelt_Down->Reset();
 	m_pBelt_Up->Reset();
 	m_pPlayerLamp->Reset();
-
+	m_pWeapon->Reset();
 	m_pLegionArm->Reset();
 
 	Callback_DownBelt();
@@ -2784,6 +2784,7 @@ HRESULT CPlayer::Ready_UIParameters()
 {
 	m_fHp = 358.f;
 	m_fMaxHp = 358.f;
+	m_fMana = 300.f;
 
 	Callback_HP();
 	Callback_Mana();

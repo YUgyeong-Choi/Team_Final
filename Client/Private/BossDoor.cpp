@@ -465,7 +465,7 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 
 			// 
 
-			CUI_Manager::Get_Instance()->Off_Panel();
+			//CUI_Manager::Get_Instance()->Off_Panel();
 		}
 	}
 
