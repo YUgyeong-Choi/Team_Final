@@ -273,8 +273,12 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-		if(m_pPlayer->Get_HaveKey())
+		if (m_pPlayer->Get_HaveKey())
+		{
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::OUTDOOOR);
+			CUI_Manager::Get_Instance()->Off_Panel();
+		}
+			
 	}
 }
 

@@ -212,6 +212,19 @@ void CUI_Manager::Update_PickUpItem(_int iItemType)
 	static_cast<CUI_Pickup_Item*>(m_UImap.find(L"Pickup_Item")->second)->Update_Description(iItemType);
 }
 
+void CUI_Manager::Background_Fade(_float fStartAlpha, _float fEndAlpha, _float fTime)
+{
+	if (m_UImap.find(L"BackGround") == m_UImap.end())
+		return;
+
+	if (nullptr == m_UImap.find(L"BackGround")->second)
+		return;
+
+	
+	m_UImap.find(L"BackGround")->second->Reset_isFade();
+	m_UImap.find(L"BackGround")->second->FadeStart(fStartAlpha, fEndAlpha, fTime);
+}
+
 void CUI_Manager::Free()
 {
 	__super::Free();

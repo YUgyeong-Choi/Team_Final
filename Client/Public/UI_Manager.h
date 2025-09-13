@@ -60,6 +60,8 @@ public:
 
     void Update_PickUpItem(_int iItemType);
 
+    void Background_Fade(_float fStartAlpha, _float fEndAlpha, _float fTime );
+
 public:
 
 private:
@@ -71,6 +73,9 @@ private:
     map<_wstring, CUIObject*> m_UImap = {};
     
     CSoundController* m_pSoundCom = { nullptr };
+
+
+
 public:
     virtual void Free() override;
 };

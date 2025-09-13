@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "UI_Manager.h"
 CBossDoor::CBossDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -461,6 +462,10 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			default:
 				break;
 			}
+
+			// 
+
+			CUI_Manager::Get_Instance()->Off_Panel();
 		}
 	}
 

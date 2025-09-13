@@ -25,7 +25,7 @@ HRESULT CWeapon_Monster::Initialize_Prototype()
 HRESULT CWeapon_Monster::Initialize(void* pArg)
 {
 	/* [ 데미지 설정 ] */
-	m_fDamage = 100.f;
+	m_fDamage = 10.f;
 
 	MONSTER_WEAPON_DESC* pDesc = static_cast<MONSTER_WEAPON_DESC*>(pArg);
 

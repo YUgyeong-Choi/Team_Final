@@ -457,7 +457,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 
 
-			if(m_strStateName.find("Away") != m_strStateName.npos)
+			if(m_strStateName.find("Away") != m_strStateName.npos || m_strStateName.find("Hit_R") != m_strStateName.npos || m_strStateName.find("Hit_L") != m_strStateName.npos)
 				m_pTransformCom->Go_Dir(vLook, fTimeDelta * m_fAwaySpeed, nullptr, m_pNaviCom);
 			else 
 				m_pTransformCom->Go_Dir(vLook * -1.f, fTimeDelta * m_fAwaySpeed * 0.25f, nullptr, m_pNaviCom);
@@ -560,6 +560,8 @@ void CButtler_Basic::Reset()
 		m_pAnimator->SetInt("SpawnType", ENUM_CLASS(m_eSpawnType));
 
 	}
+
+	m_pWeapon->SetDamage(50.f);
 }
 
 HRESULT CButtler_Basic::Ready_Weapon()

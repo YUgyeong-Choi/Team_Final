@@ -230,15 +230,19 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	if (m_isFirstGroggy && m_eCurrentState == EEliteState::DEAD)
+	if (m_eCurrentState == EEliteState::DEAD && m_fHp <= 0.f)
 	{
+		if (m_isDropItem)
+		{
+			return;
+		}
 		// 
 		static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
 		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
 		CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
 		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 
-		m_isFirstGroggy = false;
+		m_isDropItem = true;
 	}
 
 }

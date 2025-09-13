@@ -141,6 +141,7 @@ private:
 
 private:
     _bool m_isFirstGroggy = { false };
+    _bool m_isDropItem = { false };
 
 public:
 	static CElite_Police* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

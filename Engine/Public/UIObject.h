@@ -27,6 +27,7 @@ public:
 	_float Get_Depth() { return m_fOffset; }
 
 	_bool  Get_isFade() { return m_isFade; }
+	void   Reset_isFade() { m_isFade = false; }
 	_float Get_Alpha() { return m_fCurrentAlpha; }
 	void  Set_Alpha(_float fAlpha) { m_fCurrentAlpha = fAlpha; }
 

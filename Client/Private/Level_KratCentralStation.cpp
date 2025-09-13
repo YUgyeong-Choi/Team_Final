@@ -38,6 +38,7 @@
 
 #include "LockOn_Manager.h"
 #include "UI_Manager.h"
+#include "Dynamic_UI.h"
 
 #include "AnimatedProp.h"
 
@@ -1120,6 +1121,29 @@ HRESULT CLevel_KratCentralStation::Ready_UI()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container_DeBuff"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_DeBuff_UI"))))
 		return E_FAIL;
+
+
+	//
+	CDynamic_UI::DYNAMIC_UI_DESC eDynamicDesc = {};
+	eDynamicDesc.fAlpha = 0.f;
+	eDynamicDesc.fSizeX = g_iWinSizeX;
+	eDynamicDesc.fSizeY = g_iWinSizeY;
+	eDynamicDesc.fX = g_iWinSizeX * 0.5f;
+	eDynamicDesc.fY = g_iWinSizeY * 0.5f;
+	eDynamicDesc.vColor = { 0.f,0.f,0.f,1.f };
+	eDynamicDesc.strTextureTag = TEXT("Prototype_Component_Texture_BackGround_Loading_Desk");
+	eDynamicDesc.iPassIndex = 2;
+
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Dynamic_UI"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"), &eDynamicDesc)))
+		return E_FAIL;
+
+	CGameObject* pBackGround = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"));
+
+	CUI_Manager::Get_Instance()->Emplace_UI(dynamic_cast<CUIObject*>(pBackGround), L"BackGround");
+
+	CUI_Manager::Get_Instance()->Off_Panel();
 
 	return S_OK;
 }
