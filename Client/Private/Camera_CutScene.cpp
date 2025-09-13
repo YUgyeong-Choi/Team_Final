@@ -6,6 +6,7 @@
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
 #include "Player.h"
+#include "UI_Manager.h"
 
 #pragma region help
 // ===== Speed-curve helpers =====
@@ -223,6 +224,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				m_initOrbitalMatrix = {};
 				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
+				CUI_Manager::Get_Instance()->On_Panel();
 			}
 		}
 	}
@@ -868,6 +870,21 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
+		// 735
+
+		if (m_iCurrentFrame == 575)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+		}
+
+		if (m_iCurrentFrame == 765)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+		}
+
+		// 765 
+
+
 		if (m_iCurrentFrame == 860)
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));

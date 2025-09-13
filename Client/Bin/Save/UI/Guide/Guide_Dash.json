@@ -1,0 +1,185 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 357.04901123046875,
+                "SizeX": 0.30000001192092896,
+                "SizeY": 0.27000001072883606,
+                "Texturetag": "Prototype_Component_Texture_Tutorial",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.009999999776482582,
+                "fX": 0.6639999151229858,
+                "fY": 0.5239999890327454,
+                "iPassIndex": 1,
+                "iTextureIndex": 9,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "전력질주 ",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.44999998807907104,
+                "SizeY": 0.44999998807907104,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.5,
+                "fY": 0.25699999928474426,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": ": 길게 눌러 전력질주 ",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 0.20000000298023224
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.3499999940395355,
+                "SizeY": 0.3499999940395355,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.33799999952316284,
+                "fY": 0.44199997186660767,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "전방 점프 / 회피 동작과 중복 설정이 가능하다.\n회피와 중복되지 않게 설정하면 한 번 입력으로\n전력질주로 전환한다.",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 0.20000000298023224
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 0,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.3499999940395355,
+                "SizeY": 0.3499999940395355,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.242000013589859,
+                "fY": 0.5080000162124634,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+          {
+            "Color": {
+              "A": 1.0,
+              "B": 1.0,
+              "G": 1.0,
+              "R": 1.0
+            },
+            "Features": [
+              {
+                "EndAlpha": 1.0,
+                "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                "StartAlpha": 0.0,
+                "iEndFrame": 15,
+                "iStartFrame": 0,
+                "isLoop": false
+              }
+            ],
+            "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+            "RotationZ": 0.0,
+            "SizeX": 0.03999999910593033,
+            "SizeY": 0.029999999329447746,
+            "Texturetag": "Prototype_Component_Texture_Icon_Key_Space",
+            "fAlpha": 1.0,
+            "fDuration": 0.01600000075995922,
+            "fOffset": 0.0,
+            "fX": 0.2619999945163727,
+            "fY": 0.4429999887943268,
+            "iPassIndex": 1,
+            "iTextureIndex": 0,
+            "iTextureLevel": 0
+          }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]

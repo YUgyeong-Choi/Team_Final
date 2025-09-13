@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "DynamicMesh.h"
 #include "Player.h"
+
 NS_BEGIN(Engine)
 class CShader;
 class CTexture;
