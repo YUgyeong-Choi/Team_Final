@@ -993,8 +993,8 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
-		//if (m_iCurrentFrame == 750)
-		//	m_pGameInstance->Start_BGM("SE_CIN_FIreEater", true);
+		if (m_iCurrentFrame == 450)
+			m_pGameInstance->Start_BGM("FireEaterCutScene", true);
 
 		if (m_iCurrentFrame == 575)
 		{
@@ -1018,7 +1018,7 @@ void CCamera_CutScene::Event()
 			unit->EnterCutScene();
 		}
 
-		if (m_iCurrentFrame == 1700)
+		if (m_iCurrentFrame == 1650)
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
 
 		break;
