@@ -159,7 +159,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Stat();
 	HRESULT Ready_Effect();
 	void LoadPlayerFromJson();
-
+	void Register_SoundEvents();
 public: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();

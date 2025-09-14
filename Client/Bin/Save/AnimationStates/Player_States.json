@@ -511,14 +511,14 @@
                     "Name": "MainSkill2",
                     "UpperClipName": ""
                 },
-                {
-                    "BlendWeight": 1.0,
-                    "ClipName": "AS_Pino_T_Bayonet_CA4",
-                    "LowerClipName": "",
-                    "MaskBoneName": "",
-                    "Name": "MainSkill3",
-                    "UpperClipName": ""
-                },
+              {
+                "BlendWeight": 1.0,
+                "ClipName": "AS_Pino_T_Shovel_FCA",
+                "LowerClipName": "",
+                "MaskBoneName": "",
+                "Name": "MainSkill3",
+                "UpperClipName": ""
+              },
                 {
                     "BlendWeight": 1.0,
                     "ClipName": "",

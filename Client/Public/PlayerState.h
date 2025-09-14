@@ -746,7 +746,6 @@ public:
                 m_pOwner->m_pAnimator->SetBool("HasLamp", false);
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
                 m_pOwner->m_bUsePulse = true;
-                m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Item_Fail_", 3);
             }
             else
             {
@@ -3364,7 +3363,7 @@ public:
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();
-            m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+          //  m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
             CUI_Manager::Get_Instance()->On_Panel();
 
