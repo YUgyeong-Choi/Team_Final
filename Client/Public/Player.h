@@ -305,6 +305,10 @@ public:/*[스탯 관련]*/
 
 	_bool Check_LevelUp(_int iLevel);
 
+private:
+	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
+	void Detect_FootstepSurface();
+
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
 

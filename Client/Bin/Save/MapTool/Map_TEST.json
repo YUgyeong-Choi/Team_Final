@@ -1,5 +1,5 @@
 {
-    "ModelCount": 23,
+    "ModelCount": 24,
     "Models": [
         {
             "Collision": false,
@@ -122,6 +122,107 @@
             ]
         },
         {
+            "Collision": true,
+            "ModelName": "SM_BuildingC_WoodPanel_01",
+            "NoInstancing": false,
+            "ObjectCount": 3,
+            "Objects": [
+                {
+                    "ColliderType": 0,
+                    "IsFloor": true,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            29.155353546142578,
+                            -1.179198980331421,
+                            1.3393045663833618,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 1,
+                    "IsFloor": true,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            27.790660858154297,
+                            -1.1800700426101685,
+                            1.8671040534973145,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 2,
+                    "IsFloor": true,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            27.682565689086914,
+                            -1.1797105073928833,
+                            3.4522323608398438,
+                            1.0000001192092896
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_01_Female",
             "NoInstancing": false,
@@ -164,7 +265,7 @@
             "Collision": false,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
             "NoInstancing": false,
-            "ObjectCount": 7,
+            "ObjectCount": 8,
             "Objects": [
                 {
                     "ColliderType": 0,
@@ -380,6 +481,37 @@
                             2.5680744647979736,
                             -605.5753784179688,
                             1.0000001192092896
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "IsFloor": true,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            31.15801239013672,
+                            -1.1791231632232666,
+                            1.1735455989837646,
+                            0.9999998807907104
                         ]
                     ]
                 }
