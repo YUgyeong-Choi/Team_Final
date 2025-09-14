@@ -63,6 +63,7 @@ void CBossUnit::Update(_float fTimeDelta)
 			// 나오는 타이밍은 조절해야 될듯?
 			CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
+			eDesc.fDelay = 2.f;
 			eDesc.strFilePath = TEXT("../Bin/Save/UI/Boss_Kill.json");
 
 			eDesc.fLifeTime = 6.f;
