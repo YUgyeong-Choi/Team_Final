@@ -21,6 +21,7 @@
 #include "UI_Container.h"
 #include "UI_Manager.h"
 #include "Static_UI.h"
+#include "UI_Guide.h"
 
 #include "Client_Calculation.h"
 
@@ -3369,6 +3370,22 @@ public:
           //  m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
             CUI_Manager::Get_Instance()->On_Panel();
+
+            if (m_pOwner->m_isDeadFestivalReader)
+            {
+                if (!m_pOwner->m_isMakeGuide)
+                {
+                    CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+                    eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_DeathBossRoom.json") };
+
+                    if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+                        ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Guide"), &eDesc)))
+                        return;
+
+                    m_pOwner->m_isMakeGuide = true;
+                }
+            }
 
         }
 

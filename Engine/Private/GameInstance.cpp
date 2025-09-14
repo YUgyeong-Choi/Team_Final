@@ -1001,6 +1001,10 @@ void CGameInstance::ToggleDebugArea()
 {
 	m_pArea_Manager->ToggleDebugCells();
 }
+_int CGameInstance::GetCurAreaIds()
+{
+	return m_pArea_Manager->GetCurAreaIds();
+}
 void CGameInstance::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
 {
 	m_pPulling_Manager->Add_PoolObject(wsLayerName, pObj);

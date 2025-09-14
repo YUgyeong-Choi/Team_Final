@@ -92,6 +92,15 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
 					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 			}
+			else if (m_eItemTag == ITEM_TAG::KRAT_TIMES)
+			{
+				CUI_Letter::UI_LETTER_DESC eDesc{};
+
+				eDesc.partPaths = { TEXT("../Bin/Save/UI/Letter/Letter_NewsPaper_0.json"), TEXT("../Bin/Save/UI/Letter/Letter_NewsPaper_1.json") };
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
+			}
 			else
 			{
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);

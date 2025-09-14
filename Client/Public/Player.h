@@ -314,6 +314,9 @@ private:
 	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
 	void Detect_FootstepSurface(eAnimCategory eAnim);
 
+private:
+	void Check_Dead_FestivalReader();
+
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
 
@@ -519,6 +522,11 @@ private: /* [ 공격한 적 ] */
 
 private: // 그라인더용 변수
 	CSoundController* m_pGrinderSound = { nullptr };
+
+private:
+	// 일단 만들고 나중에 리팩토링 하기 - 매니저에서 생성하게 하기?
+	_bool m_isDeadFestivalReader = {};
+	_bool m_isMakeGuide = {};
 
 private:
 	STAT_DESC m_eStat = {};

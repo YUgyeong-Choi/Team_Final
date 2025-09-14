@@ -324,6 +324,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 
 	m_pSpringBoneSys->Update(fTimeDelta);
+
+	if (m_eCurrentState == EPlayerState::DEAD)
+	{
+		Check_Dead_FestivalReader();
+	}
+
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -3057,6 +3063,20 @@ void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 		m_pPhysXActorCom->Add_RenderRay(_data);
 	}
 #endif
+}
+
+void CPlayer::Check_Dead_FestivalReader()
+{
+	if (m_isDeadFestivalReader)
+		return;
+
+	if (m_pGameInstance->GetCurAreaIds() == 60)
+	{
+		// 
+		m_isDeadFestivalReader = true;
+
+		
+	}
 }
 
 HRESULT CPlayer::Ready_Weapon()
