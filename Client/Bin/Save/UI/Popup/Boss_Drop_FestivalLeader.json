@@ -20,8 +20,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -59,8 +59,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -98,8 +98,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -137,8 +137,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -176,8 +176,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -215,8 +215,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -254,8 +254,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -293,8 +293,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -332,8 +332,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -372,8 +372,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -413,8 +413,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -452,8 +452,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -492,8 +492,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {
@@ -533,8 +533,8 @@
                 "EndAlpha": 0.0,
                 "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                 "StartAlpha": 1.0,
-                "iEndFrame": 360,
-                "iStartFrame": 300,
+                "iEndFrame": 300,
+                "iStartFrame": 240,
                 "isLoop": false
               },
               {

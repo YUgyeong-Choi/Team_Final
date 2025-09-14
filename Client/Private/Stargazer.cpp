@@ -914,7 +914,7 @@ HRESULT CStargazer::Ready_Collider()
 	}
 
 
-	_float fRadius = 1.3f;
+	_float fRadius = 1.2f;
 	PxSphereGeometry geomTrigger = m_pGameInstance->CookSphereGeometry(fRadius);
 	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geomTrigger, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, true);

@@ -2514,7 +2514,13 @@ void CPlayer::Start_Teleport()
 	m_bTeleport = true;
 	m_bIsInvincible = true;
 	m_bTeleportFadeStart = false;
+	
 	m_pAnimator->SetTrigger("Teleport");
+
+	
+
+	
+
 	//CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
 }
 
@@ -2524,30 +2530,47 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 	{
 		m_fTeleportTime += fTimeDelta;
 
-		if (!m_bTeleportFadeStart && m_fTeleportTime >= 1.f)
+		if (!m_bTeleportFadeStart && m_fTeleportTime > 1.5f)
 		{
 			m_bTeleportFadeStart = true;
+			
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
 		}
 
-		if (m_fTeleportTime >= 2.f)
+		if (m_bIsInvincible && m_fTeleportTime > 2.5f)
 		{
 			
-			m_bIsInvincible = false;
 			
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 0.5f);
+
+			CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+			eDesc.strFilePath = TEXT("../Bin/Save/UI/Revive.json");
+
+			eDesc.fLifeTime = 4.f;
+			eDesc.useLifeTime = true;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Teleport"), &eDesc)))
+				return;
+
+			m_bIsInvincible = false;
+
 
 			PxVec3 pxPos(m_vTeleportPos.x, m_vTeleportPos.y, m_vTeleportPos.z);
 
-			// 플레이어 이동
+			// 플레이어 이동h
 			PxTransform posTrans = PxTransform(pxPos);
 			Get_Controller()->Set_Transform(posTrans);
-			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.5f);
 		}
 
-		if (!m_fIsInvincible && m_fTeleportTime > 6.f)
+	
+
+		if (!m_fIsInvincible && m_fTeleportTime > 5.f)
 		{
 			m_bTeleport = false;
 			m_bTeleportFadeStart = false;
+			
 			m_fTeleportTime = 0.f;
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();
