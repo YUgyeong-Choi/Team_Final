@@ -2719,12 +2719,15 @@ void CPlayer::Detect_FootstepSurface()
 		bRayHit = true;
 		vRayHitPos = block.position;
 
-		/*wprintf(L"[Footstep] Hit floor at (%.2f, %.2f, %.2f)\n",
-			block.position.x, block.position.y, block.position.z);*/
+		//wprintf(L"[Footstep] Hit floor at (%.2f, %.2f, %.2f)\n",
+		//	block.position.x, block.position.y, block.position.z);
 
 		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
 		if (pHitMesh)
 		{
+			wcout << pHitMesh->Get_MeshName() << endl;
+
+			//여기서 타입에 따라 다른소리나도록 해야지
 			_int a = 10;
 		}
 	}

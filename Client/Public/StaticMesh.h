@@ -66,6 +66,10 @@ public:
 
 private:
 	void Update_ColliderPos();
+public:
+	const wstring& Get_MeshName() const {
+		return m_strMeshName;
+	}
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
