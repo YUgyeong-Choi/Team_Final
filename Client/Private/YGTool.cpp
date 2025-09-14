@@ -383,6 +383,7 @@ HRESULT CYGTool::Render_CameraTool()
 				m_CameraDatas.vecOffSetRotData.clear();
 				m_CameraDatas.vecFovData.clear();
 				m_CameraDatas.vecTargetData.clear();
+				m_CameraDatas.vecDOFData.clear();
 				m_pSelectedKey = nullptr;
 				
 				m_CameraDatas = LoadCameraFrameData(j);
@@ -409,6 +410,11 @@ HRESULT CYGTool::Render_CameraTool()
 				for (auto& pos : m_CameraDatas.vecTargetData)
 				{
 					m_CameraSequence->Add_KeyFrame(4, pos.iKeyFrame);
+				}
+
+				for (auto& dof : m_CameraDatas.vecDOFData)
+				{
+					m_CameraSequence->Add_KeyFrame(5, dof.iKeyFrame);
 				}
 
 				m_iEndFrame = m_CameraDatas.iEndFrame;
@@ -509,6 +515,28 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
 				m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
 		}
+		//else if (m_iSelected == 5)
+		//{
+		//	// Dof
+
+		//	ImGui::DragFloat("fCloseIntensity", &m_pSelectedKey->fPitch, 0.f, -89.0f, 89.0f);
+		//	ImGui::DragFloat("fFarIntensity", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
+		//	ImGui::DragFloat2("fCleanRange", reinterpret_cast<float*>(&m_pSelectedKey->dofDesc.fCleanRange), 0.05f);
+		//	ImGui::DragFloat2("fFeatherPx", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
+
+		//	m_pSelectedKey->dofDesc.bIsUse = true;
+
+		//	if (ImGui::Button("Clone Pitch Yaw"))
+		//	{
+		//		m_pSelectedKey->fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
+		//		m_pSelectedKey->fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
+		//	}
+
+		//	_int interpFov = static_cast<int>(m_pSelectedKey->interpTarget);
+
+		//	if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+		//		m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
+		//}
 	}
 
 	Render_SetInfos();
