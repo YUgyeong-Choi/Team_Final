@@ -24,6 +24,7 @@
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
+#include "TriggerRain.h"
 
 #include "PBRMesh.h"
 #include "WaterPuddle.h"
@@ -88,6 +89,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 		return E_FAIL;
 
 	if (FAILED(Ready_Trigger()))
+		return E_FAIL;	
+	
+	if (FAILED(Ready_Rain()))
 		return E_FAIL;
 
 	if (FAILED(Ready_TriggerBGM()))
@@ -1602,6 +1606,20 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 				return E_FAIL;
 		}
 	}
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Rain()
+{
+	CTriggerRain::TRIGGERNOMESH_DESC Desc{};
+	Desc.vPos = _vector({ 191.78f, 8.5f, -8.3f});
+	Desc.Rotation = _float3(0.f,0.f,0.f);
+	Desc.vTriggerOffset = _vector({});
+	Desc.vTriggerSize = _vector({ 0.2f, 0.2f, 8.f, 0.f });
+	Desc.m_vecSoundData = {};
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerRain"), &Desc)))
+		return E_FAIL;
 	return S_OK;
 }
 

@@ -110,6 +110,15 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
 
+	DOF_DESC dof{};
+	dof.fCloseIntensity = 1.f;
+	dof.fFarIntensity = 1.f;
+	dof.fCleanRange = { 0.f, 1000.f };
+	dof.fFeatherPx = 80.f;
+	dof.bIsUse = true;
+
+	m_DOFDesc = dof;
+
 	return S_OK;
 }
 

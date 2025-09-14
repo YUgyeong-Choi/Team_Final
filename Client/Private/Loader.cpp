@@ -63,6 +63,7 @@
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
+#include "TriggerRain.h"
 #include "TriggerItemLamp.h"
 #pragma endregion
 
@@ -784,6 +785,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerBGM"),
 		CTriggerBGM::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
+		CTriggerRain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
@@ -2314,6 +2319,9 @@ HRESULT CLoader::Loading_For_YG()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_PlayerLamp"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Lamp.bin", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_WaterPuddleA"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/WaterPuddleA.bin", PreTransformMatrix))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Elite_Police"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Elite_Police/Elite_Police.bin", PreTransformMatrix))))
@@ -2323,12 +2331,18 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Club/Elite_Police_Weapon.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Wego"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Wego/Wego.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_FireEater"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FireEater/FireEater.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_FestivalLeader"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalLeader/FestivalLeader.bin", PreTransformMatrix))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
@@ -2339,8 +2353,30 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Candle/SK_WP_MOB_Candle_01.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Buttler_Range_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShotGun/SK_WP_MOB_Shotgun_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_FestivalWeapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalLeader/Weapon/FestivalWeapon.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Elite_Police_Weapon"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Club/Elite_Police_Weapon.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//별바라기 모델
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Stargazer"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Stargazer/Stargazer.bin", PreTransformMatrix))))
+		return E_FAIL;
+	//별바라기 모델 부서진거
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Stargazer_Destroyed"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Stargazer_Des_2/Stargazer_Des_2.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.0115f, 0.0115f, 0.0115f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Buttler_Train"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -2349,8 +2385,21 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Basic/Buttler_Basic.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Buttler_Range"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Range/Buttler_Range.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_WatchDog"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/WatchDog/WatchDog.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Buttler_Train"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Buttler_Train/Buttler_Train.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Train"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Train.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -2364,6 +2413,20 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/OutDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_SquareStatue"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/SquareStatue/SquareStatue.bin", PreTransformMatrix))))
+		return E_FAIL;
+	PreTransformMatrix = XMMatrixScaling(0.012f, 0.012f, 0.012f) * XMMatrixRotationY(XMConvertToRadians(90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_ClownPanel"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ClownPanel/ClownPanel.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_ClownStationPanel"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ClownStationPanel/ClownStationPanel.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 	/* 상호 작용 문 */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
@@ -2384,15 +2447,33 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalCrashDoor/FestivalCrashDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
+
 	PreTransformMatrix = XMMatrixScaling(0.011f, 0.011f, 0.011f);
 	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_StationDoubleDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/StationDoubleDoor/StationDoubleDoor.bin", PreTransformMatrix))))
 		return E_FAIL;
 
-	m_fRatio = 0.4f;
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_ShortCutDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/ShortCutDoor/ShortCutDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-90.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_HeavyLock"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLock/HeavyLock.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	PreTransformMatrix *= XMMatrixRotationY(XMConvertToRadians(-270.f));
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_HeavyLockSmall"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	m_fRatio = 0.4f;
 
 
 	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
@@ -2425,6 +2506,14 @@ HRESULT CLoader::Loading_For_YG()
 		CElite_Police::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Bullet"),
+		CBullet::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_WaterPuddle"),
+		CWaterPuddle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FireBall"),
 		CFireBall::Create(m_pDevice, m_pContext))))
@@ -2436,24 +2525,6 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FlameField"),
 		CFlameField::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-
-	/* 상호 작용 문 */
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_SlideDoor"),
-		CSlideDoor::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_KeyDoor"),
-		CKeyDoor::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
-		CBossDoor::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
-		CShortCutDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//뒤에 몬스터 붙이는거 뺐어요(영웅) TEXT("Prototype_GameObject_Buttler_Monster_Train") 이거
@@ -2469,9 +2540,21 @@ HRESULT CLoader::Loading_For_YG()
 		CButtler_Basic::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Buttler_Range"),
+		CButtler_Range::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_WatchDog"),
+		CWatchDog::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//FIRE EATER로 바꿧어요 (영웅)
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FireEater"),
 		CFuoco::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FestivalLeader"),
+		CFestivalLeader::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_Weapon"),
@@ -2505,7 +2588,65 @@ HRESULT CLoader::Loading_For_YG()
 		return E_FAIL;
 #pragma endregion
 
+	/* 상호 작용 문 */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_SlideDoor"),
+		CSlideDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_KeyDoor"),
+		CKeyDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
+		CBossDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
+		CShortCutDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_AnimatedProp"),
+		CAnimatedProp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma region YW
+
+	//부술수있는 메쉬 테스트용 모델
+	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
+
+	//파트2
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part2"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f7.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	//파트1
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Part1"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_Pipe_01_PipePillar_6_f6.bin", PreTransformMatrix))))
+		return E_FAIL;
+	//SM_Interior_Table_07_3of8
+	//본 모델
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_Main"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Factory_BasePipe_07.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+
+	//부술수 있는 메쉬(푸오코 기둥 등...)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BreakableMesh"),
+		CBreakableMesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//에르고아이템(꽃)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ErgoItem"),
+		CErgoItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//별바라기
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Stargazer"),
+		CStargazer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	//스태틱 데칼	
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_Static_Decal"),
 		CStatic_Decal::Create(m_pDevice, m_pContext))))
@@ -2524,139 +2665,109 @@ HRESULT CLoader::Loading_For_YG()
 		CStaticMesh_Instance::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// 별바라기 전용 이펙트 세트
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_StargazerEffect"),
+		CStargazerEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma region 맵 로딩
 
 	lstrcpy(m_szLoadingText, TEXT("맵 생성 시작!!..."));
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "STATION")))
-	//	return E_FAIL;
 
-	//if (FAILED(Load_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Map(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), "HOTEL")))
-	//	return E_FAIL;
+#ifdef TESTMAP
 
-	lstrcpy(m_szLoadingText, TEXT("STATION 맵 생성 시작!!..."));
-
-	auto futureStation = async(launch::async, [&]
-		{
-			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
-				return E_FAIL;
-			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("HOTEL 맵 생성 시작!!..."));
-	auto futureHotel = async(launch::async, [&]
-		{
-			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
-				return E_FAIL;
-			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("OUTER 맵 생성 시작!!..."));
-	auto futureOuter = async(launch::async, [&]
-		{
-			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
-				return E_FAIL;
-			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-	lstrcpy(m_szLoadingText, TEXT("FIRE_EATER 맵 생성 시작!!..."));
-	auto futureFireEater = async(launch::async, [&]
-		{
-			if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
-				return E_FAIL;
-			if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
-				return E_FAIL;
-
-			return S_OK;
-		});
-
-
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 중..."));
-
-	if (FAILED(futureStation.get()))
+#ifdef TEST_TEST_MAP
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YG), "TEST")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::YG), "TEST")))
 		return E_FAIL;
 
-	if (FAILED(futureHotel.get()))
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "TEST")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "TEST")))
+		return E_FAIL;
+#endif // TEST_TEST_MAP
+
+#ifdef TEST_STATION_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YG), "STATION")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::YG), "STATION")))
 		return E_FAIL;
 
-	if (FAILED(futureOuter.get()))
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "STATION")))
+		return E_FAIL;
+#endif // TEST_STATION_MAP
+
+#ifdef TEST_HOTEL_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::YG), "HOTEL")))
 		return E_FAIL;
 
-	if (FAILED(futureFireEater.get()))
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "HOTEL")))
+		return E_FAIL;
+#endif // TEST_HOTEL_MAP
+
+#ifdef TEST_OUTER_MAP
+
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YG), "OUTER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::YG), "OUTER")))
 		return E_FAIL;
 
-#pragma endregion
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "OUTER")))
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
 
-#pragma region YG
-	///* For.Prototype_GameObject_YGObject */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGObject"),
-	//	CYGObject::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+#ifdef TEST_FIRE_EATER_MAP
 
-	///* For.Prototype_GameObject_YGCapsule */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGCapsule"),
-	//	CYGCapsule::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	//네비 소환
+	if (FAILED(m_pMapLoader->Loading_Navigation(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Nav(TEXT("Layer_Nav"), ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+		return E_FAIL;
 
-	///* For.Prototype_GameObject_YGTriangleMesh */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTriangleMesh"),
-	//	CYGTriangleMesh::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), "FIRE_EATER")))
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
 
-	///* For.Prototype_GameObject_YGConvexMesh */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGConvexMesh"),
-	//	CYGConvexMesh::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
-	///* For.Prototype_GameObject_YGBox */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGBox"),
-	//	CYGBox::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+#endif // TESTMAP
 
-	///* For.Prototype_GameObject_YGShpere */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGShpere"),
-	//	CYGShpere::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
 
-	///* For.Prototype_GameObject_YGTrrigerWithoutModel */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGTrrigerWithoutModel"),
-	//	CYGTrrigerWithoutModel::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+#ifndef TESTMAP
 
-	///* For.Prototype_GameObject_YGDynamicGib */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicGib"),
-	//	CYGDynamicGib::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pMapLoader->Load_Ready_Nav_All(ENUM_CLASS(LEVEL::YG))))
+		return E_FAIL;
 
-	///* For.Prototype_GameObject_YGDynamicObj */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGDynamicObj"),
-	//	CYGDynamicObj::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pMapLoader->Load_Map(ENUM_CLASS(LEVEL::YG), START_MAP)))
+		return E_FAIL;
+	cout << "[MAP] START_MAP Load 완료" << endl;
 
-	///* For.Prototype_GameObject_YGFloor */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGFloor"),
-	//	CYGFloor::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Map(ENUM_CLASS(LEVEL::YG), START_MAP)))
+		return E_FAIL;
+	cout << "[MAP] START_MAP Ready 완료" << endl;
 
-	///* For.Prototype_GameObject_YGController */
-	//if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_YGController"),
-	//	CYGController::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+#endif // !TESTMAP
+
+
 
 #pragma endregion
 

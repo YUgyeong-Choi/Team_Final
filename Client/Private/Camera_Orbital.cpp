@@ -41,14 +41,13 @@ HRESULT CCamera_Orbital::Initialize(void* pArg)
 		return E_FAIL;
 
 	DOF_DESC dof{};
-	dof.fCenterPx = { 800.f, 450.f };
-	dof.fRadiusPx = 120.f;
-	dof.fFeatherPx = 80.f;
-	dof.fBlurBoost = 1.2f;
-	dof.fGamma = 1.5f;
-	dof.bIsUse = false;
+	dof.fCloseIntensity = 0.5f;
+	dof.fFarIntensity = 0.5f;
+	dof.fCleanRange = {0.f, 1000.f };
+	dof.fFeatherPx = 1.f;
+	dof.bIsUse = true;
 
-	m_DOFDesc = dof;
+	m_DOFDesc = dof; 
 
 	return S_OK;
 }

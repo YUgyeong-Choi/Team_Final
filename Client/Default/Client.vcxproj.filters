@@ -559,6 +559,9 @@
     <Filter Include="01.Levels\Loading\MapLoader">
       <UniqueIdentifier>{1e05d1e6-afec-4cd9-98f7-1cf833d70cd8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerRain">
+      <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1157,6 +1160,9 @@
     <ClInclude Include="..\public\MapLoader.h">
       <Filter>01.Levels\Loading\MapLoader</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerRain.h">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1728,6 +1734,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerRain.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

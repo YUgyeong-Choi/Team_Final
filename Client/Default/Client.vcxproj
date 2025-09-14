@@ -245,6 +245,7 @@
     <ClInclude Include="..\public\TriggerDropItem.h" />
     <ClInclude Include="..\Public\TriggerItem.h" />
     <ClInclude Include="..\Public\TriggerItemLamp.h" />
+    <ClInclude Include="..\Public\TriggerRain.h" />
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
@@ -491,6 +492,7 @@
     <ClCompile Include="..\private\TriggerDropItem.cpp" />
     <ClCompile Include="..\Private\TriggerItem.cpp" />
     <ClCompile Include="..\Private\TriggerItemLamp.cpp" />
+    <ClCompile Include="..\Private\TriggerRain.cpp" />
     <ClCompile Include="..\Private\TriggerSound.cpp" />
     <ClCompile Include="..\private\Static_Decal.cpp" />
     <ClCompile Include="..\private\Static_UI.cpp" />

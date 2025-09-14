@@ -37,6 +37,15 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	DOF_DESC dof{};
+	dof.fCloseIntensity = 1.f;
+	dof.fFarIntensity = 1.f;
+	dof.fCleanRange = { 0.f, 1000.f };
+	dof.fFeatherPx = 80.f;
+	dof.bIsUse = true;
+
+	m_DOFDesc = dof;
+
 	return S_OK;
 }
 
