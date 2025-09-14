@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "Dynamic_Text_UI.h"
 
 CUI_Letter::CUI_Letter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -70,6 +71,14 @@ HRESULT CUI_Letter::Initialize(void* pArg)
             m_Explainations[0]->Active_Update(true);
 
     }
+
+    if (pDesc->partPaths.front().find(L"NewsPaper") != _wstring::npos)
+    {
+
+        static_cast<CDynamic_UI*>(m_pBackGround->Get_PartUI()[1])->Set_iTextureIndex(4);
+        static_cast<CDynamic_Text_UI*>(m_pBackGround->Get_PartUI().back())->Set_Caption(L"크라트 타임스 183호");
+    }
+
 
 
     m_fCurrentAlpha = 1.f;
@@ -143,7 +152,7 @@ HRESULT CUI_Letter::Render()
 
 void CUI_Letter::Check_Button()
 {
-    if (m_pGameInstance->Key_Down(DIK_SPACE))
+    if (m_pGameInstance->Key_Down(DIK_SPACE) || m_pGameInstance->Key_Down(DIK_ESCAPE))
     {
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())

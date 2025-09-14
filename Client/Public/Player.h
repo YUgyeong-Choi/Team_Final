@@ -347,6 +347,8 @@ private: /* [ 림라이트 ] */
 	_float4 m_vLimLightColor = { 1.f ,1.f ,1.f ,1.f };
 
 private: /* [ 텔레포트 ] */
+	_bool m_bTeleportFadeStart = {};
+	
 	_bool m_bTeleport = {};
 	_float m_fTeleportTime = {};
 	_float3 m_vTeleportPos = {};
