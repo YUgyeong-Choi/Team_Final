@@ -201,6 +201,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				Interp_OffsetRot(m_iCurrentFrame);
 				Interp_OffsetPos(m_iCurrentFrame);
 				Interp_Target(m_iCurrentFrame);
+				Interp_Dof(m_iCurrentFrame);
 
 				Event();
 
@@ -642,6 +643,86 @@ void CCamera_CutScene::Interp_Target(_int curFrame)
 	}
 }
 
+void CCamera_CutScene::Interp_Dof(_int curFrame)
+{
+	const auto& vec = m_CameraDatas.vecDOFData;
+	if (vec.empty())
+		return;
+
+	for (size_t i = 0; i + 1 < vec.size(); ++i)
+	{
+		const auto& a = vec[i];
+		const auto& b = vec[i + 1];
+
+		if (curFrame >= a.iKeyFrame && curFrame <= b.iKeyFrame)
+		{
+			const INTERPOLATION_CAMERA interp = a.interpDof;
+			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
+			float t = float(curFrame - a.iKeyFrame) / float(span);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
+
+			DOF_DESC out{};
+			out.bIsUse = true;
+
+			switch (interp)
+			{
+			case INTERPOLATION_CAMERA::NONE:
+				out = a.dofDesc;
+				out.bIsUse = true;
+				break;
+			case INTERPOLATION_CAMERA::CATMULLROM:
+			{
+				const auto& prev = (i == 0) ? a.dofDesc : vec[i - 1].dofDesc;
+				const auto& next = (i + 2 < vec.size()) ? vec[i + 2].dofDesc : b.dofDesc;
+
+				out.fCloseIntensity = XMVectorGetX(XMVectorCatmullRom(
+					XMVectorReplicate(prev.fCloseIntensity),
+					XMVectorReplicate(a.dofDesc.fCloseIntensity),
+					XMVectorReplicate(b.dofDesc.fCloseIntensity),
+					XMVectorReplicate(next.fCloseIntensity), tRemap));
+
+				out.fFarIntensity = XMVectorGetX(XMVectorCatmullRom(
+					XMVectorReplicate(prev.fFarIntensity),
+					XMVectorReplicate(a.dofDesc.fFarIntensity),
+					XMVectorReplicate(b.dofDesc.fFarIntensity),
+					XMVectorReplicate(next.fFarIntensity), tRemap));
+
+				out.fFeatherPx = XMVectorGetX(XMVectorCatmullRom(
+					XMVectorReplicate(prev.fFeatherPx),
+					XMVectorReplicate(a.dofDesc.fFeatherPx),
+					XMVectorReplicate(b.dofDesc.fFeatherPx),
+					XMVectorReplicate(next.fFeatherPx), tRemap));
+
+				// float2 cleanRange¥¬ ƒƒ∆˜≥Õ∆Æ∫∞ CatmullRom
+				out.fCleanRange.x = XMVectorGetX(XMVectorCatmullRom(
+					XMVectorReplicate(prev.fCleanRange.x),
+					XMVectorReplicate(a.dofDesc.fCleanRange.x),
+					XMVectorReplicate(b.dofDesc.fCleanRange.x),
+					XMVectorReplicate(next.fCleanRange.x), tRemap));
+
+				out.fCleanRange.y = XMVectorGetX(XMVectorCatmullRom(
+					XMVectorReplicate(prev.fCleanRange.y),
+					XMVectorReplicate(a.dofDesc.fCleanRange.y),
+					XMVectorReplicate(b.dofDesc.fCleanRange.y),
+					XMVectorReplicate(next.fCleanRange.y), tRemap));
+				break;
+			}
+
+			case INTERPOLATION_CAMERA::LERP:
+			default:
+				out.fCloseIntensity = LerpFloat(a.dofDesc.fCloseIntensity, b.dofDesc.fCloseIntensity, tRemap);
+				out.fFarIntensity = LerpFloat(a.dofDesc.fFarIntensity, b.dofDesc.fFarIntensity, tRemap);
+				out.fFeatherPx = LerpFloat(a.dofDesc.fFeatherPx, b.dofDesc.fFeatherPx, tRemap);
+				out.fCleanRange.x = LerpFloat(a.dofDesc.fCleanRange.x, b.dofDesc.fCleanRange.x, tRemap);
+				out.fCleanRange.y = LerpFloat(a.dofDesc.fCleanRange.y, b.dofDesc.fCleanRange.y, tRemap);
+				break;
+			}
+
+			CCamera_Manager::Get_Instance()->SetDOFDesc(out);
+		}
+	}
+}
+
 XMVECTOR CCamera_CutScene::XMMatrixDecompose_T(const _matrix& m)
 {
 	XMVECTOR scale, rot, trans;
@@ -850,6 +931,47 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			data.vecTargetData.push_back(targetFrame);
 		}
 	}
+
+	// 6. vecDOFData
+	if (j.contains("vecDOFData") && j["vecDOFData"].is_array())
+	{
+		for (const auto& dofJson : j["vecDOFData"])
+		{
+			CAMERA_DOF dofFrame{};
+			dofFrame.iKeyFrame = dofJson.value("keyFrame", 0);
+			dofFrame.interpDof = static_cast<INTERPOLATION_CAMERA>(dofJson.value("interpDof", 0));
+			dofFrame.curveType = dofJson.value("curveType", 0); // 0=Linear
+
+			// curveY √÷¥Î 5∞≥∏∏ ∫πªÁ
+			if (dofJson.contains("curveY") && dofJson["curveY"].is_array())
+			{
+				const auto& arr = dofJson["curveY"];
+				const int n = std::min<int>(5, static_cast<int>(arr.size()));
+				for (int k = 0; k < n; ++k)
+					dofFrame.curveY[k] = arr[k].get<float>();
+			}
+
+			// dofDesc (¡ﬂ√∏ ∞¥√º)
+			if (dofJson.contains("dofDesc") && dofJson["dofDesc"].is_object())
+			{
+				const auto& dd = dofJson["dofDesc"];
+				dofFrame.dofDesc.fCloseIntensity = dd.value("closeIntensity", 1.0f);
+				dofFrame.dofDesc.fFarIntensity = dd.value("farIntensity", 1.0f);
+				dofFrame.dofDesc.fFeatherPx = dd.value("featherPx", 1.0f);
+				dofFrame.dofDesc.bIsUse = dd.value("isUse", false);
+
+				// cleanRange: [x, y]
+				if (dd.contains("cleanRange") && dd["cleanRange"].is_array() && dd["cleanRange"].size() >= 2)
+				{
+					dofFrame.dofDesc.fCleanRange.x = dd["cleanRange"][0].get<float>();
+					dofFrame.dofDesc.fCleanRange.y = dd["cleanRange"][1].get<float>();
+				}
+			}
+
+			data.vecDOFData.push_back(dofFrame);
+		}
+	}
+
 	return data;
 }
 

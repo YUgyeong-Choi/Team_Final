@@ -210,13 +210,9 @@ namespace Client
 	{
 		_int iKeyFrame;
 		DOF_DESC dofDesc;
-		INTERPOLATION_CAMERA interpCleanRangeX;
-		_int   RangeXcurveType = 0;
-		_float RangeXcurveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
-
-		INTERPOLATION_CAMERA interpCleanRangeY;
-		_int   RangeYcurveType = 0;
-		_float RangeYcurveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
+		INTERPOLATION_CAMERA interpDof;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 
 	struct CAMERA_FRAMEDATA

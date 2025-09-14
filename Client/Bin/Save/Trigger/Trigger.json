@@ -246,6 +246,24 @@
       "PrototypeName": "Prototype_GameObject_UI_Info",
       "FilePaths": [ "../Bin/Save/UI/Info/Info_LegionArm.json" ]
 
+    },
+    {
+      "ClassType": 0,
+      "TriggerType": 6,
+      "vPos": [ 316.66, 7.424, -38.87 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 0.2, 0.2, 5.0 ],
+      "SoundDatas": [
+        {
+          "SoundName": "0_Dialog_Sophia_F00_S7_text_1",
+          "Text": "호텔은 지금 포위되었어요.\n강력한 퍼레이드 인형이 입구를 막고 있죠."
+        },
+        {
+          "SoundName": "1_Dialog_Sophia_F00_S7_1_text_1",
+          "Text": "부디 조심해요."
+        }
+      ]
     }
   ]
 }

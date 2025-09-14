@@ -160,6 +160,28 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 			});
 	}
 
+	// 6. Dof Frame
+	for (const auto& dof : data.vecDOFData)
+	{
+		const auto& d = dof.dofDesc;
+
+		nlohmann::json dofObj = {
+			{ "keyFrame",  dof.iKeyFrame },
+			{ "interpDof", static_cast<_int>(dof.interpDof) },
+			{ "curveType", dof.curveType },
+			{ "curveY",    std::vector<float>(std::begin(dof.curveY), std::end(dof.curveY)) },
+			{ "dofDesc", {
+				{ "closeIntensity", d.fCloseIntensity },
+				{ "farIntensity",   d.fFarIntensity },
+				{ "cleanRange",     std::array<float, 2>{ d.fCleanRange.x, d.fCleanRange.y } },
+				{ "featherPx",      d.fFeatherPx },
+				{ "isUse",          d.bIsUse }
+			}}
+		};
+
+		j["vecDOFData"].push_back(dofObj);
+	}
+
 	return j;
 }
 
@@ -324,6 +346,47 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			data.vecTargetData.push_back(targetFrame);
 		}
 	}
+
+	// 6. vecDOFData
+	if (j.contains("vecDOFData") && j["vecDOFData"].is_array())
+	{
+		for (const auto& dofJson : j["vecDOFData"])
+		{
+			CAMERA_DOF dofFrame{};
+			dofFrame.iKeyFrame = dofJson.value("keyFrame", 0);
+			dofFrame.interpDof = static_cast<INTERPOLATION_CAMERA>(dofJson.value("interpDof", 0));
+			dofFrame.curveType = dofJson.value("curveType", 0); // 0=Linear
+
+			// curveY 최대 5개만 복사
+			if (dofJson.contains("curveY") && dofJson["curveY"].is_array())
+			{
+				const auto& arr = dofJson["curveY"];
+				const int n = std::min<int>(5, static_cast<int>(arr.size()));
+				for (int k = 0; k < n; ++k)
+					dofFrame.curveY[k] = arr[k].get<float>();
+			}
+
+			// dofDesc (중첩 객체)
+			if (dofJson.contains("dofDesc") && dofJson["dofDesc"].is_object())
+			{
+				const auto& dd = dofJson["dofDesc"];
+				dofFrame.dofDesc.fCloseIntensity = dd.value("closeIntensity", 1.0f);
+				dofFrame.dofDesc.fFarIntensity = dd.value("farIntensity", 1.0f);
+				dofFrame.dofDesc.fFeatherPx = dd.value("featherPx", 1.0f);
+				dofFrame.dofDesc.bIsUse = dd.value("isUse", false);
+
+				// cleanRange: [x, y]
+				if (dd.contains("cleanRange") && dd["cleanRange"].is_array() && dd["cleanRange"].size() >= 2)
+				{
+					dofFrame.dofDesc.fCleanRange.x = dd["cleanRange"][0].get<float>();
+					dofFrame.dofDesc.fCleanRange.y = dd["cleanRange"][1].get<float>();
+				}
+			}
+
+			data.vecDOFData.push_back(dofFrame);
+		}
+	}
+
 	return data;
 }
 
@@ -515,28 +578,38 @@ HRESULT CYGTool::Render_CameraTool()
 			if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
 				m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
 		}
-		//else if (m_iSelected == 5)
-		//{
-		//	// Dof
+		else if (m_iSelected == 5)
+		{
+			// Dof
+			_bool changed = false;
 
-		//	ImGui::DragFloat("fCloseIntensity", &m_pSelectedKey->fPitch, 0.f, -89.0f, 89.0f);
-		//	ImGui::DragFloat("fFarIntensity", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
-		//	ImGui::DragFloat2("fCleanRange", reinterpret_cast<float*>(&m_pSelectedKey->dofDesc.fCleanRange), 0.05f);
-		//	ImGui::DragFloat2("fFeatherPx", &m_pSelectedKey->fYaw, 0.f, -180.0f, 180.0f);
+			changed |= ImGui::DragFloat("fCloseIntensity", &m_pSelectedKey->dofDesc.fCloseIntensity, 0.05f);
+			changed |= ImGui::DragFloat("fFarIntensity", &m_pSelectedKey->dofDesc.fFarIntensity, 0.05f);
+			changed |= ImGui::DragFloat2("fCleanRange", reinterpret_cast<float*>(&m_pSelectedKey->dofDesc.fCleanRange), 0.05f);
+			changed |= ImGui::DragFloat("fFeatherPx", &m_pSelectedKey->dofDesc.fFeatherPx, 0.05f);
+			m_pSelectedKey->dofDesc.bIsUse = true;
 
-		//	m_pSelectedKey->dofDesc.bIsUse = true;
+			_int interpFov = static_cast<int>(m_pSelectedKey->interpDof);
+			if (ImGui::Combo("Interp Dof", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+				m_pSelectedKey->interpDof = static_cast<INTERPOLATION_CAMERA>(interpFov);
 
-		//	if (ImGui::Button("Clone Pitch Yaw"))
-		//	{
-		//		m_pSelectedKey->fPitch = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Pitch();
-		//		m_pSelectedKey->fYaw = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_Yaw();
-		//	}
+			if (ImGui::Button("Set DOF") || changed)
+			{
+				DOF_DESC dof{};
+				dof.fCloseIntensity = m_pSelectedKey->dofDesc.fCloseIntensity;
+				dof.fFarIntensity = m_pSelectedKey->dofDesc.fFarIntensity;
+				dof.fCleanRange = m_pSelectedKey->dofDesc.fCleanRange;
+				dof.fFeatherPx = m_pSelectedKey->dofDesc.fFeatherPx;
+				dof.bIsUse = true;
 
-		//	_int interpFov = static_cast<int>(m_pSelectedKey->interpTarget);
+				CCamera_Manager::Get_Instance()->SetDOFDesc(dof);
+			}
 
-		//	if (ImGui::Combo("Interp Target", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
-		//		m_pSelectedKey->interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
-		//}
+			if (ImGui::Button("Reset DOF"))
+			{
+				CCamera_Manager::Get_Instance()->ResetDOFDesc();
+			}
+		}
 	}
 
 	Render_SetInfos();
@@ -705,6 +778,39 @@ HRESULT CYGTool::Render_CameraTool()
 					v.insert(it, targetFrame);
 
 					m_CameraSequence->Add_KeyFrame(4, m_pSelectedKey->keyFrame);
+				}
+				break;
+			}
+			case 5:
+			{
+				_bool exist = false;
+				for (auto& keyframe : m_CameraDatas.vecDOFData)
+				{
+					if (keyframe.iKeyFrame == m_pSelectedKey->keyFrame)
+					{
+						exist = true;
+						break;
+					}
+				}
+
+				if (!exist)
+				{
+					CAMERA_DOF dofFrame;
+					dofFrame.iKeyFrame = m_pSelectedKey->keyFrame;
+					dofFrame.dofDesc.fCloseIntensity = m_pSelectedKey->dofDesc.fCloseIntensity;
+					dofFrame.dofDesc.fFarIntensity = m_pSelectedKey->dofDesc.fFarIntensity;
+					dofFrame.dofDesc.fCleanRange = m_pSelectedKey->dofDesc.fCleanRange;
+					dofFrame.dofDesc.fFeatherPx = m_pSelectedKey->dofDesc.fFeatherPx;
+					dofFrame.dofDesc.bIsUse = true;
+					dofFrame.interpDof = m_pSelectedKey->interpDof;
+
+					auto& v = m_CameraDatas.vecDOFData;
+					auto it = std::lower_bound(
+						v.begin(), v.end(), dofFrame.iKeyFrame,
+						[](const CAMERA_DOF& a, int key) { return a.iKeyFrame < key; });
+					v.insert(it, dofFrame);
+
+					m_CameraSequence->Add_KeyFrame(5, m_pSelectedKey->keyFrame);
 				}
 				break;
 			}
@@ -956,6 +1062,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = {};
 				m_EditTargetKey = {};
+				m_EditDofKey = {};
 				m_iChangeKeyFrame = m_EditMatrixPosKey.iKeyFrame;
 			}
 		}
@@ -1102,6 +1209,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = {};
 				m_EditTargetKey = {};
+				m_EditDofKey = {};
 				m_iChangeKeyFrame = m_EditOffSetPosKey.iKeyFrame;
 			}
 		}
@@ -1217,6 +1325,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditOffSetRotKey = m_CameraDatas.vecOffSetRotData[i];;
 				m_EditFovKey = {};
 				m_EditTargetKey = {};
+				m_EditDofKey = {};
 				m_iChangeKeyFrame = m_EditOffSetRotKey.iKeyFrame;
 			}
 		}
@@ -1330,6 +1439,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = m_CameraDatas.vecFovData[i];
 				m_EditTargetKey = {};
+				m_EditDofKey = {};
 				m_iChangeKeyFrame = m_EditFovKey.iKeyFrame;
 			}
 		}
@@ -1443,6 +1553,7 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_EditOffSetRotKey = {};
 				m_EditFovKey = {};
 				m_EditTargetKey = m_CameraDatas.vecTargetData[i];
+				m_EditDofKey = {};
 				m_iChangeKeyFrame = m_EditTargetKey.iKeyFrame;
 			}
 		}
@@ -1545,6 +1656,124 @@ HRESULT CYGTool::Render_CameraFrame()
 				m_CameraDatas.vecTargetData.erase(m_CameraDatas.vecTargetData.begin() + m_iEditKey);
 				m_iEditKey = -1;
 				m_EditTargetKey = {};
+			}
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Dof Info"))
+	{
+		ImGui::BeginChild("DofFrameList", ImVec2(0, 200), true, ImGuiWindowFlags_HorizontalScrollbar);
+
+		// 리스트 출력
+		for (size_t i = 0; i < m_CameraDatas.vecDOFData.size(); ++i)
+		{
+			const auto& desc = m_CameraDatas.vecDOFData[i];
+			char label[32];
+			sprintf_s(label, "KeyFrame: %d", desc.iKeyFrame);
+
+			bool bSelected = (m_iEditKey == static_cast<int>(i));
+
+			if (ImGui::Selectable(label, bSelected))
+			{
+				// 선택됨 → 인덱스 및 포인터 저장
+				m_iEditKey = static_cast<int>(i);
+				m_EditMatrixPosKey = {};
+				m_EditOffSetPosKey = {};
+				m_EditOffSetRotKey = {};
+				m_EditFovKey = {};
+				m_EditTargetKey = {};
+				m_EditDofKey = m_CameraDatas.vecDOFData[i];
+				m_iChangeKeyFrame = m_EditDofKey.iKeyFrame;
+			}
+		}
+		ImGui::EndChild();
+
+		ImGui::SeparatorText("Edit Dof Key Info");
+
+		auto& dofDesc = m_EditDofKey;
+		ImGui::DragFloat("fCloseIntensity", &dofDesc.dofDesc.fCloseIntensity, 0.05f);
+		ImGui::DragFloat("fFarIntensity", &dofDesc.dofDesc.fFarIntensity, 0.05f);
+		ImGui::DragFloat2("fCleanRange", reinterpret_cast<float*>(&dofDesc.dofDesc.fCleanRange), 0.05f);
+		ImGui::DragFloat("fFeatherPx", &dofDesc.dofDesc.fFeatherPx, 0.05f);
+
+		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
+		_int interpFov = static_cast<int>(dofDesc.interpDof);
+		if (ImGui::Combo("Interp Dof", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+			dofDesc.interpDof = static_cast<INTERPOLATION_CAMERA>(interpFov);
+
+		ImGui::DragInt("Dof Key", &m_iChangeKeyFrame);
+		if (ImGui::Button("Dof Change KeyFrame"))
+		{
+			m_CameraSequence->Change_KeyFrame(5, m_EditDofKey.iKeyFrame, m_iChangeKeyFrame);
+			m_EditDofKey.iKeyFrame = m_iChangeKeyFrame;
+			m_CameraDatas.vecDOFData[m_iEditKey].iKeyFrame = m_EditDofKey.iKeyFrame;
+		}
+
+		{ // [ *********** 그래프 ******************** ] 
+			const bool isSegmentInterp = (m_EditDofKey.interpDof == INTERPOLATION_CAMERA::LERP
+				|| m_EditDofKey.interpDof == INTERPOLATION_CAMERA::CATMULLROM);
+			const int  iStart = m_iEditKey;
+			const int  iNext = iStart + 1;
+			const bool hasNext = (iStart >= 0) && (iNext < (int)m_CameraDatas.vecDOFData.size());
+
+			if (isSegmentInterp && hasNext)
+			{
+				const auto& keyA = m_CameraDatas.vecDOFData[iStart];
+				const auto& keyB = m_CameraDatas.vecDOFData[iNext];
+				const int   span = max(1, keyB.iKeyFrame - keyA.iKeyFrame);
+
+
+				char buf[128];
+				sprintf_s(buf, sizeof(buf),
+					"Speed Curve (this segment: key %d → %d)",
+					keyA.iKeyFrame, keyB.iKeyFrame);
+				ImGui::SeparatorText(buf);
+
+
+				// 커브 타입 선택
+				const char* curveNames[] = { "Linear", "EaseIn", "EaseOut", "EaseInOut", "Custom5" };
+				int curve = m_EditDofKey.curveType;
+				if (ImGui::Combo("Speed Curve", &curve, curveNames, IM_ARRAYSIZE(curveNames)))
+					m_EditDofKey.curveType = curve;
+
+				// Custom5 포인트
+				if (m_EditDofKey.curveType == 4) {
+					ImGui::TextUnformatted("Custom5 y@x=[0,.25,.5,.75,1]");
+					for (int i = 0; i < 5; ++i) {
+						ImGui::SliderFloat((std::string("y[") + std::to_string(i) + "]").c_str(),
+							&m_EditDofKey.curveY[i], 0.f, 1.f, "%.3f");
+					}
+				}
+
+				// 프리뷰: t→t' 그래프 (세그먼트 진행도 0..1)
+				constexpr int SAMPLES = 128;
+				static float samples[SAMPLES];
+				for (int i = 0; i < SAMPLES; ++i) {
+					float t = (SAMPLES == 1) ? 0.f : (float)i / (float)(SAMPLES - 1);
+					samples[i] = RemapBySpeed(m_EditDofKey.curveType, m_EditDofKey.curveY, t);
+				}
+				ImGui::PlotLines("t' = F(t)", samples, SAMPLES, 0, nullptr, 0.f, 1.f, ImVec2(-1, 120));
+				ImGui::Text("Segment frames: [%d..%d] (span=%d)", keyA.iKeyFrame, keyB.iKeyFrame, span);
+			}
+			else {
+				ImGui::SeparatorText("Speed Curve");
+				ImGui::TextUnformatted("No Next KeyFrame Or This is None");
+			}
+		}
+
+		if (ImGui::Button("Dof Apply"))
+		{
+			m_CameraDatas.vecDOFData[m_iEditKey] = m_EditDofKey;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Dof Delete"))
+		{
+			if (m_iEditKey >= 0 && m_iEditKey < static_cast<int>(m_CameraDatas.vecDOFData.size()))
+			{
+				m_CameraSequence->Delete_KeyFrame(5, m_CameraDatas.vecDOFData[m_iEditKey].iKeyFrame);
+				m_CameraDatas.vecDOFData.erase(m_CameraDatas.vecDOFData.begin() + m_iEditKey);
+				m_iEditKey = -1;
+				m_EditDofKey = {};
 			}
 		}
 	}
