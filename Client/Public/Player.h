@@ -310,6 +310,8 @@ public:/*[스탯 관련]*/
 
 	_bool Check_LevelUp(_int iLevel);
 
+	void Recovery_Ergo();
+
 private:
 	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
 	void Detect_FootstepSurface(eAnimCategory eAnim);
@@ -487,6 +489,9 @@ private: /* [ 현재 플레이어 레벨 ] */
 	// 레벨 업 하면 필요한 에르고 필요치를 높힌다. 
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };
+
+	// 죽으면 에르고를 여기로 채우고, 에르고를 먹으면 다시 차도록
+	_float  m_fLostErgo = {};
 
 private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bItemSwitch = {};

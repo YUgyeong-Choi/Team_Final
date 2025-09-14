@@ -109,6 +109,7 @@ void CUI_Popup::Set_String(_int iTriggerType)
 		break;
 	case 6:
 		strCaption = L"사망 에르고를 회수한다.";
+		break;
 	default:
 		strCaption = L"????";
 		break;

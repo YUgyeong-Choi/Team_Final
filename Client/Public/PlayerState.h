@@ -3403,6 +3403,13 @@ public:
         m_pOwner->m_bIsInvincible = false;
         m_bDoOnce = false;
         m_bDoTwo = false;
+
+        if (m_pOwner->m_fLostErgo > 0.f)
+            m_pOwner->m_fLostErgo = 0.f;
+
+        m_pOwner->m_fLostErgo = m_pOwner->m_fErgo;
+
+        m_pOwner->Add_Ergo(-m_pOwner->m_fLostErgo);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

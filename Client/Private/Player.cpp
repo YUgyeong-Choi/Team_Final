@@ -2843,6 +2843,16 @@ _bool CPlayer::Check_LevelUp(_int iLevel)
 	return false;
 }
 
+void CPlayer::Recovery_Ergo()
+{
+	if (m_fLostErgo < 1.f)
+		return;
+
+	m_fErgo += m_fLostErgo;
+	m_fLostErgo = 0.f;
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
 void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 {
 	// ----------------------------
