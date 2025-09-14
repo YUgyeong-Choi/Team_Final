@@ -3,7 +3,7 @@
         "Collision": false,
         "ModelName": "ErgoItem",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
     },
     {
