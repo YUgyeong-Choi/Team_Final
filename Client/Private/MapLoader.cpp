@@ -1146,7 +1146,7 @@ HRESULT CMapLoader::Ready_ErgoItem(const _char* Map)
 				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
 		CErgoItem::ERGOITEM_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		Desc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
 		Desc.WorldMatrix = WorldMatrix;
 
 		if (ErgoItemData.contains("Tag") && ErgoItemData["Tag"].is_number_unsigned())
@@ -1348,10 +1348,10 @@ HRESULT CMapLoader::Ready_Monster(const _char* Map)
 
 			// 오브젝트 생성 Desc 채우기
 			CUnit::UNIT_DESC UnitDesc{};
-			UnitDesc.eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+			UnitDesc.eMeshLevelID = static_cast<LEVEL>(m_pGameInstance->GetCurrentLevelIndex());
 			UnitDesc.wsNavName = StringToWString(Map);
 			UnitDesc.WorldMatrix = WorldMatrix;
-			UnitDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+			UnitDesc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
 			UnitDesc.szMeshID = wstrMonsterName.c_str();
 
 			if (MonsterData.contains("SpawnType"))
@@ -1362,7 +1362,7 @@ HRESULT CMapLoader::Ready_Monster(const _char* Map)
 
 			wstring wsPrototypeTag = TEXT("Prototype_GameObject_") + wstrMonsterName;
 
-			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), wsPrototypeTag, &UnitDesc));
+			CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, m_pGameInstance->GetCurrentLevelIndex(), wsPrototypeTag, &UnitDesc));
 			m_pGameInstance->Add_PoolObject(wsLayer, pObj);
 
 			if (pObj == nullptr)

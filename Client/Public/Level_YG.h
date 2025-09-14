@@ -29,7 +29,7 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual HRESULT Reset() override;
-
+	HRESULT Ready_Level();
 private:
 	HRESULT Ready_Player();
 	HRESULT Ready_Camera();
@@ -40,6 +40,9 @@ private:
 	HRESULT Ready_Interact();
 	HRESULT Add_MapActor(const _char* Map); //맵 액터 추가(콜라이더 활성화)
 	HRESULT Ready_Monster(const _char* Map);
+	HRESULT Ready_AnimatedProp();
+
+	class CMapLoader* m_pMapLoader = { nullptr };
 private:
 	HRESULT Load_Shader();
 	HRESULT Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg = nullptr);

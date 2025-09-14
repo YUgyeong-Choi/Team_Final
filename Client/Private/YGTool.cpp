@@ -37,6 +37,7 @@ HRESULT CYGTool::Initialize(void* pArg)
 	m_CameraSequence->Add(0,10,2);
 	m_CameraSequence->Add(0,10,3);
 	m_CameraSequence->Add(0,10,4);
+	m_CameraSequence->Add(0,10,5);
 	return S_OK;
 }
 

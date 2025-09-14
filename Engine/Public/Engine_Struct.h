@@ -97,7 +97,7 @@ namespace Engine
 		_float fCloseIntensity; // 가까운 쪽 흐림 강도
 		_float fFarIntensity; // 가까운 쪽 흐림 강도
 		_float2 fCleanRange; // 포커스 중심 (픽셀)
-		_float  fFeatherPx = 80.f;             // 경계 소프트
+		_float  fFeatherPx = 1.f;             // 경계 소프트
 		_bool				bIsUse;
 	}DOF_DESC;
 

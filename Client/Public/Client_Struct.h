@@ -206,6 +206,15 @@ namespace Client
 		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
 	};
 
+	struct CAMERA_DOF
+	{
+		_int iKeyFrame;
+		DOF_DESC dofDesc;
+		INTERPOLATION_CAMERA interpTarget;
+		_int   curveType = 0;
+		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f };
+	};
+
 	struct CAMERA_FRAMEDATA
 	{
 		_int iEndFrame;
@@ -218,6 +227,7 @@ namespace Client
 		vector<CAMERA_ROTFRAME> vecOffSetRotData;
 		vector<CAMERA_FOVFRAME> vecFovData;
 		vector<CAMERA_TARGETFRAME> vecTargetData;
+		vector<CAMERA_DOF> vecDOFData;
 	};
 
 #pragma endregion

@@ -35,9 +35,7 @@ public:
         _float fDistance;
         INTERPOLATION_CAMERA interpTarget;
 
-        //_bool bLookAt = false;
-        //_vector lookAtTarget;
-        //INTERPOLATION_CAMERA interpLookAt;
+		DOF_DESC dofDesc;
         _int keyFrame;
     };
 public:
@@ -59,6 +57,7 @@ public:
         case 2: return "OffSetRot";
         case 3: return "Fov";
         case 4: return "Target";
+        case 5: return "Dof";
         default: return "Unknown";
         }
     }
@@ -86,6 +85,8 @@ public:
         case 3: return "Fov";
             sprintf_s(label, "Camera Key %d", index);
         case 4: return "Target";
+            sprintf_s(label, "Camera Key %d", index);
+        case 5: return "Dof";
             sprintf_s(label, "Camera Key %d", index);
         default: return "Unknown";
         }
@@ -122,6 +123,7 @@ public:
     vector<_int> m_vecOffSetRotKeyFrames;
     vector<_int> m_vecFovKeyFrames;
     vector<_int> m_vecTargetKeyFrames;
+    vector<_int> m_vecDofKeyFrames;
     _int m_iFrameMax = { 80 };
     _int m_iFrameMin = { 0 };
 };
