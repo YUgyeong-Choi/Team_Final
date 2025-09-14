@@ -2721,6 +2721,12 @@ void CPlayer::Detect_FootstepSurface()
 
 		/*wprintf(L"[Footstep] Hit floor at (%.2f, %.2f, %.2f)\n",
 			block.position.x, block.position.y, block.position.z);*/
+
+		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		if (pHitMesh)
+		{
+			_int a = 10;
+		}
 	}
 	else
 	{
@@ -2740,8 +2746,6 @@ void CPlayer::Detect_FootstepSurface()
 	}
 #endif
 }
-
-
 
 HRESULT CPlayer::Ready_Weapon()
 {
