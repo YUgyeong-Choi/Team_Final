@@ -23,6 +23,8 @@
 #include "Static_UI.h"
 #include "UI_Guide.h"
 
+#include "ErgoItem.h"
+
 #include "Client_Calculation.h"
 
 
@@ -3319,10 +3321,45 @@ public:
             CUI_Manager::Get_Instance()->Off_Panel();
             CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertDeath_01");
             m_bDoOnce = true;
+
+          
+            
         }
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
+
+            // 이제 lost ergo 죽은 위치에 추가 // 
+
+            _int iAreaID = m_pGameInstance->GetCurAreaIds();
+
+            CErgoItem::ERGOITEM_DESC eItemDesc = {};
+
+            eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
+            eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+
+            // 각각 문 앞에 생성
+            // 푸오코
+            if (19 == iAreaID)
+            {
+
+            }
+            // 축제 인도자
+            else if (60 == iAreaID)
+            {
+
+            }
+            // 지금 위치에 생성
+            else
+            {
+                XMStoreFloat4x4(&eItemDesc.WorldMatrix, m_pOwner->Get_TransfomCom()->Get_WorldMatrix());
+            }
+
+            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
+                m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
+
+
+
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
             m_pOwner->m_pWeapon->SetbIsActive(false);
@@ -3356,6 +3393,10 @@ public:
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
+
+
+            
+         
         }
 
 
