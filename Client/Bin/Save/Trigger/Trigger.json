@@ -157,7 +157,7 @@
       "vPos": [ 277.530441, 3.676557, -19.049854 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 5.0, 1.0, 2.0 ],
+      "triggerSize": [ 2.0, 1.0, 5.0 ],
       "PrototypeName": "Prototype_GameObject_UI_Guide",
       "FilePaths": [ "../Bin/Save/UI/Guide/Guide_Dash.json" ]
     },

@@ -245,6 +245,12 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		m_isDropItem = true;
 	}
 
+	if (m_bGroggyActive)
+	{
+		if (m_pHPBar)
+			m_pHPBar->Set_RenderTime(1.f);
+	}
+
 }
 
 void CElite_Police::Update(_float fTimeDelta)
