@@ -1756,7 +1756,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	///* For.Prototype_Component_Texture_TeamPicture*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Tutorial"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/Tutorial_%d.dds"), 10))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Guide/Tutorial_%d.dds"), 12))))
 		return E_FAIL;
 
 	///* For.Prototype_Component_Texture_TeamPicture*/
@@ -2038,7 +2038,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemIcon"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_%d.dds"), 4))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemIcon_%d.dds"), 5))))
 		return E_FAIL;
 
 
@@ -2164,6 +2164,11 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Boss_Item"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Item_Boss_%d.dds"), 5))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Button_Highlight*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ImgText_Recovery"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Text/UIT_ImgText_Recovery.dds")))))
 		return E_FAIL;
 
 	return S_OK;

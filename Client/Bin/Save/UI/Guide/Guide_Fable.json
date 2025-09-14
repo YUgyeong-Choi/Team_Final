@@ -1,0 +1,216 @@
+[
+    {
+        "Color": {
+            "A": 1.0,
+            "B": 1.0,
+            "G": 1.0,
+            "R": 1.0
+        },
+        "FilePath": "",
+        "Parts": [
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 357.04901123046875,
+                "SizeX": 0.30000001192092896,
+                "SizeY": 0.27000001072883606,
+                "Texturetag": "Prototype_Component_Texture_Tutorial",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.009999999776482582,
+                "fX": 0.6639999151229858,
+                "fY": 0.5249999761581421,
+                "iPassIndex": 1,
+                "iTextureIndex": 10,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "페이블 아츠",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.10000000149011612,
+                    "G": 0.10000000149011612,
+                    "R": 0.10000000149011612
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 1,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.44999998807907104,
+                "SizeY": 0.44999998807907104,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.5,
+                "fY": 0.25699999928474426,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "       : 날 페이블 아츠 사용\n가드중       : 손잡이 페이블 아츠 사용 ",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 0.20000000298023224
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 0,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.3499999940395355,
+                "SizeY": 0.3499999940395355,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.242000013589859,
+                "fY": 0.4259999990463257,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Caption": "무기는 날과 손잡이로 구분되며 각각 다른 페이블 아츠를\n사용할 수 있다.\n페이블 아츠는 페이블 슬롯을 소모하며 소모량도 각각\n다르다.\n페이블 슬롯은 무기로 적을 공격하면 충전할 수 있다.",
+                "Color": {
+                    "A": 1.0,
+                    "B": 0.20000000298023224,
+                    "G": 0.20000000298023224,
+                    "R": 0.20000000298023224
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "FontTag": "Font_Medium",
+                "IsCenter": 0,
+                "ProtoTag": "Prototype_GameObject_Dynamic_Text_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.3499999940395355,
+                "SizeY": 0.3499999940395355,
+                "Texturetag": "",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.24299998581409454,
+                "fY": 0.5009999871253967,
+                "iPassIndex": 0,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.017500000074505806,
+                "SizeY": 0.029999999329447746,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.2540000081062317,
+                "fY": 0.4259999990463257,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            },
+            {
+                "Color": {
+                    "A": 1.0,
+                    "B": 1.0,
+                    "G": 1.0,
+                    "R": 1.0
+                },
+                "Features": [
+                    {
+                        "EndAlpha": 1.0,
+                        "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
+                        "StartAlpha": 0.0,
+                        "iEndFrame": 15,
+                        "iStartFrame": 0,
+                        "isLoop": false
+                    }
+                ],
+                "ProtoTag": "Prototype_GameObject_Dynamic_UI",
+                "RotationZ": 0.0,
+                "SizeX": 0.017500000074505806,
+                "SizeY": 0.029999999329447746,
+                "Texturetag": "Prototype_Component_Texture_Icon_Key_F",
+                "fAlpha": 1.0,
+                "fDuration": 0.01600000075995922,
+                "fOffset": 0.0,
+                "fX": 0.28999999165534973,
+                "fY": 0.4569999873638153,
+                "iPassIndex": 1,
+                "iTextureIndex": 0,
+                "iTextureLevel": 0
+            }
+        ],
+        "ProtoTag": "Prototype_GameObject_UI_Container",
+        "RotationZ": 0.0,
+        "SizeX": 0.0,
+        "SizeY": 0.0,
+        "fAlpha": 1.0,
+        "fOffset": 0.0,
+        "fX": 0.0,
+        "fY": 0.0
+    }
+]
