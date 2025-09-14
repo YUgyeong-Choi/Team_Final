@@ -95,15 +95,13 @@ HRESULT CCamera::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		return S_OK;
 
 	// 카메라가 “값만” 바인딩한다. (MRT 시작/텍스처 바인딩은 렌더러가 함)
-	if (FAILED(pShader->Bind_RawValue("g_focusCenterPx", &m_DOFDesc.fCenterPx, sizeof(_float2))))
+	if (FAILED(pShader->Bind_RawValue("g_fCloseIntensity", &m_DOFDesc.fCloseIntensity, sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_focusRadiusPx", &m_DOFDesc.fRadiusPx, sizeof(_float))))
+	if (FAILED(pShader->Bind_RawValue("g_fFarIntensity", &m_DOFDesc.fFarIntensity, sizeof(_float))))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_featherPx", &m_DOFDesc.fFeatherPx, sizeof(_float))))
+	if (FAILED(pShader->Bind_RawValue("g_fCleanRange", &m_DOFDesc.fCleanRange, sizeof(_float2))))
 		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_blurBoost", &m_DOFDesc.fBlurBoost, sizeof(_float))))
-		return E_FAIL;
-	if (FAILED(pShader->Bind_RawValue("g_gamma", &m_DOFDesc.fGamma, sizeof(_float))))
+	if (FAILED(pShader->Bind_RawValue("g_fFeatherPx", &m_DOFDesc.fFeatherPx, sizeof(_float))))
 		return E_FAIL;
 
 	// 패스 실행(렌더러가 Begin_MRT/텍스처 세팅을 끝내놓고 호출해줌)
