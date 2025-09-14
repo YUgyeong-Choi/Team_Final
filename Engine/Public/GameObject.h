@@ -112,6 +112,12 @@ protected:
 	_bool m_isActive = { true };
 
 	float m_fTimeScale = 1.f; // 오브젝트 별 업데이트 속도
+
+protected:
+	class CTexture* m_pDissolveMap = { nullptr };
+	_bool m_bIsDissolve = {};
+	_float m_fDissolveAmount = {};
+
 private:
 	mutex m_mtx = {};
 

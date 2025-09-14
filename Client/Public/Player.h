@@ -332,7 +332,6 @@ private: /* [ 불타버려~ ] */
 	_bool	m_bBurnSwitch = {};
 
 private: /* [ 림라이트 ] */
-	_float	m_fLimTime = {};
 	_float	m_fLimPhase = {};
 	_float	m_fLimSpeed = 1.7f;
 	_bool	m_bLimSwitch = {};

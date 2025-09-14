@@ -62,6 +62,7 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	PLAYER_DESC* pDesc = static_cast<PLAYER_DESC*>(pArg);
+	m_bIsDissolve = true;
 	m_bIsPlayer = true;
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -337,12 +338,16 @@ void CPlayer::Late_Update(_float fTimeDelta)
 
 	/* [ 이곳은 실험실입니다. ] */
 	if (KEY_DOWN(DIK_Y))
-	{	
+	{
+		SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, 0, true);
 	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
+	{
 		Reset();
+		SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, 0, true);
+	}
 
 	/* [ 아이템 ] */
 	LateUpdate_Slot(fTimeDelta);
@@ -3305,7 +3310,7 @@ void CPlayer::OffBurn(_float fTimeDelta)
 void CPlayer::LimActive(_bool bOnOff, _float fSpeed, _float4 vColor)
 {
 	m_vLimLightColor = vColor;
-	m_bLimSwitch = bOnOff;
+	m_bLimSwitch = bOnOff; 
 	m_fLimSpeed = fSpeed;
 }
 

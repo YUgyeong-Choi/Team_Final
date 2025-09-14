@@ -95,9 +95,12 @@ public: /* [ 이미시브를 켜고 끈다. ] */
 	void OffEmissive(_float fTimeDelta);
 	void OnFury(_float fTimeDelta);
 	void OffFury(_float fTimeDelta);
+	void OnDissolve(_float fTimeDelta);
+	void OffDissolve(_float fTimeDelta);
 	void ToggleEmissive(_float fEmissiveSpeed);
 	void SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed);
 	void SwitchFury(_bool bFury, _float fFurySpeed);
+	void SwitchDissolve(_bool bDissolve, _float fDissolveSpeed, _float3 Color, _uint MeshNum, _bool IsAllMesh = false);
 
 
 public:
@@ -146,6 +149,13 @@ protected:
 	_bool				m_bFurySwitch = {};
 	_float				m_fFurySwitch = {};
 	_float				m_fFurySpeed = {};
+
+	_bool				m_bDissolveSwitch = { true };
+	_float				m_fDissolveSpeed = { 1.f };
+	_float				m_fDissolve = {};
+	_float3				m_vDissolveGlowColor = { 1.0f, 0.8f, 0.2f };
+	_uint				m_iDissolveMeshNum = { 0 };
+	_bool				m_bDissolveAll = {};
 
 
 protected:              /* [ 컴포넌트 ] */

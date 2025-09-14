@@ -555,7 +555,7 @@
     </Filter>
     <Filter Include="02.GameObjects\18. AnimatedProp">
       <UniqueIdentifier>{c46a2afe-d416-4ac9-8f1d-355ed5e4cdfc}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Levels\Loading\MapLoader">
       <UniqueIdentifier>{1e05d1e6-afec-4cd9-98f7-1cf833d70cd8}</UniqueIdentifier>
     </Filter>
@@ -1152,7 +1152,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\AnimatedProp.h">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h" />
     <ClInclude Include="..\public\MapLoader.h">
       <Filter>01.Levels\Loading\MapLoader</Filter>
@@ -1671,9 +1671,6 @@
     <ClCompile Include="..\Private\BossDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\WaterPuddle.cpp">
       <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
     </ClCompile>
@@ -1724,10 +1721,13 @@
     </ClCompile>
     <ClCompile Include="..\Private\AnimatedProp.cpp">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp" />
     <ClCompile Include="..\private\MapLoader.cpp">
       <Filter>01.Levels\Loading\MapLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

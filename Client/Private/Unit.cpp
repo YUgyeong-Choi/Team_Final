@@ -86,6 +86,11 @@ void CUnit::Update(_float fTimeDelta)
 		OnFury(fTimeDelta);
 	else
 		OffFury(fTimeDelta);
+	
+	if (m_bDissolveSwitch)
+		OnDissolve(fTimeDelta);
+	else
+		OffDissolve(fTimeDelta);
 }
 
 void CUnit::Late_Update(_float fTimeDelta)
@@ -326,6 +331,30 @@ HRESULT CUnit::Bind_Shader()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
 
+	if (m_bIsDissolve)
+	{
+		if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+
+		_bool vDissolve = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+
+		if (m_bDissolveAll)
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		_bool vDissolve = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+	}
+
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
@@ -333,6 +362,17 @@ HRESULT CUnit::Bind_Shader()
 			continue;
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+
+		if (m_bIsDissolve && !m_bDissolveAll)
+		{
+			if (m_iDissolveMeshNum == i)
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+		}
 		
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
@@ -534,6 +574,26 @@ void CUnit::OffFury(_float fTimeDelta)
 	}
 }
 
+void CUnit::OnDissolve(_float fTimeDelta)
+{
+	if (m_fDissolve <= 1.2f)
+	{
+		m_fDissolve += fTimeDelta * m_fDissolveSpeed;
+		if (m_fDissolve > 1.2f)
+			m_fDissolve = 1.2f;
+	}
+}
+
+void CUnit::OffDissolve(_float fTimeDelta)
+{
+	if (m_fDissolve >= 0.f)
+	{
+		m_fDissolve -= fTimeDelta * m_fDissolveSpeed;
+		if (m_fDissolve < 0.f)
+			m_fDissolve = 0.f;
+	}
+}
+
 void CUnit::ToggleEmissive(_float fEmissiveSpeed)
 {
 	m_bEmissive = !m_bEmissive;
@@ -550,6 +610,15 @@ void CUnit::SwitchFury(_bool bFury, _float fFurySpeed)
 {
 	m_bFurySwitch = bFury;
 	m_fFurySpeed = fFurySpeed;
+}
+
+void CUnit::SwitchDissolve(_bool bDissolve, _float fDissolveSpeed, _float3 Color, _uint MeshNum, _bool IsAllMesh)
+{
+	m_bDissolveSwitch = bDissolve;
+	m_fDissolveSpeed = fDissolveSpeed;
+	m_vDissolveGlowColor = Color;
+	m_iDissolveMeshNum = MeshNum;
+	m_bDissolveAll = IsAllMesh;
 }
 
 

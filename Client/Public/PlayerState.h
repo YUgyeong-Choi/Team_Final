@@ -3065,6 +3065,7 @@ public:
         m_pOwner->m_pAnimator->ResetTrigger("GetItem");
         /* [ HP 를 우선으로 감소시키고 사망을 확인한다. ] */
         m_pOwner->HPSubtract();
+        m_pOwner->LimActive(false, 10.5f, { 0.1f ,0.15f, 1.f, 1.f });
         if (m_pOwner->m_fHp <= 0.f)
         {
             m_bDead = true;
@@ -3239,6 +3240,7 @@ public:
 
         /* [ 이펙트를 생성한다. ] */
         m_pOwner->Create_HitEffect();
+        m_pOwner->LimActive(false, 10.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
         /* [ 모든 진행이 종료된다. ] */
         if (m_pOwner->m_pWeapon)
