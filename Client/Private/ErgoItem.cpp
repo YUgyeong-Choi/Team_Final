@@ -89,7 +89,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 				eDesc.partPaths = { TEXT("../Bin/Save/UI/Letter/Letter_Page_0.json"), TEXT("../Bin/Save/UI/Letter/Letter_Page_1.json") };
 
-				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
 					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 			}
 			else
