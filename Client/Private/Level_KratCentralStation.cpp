@@ -292,7 +292,6 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 #endif // TEST_OUTER_MAP
 
 
-
 	//고사양 모드
 	if (FAILED(Ready_Lights()))
 		return E_FAIL;
@@ -1269,7 +1268,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_2"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(191.2f, 15.f, -8.0f);
+	presetmat = XMMatrixTranslation(194.0f, 18.f, -8.0f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_NewOuterWelcomeRain"), &ECDesc);
 	if (pEC == nullptr)

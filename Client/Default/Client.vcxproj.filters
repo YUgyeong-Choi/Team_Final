@@ -1163,6 +1163,9 @@
     <ClInclude Include="..\public\UI_Letter.h">
       <Filter>02.GameObjects\99.UI\Container\Letter</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\StargazerEffect.h">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1737,6 +1740,9 @@
     </ClCompile>
     <ClCompile Include="..\private\UI_Letter.cpp">
       <Filter>02.GameObjects\99.UI\Container\Letter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

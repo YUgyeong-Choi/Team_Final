@@ -144,6 +144,10 @@ private:    /* [ ÄÄÆ÷³ÍÆ® ] */
 
 	
 	_bool m_bIsRotatingToStargazer = false;
+
+	_bool m_bCreateShrinkEffect = false;
+	_float m_fShrinkEffectDelay = 0.f;
+	
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

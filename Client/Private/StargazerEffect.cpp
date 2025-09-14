@@ -73,7 +73,7 @@ void CStargazerEffect::Priority_Update(_float fTimeDelta)
 		//desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
 		//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 3.f, 0.f));
 		//(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating_Shrink"), &desc));
-		Activate_Stargazer_Spread();
+		Activate_Stargazer_Shrink();
 	}
 
 }
@@ -174,6 +174,15 @@ void CStargazerEffect::Activate_Stargazer_Spread()
 	m_pFloatingEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Active_FloatingParticle"), &desc));
 	if (m_pFloatingEffect == nullptr)
 		return ;
+}
+
+void CStargazerEffect::Activate_Stargazer_Shrink()
+{
+	CEffectContainer::DESC desc = {};
+	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 3.f, 0.f));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating_ShrinkParticle"), &desc))
+		MSG_BOX("별바라기 수렴 이펙트 생성 실패");
 }
 
 HRESULT CStargazerEffect::Bind_ShaderResources()
