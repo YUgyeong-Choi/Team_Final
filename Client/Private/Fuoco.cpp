@@ -549,13 +549,16 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
 		bIsFury = true;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SLAM_FURY):
 	case ENUM_CLASS(BossStateID::ATK_SLAM_FURY_END):
 		bIsFury = true;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_STRIKE_FURY):
 		bIsFury = true;
+		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	default:
 		m_eCurrentState = EEliteState::ATTACK;
@@ -795,7 +798,7 @@ void CFuoco::Register_Events()
 
 			if (bIsFront == false)
 			{
-				SetTurnTimeDuringAttack(2.5f, 1.4f);
+				SetTurnTimeDuringAttack(1.5f, 1.4f);
 			}
 			else
 			{

@@ -3172,6 +3172,9 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 		else
 			stateName = "LiftDoor_Fail";
 		break;
+	case INNERDOOR:
+		stateName = "InnerDoor_Open";
+		break;
 	default:
 		break;
 	}
