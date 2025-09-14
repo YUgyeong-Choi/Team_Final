@@ -28,7 +28,7 @@ HRESULT CElite_Police::Initialize_Prototype()
 
 HRESULT CElite_Police::Initialize(void* pArg)
 {
-	m_fDamage = 10.f;
+	m_fDamage = 50.f;
 	m_iPatternLimit = 1;
 	m_fMaxRootMotionSpeed = 30.f;
 	m_fRootMotionAddtiveScale = 1.f;

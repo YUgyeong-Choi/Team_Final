@@ -39,6 +39,7 @@ public:
     _bool IsPlaying(const string& strTag) const;
 
     void StopAll();
+	void StopAllSpecific(const string& tags);
     void SetVolume(_float Volume);
     // 사운드 포지션 업데이트
     void Update3DPosition(_float3& vPos);

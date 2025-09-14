@@ -1906,7 +1906,7 @@ void CPlayer::Register_Events()
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
 			m_fMaxRootMotionSpeed = 40.f;
-			m_fRootMotionAddtiveScale = 1.3f;
+			m_fRootMotionAddtiveScale = 1.7f;
 		});
 
 	m_pAnimator->RegisterEventListener("ResetRootStep", [this]()
@@ -1932,7 +1932,157 @@ void CPlayer::Register_Events()
 				}
 			});
 
+		Register_SoundEvents();
 		
+}
+void CPlayer::Register_SoundEvents()
+{
+	m_pAnimator->RegisterEventListener("SlidingDoorSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_BossGate_SlidingDoor_Open");
+		});
+
+	m_pAnimator->RegisterEventListener("Lift_ActiveSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Lift_Active");
+		});
+
+	m_pAnimator->RegisterEventListener("Lift_Call_FailSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Lift_Call_Fail");
+		});
+
+
+	m_pAnimator->RegisterEventListener("Teleport_StartSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Teleport_Start");
+		});
+
+
+	m_pAnimator->RegisterEventListener("Teleport_EndSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+		});
+
+	m_pAnimator->RegisterEventListener("DoorUnlockSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Door_Unlock");
+		});
+
+
+	m_pAnimator->RegisterEventListener("DoorCheckSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Door_Check_Hotel_01");
+		});
+
+	m_pAnimator->RegisterEventListener("DoubleDoorOpenArmSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_HeavySafe_Open_02");
+		});
+
+	m_pAnimator->RegisterEventListener("BodyFallSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_BodyFall_Cloth_M_01");
+		});
+
+	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
+		{
+			if (m_pSoundCom)
+				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+		});
+	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
+				if (m_bUseGrinder == false)
+				{
+					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", 0);
+					m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
+					return;
+				}
+				if (!isPlaying)
+				{
+					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
+					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
+				}
+			}
+		});
+	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
+				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
+				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_MT_Item_Fail_0");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FailIArmSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_MT_Arm_Fail_03");
+				m_pSoundCom->Play("SE_PC_FX_Spark_Arm_Loop");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ArmAttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_SK_WS_Arm_L_", 3);
+			}
+		});
+	
+	m_pAnimator->RegisterEventListener("SkillEndSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_PC_SK_FX_SwordLance_2H_FableArts_Whoosh_End_", 3);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("SkillStartSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_FX_SwordLance_2H_B_FableArts_Motor_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AtkVoiceSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("VO_PC_Breath_S_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ChargeAtkVoiceSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_PC_Breath_", 3);
+			}
+		});
 }
 
 _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)

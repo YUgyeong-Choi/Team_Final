@@ -56,14 +56,14 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 			case Client::OUTDOOR:
 				m_bMoveStart = true;
 				m_bFinish = m_pPlayer->Get_HaveKey();
-		
+
 				CCamera_Manager::Get_Instance()->SetbMoveable(false);
 				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				break;
 			case INNERDOOR:
 				m_bFinish = true;
 				m_bMoveStart = true;
-				m_pPlayer->Interaction_Door(m_eInteractType,this);
+				m_pPlayer->Interaction_Door(m_eInteractType, this);
 				break;
 			}
 			if (m_bFinish)
@@ -71,7 +71,7 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			}
-		
+
 		}
 	}
 
@@ -192,7 +192,7 @@ void CKeyDoor::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	{
 		m_bCanActive = true;
 		CUI_Manager::Get_Instance()->Activate_Popup(true);
-  		CUI_Manager::Get_Instance()->Set_Popup_Caption(2);
+		CUI_Manager::Get_Instance()->Set_Popup_Caption(2);
 	}
 }
 
@@ -215,8 +215,8 @@ void CKeyDoor::Play_Sound(_float fTimeDelta)
 		if (m_fSoundDelta > 5.f)
 		{
 			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_Metal_Bridge_Door", 0.7f * g_fInteractSoundVolume);
-			m_pSoundCom->Play("AMB_OJ_DR_Metal_Bridge_Door");
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Exhibition_Door", 0.7f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_Exhibition_Door");
 			m_fSoundDelta = 0.f;
 		}
 		break;
@@ -294,7 +294,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::OUTDOOOR);
 			CUI_Manager::Get_Instance()->Off_Panel();
 		}
-			
+
 	}
 }
 
@@ -313,7 +313,7 @@ HRESULT CKeyDoor::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);

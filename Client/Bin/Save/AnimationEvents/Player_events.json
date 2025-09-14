@@ -3,6 +3,12 @@
         {
             "ClipName": "AS_Pino_Fail_Arm",
             "Duration": 155.0,
+            "Events": [
+                {
+                    "EventName": "FailIArmSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -10,6 +16,12 @@
         {
             "ClipName": "AS_Pino_Fail_Item",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "FailItemSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -40,6 +52,10 @@
             "Duration": 53.0,
             "Events": [
                 {
+                    "EventName": "GrinderEndSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "OffGrinderEffect",
                     "Time": 18.0
                 }
@@ -62,6 +78,10 @@
                 {
                     "EventName": "OnGrinderEffect",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "GrinderLoopSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": true,
@@ -71,6 +91,12 @@
         {
             "ClipName": "AS_Pino_Grinder_Start",
             "Duration": 34.0,
+            "Events": [
+                {
+                    "EventName": "GrinderStartSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -303,6 +329,10 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "DoubleDoorOpenArmSound",
+                    "Time": 323.0
+                },
+                {
                     "EventName": "ResetRootStep",
                     "Time": 670.0
                 }
@@ -317,6 +347,10 @@
             "Events": [
                 {
                     "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "SlidingDoorSound",
                     "Time": 1.0
                 },
                 {
@@ -345,6 +379,12 @@
         {
             "ClipName": "AS_Pino_Teleport_End",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "Teleport_EndSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -352,6 +392,12 @@
         {
             "ClipName": "AS_Pino_Teleport_Start",
             "Duration": 180.0,
+            "Events": [
+                {
+                    "EventName": "Teleport_StartSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -429,6 +475,12 @@
         {
             "ClipName": "AS_Pino_Down_Up_Land_B",
             "Duration": 59.0,
+            "Events": [
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 8.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -436,6 +488,12 @@
         {
             "ClipName": "AS_Pino_Down_Up_Land_F",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 8.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -562,6 +620,12 @@
         {
             "ClipName": "AS_Pino_Prop_Door_Check",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "DoorCheckSound",
+                    "Time": 30.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -569,6 +633,12 @@
         {
             "ClipName": "AS_Pino_Prop_Door_Unlock",
             "Duration": 150.0,
+            "Events": [
+                {
+                    "EventName": "DoorUnlockSound",
+                    "Time": 54.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -609,6 +679,10 @@
             "Duration": 180.0,
             "Events": [
                 {
+                    "EventName": "Lift_ActiveSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "OnInteractionShortCutDoor",
                     "Time": 79.0
                 }
@@ -620,6 +694,12 @@
         {
             "ClipName": "AS_Pino_Prop_Lift_Call_Fail",
             "Duration": 240.0,
+            "Events": [
+                {
+                    "EventName": "Lift_Call_FailSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -699,6 +779,10 @@
                     "Time": 22.0
                 },
                 {
+                    "EventName": "ArmAttackSound",
+                    "Time": 22.0
+                },
+                {
                     "EventName": "OffArmCollider",
                     "Time": 27.0
                 },
@@ -718,6 +802,10 @@
                 {
                     "EventName": "SetRootStep",
                     "Time": 14.0
+                },
+                {
+                    "EventName": "ArmAttackSound",
+                    "Time": 43.0
                 },
                 {
                     "EventName": "OnArmCollider",
@@ -747,6 +835,10 @@
                 {
                     "EventName": "OnArmCollider",
                     "Time": 21.0
+                },
+                {
+                    "EventName": "ArmAttackSound",
+                    "Time": 22.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -1457,6 +1549,10 @@
             "Duration": 275.0,
             "Events": [
                 {
+                    "EventName": "ChargeAtkVoiceSound",
+                    "Time": 8.0
+                },
+                {
                     "EventName": "SetRootStep",
                     "Time": 46.0
                 },
@@ -1506,16 +1602,12 @@
                     "Time": 78.0
                 },
                 {
-                    "EventName": "OnSwordSkillTrail",
-                    "Time": 80.0
+                    "EventName": "ChargeAtkVoiceSound",
+                    "Time": 86.0
                 },
                 {
                     "EventName": "OffWeaponCollider",
                     "Time": 92.0
-                },
-                {
-                    "EventName": "OffSwordSkillTrail",
-                    "Time": 94.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -1591,6 +1683,14 @@
             "Duration": 147.0,
             "Events": [
                 {
+                    "EventName": "SkillStartSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "SkillEndSound",
+                    "Time": 2.0
+                },
+                {
                     "EventName": "OnSwordSkillTrail",
                     "Time": 35.0
                 },
@@ -1604,7 +1704,7 @@
                 },
                 {
                     "EventName": "OffSwordSkillTrail",
-                    "Time": 71.0
+                    "Time": 55.0
                 }
             ],
             "IsLoop": false,
@@ -1643,6 +1743,10 @@
                 {
                     "EventName": "OnWeaponCollider",
                     "Time": 39.0
+                },
+                {
+                    "EventName": "AtkVoiceSound",
+                    "Time": 42.0
                 },
                 {
                     "EventName": "OffWeaponCollider",
@@ -1700,6 +1804,10 @@
                 {
                     "EventName": "OffWeaponCollider",
                     "Time": 27.0
+                },
+                {
+                    "EventName": "AtkVoiceSound",
+                    "Time": 28.0
                 },
                 {
                     "EventName": "OffSwordTrail",
@@ -1779,6 +1887,14 @@
             "Duration": 160.0,
             "Events": [
                 {
+                    "EventName": "SkillStartSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "SkillEndSound",
+                    "Time": 2.0
+                },
+                {
                     "EventName": "OnSwordSkillTrail",
                     "Time": 32.0
                 },
@@ -1798,6 +1914,47 @@
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 80.0
+        },
+        {
+            "ClipName": "AS_Pino_T_Shovel_FCA",
+            "Duration": 143.0,
+            "Events": [
+                {
+                    "EventName": "SkillEndSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "SkillStartSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 39.0
+                },
+                {
+                    "EventName": "OnWeaponCollider",
+                    "Time": 47.0
+                },
+                {
+                    "EventName": "OnSwordSkillTrail",
+                    "Time": 51.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 63.0
+                },
+                {
+                    "EventName": "OffWeaponCollider",
+                    "Time": 73.0
+                },
+                {
+                    "EventName": "OffSwordSkillTrail",
+                    "Time": 84.0
+                }
+            ],
+            "IsLoop": false,
+            "RootMotion": true,
+            "TickPerSecond": 70.0
         }
     ]
 }
