@@ -30,6 +30,7 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
+	m_bIsDissolve = true;
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -217,6 +218,16 @@ void CFestivalLeader::Update(_float fTimeDelta)
 
 void CFestivalLeader::Late_Update(_float fTimeDelta)
 {
+	/* [ 가방 디졸브 예시 ] */
+	//if(KEY_DOWN(DIK_U))
+	//	SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+	//if(KEY_DOWN(DIK_I))
+	//	SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+
+	/* [ 아래의 조건으로 가방이 사라졌는지를 알 수 있음 ] */
+	//if (!m_bDissolveSwitch && m_fDissolve <= 0.003f)
+	//	(2 ~ 3 번 모델 렌더시 아래조건 통과하면 continue 하세요)
+
 	__super::Late_Update(fTimeDelta);
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider())

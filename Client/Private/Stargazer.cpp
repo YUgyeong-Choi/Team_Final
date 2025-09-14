@@ -355,6 +355,8 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 void CStargazer::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
+
 	/* [ 애니메이션 업데이트 ] */
 	if (m_pAnimator[ENUM_CLASS(m_eState)])
 		m_pAnimator[ENUM_CLASS(m_eState)]->Update(fTimeDelta);
@@ -401,9 +403,52 @@ HRESULT CStargazer::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+
+	if (m_bIsDissolve)
+	{
+		if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+
+		_bool vDissolve = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+
+		if (m_vecDissolveMeshNum.empty())
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		_bool vDissolve = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL; 
+	}
+
 	_uint		iNumMesh = m_pModelCom[ENUM_CLASS(m_eState)]->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
+		if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
+		{
+			auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+			if (iter != m_vecDissolveMeshNum.end())
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+			else
+			{
+				_float fDissolve = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+		}
+
 		m_pModelCom[ENUM_CLASS(m_eState)]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom[ENUM_CLASS(m_eState)]->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 		m_pModelCom[ENUM_CLASS(m_eState)]->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0);

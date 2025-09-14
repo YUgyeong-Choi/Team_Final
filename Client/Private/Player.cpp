@@ -339,14 +339,14 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 이곳은 실험실입니다. ] */
 	if (KEY_DOWN(DIK_Y))
 	{
-		SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, 0, true);
+		SwitchDissolve(true, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
 	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))
 	{
 		Reset();
-		SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, 0, true);
+		SwitchDissolve(false, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
 	}
 
 	/* [ 아이템 ] */
@@ -2514,6 +2514,7 @@ void CPlayer::Start_Teleport()
 	m_bTeleport = true;
 	m_bIsInvincible = true;
 	m_pAnimator->SetTrigger("Teleport");
+	SwitchDissolve(false, 0.4f, _float3{ 0.f, 0.749f, 1.f }, {});
 	CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
 }
 
@@ -2533,6 +2534,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			// 플레이어 이동
 			PxTransform posTrans = PxTransform(pxPos);
 			Get_Controller()->Set_Transform(posTrans);
+			SwitchDissolve(true, 0.4f, _float3{ 0.f, 0.749f, 1.f }, {});
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.f);
 		}
 

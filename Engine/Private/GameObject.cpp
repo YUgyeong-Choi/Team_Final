@@ -75,7 +75,10 @@ void CGameObject::Priority_Update(_float fTimeDelta)
 
 void CGameObject::Update(_float fTimeDelta)
 {
-
+	if (m_bDissolveSwitch)
+		OnDissolve(fTimeDelta);
+	else
+		OffDissolve(fTimeDelta);
 }
 
 void CGameObject::Late_Update(_float fTimeDelta)
@@ -122,6 +125,34 @@ void CGameObject::PrintMatrix(const char* szName, const _matrix& mat)
 	printf(" %.4f %.4f %.4f %.4f\n", matFloat._21, matFloat._22, matFloat._23, matFloat._24);
 	printf(" %.4f %.4f %.4f %.4f\n", matFloat._31, matFloat._32, matFloat._33, matFloat._34);
 	printf(" %.4f %.4f %.4f %.4f\n\n", matFloat._41, matFloat._42, matFloat._43, matFloat._44);
+}
+
+void CGameObject::OnDissolve(_float fTimeDelta)
+{
+	if (m_fDissolve <= 1.2f)
+	{
+		m_fDissolve += fTimeDelta * m_fDissolveSpeed;
+		if (m_fDissolve > 1.2f)
+			m_fDissolve = 1.2f;
+	}
+}
+
+void CGameObject::OffDissolve(_float fTimeDelta)
+{
+	if (m_fDissolve >= 0.f)
+	{
+		m_fDissolve -= fTimeDelta * m_fDissolveSpeed;
+		if (m_fDissolve < 0.f)
+			m_fDissolve = 0.f;
+	}
+}
+
+void CGameObject::SwitchDissolve(_bool bDissolve, _float fDissolveSpeed, _float3 Color, vector<_uint> vecMeshNum)
+{
+	m_bDissolveSwitch = bDissolve;
+	m_fDissolveSpeed = fDissolveSpeed;
+	m_vDissolveGlowColor = Color;
+	m_vecDissolveMeshNum = vecMeshNum;
 }
 
 HRESULT CGameObject::Add_Component(_uint iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strComponentTag, CComponent** ppOut, void* pArg)

@@ -340,7 +340,7 @@ HRESULT CUnit::Bind_Shader()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
 			return E_FAIL;
 
-		if (m_bDissolveAll)
+		if (m_vecDissolveMeshNum.empty())
 		{
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
 				return E_FAIL;
@@ -363,13 +363,20 @@ HRESULT CUnit::Bind_Shader()
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
 
-		if (m_bIsDissolve && !m_bDissolveAll)
+		if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
 		{
-			if (m_iDissolveMeshNum == i)
+			auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+			if (iter != m_vecDissolveMeshNum.end())
 			{
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
 					return E_FAIL;
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+			else
+			{
+				_float fDissolve = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
 					return E_FAIL;
 			}
 		}
@@ -574,26 +581,6 @@ void CUnit::OffFury(_float fTimeDelta)
 	}
 }
 
-void CUnit::OnDissolve(_float fTimeDelta)
-{
-	if (m_fDissolve <= 1.2f)
-	{
-		m_fDissolve += fTimeDelta * m_fDissolveSpeed;
-		if (m_fDissolve > 1.2f)
-			m_fDissolve = 1.2f;
-	}
-}
-
-void CUnit::OffDissolve(_float fTimeDelta)
-{
-	if (m_fDissolve >= 0.f)
-	{
-		m_fDissolve -= fTimeDelta * m_fDissolveSpeed;
-		if (m_fDissolve < 0.f)
-			m_fDissolve = 0.f;
-	}
-}
-
 void CUnit::ToggleEmissive(_float fEmissiveSpeed)
 {
 	m_bEmissive = !m_bEmissive;
@@ -610,15 +597,6 @@ void CUnit::SwitchFury(_bool bFury, _float fFurySpeed)
 {
 	m_bFurySwitch = bFury;
 	m_fFurySpeed = fFurySpeed;
-}
-
-void CUnit::SwitchDissolve(_bool bDissolve, _float fDissolveSpeed, _float3 Color, _uint MeshNum, _bool IsAllMesh)
-{
-	m_bDissolveSwitch = bDissolve;
-	m_fDissolveSpeed = fDissolveSpeed;
-	m_vDissolveGlowColor = Color;
-	m_iDissolveMeshNum = MeshNum;
-	m_bDissolveAll = IsAllMesh;
 }
 
 

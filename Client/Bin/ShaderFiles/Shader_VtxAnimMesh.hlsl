@@ -63,10 +63,10 @@ float3 g_vDissolveGlowColor = float3(1.0f, 0.8f, 0.2f);
 
 struct SDissolveResult
 {
-    float fClip; // clip(fClip);
-    float fEdge; // 경계 밴드(0~1)
-    float fGlow; // 글로우 강도(0~1)
-    float3 vAddColor; // Out.Color.rgb += vAddColor;
+    float fClip;
+    float fEdge;
+    float fGlow;
+    float3 vAddColor;
 };
 
 static SDissolveResult DoDissolve_NoArgs(float2 vTexcoord)

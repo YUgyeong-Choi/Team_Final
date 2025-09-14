@@ -3,11 +3,11 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
-//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP
 
-//#define TEST_TEST_MAP // 이거 키면 테스트맵
+#define TEST_TEST_MAP // 이거 키면 테스트맵
 //#define TEST_STATION_MAP //이거 키면 스테이션 맵 생성됨
 //#define TEST_HOTEL_MAP //이거 키면   호텔 맵 생성됨
 //#define TEST_OUTER_MAP //이거 키면  외부 맵 생성됨
