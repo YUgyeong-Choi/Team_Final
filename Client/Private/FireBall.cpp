@@ -162,8 +162,8 @@ _bool CFireBall::ProcessCollisionPriority()
 				if (auto pPlayer = dynamic_cast<CPlayer*>(pObj))
 				{
 					pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
-					pPlayer->SetfReceiveDamage(7.f);
-					pPlayer->SetElementTypeDuration(EELEMENT::FIRE, 5.f);
+					pPlayer->SetfReceiveDamage(15.f);
+					pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.5f);
 					Set_bDead();
 				}
 				return true;;

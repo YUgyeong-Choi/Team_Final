@@ -236,10 +236,6 @@ private:
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
 	const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-	const _float DAMAGE_LIGHT = 20.f;
-	const _float DAMAGE_MEDIUM = 25.f;
-	const _float DAMAGE_HEAVY = 30.f;
-	const _float DAMAGE_FURY = 35.f;
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

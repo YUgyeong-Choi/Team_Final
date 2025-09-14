@@ -21,6 +21,13 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Door_01.bin"
     },
     {
+        "Collision": true,
+        "ModelName": "SM_BuildingC_WoodPanel_01",
+        "NoInstancing": false,
+        "ObjectCount": 3,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_WoodPanel_01.bin"
+    },
+    {
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_01_Female",
         "NoInstancing": false,
@@ -31,7 +38,7 @@
         "Collision": false,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
-        "ObjectCount": 7,
+        "ObjectCount": 8,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
@@ -71,6 +78,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Interior_Table_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Interior_Table_02",
         "NoInstancing": false,
         "ObjectCount": 3,
@@ -89,6 +103,34 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_02_2of2.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_04",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_04.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_07",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_07.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_08",
+        "NoInstancing": false,
+        "ObjectCount": 2,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_08.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Interior_Table_09",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_09.bin"
     },
     {
         "Collision": false,

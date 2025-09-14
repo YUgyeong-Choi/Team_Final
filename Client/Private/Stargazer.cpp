@@ -10,6 +10,7 @@
 #include "UI_Levelup.h"
 #include "StargazerEffect.h"
 #include "UI_Guide.h"
+#include "PhysXStaticActor.h"
 
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
@@ -70,260 +71,203 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	if(m_pPlayer == nullptr)
 		Find_Player();
 
-	if (Check_Player_Close())
+	
+	if (!m_bUseOtherUI)
 	{
-		if (!m_bUseOtherUI)
+
+		if (!m_isCollison)
+			return;
+
+		Update_Button();
+
+		if (m_pGameInstance->Key_Down(DIK_F))
+		{
+			if (m_bTalkActive)
+			{
+				m_bAutoTalk = !m_bAutoTalk;
+
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+			}
+		}
+
+		if (m_bAutoTalk && m_bTalkActive)
+		{
+			_bool bIsPlaying = false;
+			bIsPlaying = m_pSoundCom->IsPlaying(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+
+			if (!bIsPlaying)
+			{
+				++m_iScriptIndex;
+				// 대화 끝 인 경우.
+				if (m_iScriptIndex >= m_eScriptDatas.size())
+				{
+
+					m_iScriptIndex = 0;
+					m_bTalkActive = false;
+					m_eScriptDatas.clear();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+					Ready_Script();
+					return;
+				}
+
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+
+				m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+				m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+			}
+
+		}
+
+
+		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
 
-			Update_Button();
+			// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
+			if (nullptr != m_pScript)
+			{
+				Button_Interaction();
 
-			m_bDoOnce = true;
+					
+			}
+
+			if (m_bTalkActive)
+			{
+				m_pSoundCom->StopAll();
+				if (nullptr != m_pGuide)
+				{
+					m_bUseOtherUI = true;
+				}
+					
+				++m_iScriptIndex;
+
+				// 대화 끝 인 경우.
+				if (m_iScriptIndex >= m_eScriptDatas.size())
+				{
+
+					m_iScriptIndex = 0;
+					m_bTalkActive = false;
+					m_eScriptDatas.clear();
+					CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+					CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+
+					Ready_Script();
+					return;
+				}
+
+					
+
+				CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
+
+				m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
+				m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
+
+			}
+
+		}
+		else if (m_pGameInstance->Key_Down(DIK_E))
+		{
 			if (m_eState == STARGAZER_STATE::DESTROYED)
 			{
-				if (!m_bChange)
-				{
-					CUI_Manager::Get_Instance()->Activate_Popup(true);
-					CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
-				}
-				else
-				{
-					CUI_Manager::Get_Instance()->Activate_Popup(false);
-				}
+				if (m_bIsRotatingToStargazer == false)
+					m_bIsRotatingToStargazer = true;
+				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_START);
+				m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				m_pEffectSet->Activate_Stargazer_Reassemble();
 
+				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
 
+				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
 
+				return;
 			}
 			else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
 			{
-				if (m_bTalkActive || m_bUseScript)
+				if (m_bIsRotatingToStargazer == false)
+					m_bIsRotatingToStargazer = true;
+				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
+				if (m_eScriptDatas.empty())
 				{
-					CUI_Manager::Get_Instance()->Activate_Popup(false);
+					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
+
+					if (nullptr == m_pScript)
+					{
+
+						Ready_Script();
+
+
+						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
+						CCamera_Manager::Get_Instance()->SetbMoveable(false);
+						CUI_Manager::Get_Instance()->Off_Panel();
+						CUI_Manager::Get_Instance()->Activate_Popup(false);
+
+						m_pPlayer->Reset();
+						m_pGameInstance->Get_CurrentLevel()->Reset();
+						return;
+					}
+					else
+					{
+						Script_Activate();
+						m_pPlayer->Reset();
+						m_pGameInstance->Get_CurrentLevel()->Reset();
+						return;
+					}
 
 				}
 				else
 				{
-					if (!m_bCheckPopup)
+					// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
+					if (!m_bTalkActive)
 					{
-						CUI_Manager::Get_Instance()->Activate_Popup(true);
-						CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
-
-						m_bCheckPopup = true;
-					}
-				
-
-
-				}
-
-
-			}
-
-			if (m_pGameInstance->Key_Down(DIK_F))
-			{
-				if (m_bTalkActive)
-				{
-					m_bAutoTalk = !m_bAutoTalk;
-
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
-				}
-				
-			}
-
-			if (m_bAutoTalk && m_bTalkActive)
-			{
-				_bool bIsPlaying = false;
-				bIsPlaying = m_pSoundCom->IsPlaying(m_eScriptDatas[m_iScriptIndex].strSoundTag);
-
-				if (!bIsPlaying)
-				{
-					++m_iScriptIndex;
-					// 대화 끝 인 경우.
-					if (m_iScriptIndex >= m_eScriptDatas.size())
-					{
-
-						m_iScriptIndex = 0;
-						m_bTalkActive = false;
-						m_eScriptDatas.clear();
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
-						Ready_Script();
-						return;
-					}
-
-
-
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
-
-					m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
-					m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
-				}
-
-			}
-
-
-			if (m_pGameInstance->Key_Down(DIK_SPACE))
-			{
-
-				// 스크립트가 있으면 만든 버튼을 업데이트 할 수 있게
-				if (nullptr != m_pScript)
-				{
-					Button_Interaction();
-
-					
-				}
-
-				if (m_bTalkActive)
-				{
-					m_pSoundCom->StopAll();
-					if (nullptr != m_pGuide)
-					{
-						m_bUseOtherUI = true;
-					}
-					
-					++m_iScriptIndex;
-
-					// 대화 끝 인 경우.
-					if (m_iScriptIndex >= m_eScriptDatas.size())
-					{
-
-						m_iScriptIndex = 0;
-						m_bTalkActive = false;
-						m_eScriptDatas.clear();
-						CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-						CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
-						Ready_Script();
-						return;
-					}
-
-					
-
-					CUI_Manager::Get_Instance()->Update_TalkScript(m_eScriptDatas[m_iScriptIndex].strSpeaker, (m_eScriptDatas[m_iScriptIndex].strSoundText), m_bAutoTalk);
-
-					m_pSoundCom->SetVolume(m_eScriptDatas[m_iScriptIndex].strSoundTag, 0.5f * g_fInteractSoundVolume);
-					m_pSoundCom->Play(m_eScriptDatas[m_iScriptIndex].strSoundTag);
-
-				}
-
-			}
-			else if (m_pGameInstance->Key_Down(DIK_E))
-			{
-				if (m_eState == STARGAZER_STATE::DESTROYED)
-				{
-					if (m_bIsRotatingToStargazer == false)
-						m_bIsRotatingToStargazer = true;
-					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_START);
-					m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->SetTrigger("Restore");
-					m_bChange = true;
-					//m_eState = STARGAZER_STATE::FUNCTIONAL;
-					CUI_Manager::Get_Instance()->Activate_Popup(false);
-					m_pEffectSet->Activate_Stargazer_Reassemble();
-
-					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
-					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
-
-					
-					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
-					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
-
-					return;
-				}
-				else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
-				{
-	
-					if(m_bIsRotatingToStargazer == false)
-						m_bIsRotatingToStargazer = true;
-					m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
-					if (m_eScriptDatas.empty())
-					{
-						// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
-
-						if (nullptr == m_pScript)
+						if (!m_isMakeGuide)
 						{
+							CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
+							eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Stargazer.json") };
 
-							Ready_Script();
+							m_pGuide = static_cast<CUI_Guide*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
+																ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), &eGuideDesc));
+					
 
 
-							CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(true, this, true, 1.7f);
-							CCamera_Manager::Get_Instance()->SetbMoveable(false);
-							CUI_Manager::Get_Instance()->Off_Panel();
-							CUI_Manager::Get_Instance()->Activate_Popup(false);
+							m_isMakeGuide = true;
+							m_bUseOtherUI = true;
+
 
 							m_pPlayer->Reset();
 							m_pGameInstance->Get_CurrentLevel()->Reset();
 							return;
 						}
-						else
-						{
-							Script_Activate();
-							m_pPlayer->Reset();
-							return;
-						}
 
 					}
-					else
-					{
-						// 대화용 스크립트를 띄우고, 대화가 종료되면 clear 해버리기
-						if (!m_bTalkActive)
-						{
-							if (!m_isMakeGuide)
-							{
-								CUI_Guide::UI_GUIDE_DESC eGuideDesc{};
-								eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Stargazer.json") };
 
-								m_pGuide = static_cast<CUI_Guide*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, 
-																	ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), &eGuideDesc));
-					
-
-
-								m_isMakeGuide = true;
-								return;
-							}
-
-
-						
-
-
-						}
-
-					}
 				}
-
-			}
-
-			else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
-			{
-				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-				CCamera_Manager::Get_Instance()->SetbMoveable(true);
-				CUI_Manager::Get_Instance()->On_Panel();
-				CUI_Manager::Get_Instance()->Activate_Popup(false);
-				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_END);
-				m_bTalkActive = false;
-				m_bUseScript = false;
-				m_bUseOtherUI = false;
-
-				Delete_Script();
-				m_pSoundCom->StopAll();
-				return;
 			}
 
 		}
-	}
-	else
-	{
-		if (m_bDoOnce)
+
+		else if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 		{
+			CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			CUI_Manager::Get_Instance()->On_Panel();
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
+			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
+			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_END);
+			m_bTalkActive = false;
+			m_bUseScript = false;
+			m_bUseOtherUI = false;
 
-			m_bDoOnce = false;
+			Delete_Script();
+			m_pSoundCom->StopAll();
+			return;
 		}
 
-		m_bTalkActive = false;
-		m_bUseScript = false;
-		m_bUseOtherUI = false;
-		m_bCheckPopup = false;
 	}
+	
 	
 
 	if (nullptr != m_pScript)
@@ -333,6 +277,12 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 	if (nullptr != m_pGuide)
 	{
 		m_pGuide->Priority_Update(fTimeDelta);
+		if (m_pGuide->Get_bDead())
+		{
+			Safe_Release(m_pGuide);
+			m_pGuide = nullptr;
+			m_bUseOtherUI = false;
+		}
 	}
 
 	if (m_bUseTeleport)
@@ -341,23 +291,17 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 		m_bUseOtherUI = false;
 
 		CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_ActiveTalk(false, nullptr, true, 0.f);
-		CCamera_Manager::Get_Instance()->SetbMoveable(true);
-		CUI_Manager::Get_Instance()->On_Panel();
 		CUI_Manager::Get_Instance()->Activate_Popup(false);
 		CUI_Manager::Get_Instance()->Activate_TalkScript(false);
-
-
-
 
 	}
 
 
 	if (m_pGameInstance->Key_Down(DIK_SPACE))
 	{
+		//대화 있으면 다음 대화로 이동
 		if (nullptr != m_pGuide)
 		{
-			Safe_Release(m_pGuide);
-			m_pGuide = nullptr;
 
 			m_bUseOtherUI = false;
 
@@ -383,15 +327,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 	if (m_bIsRotatingToStargazer)
 	{
+		// 별바라기 바라보게 하기
 		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 		_vector vStargazerPos = this->Get_TransfomCom()->Get_State(STATE::POSITION);
 
-		// Y축은 고정시켜서 바닥 기준으로만 회전
 		vStargazerPos = XMVectorSetY(vStargazerPos, XMVectorGetY(vPlayerPos));
 
 		_vector vDir = XMVector3Normalize(vStargazerPos - vPlayerPos);
 
-		// 이제 방향 벡터를 넣어줌
 		if (m_pPlayer->Get_TransfomCom()->RotateToDirectionSmoothly(vDir, fTimeDelta))
 		{
 			m_bIsRotatingToStargazer = false;
@@ -475,10 +418,13 @@ HRESULT CStargazer::Render()
 			return E_FAIL;
 	}
 
-#ifdef DEBUG
+#ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderMapCollider())
 	{
 		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
+			return E_FAIL;
+
+		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom)))
 			return E_FAIL;
 	}
 #endif
@@ -520,27 +466,6 @@ void CStargazer::Delete_Script()
 	m_iScriptIndex = 0;
 }
 
-void CStargazer::End_Script()
-{
-	if (m_pSelectButtons.empty())
-		return;
-
-	Safe_Release(m_pScript);
-	m_pScript = nullptr;
-
-	for (auto& pButton : m_pSelectButtons)
-		Safe_Release(pButton);
-
-	m_pSelectButtons.clear();
-	m_ButtonEvents.clear();
-
-	m_iSelectButtonIndex = -1;
-	m_iScriptIndex = 0;
-
-	m_bUseTeleport = true;
-	m_bUseOtherUI = false;
-	m_iSelectButtonIndex = -1;
-}
 
 void CStargazer::LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator)
 {
@@ -634,7 +559,7 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 
 			// 플레이어 위치 세팅
 			vPos.y += 1.f;
-			vPos.x -= 2.f;
+			vPos.x -= 2.5f;
 			m_pPlayer->SetTeleportPos(vPos);
 
 			break;
@@ -645,25 +570,53 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 
 
 	Delete_Script();
-
 	m_bUseTeleport = true;
 	m_bUseOtherUI = false;
 	m_iSelectButtonIndex = -1;
 }
 
-_bool CStargazer::Check_Player_Close()
+void CStargazer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	//플레이어가 가까운지 체크
-	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vDiff = vPos - vPlayerPos;
-	_float fDist = XMVectorGetX(XMVector3Length(vDiff));
+	if (!m_isCollison)
+	{
+		CUI_Manager::Get_Instance()->Activate_Popup(true);
 
-	if (fDist < 2.f)
-		return true;
-	else 
-		return false;
+		if (m_eState == STARGAZER_STATE::DESTROYED)
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(3);
+		else if(m_eState == STARGAZER_STATE::FUNCTIONAL)
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
+
+		m_isCollison = true;
+	}
 }
+
+void CStargazer::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (m_isCollison)
+	{
+		if (m_eState == STARGAZER_STATE::FUNCTIONAL)
+		{
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(4);
+			if(m_bUseScript || m_bTalkActive || m_bUseOtherUI || m_bUseTeleport || m_pPlayer->Get_IsTeleport())
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+			else
+				CUI_Manager::Get_Instance()->Activate_Popup(true);
+		}
+			
+	}
+}
+
+void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	m_isCollison = false;	
+	CUI_Manager::Get_Instance()->Activate_Popup(false);
+
+	m_bTalkActive = false;
+	m_bUseScript = false;
+	m_bUseOtherUI = false;
+	
+}
+
 
 void CStargazer::LoadScriptData()
 {
@@ -960,6 +913,25 @@ HRESULT CStargazer::Ready_Collider()
 		m_pGameInstance->Get_Scene()->addActor(*pActor);
 	}
 
+
+	_float fRadius = 1.3f;
+	PxSphereGeometry geomTrigger = m_pGameInstance->CookSphereGeometry(fRadius);
+	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geomTrigger, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, true);
+
+	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
+	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
+	m_pPhysXTriggerCom->Set_Owner(this);
+	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
+
+	PxActor* pActor1 = m_pPhysXTriggerCom->Get_Actor();
+	if (!pActor1->getScene()) // nullptr이면 씬에 없음
+	{
+		m_pGameInstance->Get_Scene()->addActor(*pActor1);
+	}
+
 	return S_OK;
 }
 
@@ -991,6 +963,11 @@ HRESULT CStargazer::Ready_Components(void* pArg)
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
 		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX_Trigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
 		return E_FAIL;
 
 	/* For.Com_Sound */
@@ -1038,6 +1015,7 @@ void CStargazer::Free()
 	Safe_Release(m_pShaderCom);
 
 	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pPhysXTriggerCom);
 
 	Safe_Release(m_pScript);
 	for (auto& pButton : m_pSelectButtons)

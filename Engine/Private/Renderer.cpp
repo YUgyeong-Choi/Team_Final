@@ -574,9 +574,9 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	//if (FAILED(Render_Blur(TEXT("Target_Final"))))          return E_FAIL;
-	//if (FAILED(Render_DOF_Round()))                         return E_FAIL;
-	//if (FAILED(Resolve_DOF_To_Final()))                     return E_FAIL;
+	if (FAILED(Render_Blur(TEXT("Target_Final"))))          return E_FAIL;
+	if (FAILED(Render_DOF_Round()))                         return E_FAIL;
+	if (FAILED(Resolve_DOF_To_Final()))                     return E_FAIL;
 
 	if (FAILED(Render_Distortion())) // 여기서 Final렌더타겟 안쓰고 백버퍼로 돌아감 !!
 	{
@@ -1374,7 +1374,7 @@ HRESULT CRenderer::Render_Distortion()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 	// final 렌더타겟 써야함
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DOF_Out"), m_pShader, "g_FinalTexture")))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Effect_WB_Distortion"), m_pShader, "g_Effect_Distort")))
 		return E_FAIL;
@@ -1398,8 +1398,14 @@ HRESULT CRenderer::Render_DOF_Round()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))  return E_FAIL;
 
 	// 선명본/블러본
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))  return E_FAIL;
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurY"), m_pShader, "g_BlurYTexture"))) return E_FAIL;
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Final"), m_pShader, "g_FinalTexture")))  
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShader, "g_PBR_Depth")))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_DownscaledBlurY"), m_pShader, "g_BlurYTexture")))
+		return E_FAIL;
 
 	// 픽셀-> UV 변환용 뷰포트 사이즈 (여기는 렌더러가 계속 바인딩)
 	_float2 vpSize = { (_float)m_iOriginalViewportWidth, (_float)m_iOriginalViewportHeight };

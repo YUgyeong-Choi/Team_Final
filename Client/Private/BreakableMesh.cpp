@@ -30,7 +30,7 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 
 	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
 	m_bFireEaterBossPipe = pDesc->bFireEaterBossPipe;
-	
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -64,16 +64,18 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 		}
 	}
 
+	m_pSoundCom->SetVolume(0.5f);
+
 	return S_OK;
 }
 
 void CBreakableMesh::Priority_Update(_float fTimeDelta)
 {
 	//푸오코 기둥만 플레이어를 무시하기 위해 찾는다.
-	if (m_bFireEaterBossPipe)
-	{
+	//if (m_bFireEaterBossPipe)
+	//{
 		Find_Player();
-	}
+	//}
 
 	//if (m_pGameInstance->Key_Down(DIK_L))
 	//{
@@ -246,10 +248,42 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 
 }
 
+void CBreakableMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (m_bFireEaterBossPipe) //푸오코 기둥이면 푸오코에 의해서만 부서지고
+	{
+		//푸오코가 퓨리상태일 때
+		//pOther->퓨리일 때 트리거 트루
+		if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+			&& m_bBreakTriggered == false)
+		{
+			if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+			{
+				if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+	}
+	else //아니면 그냥 모두에게 부서지게한다.
+	{
+		if (m_bBreakTriggered == false)
+		{
+			m_bBreakTriggered = true;
+		}
+	}
+}
+
 void CBreakableMesh::Break()
 {
 	if (m_bIsBroken == true)
 		return;
+
+	if (m_bFireEaterBossPipe == false)
+	{
+		m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3);
+	}
 
 	m_bIsBroken = true;
 
@@ -271,7 +305,7 @@ void CBreakableMesh::Break()
 		//pRigid->setLinearVelocity(PxVec3(0.0f, -5.0f, 0.0f));
 		// 지금은 무게 중심이 중앙이라 떨어지면 뚝 떨어지는 느낌이 나서
 		// 부딪혀서 날라갈 때 속도와 회전 속도를 줘서 처리하면 됨.(장원)
-		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f), GetRandomFloat(-5.f, 5.f)));
+		pRigid->setAngularVelocity(PxVec3(GetRandomFloat(-3.f, 3.f), GetRandomFloat(-3.f, 3.f), GetRandomFloat(-3.f, 3.f)));
 		pRigid->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, !m_bIsBroken);
 
 		PxActor* pActor = pPartActor->Get_Actor();
@@ -638,15 +672,15 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		pRigid->setRigidBodyFlag(PxRigidBodyFlag::eENABLE_CCD, false);     // CCD 활성화
 		//pRigid->wakeUp();                                                  // 잠든 상태면 깨우기
 
-		if (m_bFireEaterBossPipe)
-		{
+		//if (m_bFireEaterBossPipe)
+		//{
 			//플레이어 무시
 			IgnorePlayerCollider(pActorCom);
-		}
-		else
-		{
+		//}
+		//else
+		//{
 			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
-		}
+		//}
 
 		// 6) 필터 설정
 		PxFilterData fd{};
@@ -659,7 +693,7 @@ HRESULT CBreakableMesh::Ready_PartColliders()
 		else
 		{
 			//파편들이 몬스터랑, 플레이어한테 발로 차이면 좋을듯
-			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ | WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY;
+			fd.word1 = WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_DYNAMICOBJ /*| WORLDFILTER::FILTER_MONSTERBODY | WORLDFILTER::FILTER_PLAYERBODY*/;
 		}
 
 		pActorCom->Set_ShapeFlag(true, false, true);
@@ -749,6 +783,12 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 		}
 	}
 
+	//사운드
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Breakable"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -795,4 +835,6 @@ void CBreakableMesh::Free()
 	Safe_Release(m_pPlayer);
 
 	Safe_Release(m_pNaviCom);
+
+	Safe_Release(m_pSoundCom);
 }

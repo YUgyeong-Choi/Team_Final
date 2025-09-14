@@ -3,7 +3,7 @@
         "Collision": false,
         "ModelName": "ErgoItem",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
     },
     {
@@ -152,6 +152,27 @@
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Debris_01A.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_01",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_02.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_04",
+        "NoInstancing": false,
+        "ObjectCount": 7,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_04.bin"
     },
     {
         "Collision": true,
@@ -549,7 +570,7 @@
         "Collision": true,
         "ModelName": "SM_Interior_Box_01",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Box_01.bin"
     },
     {
@@ -719,13 +740,6 @@
         "NoInstancing": true,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_LightProp_StreetLight_02.bin"
-    },
-    {
-        "Collision": false,
-        "ModelName": "SM_OldTown_WoodBoard_03",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_OldTown_WoodBoard_03.bin"
     },
     {
         "Collision": false,

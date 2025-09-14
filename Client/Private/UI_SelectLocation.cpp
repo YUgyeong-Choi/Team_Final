@@ -3,6 +3,7 @@
 #include "Stargazer.h"
 #include "UI_Button.h"
 #include "UI_Manager.h"
+#include "Player.h"
 
 CUI_SelectLocation::CUI_SelectLocation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUI_Container{pDevice, pContext}
@@ -45,6 +46,7 @@ HRESULT CUI_SelectLocation::Initialize(void* pArg)
 	Ready_Button();
 
 
+
 	return S_OK;
 }
 
@@ -52,6 +54,8 @@ void CUI_SelectLocation::Priority_Update(_float fTimeDelta)
 {
 	if (!m_bInit)
 	{
+		
+	
 		m_bInit = true;
 		return;
 	}
@@ -314,6 +318,8 @@ void CUI_SelectLocation::Interation_Button(_int iButtonIndex)
 	m_pSelectUI->Set_bDead();
 
 	CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
+
+
 }
 
 CUI_SelectLocation* CUI_SelectLocation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

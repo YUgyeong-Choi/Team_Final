@@ -101,11 +101,10 @@ float g_fViewportSizeX, g_fViewportSizeY;
 
 
 float2 g_vpSize;
-float2 g_focusCenterPx;
-float  g_focusRadiusPx;
-float  g_featherPx;
-float  g_blurBoost;
-float  g_gamma;
+float g_fCloseIntensity;
+float  g_fFarIntensity;
+float2  g_fCleanRange;
+float  g_fFeatherPx;
 
 /* [ 볼륨메트리 포그 함수 ] */
 float Hash(float3 p)
@@ -1378,23 +1377,57 @@ PS_OUT PS_MAIN_DISTORTION(PS_IN In)
     
 }
 
+// 원형 방향 12탭
+static const int TAP_COUNT = 12;
+static const float2 kCircle[TAP_COUNT] = {
+    float2(1.0,  0.0),
+    float2(0.8660254,  0.5),
+    float2(0.5,  0.8660254),
+    float2(0.0,  1.0),
+    float2(-0.5,  0.8660254),
+    float2(-0.8660254,  0.5),
+    float2(-1.0,  0.0),
+    float2(-0.8660254, -0.5),
+    float2(-0.5, -0.8660254),
+    float2(0.0, -1.0),
+    float2(0.5, -0.8660254),
+    float2(0.8660254, -0.5)
+};
 PS_OUT PS_DOF_ROUND(PS_IN In)
 {
     PS_OUT Out;
-    float2 px = In.vTexcoord * g_vpSize;
-    float  d = length(px - g_focusCenterPx);
-    float  r = g_focusRadiusPx;
-    float  f = max(g_featherPx, 1.0);
-    float  t = saturate((d - r) / f);   // 0: 선명, 1: 블러
-    t = pow(t, g_gamma);
 
-    float4 sharp = g_FinalTexture.Sample(DefaultSampler, In.vTexcoord);
-    float4 blur = g_BlurYTexture.Sample(DefaultSampler, In.vTexcoord) * g_blurBoost;
+    float2 vUV = In.vTexcoord;
 
-    Out.vBackBuffer = lerp(sharp, blur, t);
+    float  viewZ = g_PBR_Depth.Sample(DefaultSampler, vUV).y * 1000.0f;
+    float4 sharpCol = g_FinalTexture.Sample(DefaultSampler, vUV);
+    float4 blurCol = g_BlurYTexture.Sample(DefaultSampler, vUV);
+
+    float nearFocus = g_fCleanRange.x;
+    float farFocus = g_fCleanRange.y;
+
+    float4 result;
+
+    if (viewZ < nearFocus) // 카메라 쪽
+    {
+        float t = saturate(viewZ / nearFocus);
+        float w = saturate(t / max(1e-6, g_fCloseIntensity)); // 0으로 나눔 방지
+        result = lerp(blurCol, sharpCol, w);
+    }
+    else if (viewZ > farFocus) // 먼 쪽
+    {
+        float t = saturate(farFocus / viewZ);
+        float w = saturate(t / max(1e-6, g_fFarIntensity));
+        result = lerp(blurCol, sharpCol, w);
+    }
+    else
+    {
+        result = sharpCol;
+    }
+
+    Out.vBackBuffer = result;
     return Out;
 }
-
 technique11 DefaultTechnique
 {
     pass Debug //0

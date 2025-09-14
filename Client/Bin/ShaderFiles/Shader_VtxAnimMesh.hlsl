@@ -53,6 +53,45 @@ float g_fBandEnd = 0.8f;
 /* [ 피킹변수 ] */
 float g_fID;
 
+
+/* [ 공용 디졸브 함수 ] */
+Texture2D g_MaskTexture;
+bool g_bDissolve = false;
+float g_fDissolveAmount = 0.5f;
+float g_fDissolveRange = 0.03f;
+float3 g_vDissolveGlowColor = float3(1.0f, 0.8f, 0.2f);
+
+struct SDissolveResult
+{
+    float fClip; // clip(fClip);
+    float fEdge; // 경계 밴드(0~1)
+    float fGlow; // 글로우 강도(0~1)
+    float3 vAddColor; // Out.Color.rgb += vAddColor;
+};
+
+static SDissolveResult DoDissolve_NoArgs(float2 vTexcoord)
+{   
+    const float fSafeRange = max(g_fDissolveRange, 1e-6f);
+
+    SDissolveResult t;
+   
+    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord * 0.15f).r;
+    
+    const float fClipTerm = (g_fDissolveAmount + fSafeRange) - fMask;
+    t.fClip = fClipTerm;
+    
+    if (g_fDissolveAmount < 0.03f)
+        t.fClip = -1.0f;
+    
+    const float fCenter = g_fDissolveAmount;
+    t.fEdge = 1.0f - smoothstep(fCenter - fSafeRange, fCenter + fSafeRange, fMask);
+    
+    t.fGlow = saturate(1.0f - abs(fMask - g_fDissolveAmount) / fSafeRange);
+    t.vAddColor = g_vDissolveGlowColor * t.fGlow;
+
+    return t;
+}
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -347,6 +386,13 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
 {
     PS_OUT_PBR Out;
     
+    SDissolveResult tD = (SDissolveResult) 0;
+    if (g_bDissolve)
+    {
+        tD = DoDissolve_NoArgs(In.vTexcoord);
+        clip(tD.fClip); // 디스카드 처리
+    }
+    
     // 디퓨즈 텍스처
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)
@@ -373,6 +419,8 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
    
     float fIsUnit = 0.f;
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
+    if (g_bDissolve)
+        Out.vDiffuse.rgb += tD.vAddColor;
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, fIsUnit);
     Out.vProjPos = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
@@ -380,6 +428,8 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
     Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 0.f);
+    if (g_bDissolve)
+        Out.vEmissive.rgb += tD.vAddColor;
     
     return Out;
 }

@@ -51,15 +51,27 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_E))
 		{
-			m_bMoveStart = true;
-			m_bFinish = m_pPlayer->Get_HaveKey();
+			switch (m_eInteractType)
+			{
+			case Client::OUTDOOR:
+				m_bMoveStart = true;
+				m_bFinish = m_pPlayer->Get_HaveKey();
+		
+				CCamera_Manager::Get_Instance()->SetbMoveable(false);
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
+				break;
+			case INNERDOOR:
+				m_bFinish = true;
+				m_bMoveStart = true;
+				m_pPlayer->Interaction_Door(m_eInteractType,this);
+				break;
+			}
 			if (m_bFinish)
 			{
 				m_pPhysXActorCom->Init_SimulationFilterData();
 				m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			}
-			CCamera_Manager::Get_Instance()->SetbMoveable(false);
-			CUI_Manager::Get_Instance()->Activate_Popup(false);
+		
 		}
 	}
 
@@ -234,6 +246,9 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		case Client::OUTDOOR:
 			vTargetPos = _vector({ 183.05f, 8.85f, -7.95f, 1.f });
 			break;
+		case INNERDOOR:
+			vTargetPos = _vector({ 33.917623f,0.059349f,0.559624f, 1.f });
+			break;
 		default:
 			break;
 		}
@@ -241,7 +256,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
 		{
 			m_bMoveStart = false;
-			m_bRotationStart = true;
+			m_bRotationStart = m_eInteractType == OUTDOOR ? true : false;
 		}
 	}
 
@@ -252,6 +267,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
+		case Client::INNERDOOR:
 			vTargetRotation = _vector({ 1.f, 0.f, 0.f, 0.f });
 			break;
 		default:

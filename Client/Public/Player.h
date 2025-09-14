@@ -91,6 +91,9 @@ public:
 	// 몬스터가 죽을 때 불러줌
 	void			Set_HitTarget(CUnit* pTarget, _bool bDead);
 
+	InputContext&			Get_Input() { return m_Input; }
+	void					Clear_Input() { m_Input = {}; }
+
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -263,12 +266,12 @@ private: /* [ 상태패턴 ] */
 	friend class CPlayer_Dead;
 
 public: /* [ 특수 모션 관련 ] */
-	void SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
-	HITMOTION GetHitMotion() const { return m_eHitMotion; }
-	void SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
-	_float GetfReceiveDamage() const { return m_fReceiveDamage; }
-	void SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
-	void IsPerfectGard(_float fTimeDelta);
+	void		SetHitMotion(HITMOTION eHitMotion) { m_eHitMotion = eHitMotion; }
+	HITMOTION	GetHitMotion() const { return m_eHitMotion; }
+	void		SetfReceiveDamage(_float fDamage) { m_fReceiveDamage = fDamage; }
+	_float		GetfReceiveDamage() const { return m_fReceiveDamage; }
+	void		SetHitedAttackType(CBossUnit::EAttackType eType) { m_eHitedAttackType = eType; }
+	void		IsPerfectGard(_float fTimeDelta);
 	eAnimCategory GetAnimCategory() const { return m_eCategory; }
 
 	void NotifyCanGetItem(_bool bCanGet) { m_bCanGetItem = bCanGet; }
@@ -279,9 +282,11 @@ public: /* [ 부여 속성 관련 ] */
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
 
 public: /* [ 텔레포트 ] */
+	
 	void Start_Teleport();
 	void IsTeleport(_float fTimeDelta);
 	void SetTeleportPos(_float3 vPos) { m_vTeleportPos = vPos; }
+	_bool Get_IsTeleport() { return m_bTeleport; }
 
 public:/*[스탯 관련]*/
 	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }
@@ -304,6 +309,10 @@ public:/*[스탯 관련]*/
 
 
 	_bool Check_LevelUp(_int iLevel);
+
+private:
+	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
+	void Detect_FootstepSurface();
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -332,7 +341,6 @@ private: /* [ 불타버려~ ] */
 	_bool	m_bBurnSwitch = {};
 
 private: /* [ 림라이트 ] */
-	_float	m_fLimTime = {};
 	_float	m_fLimPhase = {};
 	_float	m_fLimSpeed = 1.7f;
 	_bool	m_bLimSwitch = {};

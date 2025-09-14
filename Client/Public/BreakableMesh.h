@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CAnimator;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -48,6 +49,10 @@ public:
 
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
+public:
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	//virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
+	//virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 private:
 	void Break();
 
@@ -112,6 +117,9 @@ private:
 
 	//영향을 줄 네비게이션
 	CNavigation* m_pNaviCom = { nullptr };
+
+	//사운드
+	CSoundController* m_pSoundCom = { nullptr };
 
 protected:
 	HRESULT Ready_Components(void* pArg);

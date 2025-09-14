@@ -29,6 +29,36 @@ float g_fID;
 bool g_bTile = false;
 float2 g_TileDensity = float2(1.0f, 1.0f);
 
+/* [ 공용 디졸브 함수 ] */
+Texture2D g_MaskTexture;
+bool g_bDissolve = false;
+float g_fDissolveAmount = 0.5f;
+float g_fDissolveRange = 0.10f;
+float3 g_vDissolveGlowColor = float3(1.0f, 0.8f, 0.2f);
+
+struct SDissolveResult
+{
+    float fClip; // clip(fClip);
+    float fEdge; // 경계 밴드(0~1)
+    float fGlow; // 글로우 강도(0~1)
+    float3 vAddColor; // Out.Color.rgb += vAddColor;
+};
+
+static SDissolveResult DoDissolve_NoArgs(float2 vTexcoord)
+{
+    const float fSafeRange = max(g_fDissolveRange, 1e-6f);
+    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord).r;
+
+    SDissolveResult t;
+    t.fEdge = smoothstep(g_fDissolveAmount - fSafeRange,
+                             g_fDissolveAmount + fSafeRange,
+                             fMask);
+
+    t.fGlow = saturate(1.0f - abs(fMask - g_fDissolveAmount) / fSafeRange);
+    t.fClip = fMask - (g_fDissolveAmount - fSafeRange);
+    t.vAddColor = g_vDissolveGlowColor * t.fGlow;
+    return t;
+}
 
 struct VS_IN
 {
@@ -151,6 +181,14 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float2 vTriplanarUV;
     float3 vTriplanarBlend;
+    SDissolveResult tD = (SDissolveResult)0;
+    
+    if (g_bDissolve)
+    {
+        tD = DoDissolve_NoArgs(In.vTexcoord);
+        clip(tD.fClip); // 디스카드 처리
+    }
+    
     
     // 디퓨즈 텍스처
     float4 vMtrlDiffuse = Sample_TriplanarTexture(g_DiffuseTexture, In, vTriplanarUV, vTriplanarBlend);
@@ -178,6 +216,8 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
     
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
+    if (g_bDissolve)
+        Out.vDiffuse.rgb += tD.vAddColor;
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
     Out.vARM = float4(AO, Roughness, Metallic, 1.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 1000.0f, g_fReflectionIntensity, g_fSpecularIntensity);
@@ -185,6 +225,8 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
     Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 1.f);
+    if (g_bDissolve)
+        Out.vEmissive.rgb += tD.vAddColor;
     return Out;
 }
 

@@ -10,7 +10,7 @@
         "Collision": false,
         "ModelName": "ErgoItem",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
     },
     {
@@ -245,6 +245,20 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Debris_06B.bin"
     },
     {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_01.bin"
+    },
+    {
+        "Collision": false,
+        "ModelName": "SM_Exhibition_Box_02",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_02.bin"
+    },
+    {
         "Collision": true,
         "ModelName": "SM_Exhibition_OutWall_01",
         "NoInstancing": false,
@@ -285,13 +299,6 @@
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_Clock_01.bin"
-    },
-    {
-        "Collision": true,
-        "ModelName": "SM_Exterior_DecoBoxes_01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exterior_DecoBoxes_01.bin"
     },
     {
         "Collision": false,
@@ -1382,7 +1389,7 @@
         "Collision": true,
         "ModelName": "Tile_Marble_01",
         "NoInstancing": false,
-        "ObjectCount": 18,
+        "ObjectCount": 19,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Tile_Marble_01.bin"
     }
 ]

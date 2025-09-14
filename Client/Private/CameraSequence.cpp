@@ -12,6 +12,7 @@ void CCameraSequence::InitAllFrames()
     m_vecOffSetRotKeyFrames.clear();
     m_vecFovKeyFrames.clear();
     m_vecTargetKeyFrames.clear();
+    m_vecDofKeyFrames.clear();
 }
 
 void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
@@ -28,6 +29,7 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     case 2: newKey.color = IM_COL32(0, 158, 115, 255); break; // Bluish Green
     case 3: newKey.color = IM_COL32(213, 94, 0, 255); break; // Vermillion/Orange
     case 4: newKey.color = IM_COL32(204, 121, 167, 255); break; // Reddish Purple
+    case 5: newKey.color = IM_COL32(0, 114, 178, 255); break; // Blue
     default:
         break;
     }
@@ -51,6 +53,8 @@ void CCameraSequence::Add(_int startFrame, _int endFrame,_int type)
     newKey.fYaw = 0.f;
     newKey.fDistance = 0.f;
 
+	newKey.dofDesc = DOF_DESC();
+
     // Ãß°¡
     m_vecKeys.push_back(newKey);
 }
@@ -73,6 +77,9 @@ void CCameraSequence::Add_KeyFrame(_int type, _int keyFrame)
         break;
     case 4:
         m_vecTargetKeyFrames.push_back(keyFrame);
+        break;
+    case 5:
+        m_vecDofKeyFrames.push_back(keyFrame);
         break;
     default:
         break;
@@ -118,10 +125,17 @@ void CCameraSequence::Delete_KeyFrame(_int type, _int keyFrame)
             m_vecTargetKeyFrames.erase(it);
         break;
     }
+    case 5:
+    {
+        auto it = find(m_vecDofKeyFrames.begin(), m_vecDofKeyFrames.end(), keyFrame);
+        if (it != m_vecDofKeyFrames.end())
+            m_vecDofKeyFrames.erase(it);
+        break;
+    }
     default:
         break;
     }
-
+    
 
 }
 
@@ -164,6 +178,13 @@ void CCameraSequence::Change_KeyFrame(_int type, _int originKeyFrame, _int chang
             *it = changeKeyFrame;
         break;
     }
+    case 5:
+    {
+        auto it = find(m_vecDofKeyFrames.begin(), m_vecDofKeyFrames.end(), originKeyFrame);
+        if (it != m_vecDofKeyFrames.end())
+            *it = changeKeyFrame;
+        break;
+    }
     default:
         break;
     }
@@ -187,6 +208,7 @@ void CCameraSequence::CustomDraw(int index, ImDrawList* draw_list, const ImRect&
     case 2: pKeyFrames = &m_vecOffSetRotKeyFrames; color = IM_COL32(0, 158, 115, 255); break; // Bluish Green
     case 3: pKeyFrames = &m_vecFovKeyFrames; color = IM_COL32(213, 94, 0, 255); break; // Vermillion/Orange
     case 4:  pKeyFrames = &m_vecTargetKeyFrames; color = IM_COL32(204, 121, 167, 255); break; // Reddish Purple
+    case 5:  pKeyFrames = &m_vecDofKeyFrames; color = IM_COL32(0, 114, 178, 255); break; // Reddish Purple
     default:
         return;
     }

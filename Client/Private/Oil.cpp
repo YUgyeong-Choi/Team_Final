@@ -18,9 +18,7 @@ COil::COil(const COil& Prototype)
 
 HRESULT COil::Initialize_Prototype()
 {
-	m_fDamge = 5.f; // 터졌을 때를 위해서
-
-
+	m_fDamge = 20.f; // 터졌을 때를 위해서
     return S_OK;
 }
 
@@ -64,8 +62,9 @@ void COil::Priority_Update(_float fTimeDelta)
 		_float fAngle = GetRandomFloat(0.f, XM_2PI); // 랜덤 각도
 		_float fX = cosf(fAngle) * fRadius;
 		_float fZ = sinf(fAngle) * fRadius;
+		_float fY = 0.3f;
 
-		const _float fGroundY = m_pFuoco ? XMVectorGetY(m_pFuoco->Get_TransfomCom()->Get_State(STATE::POSITION)) : XMVectorGetY(vPos);
+		const _float fGroundY = m_pFuoco ? XMVectorGetY(m_pFuoco->Get_TransfomCom()->Get_State(STATE::POSITION)) : fY;
 		_vector vSpreadPos = XMVectorSet(
 			XMVectorGetX(vPos) + fX,
 			fGroundY,
@@ -131,7 +130,7 @@ void COil::Explode_Oil()
 			
 				// 살짝만 날라가게 나중에 처리하기
 				m_pPlayer->SetHitMotion(HITMOTION::UP);
-				m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.95f);
+				m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 1.f);
 			}
 			Set_bDead();
 		}
