@@ -82,8 +82,9 @@ namespace Client
 	enum class STARGAZER_TAG 
 	{
 		OUTER,
-		FESTIVAL_LEADER,
+		FESTIVAL_LEADER, //인도자 들어가기 전
 		FIRE_EATER,
+		FESTIVAL_LEADER_IN, // 인도자 내부에 있는 거
 		END
 	};
 	//아이템 태그
@@ -94,8 +95,12 @@ namespace Client
 		ERGO_SHARD, //희미한 에르고 조각
 		PASSENGER_NOTE, //승객의 쪽지
 		KEY,
+		KRAT_TIMES,// 크라트타임스
 		END
 	};
+
+	//발소리 종류
+	enum class FOOTSTEP_SOUND { CARPET, SKIN, WOOD, DIRT, STONE, WATER, END };
 #pragma endregion
 
 #pragma region YG

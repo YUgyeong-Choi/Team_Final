@@ -994,11 +994,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		if (m_fSetSoundTime > 0.7f)
 		{
 			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
-			Detect_FootstepSurface();
+			Detect_FootstepSurface(m_eCategory);
 
 
-			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
-			m_fSetSoundTime = 0.f;
+			//m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+			//m_fSetSoundTime = 0.f;
 		}
 
 		break;
@@ -1023,10 +1023,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		if (m_fSetSoundTime > 0.45f)
 		{
 			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
-			Detect_FootstepSurface();
+			Detect_FootstepSurface(m_eCategory);
 
-			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
-			m_fSetSoundTime = 0.f;
+			//m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			//m_fSetSoundTime = 0.f;
 		}
 
 		break;
@@ -1045,10 +1045,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		if (m_fSetSoundTime > 0.35f)
 		{
 			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
-			Detect_FootstepSurface();
+			Detect_FootstepSurface(m_eCategory);
 
-			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
-			m_fSetSoundTime = 0.f;
+			//m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			//m_fSetSoundTime = 0.f;
 		}
 
 		break;
@@ -2657,7 +2657,7 @@ _bool CPlayer::Check_LevelUp(_int iLevel)
 	return false;
 }
 
-void CPlayer::Detect_FootstepSurface()
+void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 {
 	// ----------------------------
 	// 1. Raycast 버퍼
@@ -2667,7 +2667,7 @@ void CPlayer::Detect_FootstepSurface()
 	// 2. Query 필터: Static 오브젝트만, 바닥 필터 적용
 	PxQueryFilterData filterData;
 	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::ePREFILTER; // Static + Prefilter 사용
-	filterData.data.word0 = FILTER_FLOOR;  // 바닥만 체크
+	filterData.data.word0 = FILTER_FOOTSTEP;  // 바닥만 체크
 
 	// ----------------------------
 	// 3. 레이 시작점과 방향
@@ -2691,7 +2691,7 @@ void CPlayer::Detect_FootstepSurface()
 			PxHitFlags& queryFlags) override
 		{
 			// 바닥이면 블록으로 히트, 아니면 무시
-			if (filterData.word0 & FILTER_FLOOR)
+			if (filterData.word0 & FILTER_FOOTSTEP)
 				return PxQueryHitType::eBLOCK;
 			return PxQueryHitType::eNONE;
 		}
@@ -2728,26 +2728,142 @@ void CPlayer::Detect_FootstepSurface()
 	// 6. 결과 처리
 	if (status && hit.hasBlock)
 	{
-		const PxRaycastHit& block = hit.block;
 		bRayHit = true;
+		const PxRaycastHit& block = hit.block;
 		vRayHitPos = block.position;
 
 		//wprintf(L"[Footstep] Hit floor at (%.2f, %.2f, %.2f)\n",
 		//	block.position.x, block.position.y, block.position.z);
-
-		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
-		if (pHitMesh)
-		{
-			wcout << pHitMesh->Get_MeshName() << endl;
-
-			//여기서 타입에 따라 다른소리나도록 해야지
-			_int a = 10;
-		}
 	}
 	else
 	{
 		bRayHit = false;
 	}
+
+	if (bRayHit)
+	{
+		const PxRaycastHit& block = hit.block;
+		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		if (pHitMesh)
+		{
+			//wcout << pHitMesh->Get_MeshName() << endl;
+
+			switch (pHitMesh->Get_FootStepSound())
+			{
+			case FOOTSTEP_SOUND::CARPET:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] CARPET" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Carpet_Run_0", 6, 1);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::SKIN:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] SKIN" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Skin_Run_0", 6, 1);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::WOOD:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] WOOD" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Wood_Walk_0", 6, 1);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::DIRT:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+					//wcout << L"[Footstep] DIRT (Walk)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Dirt_Walk_0", 9, 1);
+					break;
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] DIRT (Run/Sprint)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Dirt_Run_0", 9, 1);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::STONE:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+					//wcout << L"[Footstep] STONE (Walk)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+					break;
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] STONE (Run/Sprint)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::WATER:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] WATER" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Water_Walk_0", 4, 1);
+					break;
+				}
+				break;
+
+			case FOOTSTEP_SOUND::END:
+			default:
+				switch (eAnim)
+				{
+				case eAnimCategory::WALK:
+					//wcout << L"[Footstep] DEFAULT STONE (Walk)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+					break;
+				case eAnimCategory::RUN:
+				case eAnimCategory::SPRINT:
+					//wcout << L"[Footstep] DEFAULT STONE (Run/Sprint)" << endl;
+					m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+					break;
+				}
+				break;
+			}
+
+		}
+	}
+	else
+	{
+		// 기본 돌 발소리
+		switch (eAnim)
+		{
+		case eAnimCategory::WALK:
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
+			break;
+		case eAnimCategory::RUN:
+		case eAnimCategory::SPRINT:
+			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
+			break;
+		}
+	}
+
+	m_fSetSoundTime = 0.f;
+
 
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider())

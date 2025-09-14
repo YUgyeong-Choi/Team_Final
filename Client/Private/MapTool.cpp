@@ -470,6 +470,12 @@ HRESULT CMapTool::Save(const _char* Map)
 				if (pMapToolObject->m_bCullNone)
 					ObjectJson["CullNone"] = true; // true일 때만 저장 (진작 이렇게 할걸)
 
+				//발소리 종류
+				if (pMapToolObject->m_eFS_Sound != FOOTSTEP_SOUND::END)
+				{
+					ObjectJson["FootstepSound"] = static_cast<_int>(pMapToolObject->m_eFS_Sound);
+				}
+
 				//인스턴싱 제외
 				ModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
 				ReadyModelJson["NoInstancing"] = pMapToolObject->m_bNoInstancing;
@@ -681,6 +687,18 @@ HRESULT CMapTool::Load_StaticMesh(const _char* Map)
 				MapToolObjDesc.bCullNone = true;
 			else
 				MapToolObjDesc.bCullNone = false;
+
+			//발소리 사운드
+			if (Objects[j].contains("FootstepSound"))
+			{
+				_int iFootstep = Objects[j]["FootstepSound"].get<_int>();
+				MapToolObjDesc.eFS_Sound = static_cast<FOOTSTEP_SOUND>(iFootstep);
+			}
+			else
+			{
+				MapToolObjDesc.eFS_Sound = FOOTSTEP_SOUND::END; // 기본값
+			}
+
 
 			//인스턴싱 제외 여부
 			if (Models[i].contains("NoInstancing"))
@@ -1420,6 +1438,10 @@ void CMapTool::Render_Detail()
 		ImGui::Separator();
 
 		Detail_CullNone();
+
+		ImGui::Separator();
+
+		Detail_FootStepSound();
 	}
 	else if (m_pFocusObject && m_pFocusObject->m_eObjType == CMapToolObject::OBJ_TYPE::STARGAZER)
 	{
@@ -2451,6 +2473,26 @@ void CMapTool::Detail_ItemTag()
 			for (CMapToolObject* pObj : m_SelectedObjects)
 			{
 				pObj->m_eItemTag = static_cast<ITEM_TAG>(iCurTag);
+			}
+		}
+
+	}
+}
+
+void CMapTool::Detail_FootStepSound()
+{
+	ImGui::Text("Foot Step Sound");
+
+	if (m_pFocusObject)
+	{
+		_int iCurValue = static_cast<_int>(m_pFocusObject->m_eFS_Sound);
+
+		if (ImGui::Combo("Foot Step Sound", &iCurValue, m_FootStepSound, IM_ARRAYSIZE(m_FootStepSound)))
+		{
+			//선택된 애들 모두 변경
+			for (CMapToolObject* pObj : m_SelectedObjects)
+			{
+				pObj->m_eFS_Sound = static_cast<FOOTSTEP_SOUND>(iCurValue);
 			}
 		}
 

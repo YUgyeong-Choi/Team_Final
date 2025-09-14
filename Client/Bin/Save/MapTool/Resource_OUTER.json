@@ -3,7 +3,7 @@
         "Collision": false,
         "ModelName": "ErgoItem",
         "NoInstancing": false,
-        "ObjectCount": 5,
+        "ObjectCount": 7,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
     },
     {
@@ -731,7 +731,7 @@
         "Collision": true,
         "ModelName": "SM_BuildingC_Wall_26",
         "NoInstancing": false,
-        "ObjectCount": 31,
+        "ObjectCount": 32,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingC_Wall_26.bin"
     },
     {
@@ -1067,14 +1067,14 @@
         "Collision": false,
         "ModelName": "SM_Exhibition_Box_02",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 6,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_02.bin"
     },
     {
         "Collision": false,
         "ModelName": "SM_Exhibition_Box_04",
         "NoInstancing": false,
-        "ObjectCount": 1,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Exhibition_Box_04.bin"
     },
     {
@@ -1379,7 +1379,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Gate_IronGate_02.bin"
     },
     {
-        "Collision": true,
+        "Collision": false,
         "ModelName": "SM_Gate_Pillar_01",
         "NoInstancing": false,
         "ObjectCount": 5,
@@ -2439,7 +2439,7 @@
         "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
-        "ObjectCount": 2,
+        "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
     },
     {

@@ -1,5 +1,5 @@
 {
-    "ModelCount": 24,
+    "ModelCount": 26,
     "Models": [
         {
             "Collision": false,
@@ -128,7 +128,8 @@
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 2,
                     "IsFloor": true,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -160,6 +161,7 @@
                 },
                 {
                     "ColliderType": 1,
+                    "FootstepSound": 2,
                     "IsFloor": true,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -191,6 +193,7 @@
                 },
                 {
                     "ColliderType": 2,
+                    "FootstepSound": 2,
                     "IsFloor": true,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -262,10 +265,10 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
             "NoInstancing": false,
-            "ObjectCount": 8,
+            "ObjectCount": 10,
             "Objects": [
                 {
                     "ColliderType": 0,
@@ -485,7 +488,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": true,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -511,6 +515,70 @@
                             31.15801239013672,
                             -1.1791231632232666,
                             1.1735455989837646,
+                            0.9999998807907104
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            31.15801239013672,
+                            -1.1791231632232666,
+                            4.647342681884766,
+                            0.9999998807907104
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "FootstepSound": 1,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            31.15801239013672,
+                            -1.1791231632232666,
+                            7.819958686828613,
                             0.9999998807907104
                         ]
                     ]
@@ -750,10 +818,94 @@
             ]
         },
         {
+            "Collision": true,
+            "ModelName": "SM_Station_TrainCarpet_01",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 1,
+                    "FootstepSound": 0,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            23.717958450317383,
+                            -1.179490327835083,
+                            4.280420303344727,
+                            1.0
+                        ]
+                    ]
+                }
+            ]
+        },
+        {
             "Collision": false,
             "ModelName": "Stargazer",
             "ObjectCount": 0,
             "Objects": []
+        },
+        {
+            "Collision": true,
+            "ModelName": "T_Tile_Soil",
+            "NoInstancing": false,
+            "ObjectCount": 1,
+            "Objects": [
+                {
+                    "ColliderType": 2,
+                    "FootstepSound": 3,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "TileDensity": [
+                        0.30000001192092896,
+                        0.30000001192092896
+                    ],
+                    "WorldMatrix": [
+                        [
+                            1.0,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.0,
+                            0.0
+                        ],
+                        [
+                            -190.8316192626953,
+                            -8.637478828430176,
+                            2.541057586669922,
+                            1.0000001192092896
+                        ]
+                    ]
+                }
+            ]
         }
     ]
 }

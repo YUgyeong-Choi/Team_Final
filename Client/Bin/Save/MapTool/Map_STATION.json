@@ -2464,13 +2464,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_01_Male",
             "NoInstancing": false,
             "ObjectCount": 4,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2501,7 +2502,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2532,7 +2534,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2596,13 +2599,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_02_Male",
             "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2635,13 +2639,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_03_Female",
             "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2672,7 +2677,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2736,13 +2742,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_03_Male",
             "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2806,13 +2813,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_04_Female",
             "NoInstancing": false,
             "ObjectCount": 2,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2843,7 +2851,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -2876,13 +2885,14 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_CH_PROB_Corpse_05_Female",
             "NoInstancing": false,
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -18941,6 +18951,7 @@
             "Objects": [
                 {
                     "ColliderType": 2,
+                    "FootstepSound": 2,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -22837,6 +22848,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
+                    "FootstepSound": 0,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -22868,6 +22880,7 @@
                 },
                 {
                     "ColliderType": 1,
+                    "FootstepSound": 0,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [

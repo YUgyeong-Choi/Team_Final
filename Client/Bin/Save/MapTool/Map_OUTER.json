@@ -2818,6 +2818,7 @@
             "Objects": [
                 {
                     "ColliderType": 0,
+                    "CullNone": true,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -32860,7 +32861,7 @@
             "Collision": true,
             "ModelName": "SM_BuildingC_Wall_26",
             "NoInstancing": false,
-            "ObjectCount": 31,
+            "ObjectCount": 32,
             "Objects": [
                 {
                     "ColliderType": 0,
@@ -33820,6 +33821,37 @@
                             11.321390151977539,
                             -31.593942642211914,
                             1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 0,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            1.610195279121399,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            1.3754998445510864,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            1.3754998445510864,
+                            0.0
+                        ],
+                        [
+                            305.38372802734375,
+                            0.5694721341133118,
+                            -16.43011474609375,
+                            0.9999998807907104
                         ]
                     ]
                 }
@@ -58438,7 +58470,7 @@
             ]
         },
         {
-            "Collision": true,
+            "Collision": false,
             "ModelName": "SM_Gate_Pillar_01",
             "NoInstancing": false,
             "ObjectCount": 5,
@@ -58475,7 +58507,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 0,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -86244,9 +86276,9 @@
                             0.0
                         ],
                         [
-                            405.1099853515625,
+                            434.74017333984375,
                             15.699999809265137,
-                            -45.86000061035156,
+                            -35.90145492553711,
                             1.0
                         ]
                     ]
@@ -100054,7 +100086,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.30000001192092896,
@@ -100614,7 +100646,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.30000001192092896,
@@ -101015,6 +101047,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
+                    "FootstepSound": 3,
                     "IsFloor": false,
                     "LightShape": 0,
                     "TileDensity": [
@@ -101513,7 +101546,7 @@
             "Objects": [
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.20000000298023224,
@@ -101618,7 +101651,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.20000000298023224,
@@ -102431,7 +102464,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.20000000298023224,
@@ -102466,7 +102499,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.30000001192092896,
@@ -102501,7 +102534,7 @@
                 },
                 {
                     "ColliderType": 1,
-                    "IsFloor": false,
+                    "IsFloor": true,
                     "LightShape": 0,
                     "TileDensity": [
                         0.20000000298023224,

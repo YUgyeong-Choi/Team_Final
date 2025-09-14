@@ -35,10 +35,10 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Female.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
-        "ObjectCount": 8,
+        "ObjectCount": 10,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
@@ -161,10 +161,24 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TicketOffice_01.bin"
     },
     {
+        "Collision": true,
+        "ModelName": "SM_Station_TrainCarpet_01",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainCarpet_01.bin"
+    },
+    {
         "Collision": false,
         "ModelName": "Stargazer",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/Stargazer.bin"
+    },
+    {
+        "Collision": true,
+        "ModelName": "T_Tile_Soil",
+        "NoInstancing": false,
+        "ObjectCount": 1,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/T_Tile_Soil.bin"
     }
 ]

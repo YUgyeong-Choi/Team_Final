@@ -21,7 +21,10 @@ public:
     virtual HRESULT Initialize(void* pArg) override;
 
     void Play(const string& strTag);
-    void Play_Random(const string& strTag, _int randCount);
+
+    //네이밍이 0부터 인것 ex) Walk_0, Walk_1 ...
+    void Play_Random(const string& strTag, _int randCount, _int iStartNum = 0);
+
     void Stop(const string& strTag);
     // -1 = 무한루프
     void Set_Loop(const string& strTag, _int _LoopCount = -1);

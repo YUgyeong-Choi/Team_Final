@@ -37,9 +37,11 @@ void CSoundController::Play(const string& strTag)
 		pSoundCore->Play();
 }
 
-void CSoundController::Play_Random(const string& strTag, _int randCount)
+//네이밍이 0부터 인것 ex) Walk_0, Walk_1 ...
+//네이밍이 1부터 인것 ex) Walk_1, Walk_2 ...
+void CSoundController::Play_Random(const string& strTag, _int randCount, _int iStartNum/* 기본 0, 네이밍이 몇 번 부터 시작하는지*/)
 {
-	string strSoundTag = strTag + to_string(rand() % randCount);
+	string strSoundTag = strTag + to_string(rand() % randCount + iStartNum);
 	auto pSoundCore = Find_Sound(strSoundTag);
 	if (pSoundCore)
 		pSoundCore->Play();
