@@ -993,6 +993,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_fSetSoundTime += fTimeDelta;
 		if (m_fSetSoundTime > 0.7f)
 		{
+			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
+			Detect_FootstepSurface();
+
+
 			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Walk_", 9);
 			m_fSetSoundTime = 0.f;
 		}
@@ -1018,6 +1022,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_fSetSoundTime += fTimeDelta;
 		if (m_fSetSoundTime > 0.45f)
 		{
+			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
+			Detect_FootstepSurface();
+
 			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
 			m_fSetSoundTime = 0.f;
 		}
@@ -1037,6 +1044,9 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		m_fSetSoundTime += fTimeDelta;
 		if (m_fSetSoundTime > 0.35f)
 		{
+			//이때 레이를 쏴서, 바닥에 무엇이 있는가 체크하여, 소리를 결정 한다.
+			Detect_FootstepSurface();
+
 			m_pSoundCom->Play_Random("SE_PC_FS_Stone_Run_", 9);
 			m_fSetSoundTime = 0.f;
 		}
@@ -2639,7 +2649,108 @@ _bool CPlayer::Check_LevelUp(_int iLevel)
 	return false;
 }
 
+void CPlayer::Detect_FootstepSurface()
+{
+	// ----------------------------
+	// 1. Raycast 버퍼
+	PxRaycastBuffer hit;
 
+	// ----------------------------
+	// 2. Query 필터: Static 오브젝트만, 바닥 필터 적용
+	PxQueryFilterData filterData;
+	filterData.flags = PxQueryFlag::eSTATIC | PxQueryFlag::ePREFILTER; // Static + Prefilter 사용
+	filterData.data.word0 = FILTER_FLOOR;  // 바닥만 체크
+
+	// ----------------------------
+	// 3. 레이 시작점과 방향
+	_float3 vPos;
+	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
+
+	PxVec3 rayOrigin(vPos.x, vPos.y, vPos.z);  // 발보다 위에서 시작
+	PxVec3 rayDir(0.0f, -1.0f, 0.0f);                 // 아래 방향
+	_float rayLength = 1.0f;                           // 충분히 길게
+
+	// ----------------------------
+	// 4. Prefilter Callback (Optional, 안전하게 바닥만 잡기)
+	class FootstepQueryCallback : public PxQueryFilterCallback
+	{
+	public:
+		// Prefilter: 레이가 콜라이더에 닿기 전에 필터링
+		virtual PxQueryHitType::Enum preFilter(
+			const PxFilterData& filterData,
+			const PxShape* shape,
+			const PxRigidActor* actor,
+			PxHitFlags& queryFlags) override
+		{
+			// 바닥이면 블록으로 히트, 아니면 무시
+			if (filterData.word0 & FILTER_FLOOR)
+				return PxQueryHitType::eBLOCK;
+			return PxQueryHitType::eNONE;
+		}
+
+		// Postfilter: intersection 테스트 후 추가 필터링
+		virtual PxQueryHitType::Enum postFilter(
+			const PxFilterData& filterData,
+			const PxQueryHit& hit,
+			const PxShape* shape,
+			const PxRigidActor* actor) override
+		{
+			// 그냥 BLOCK으로 통과
+			return PxQueryHitType::eBLOCK;
+		}
+	}callback;
+
+
+	// ----------------------------
+	// 5. 레이캐스트 실행
+	_bool status = m_pGameInstance->Get_Scene()->raycast(
+		rayOrigin,
+		rayDir,
+		rayLength,
+		hit,
+		PxHitFlag::eDEFAULT,
+		filterData,
+		&callback  // Prefilter 사용
+	);
+
+	_bool bRayHit = { false };
+	PxVec3 vRayHitPos = {};
+
+	// ----------------------------
+	// 6. 결과 처리
+	if (status && hit.hasBlock)
+	{
+		const PxRaycastHit& block = hit.block;
+		bRayHit = true;
+		vRayHitPos = block.position;
+
+		/*wprintf(L"[Footstep] Hit floor at (%.2f, %.2f, %.2f)\n",
+			block.position.x, block.position.y, block.position.z);*/
+
+		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		if (pHitMesh)
+		{
+			_int a = 10;
+		}
+	}
+	else
+	{
+		bRayHit = false;
+	}
+
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderCollider())
+	{
+		DEBUGRAY_DATA _data{};
+		_data.vStartPos = rayOrigin;
+		_data.vDirection = rayDir;
+		_data.fRayLength = rayLength;
+		_data.bIsHit = bRayHit;
+		_data.vHitPos = vRayHitPos;
+		m_pPhysXActorCom->Add_RenderRay(_data);
+	}
+#endif
+}
 
 HRESULT CPlayer::Ready_Weapon()
 {

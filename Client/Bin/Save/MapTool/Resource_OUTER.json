@@ -1,6 +1,13 @@
 [
     {
         "Collision": false,
+        "ModelName": "ErgoItem",
+        "NoInstancing": false,
+        "ObjectCount": 5,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_Bridge_Banner_01",
         "NoInstancing": false,
         "ObjectCount": 2,

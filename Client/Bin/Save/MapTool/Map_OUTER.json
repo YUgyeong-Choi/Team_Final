@@ -1,6 +1,12 @@
 {
-    "ModelCount": 356,
+    "ModelCount": 357,
     "Models": [
+        {
+            "Collision": false,
+            "ModelName": "ErgoItem",
+            "ObjectCount": 0,
+            "Objects": []
+        },
         {
             "Collision": false,
             "ModelName": "SM_Bridge_Banner_01",
