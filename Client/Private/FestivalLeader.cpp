@@ -289,13 +289,27 @@ void CFestivalLeader::Update(_float fTimeDelta)
 void CFestivalLeader::Late_Update(_float fTimeDelta)
 {
 	/* [ 가방 디졸브 예시 ] */
-	//if(KEY_DOWN(DIK_U))
-	//	SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
-	//if(KEY_DOWN(DIK_I))
-	//	SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+	if(KEY_DOWN(DIK_U))
+		SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+	if(KEY_DOWN(DIK_I))
+		SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
 
 	/* [ 아래의 조건으로 가방이 사라졌는지를 알 수 있음 ] */
-	//if (!m_bDissolveSwitch && m_fDissolve <= 0.003f)
+	if (!m_bDissolveSwitch && m_fDissolve <= 0.002f)
+	{
+		if (m_pModelCom->IsMeshVisible(2))
+			m_pModelCom->SetMeshVisible(2, false);
+		if (m_pModelCom->IsMeshVisible(3))
+			m_pModelCom->SetMeshVisible(3, false);
+	}
+	else
+	{
+		if (!m_pModelCom->IsMeshVisible(2))
+			m_pModelCom->SetMeshVisible(2, true);
+		if (!m_pModelCom->IsMeshVisible(3))
+			m_pModelCom->SetMeshVisible(3, true);
+	}
+
 	//	(2 ~ 3 번 모델 렌더시 아래조건 통과하면 continue 하세요)
 
 	__super::Late_Update(fTimeDelta);
@@ -963,18 +977,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Phase2InvisibledModel", [this]()
 		{
-			if (m_pModelCom)
-			{
-				if (m_pModelCom->IsMeshVisible(2))
-				{
-					m_pModelCom->SetMeshVisible(2, false);
-				}
-
-				if (m_pModelCom->IsMeshVisible(3))
-				{
-					m_pModelCom->SetMeshVisible(3, false);
-				}
-			}
+			
 			if (m_pAnimator)
 			{
 				m_pAnimator->ApplyOverrideAnimController("Phase2");
@@ -999,7 +1002,10 @@ void CFestivalLeader::Register_Events()
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
 		});
 
-
+	m_pAnimator->RegisterEventListener("DissolveOn", [this]()
+		{
+				SwitchDissolve(false, 0.7f, _float3{ 0.75f, 0.8f, 0.9f }, vector<_uint>{ 2, 3 });
+		});
 	m_pAnimator->RegisterEventListener("RestoreHeadBoneIndex", [this]()
 		{
 			if (!m_pModelCom || !m_BoneRefs[Hammer] || m_iOriginBoneIndex < 0)

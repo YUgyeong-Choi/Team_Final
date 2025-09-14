@@ -873,6 +873,10 @@
                     "Time": 90.0
                 },
                 {
+                    "EventName": "DissolveOn",
+                    "Time": 295.0
+                },
+                {
                     "EventName": "Phase2InvisibledModel",
                     "Time": 320.0
                 }

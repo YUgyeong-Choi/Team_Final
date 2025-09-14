@@ -78,7 +78,7 @@ HRESULT CEliteUnit::Initialize(void* pArg)
     XMMatrixDecompose(&S, &R, &T, XMLoadFloat4x4(&worldMatrix));
 
      XMStoreFloat3(&m_InitPos, T);
-
+     SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
     return S_OK;
 }
 
@@ -620,6 +620,7 @@ void CEliteUnit::Reset()
     SwitchEmissive(false, 1.f);
     m_iCurNodeID = -1;
     m_iPrevNodeID = -1;
+    SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
 }
 
 void CEliteUnit::Register_Events()
@@ -738,7 +739,7 @@ void CEliteUnit::EnterFatalHit()
 		m_fGroggyEndTimer = 0.f;
 		m_bGroggyActive = false;
 		m_fGroggyGauge = 0.f;
-        SwitchEmissive(false, 1.f);
+        SwitchFury(false, 1.f);
 #ifdef _DEBUG
         cout << "Elite Fatal Attack" << endl;
 #endif
