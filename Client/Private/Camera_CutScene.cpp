@@ -871,6 +871,9 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
+		//if (m_iCurrentFrame == 750)
+		//	m_pGameInstance->Start_BGM("SE_CIN_FIreEater", true);
+
 		if (m_iCurrentFrame == 575)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
