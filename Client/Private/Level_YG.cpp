@@ -16,6 +16,8 @@
 #include "KeyDoor.h"
 #include "BossDoor.h"
 #include "StaticMesh.h"
+#include "AnimatedProp.h"
+#include "MapLoader.h"
 
 CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -26,6 +28,13 @@ CLevel_YG::CLevel_YG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_YG::Initialize()
 {
+	m_pMapLoader = CMapLoader::Create(m_pDevice, m_pContext);
+
+#ifndef TESTMAP
+	//첫 맵(스테이션은 로딩완료), 게임중에 다른 맵 로딩 시작
+	m_pMapLoader->Ready_Map_Async();
+#endif
+
 	m_pGameInstance->SetCurrentLevelIndex(ENUM_CLASS(LEVEL::YG));
 	m_pGameInstance->Set_IsChangeLevel(false);
 
@@ -42,42 +51,9 @@ HRESULT CLevel_YG::Initialize()
 	if (FAILED(Load_Shader()))
 		return E_FAIL;
 
-	/* [ 해야할 준비들 ] */
-	if (FAILED(Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
-	if (FAILED(Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
-	if (FAILED(Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
-		return E_FAIL;
-	if (FAILED(Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
+	if (FAILED(Ready_Level()))
 		return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
-	if (FAILED(Ready_OctoTree()))
-		return E_FAIL;
-	if (FAILED(Separate_Area()))
-		return E_FAIL;
-	if (FAILED(Ready_Camera()))
-		return E_FAIL;
-	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
-		return E_FAIL;
-	if (FAILED(Ready_UI()))
-		return E_FAIL;
-	if (FAILED(Ready_Player()))
-		return E_FAIL;
-
-	// 문 같이 상호작용 하는 것들
-	if (FAILED(Ready_Interact()))
-		return E_FAIL;
-
-	if (FAILED(Ready_Monster("FIRE_EATER")))
-		return E_FAIL;
-
-
-	/* [ 플레이어 제어 ] */
-	m_pPlayer->GetCurrentAnimContrller()->SetState("Sit_End");
-	CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::WAKEUP);
 
 	if (FAILED(Ready_ImGui()))
 		return E_FAIL;
@@ -120,6 +96,10 @@ void CLevel_YG::Priority_Update(_float fTimeDelta)
 
 void CLevel_YG::Update(_float fTimeDelta)
 {
+#ifndef TESTMAP
+	if (m_pMapLoader->Check_MapLoadComplete(m_pGameInstance->GetCurrentLevelIndex()))
+		Ready_OctoTree();
+#endif
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	__super::Update(fTimeDelta);
@@ -206,6 +186,91 @@ HRESULT CLevel_YG::Reset()
 	return S_OK;
 }
 
+HRESULT CLevel_YG::Ready_Level()
+{
+#ifndef TESTMAP
+
+	if (FAILED(m_pMapLoader->Add_MapActor(START_MAP)))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // !TESTMAP
+
+#ifdef TEST_TEST_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("TEST")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // TEST_TEST_MAP
+
+#ifdef TEST_STATION_MAP	
+	if (FAILED(m_pMapLoader->Add_MapActor("STATION")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif //TEST_STATION_MAP
+
+#ifdef TEST_FIRE_EATER_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("FIRE_EATER")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // TEST_FIRE_EATER_MAP
+
+#ifdef TEST_HOTEL_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("HOTEL")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // TEST_HOTEL
+
+#ifdef TEST_OUTER_MAP
+	if (FAILED(m_pMapLoader->Add_MapActor("OUTER")))//맵 액터(콜라이더) 추가
+		return E_FAIL;
+#endif // TEST_OUTER_MAP
+
+
+
+	//고사양 모드
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
+	////저사양 모드
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
+
+	if (FAILED(Ready_OctoTree()))
+		return E_FAIL;
+	if (FAILED(Separate_Area()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Camera()))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_UI()))
+		return E_FAIL;
+	if (FAILED(Ready_Player()))
+		return E_FAIL;
+
+
+#ifndef TESTMAP
+	//모든 몬스터, 스타게이저, 부수는 오브젝트, 별바라기 소환하자.
+	if (FAILED(m_pMapLoader->Load_Ready_All_Etc(ENUM_CLASS(LEVEL::YG))))
+		return E_FAIL;
+	cout << "[MAP] Load_Ready_All_Etc 완료" << endl;
+#endif
+
+	if (FAILED(m_pMapLoader->Ready_Monster()))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_ErgoItem()))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Breakable()))
+		return E_FAIL;
+	if (FAILED(m_pMapLoader->Ready_Stargazer()))
+		return E_FAIL;
+
+	// 문 같이 상호작용 하는 것들
+	if (FAILED(Ready_Interact()))
+		return E_FAIL;
+
+	if (FAILED(Ready_AnimatedProp()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_YG::Ready_Monster(const _char* Map)
 {
 	string MonsterFilePath = string("../Bin/Save/MonsterTool/Monster_") + Map + ".json";
@@ -273,6 +338,50 @@ HRESULT CLevel_YG::Ready_Monster(const _char* Map)
 				return E_FAIL;
 		}
 	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_YG::Ready_AnimatedProp()
+{
+	CAnimatedProp::ANIMTEDPROP_DESC Desc{};
+	Desc.eMeshLevelID = LEVEL::YG;
+	_float4x4 WorldMatrix = {};
+	Desc.WorldMatrix = _float4x4(
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		-1.0f, 0.0f, 0.0f, 0.0f,
+		232.05f, 12.12f, -7.89f, 1.0f
+	);
+	Desc.bCullNone = true;
+	Desc.szMeshID = TEXT("SquareStatue");
+	Desc.bUseSecondMesh = false;
+	Desc.iLevelID = ENUM_CLASS(LEVEL::YG);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_AnimatedProp"),
+		ENUM_CLASS(LEVEL::YG), TEXT("Layer_AnimPropLoop"), &Desc)))
+		return E_FAIL;
+
+	Desc.bUseSecondMesh = true;
+	Desc.bCullNone = false;
+	Desc.szMeshID = TEXT("ClownPanel");
+	Desc.szSecondMeshID = TEXT("ClownStationPanel");
+	Desc.WorldMatrix = _float4x4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		403.78f, 15.7f, -49.5f, 1.0f
+	);
+
+	Desc.vSecondWorldMatrix = _float4x4(
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		405.11f, 15.7f, -45.86f, 1.0f
+	);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_AnimatedProp"),
+		ENUM_CLASS(LEVEL::YG), TEXT("Layer_AnimPropPanel"), &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -673,6 +782,24 @@ HRESULT CLevel_YG::Separate_Area()
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 
+	// Area 20 
+	_float3 a20p0 = _float3{ 162.2489f, 0.f, 4.0193f };
+	_float3 a20p1 = _float3{ 186.83f, 48.18f, -20.2639f };
+	_float3 a20Min, a20Max;
+	FnToAABB(a20p0, a20p1, a20Min, a20Max);
+
+	// Area 21
+	_float3 a21p0 = _float3{ 176.838f, 0.f, -2.1049f };
+	_float3 a21p1 = _float3{ 184.8192f, 48.18f, -12.4495f };
+	_float3 a21Min, a21Max;
+	FnToAABB(a21p0, a21p1, a21Min, a21Max);
+
+	// Area 22
+	_float3 a22p0 = _float3{ 190.0822f, 0.f, -4.3780f };
+	_float3 a22p1 = _float3{ 181.0464f, 48.1307f, -12.5612f };
+	_float3 a22Min, a22Max;
+	FnToAABB(a22p0, a22p1, a22Min, a22Max);
+
 	// ------------- Area 50 --------------
 	_float3 a50p0 = _float3{ 168.3228f, 61.1988f, 62.4843f };
 	_float3 a50p1 = _float3{ 274.4402f, -25.574f, -92.6368f };
@@ -739,6 +866,22 @@ HRESULT CLevel_YG::Separate_Area()
 	_float3 a60Min, a60Max;
 	FnToAABB(a60p0, a60p1, a60Min, a60Max);
 
+	// ------------- Area 61 --------------
+	_float3 a61p0 = _float3{ 168.32f, 61.1988f, 62.4843f };
+	_float3 a61p1 = _float3{ 203.69f, -25.574f, -92.6368f };
+	_float3 a61Min, a61Max;
+	FnToAABB(a61p0, a61p1, a61Min, a61Max);
+	// ------------- Area 62 --------------
+	_float3 a62p0 = _float3{ 203.69f, 61.1988f, 62.4843f };
+	_float3 a62p1 = _float3{ 239.06f, -25.574f, -92.6368f };
+	_float3 a62Min, a62Max;
+	FnToAABB(a62p0, a62p1, a62Min, a62Max);
+	// ------------- Area 63 --------------
+	_float3 a63p0 = _float3{ 239.06f, 61.1988f, 62.4843f };
+	_float3 a63p1 = _float3{ 274.44f, -25.574f, -92.6368f };
+	_float3 a63Min, a63Max;
+	FnToAABB(a63p0, a63p1, a63Min, a63Max);
+
 	{
 		/* [ 1번 구역 ] */
 		const vector<_uint> vecAdj1 = { 2 };
@@ -783,14 +926,14 @@ HRESULT CLevel_YG::Separate_Area()
 	}
 	{
 		/* [ 7번 구역 ] */
-		const vector<_uint> vecAdj7 = { 8, 9, 14, 18, 12, 50 };
+		const vector<_uint> vecAdj7 = { 8, 9, 14, 12, 18, 20 };
 		if (!m_pGameInstance->AddArea_AABB(
 			7, a7Min, a7Max, vecAdj7, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	{
 		/* [ 8번 구역 ] */
-		const vector<_uint> vecAdj8 = { 7, 9, 10, 11 };
+		const vector<_uint> vecAdj8 = { 9, 10, 11, 20 };
 		if (!m_pGameInstance->AddArea_AABB(
 			8, a8Min, a8Max, vecAdj8, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
 			return E_FAIL;
@@ -799,21 +942,21 @@ HRESULT CLevel_YG::Separate_Area()
 		/* [ 9번 구역 ] */
 		const vector<_uint> vecAdj9 = { 7, 8, 10, 11 };
 		if (!m_pGameInstance->AddArea_AABB(
-			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			9, a9Min, a9Max, vecAdj9, AREA::EAreaType::HOUSE, ENUM_CLASS(AREA::EAreaType::HOUSE)))
 			return E_FAIL;
 	}
 	{
 		/* [ 10번 구역 ] */
-		const vector<_uint> vecAdj10 = { 9, 12, 14, 16, 17, 18 };
+		const vector<_uint> vecAdj10 = { 9 };
 		if (!m_pGameInstance->AddArea_AABB(
-			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			10, a10Min, a10Max, vecAdj10, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
 		/* [ 11번 구역 ] */
 		const vector<_uint> vecAdj11 = { 9, 12 };
 		if (!m_pGameInstance->AddArea_AABB(
-			11, a11Min, a11Max, vecAdj11, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			11, a11Min, a11Max, vecAdj11, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
 			return E_FAIL;
 	}
 	{
@@ -872,13 +1015,34 @@ HRESULT CLevel_YG::Separate_Area()
 			19, a19Min, a19Max, vecAdj19, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
 	}
+	{
+		/* [ 20번 구역 ] */
+		const vector<_uint> vecAdj20 = { 7, 8, 9, 11, 21, 22, 61 };
+		if (!m_pGameInstance->AddArea_AABB(
+			20, a20Min, a20Max, vecAdj20, AREA::EAreaType::LOBBY, ENUM_CLASS(AREA::EAreaType::LOBBY)))
+			return E_FAIL;
+	}
+	{
+		/* [ 21번 구역 ] */
+		const vector<_uint> vecAdj21 = { 7, 20, 22, 61, 62 };
+		if (!m_pGameInstance->AddArea_AABB(
+			21, a21Min, a21Max, vecAdj21, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
+	{
+		/* [ 22번 구역 ] */
+		const vector<_uint> vecAdj22 = { 7, 20, 50, 52 };
+		if (!m_pGameInstance->AddArea_AABB(
+			22, a22Min, a22Max, vecAdj22, AREA::EAreaType::ROOM, ENUM_CLASS(AREA::EAreaType::ROOM)))
+			return E_FAIL;
+	}
 
 
 
 	/* ---------- 야외 ------------ */
 	{
 		/* [ 50번 구역 ] */
-		const vector<_uint> vecAdj50 = { 7, 51, 52 };
+		const vector<_uint> vecAdj50 = { 20, 51, 52, 61, 62, 63 };
 		if (!m_pGameInstance->AddArea_AABB(
 			50, a50Min, a50Max, vecAdj50, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
@@ -951,6 +1115,27 @@ HRESULT CLevel_YG::Separate_Area()
 		const vector<_uint> vecAdj60 = { 59 };
 		if (!m_pGameInstance->AddArea_AABB(
 			60, a60Min, a60Max, vecAdj60, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 61번 구역 ] */
+		const vector<_uint> vecAdj61 = { 20, 50, 52, 62, 63 };
+		if (!m_pGameInstance->AddArea_AABB(
+			61, a61Min, a61Max, vecAdj61, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 62번 구역 ] */
+		const vector<_uint> vecAdj62 = { 20, 50, 51, 52, 61, 63 };
+		if (!m_pGameInstance->AddArea_AABB(
+			62, a62Min, a62Max, vecAdj62, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
+			return E_FAIL;
+	}
+	{
+		/* [ 63번 구역 ] */
+		const vector<_uint> vecAdj63 = { 50, 51, 52, 53, 61, 62 };
+		if (!m_pGameInstance->AddArea_AABB(
+			63, a63Min, a63Max, vecAdj63, AREA::EAreaType::INDOOR, ENUM_CLASS(AREA::EAreaType::INDOOR)))
 			return E_FAIL;
 	}
 	if (FAILED(m_pGameInstance->FinalizePartition()))
@@ -1454,4 +1639,6 @@ void CLevel_YG::Free()
 	Safe_Release(m_pShaderComPBR);
 	Safe_Release(m_pShaderComANIM);
 	Safe_Release(m_pShaderComInstance);
+
+	Safe_Release(m_pMapLoader);
 }

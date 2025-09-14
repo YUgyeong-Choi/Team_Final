@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
+#include "UI_Container.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -57,6 +58,21 @@ void CBossUnit::Update(_float fTimeDelta)
 			m_pAnimator->SetPlayRate(1.f);
 			SwitchEmissive(false, 1.f);
 			SwitchFury(false, 1.f);
+
+			// boss kill ui 추가
+			// 나오는 타이밍은 조절해야 될듯?
+			CUI_Container::UI_CONTAINER_DESC eDesc = {};
+
+			eDesc.fDelay = 2.f;
+			eDesc.strFilePath = TEXT("../Bin/Save/UI/Boss_Kill.json");
+
+			eDesc.fLifeTime = 6.f;
+			eDesc.useLifeTime = true;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
+				return;
+
 		}
 		Safe_Release(m_pHPBar);
 	}

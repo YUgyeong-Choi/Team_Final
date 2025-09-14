@@ -6,7 +6,7 @@
       "Events": [
         {
           "EventName": "StartAnim",
-          "Time": 125.0
+          "Time": 123.0
         }
       ],
       "IsLoop": false,

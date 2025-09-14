@@ -221,10 +221,10 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Groggy.json") ,  TEXT("../Bin/Save/UI/Guide/Guide_Fatal.json") };
 
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
-				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Guide"), &eDesc);
+				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
 			
-			m_pGameInstance->Set_GameTimeScale(0.000001f);
+			
 
 			m_isFirstGroggy = true;
 		}
@@ -243,6 +243,12 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 
 		m_isDropItem = true;
+	}
+
+	if (m_bGroggyActive)
+	{
+		if (m_pHPBar)
+			m_pHPBar->Set_RenderTime(1.f);
 	}
 
 }

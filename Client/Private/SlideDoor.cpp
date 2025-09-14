@@ -49,20 +49,17 @@ void CSlideDoor::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_E))
 		{
+			CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
 			switch (m_eInteractType)
 			{
 			case Client::TUTORIALDOOR:
 			{
 				m_pPhysXActorCom->Init_SimulationFilterData();
-				CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_LastObject(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_Player")));
+			
 				pPlayer->Interaction_Door(m_eInteractType, this);
 				//CUI_Manager::Get_Instance()->Off_Panel();
 				break;
 			}
-			case Client::FUOCO:
-				// 플레이어 움직임 시작 로직 ?
-				// 문 애니메이션 시작
-				break;
 			default:
 				break;
 			}
@@ -132,6 +129,8 @@ void CSlideDoor::Play_Sound()
 	case Client::TUTORIALDOOR:
 		m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
 		m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
+		break;
+	case INNERDOOR:
 		break;
 	default:
 		break;

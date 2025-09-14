@@ -203,6 +203,15 @@ void CAnimatedProp::Register_Events()
 	}
 }
 
+void CAnimatedProp::NotifyPlayAnimation(_bool bPlay)
+{
+	
+		if (m_pAnimator)
+			m_pAnimator->SetPlaying(bPlay);
+
+	
+}
+
 
 HRESULT CAnimatedProp::Ready_Components()
 {

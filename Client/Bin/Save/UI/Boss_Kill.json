@@ -28,7 +28,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.5,
-                        "iEndFrame": 210,
+                        "iEndFrame": 240,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -81,7 +81,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 210,
+                        "iEndFrame": 240,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -224,7 +224,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 210,
+                        "iEndFrame": 240,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -269,7 +269,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 210,
+                        "iEndFrame": 240,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -300,7 +300,7 @@
                         "EndAlpha": 1.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.0,
-                        "iEndFrame": 100,
+                        "iEndFrame": 120,
                         "iStartFrame": 85,
                         "isLoop": false
                     },
@@ -308,7 +308,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 210,
+                        "iEndFrame": 240,
                         "iStartFrame": 180,
                         "isLoop": false
                     }

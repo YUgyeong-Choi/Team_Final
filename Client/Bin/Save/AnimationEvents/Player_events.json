@@ -625,6 +625,19 @@
             "TickPerSecond": 55.0
         },
         {
+            "ClipName": "AS_Pino_Prop_SlidingDoor",
+            "Duration": 175.0,
+            "Events": [
+                {
+                    "EventName": "OnInteractionKeyDoor",
+                    "Time": 7.0
+                }
+            ],
+            "IsLoop": false,
+            "RootMotion": false,
+            "TickPerSecond": 55.0
+        },
+        {
             "ClipName": "AS_Pino_Stargazer_Active_End",
             "Duration": 55.0,
             "IsLoop": false,

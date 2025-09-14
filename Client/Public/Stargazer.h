@@ -8,6 +8,7 @@ class CModel;
 class CShader;
 class CAnimator;
 class CSoundController;
+class CPhysXStaticActor;
 NS_END
 
 
@@ -62,15 +63,16 @@ public:
 	// 특정 행동을 하면, 버튼이랑 스크립트를 지운다.
 	void Delete_Script();
 
-	void End_Script();
-
 	void Teleport_Stargazer(STARGAZER_TAG eTag);
+
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
 private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
 	void Register_Events();
-	_bool Check_Player_Close();
 
 	// 필요한 데이터를 로드함
 	void LoadScriptData();
@@ -105,6 +107,10 @@ private:    /* [ 컴포넌트 ] */
 	CAnimator* m_pAnimator[ENUM_CLASS(STARGAZER_STATE::END)] = { nullptr };
 	CSoundController* m_pSoundCom = { nullptr };
 
+	// 상호작용 용도
+	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
+	
+
 	// 대화가 있으면 따로 추가하기, npc처럼
 	vector<TALKDATA> m_eScriptDatas = { };
 
@@ -121,6 +127,7 @@ private:    /* [ 컴포넌트 ] */
 
 	vector<string> m_ButtonEvents = {};
 
+	_bool m_isCollison = {};
 	// 동작 분기를 위해 bool로 구분 하려고 함
 	_bool m_bDoOnce = {};
 	_bool m_bChange = {};
@@ -129,7 +136,7 @@ private:    /* [ 컴포넌트 ] */
 	_bool m_bUseTeleport = {};
 
 	_bool m_bUseOtherUI = {};
-	_bool m_bCheckPopup = {};
+	
 
 	//vector<CUIObject*> m_
 	class CUI_Guide* m_pGuide = {nullptr};
@@ -137,6 +144,10 @@ private:    /* [ 컴포넌트 ] */
 
 	
 	_bool m_bIsRotatingToStargazer = false;
+
+	_bool m_bCreateShrinkEffect = false;
+	_float m_fShrinkEffectDelay = 0.f;
+	
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Bind_ShaderResources();

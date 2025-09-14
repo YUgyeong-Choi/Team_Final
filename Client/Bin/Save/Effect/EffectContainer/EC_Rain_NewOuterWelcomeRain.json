@@ -16,20 +16,20 @@
                 1.0,
                 1.0,
                 1.0,
-                0.7
+                0.5235601663589478
             ],
             "Color": [
                 1.0,
                 1.0,
                 1.0,
-                0.64
+                0.4921466112136841
             ],
-            "DistortionStrength": 6.5,
+            "DistortionStrength": 10.199999809265137,
             "Duration": 1017,
             "EffectType": 1,
-            "EmissiveIntensity": 0.0,
+            "EmissiveIntensity": 0.45,
             "EndTrack": 1017,
-            "FlipUV": true,
+            "FlipUV": false,
             "Gravity": 14.399999618530273,
             "IsGravity": false,
             "KeyFrames": [
@@ -38,9 +38,9 @@
                         1.0,
                         1.0,
                         1.0,
-                        0.6492146253585815
+                        0.4921466112136841
                     ],
-                    "Intensity": 0.9700000286102295,
+                    "Intensity": 1.3200000524520874,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2196.448486328125,
+            "LifeTime": 4570.34765625,
             "LifeTime_Particle": [
                 1.0,
                 3.0
@@ -72,7 +72,7 @@
             "MaxSpeed": 300.0,
             "MinSpeed": 0.0,
             "Name": "NEW_OuterRain",
-            "NumInstance": 3500,
+            "NumInstance": 1500,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -86,9 +86,9 @@
             ],
             "PType": 1,
             "Pivot": [
-                0.04,
+                0.03999999910593033,
                 1.0,
-                0.2
+                0.20000000298023224
             ],
             "Range": [
                 6.0,
@@ -108,20 +108,20 @@
             "ShaderPass": 5,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.00800000037997961,
-                0.017999999225139618
+                0.019999999552965164,
+                0.029999999329447746
             ],
             "Speed": [
-                7.0,
+                10.0,
                 12.0
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.05000000074505806,
+            "StretchFactor": 0.07999999821186066,
             "TextureTags": [
-                "T_Shere_05_C_HJS",
-                "T_Rain_Drip_Mask_01_C_RSW",
-                "T_Decal_Crack_02_N_HJS",
+                "T_Shere_04_C_HJS",
+                "Rain_Noise_68_C_PCY",
+                "T_Rain_Drips_01_C_PCY",
                 ""
             ],
             "TextureUsage": [

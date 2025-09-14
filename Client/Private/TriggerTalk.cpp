@@ -73,7 +73,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			eGuideDesc.fDelay = 1.25f;
 			eGuideDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Belt.json") };
  			CCamera_Manager::Get_Instance()->SetbMoveable(false);
-			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Guide"), &eGuideDesc);
+			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eGuideDesc);
 
 			m_pPlayer->Add_Icon(TEXT("Prototype_GameObject_Lamp"));
 			m_pPlayer->Get_PlayerLamp()->SetbLampVisible(true);

@@ -41,6 +41,13 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void* pArg)
 {
+	if (m_bIsDissolve)
+	{
+		if (FAILED(Add_Component(0, TEXT("Prototype_Component_Texture_NoiseMap"),
+			TEXT("Dissolve_Com"), reinterpret_cast<CComponent**>(&m_pDissolveMap))))
+			return E_FAIL;
+	}
+
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;	
@@ -186,4 +193,5 @@ void CGameObject::Free()
 
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+	Safe_Release(m_pDissolveMap);
 }

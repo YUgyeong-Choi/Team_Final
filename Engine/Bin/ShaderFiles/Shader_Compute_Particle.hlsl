@@ -397,7 +397,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             // 최근접 점과 pivot 거리
             float3 closest = prevPos + seg * t;
             float fDist = length(vCurPivot - closest);
-            
+
             if (fDist < ShrinkThreshold)
             {
                 if (isLoop != 0)
@@ -428,47 +428,47 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             // range를 다시 사용해서 새롭게 다시 만들 건지..
 
 
-       //     if (ParticleType == 0)
-       //     {
-       //         pos = float3(
-			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
-                
-       //         pp.Direction = float4(normalize(pos.xyz - vCurPivot.xyz), 0.f);
-       //     }
-       //     else if (ParticleType == 1)
-       //     {
-       //         pos = float3(
-			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
-                
-       //         pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
-       //     }
-       //     else if (ParticleType == 2) // random
-       //     {
-       //         pos = float3(
-			    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
-                
-       //         pp.Direction = float4(
-       //             Random(i * 3, -1.f, 1.f),
-       //             Random(i * 3 + 1, -1.f, 1.f),
-       //             Random(i * 3 + 2, -1.f, 1.f),
-       //             0.f
-       //         );
-       //     }
-       //     else if (ParticleType == 3) // to center
-       //     {
-       //         pos = float3(
-			    //    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
-			    //    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
-			    //    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
-                
-       //         pp.Direction = float4(normalize(vCurPivot.xyz - pos.xyz), 0.f);
-       //     }
+        //     if (ParticleType == 0)
+        //     {
+        //         pos = float3(
+		    	    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+		    	    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+		    	    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+                 
+        //         pp.Direction = float4(normalize(pos.xyz - vCurPivot.xyz), 0.f);
+        //     }
+        //     else if (ParticleType == 1)
+        //     {
+        //         pos = float3(
+		    	    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+		    	    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+		    	    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+                 
+        //         pp.Direction = float4(normalize(Center.xyz - vCurPivot.xyz), 0.f);
+        //     }
+        //     else if (ParticleType == 2) // random
+        //     {
+        //         pos = float3(
+		    	    //Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+		    	    //Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+		    	    //Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+                 
+        //         pp.Direction = float4(
+        //             Random(i * 3, -1.f, 1.f),
+        //             Random(i * 3 + 1, -1.f, 1.f),
+        //             Random(i * 3 + 2, -1.f, 1.f),
+        //             0.f
+        //         );
+        //     }
+        //     else if (ParticleType == 3) // to center
+        //     {
+        //         pos = float3(
+		    	    //    Random(i * 3, Center.x - Range.x * 0.5f, Center.x + Range.x * 0.5f),
+		    	    //    Random(i * 3 + 1, Center.y - Range.y * 0.5f, Center.y + Range.y * 0.5f),
+		    	    //    Random(i * 3 + 2, Center.z - Range.z * 0.5f, Center.z + Range.z * 0.5f));
+                 
+        //         pp.Direction = float4(normalize(vCurPivot.xyz - pos.xyz), 0.f);
+        //     }
             
             pp.vInitOffset = float3(
 			    pos.x - Center.x,

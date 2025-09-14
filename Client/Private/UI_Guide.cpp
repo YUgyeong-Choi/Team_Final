@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "Player.h"
 
 CUI_Guide::CUI_Guide(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CUI_Container{pDevice, pContext}
@@ -92,10 +93,10 @@ HRESULT CUI_Guide::Initialize(void* pArg)
 
         list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
         for (auto& obj : objList)
-            obj->Set_TimeScale(0.f);
+            obj->Set_TimeScale(0.0000001f);
 
         CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
-        pPlayer->Set_TimeScale(0.f);
+        pPlayer->Set_TimeScale(0.0000001f);
 
         if (m_Explainations.size() == 1)
             m_Explainations[0]->Active_Update(true);
@@ -106,6 +107,8 @@ HRESULT CUI_Guide::Initialize(void* pArg)
     m_fCurrentAlpha = 1.f;
    
     CUI_Manager::Get_Instance()->Sound_Play("SE_UI_OpenWindowTutorial_01");
+
+ 
     return S_OK;
 }
 
@@ -116,6 +119,14 @@ void CUI_Guide::Priority_Update(_float fTimeDelta)
         Set_bDead();
         m_pGameInstance->Set_GameTimeScale(1.f);
         CCamera_Manager::Get_Instance()->SetbMoveable(true);
+
+        list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
+        for (auto& obj : objList)
+            obj->Set_TimeScale(1.f);
+
+        CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
+        pPlayer->Set_TimeScale(1.f);
+
         return;
     }
 
@@ -203,21 +214,11 @@ void CUI_Guide::Check_Button()
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
         {
-            list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
-            for (auto& obj : objList)
-                obj->Set_TimeScale(1.f);
-
-            CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
-            pPlayer->Set_TimeScale(1.f);
-
-          
+                     
             CUI_Manager::Get_Instance()->On_Panel();
             CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindowTutorial_01");
 
-           
-
-           
-            FadeStart(1.f, 0.f, 0.25f);
+            FadeStart(1.f, 0.f, 0.3f);
 
             for (auto& pObj : m_pBackGround->Get_PartUI())
             {
