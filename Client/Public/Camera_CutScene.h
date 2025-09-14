@@ -64,6 +64,8 @@ private:
 	void Interp_OffsetPos(_int curFrame);
 	/* [ 카메라 Target 보간 ] */
 	void Interp_Target(_int curFrame);
+	/* [ 카메라 Dof 보간 ] */
+	void Interp_Dof(_int curFrame);
 
 	/* [ 위치값만 추출하는 함수 - 보간할때 쓰기 좋아서 추가해둔 것 ] */
 	XMVECTOR XMMatrixDecompose_T(const _matrix& m);

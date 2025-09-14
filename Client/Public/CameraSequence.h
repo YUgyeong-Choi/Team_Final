@@ -36,6 +36,7 @@ public:
         INTERPOLATION_CAMERA interpTarget;
 
 		DOF_DESC dofDesc;
+        INTERPOLATION_CAMERA interpDof;
         _int keyFrame;
     };
 public:
