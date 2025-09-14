@@ -122,6 +122,7 @@
 #include "UI_Script_StarGazer.h"
 #include "UI_SelectLocation.h"
 #include "UI_Levelup.h"
+#include "UI_Letter.h"
 #pragma endregion
 
 #pragma region LEVEL_JW
@@ -465,6 +466,10 @@ HRESULT CLoader::Loading_For_Static()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Levelup"),
 		CUI_Levelup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
+		CUI_Letter::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
