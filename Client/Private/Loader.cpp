@@ -2033,7 +2033,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_ItemType"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemType_%d.dds"),3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/ItemType_%d.dds"),5))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Arrow*/
@@ -2160,6 +2160,10 @@ HRESULT CLoader::Loading_For_UI_Texture()
 	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Alert_Kill_Puppet"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Text/Alert_Kill_Puppet_%d.dds"),2))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Boss_Item"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Icon/Item_Boss_%d.dds"), 5))))
 		return E_FAIL;
 
 	return S_OK;

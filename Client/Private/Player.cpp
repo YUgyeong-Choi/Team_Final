@@ -2513,8 +2513,9 @@ void CPlayer::Start_Teleport()
 {
 	m_bTeleport = true;
 	m_bIsInvincible = true;
+	m_bTeleportFadeStart = false;
 	m_pAnimator->SetTrigger("Teleport");
-	CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
+	//CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
 }
 
 void CPlayer::IsTeleport(_float fTimeDelta)
@@ -2522,6 +2523,13 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 	if (m_bTeleport)
 	{
 		m_fTeleportTime += fTimeDelta;
+
+		if (!m_bTeleportFadeStart && m_fTeleportTime >= 1.f)
+		{
+			m_bTeleportFadeStart = true;
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
+		}
+
 		if (m_fTeleportTime >= 2.f)
 		{
 			
@@ -2533,12 +2541,13 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			// 플레이어 이동
 			PxTransform posTrans = PxTransform(pxPos);
 			Get_Controller()->Set_Transform(posTrans);
-			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.f);
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.5f);
 		}
 
 		if (!m_fIsInvincible && m_fTeleportTime > 6.f)
 		{
 			m_bTeleport = false;
+			m_bTeleportFadeStart = false;
 			m_fTeleportTime = 0.f;
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();

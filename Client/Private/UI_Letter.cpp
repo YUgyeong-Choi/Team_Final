@@ -143,7 +143,7 @@ HRESULT CUI_Letter::Render()
 
 void CUI_Letter::Check_Button()
 {
-    if (m_pGameInstance->Key_Down(DIK_SPACE))
+    if (m_pGameInstance->Key_Down(DIK_SPACE) || m_pGameInstance->Key_Down(DIK_ESCAPE))
     {
 
         if (ENUM_CLASS(LEVEL::LOGO) != m_pGameInstance->GetCurrentLevelIndex())
