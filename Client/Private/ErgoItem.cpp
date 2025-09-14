@@ -68,9 +68,11 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 				
-			
-			
-			if (m_eItemTag == ITEM_TAG::PULSE_CELL)
+			if (m_eItemTag == ITEM_TAG::END)
+			{
+
+			}
+			else if (m_eItemTag == ITEM_TAG::PULSE_CELL)
 			{
 				// ÆÞ½º´Â °ü·Ã guide ui ¶ç¿ì±â
 				CUI_Guide::UI_GUIDE_DESC eDesc{};
