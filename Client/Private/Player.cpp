@@ -2509,19 +2509,27 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 		m_fTeleportTime += fTimeDelta;
 		if (m_fTeleportTime >= 2.f)
 		{
-			m_bTeleport = false;
+			
 			m_bIsInvincible = false;
-			m_fTeleportTime = 0.f;
+			
 
 			PxVec3 pxPos(m_vTeleportPos.x, m_vTeleportPos.y, m_vTeleportPos.z);
 
 			// 플레이어 이동
 			PxTransform posTrans = PxTransform(pxPos);
 			Get_Controller()->Set_Transform(posTrans);
-			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.5f);
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.f);
 		}
 
-		
+		if (!m_fIsInvincible && m_fTeleportTime > 6.f)
+		{
+			m_bTeleport = false;
+			m_fTeleportTime = 0.f;
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			CUI_Manager::Get_Instance()->On_Panel();
+			
+		}
+
 
 	}
 }
