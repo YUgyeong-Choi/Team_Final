@@ -32,7 +32,8 @@ public:
 private:
 	HRESULT Ready_Components();
 
-	_bool m_bRainActive = false;
+	_bool m_bRainActive = true;
+
 public:
 	static CTriggerRain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

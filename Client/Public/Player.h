@@ -159,7 +159,7 @@ private: /* [ Setup 함수 ] */
 	HRESULT Ready_Stat();
 	HRESULT Ready_Effect();
 	void LoadPlayerFromJson();
-
+	void Register_SoundEvents();
 public: /* [ 옵저버 관련 ] */
 	void Callback_HP();
 	void Callback_Stamina();
@@ -347,6 +347,8 @@ private: /* [ 림라이트 ] */
 	_float4 m_vLimLightColor = { 1.f ,1.f ,1.f ,1.f };
 
 private: /* [ 텔레포트 ] */
+	_bool m_bTeleportFadeStart = {};
+	
 	_bool m_bTeleport = {};
 	_float m_fTeleportTime = {};
 	_float3 m_vTeleportPos = {};

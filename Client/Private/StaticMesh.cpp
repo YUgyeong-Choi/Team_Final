@@ -72,6 +72,7 @@ void CStaticMesh::Priority_Update(_float fTimeDelta)
 
 void CStaticMesh::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
 }
 
 void CStaticMesh::Late_Update(_float fTimeDelta)
@@ -100,6 +101,30 @@ HRESULT CStaticMesh::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+	if (m_bIsDissolve)
+	{
+		if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+
+		_bool vDissolve = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+
+		if (m_vecDissolveMeshNum.empty())
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		_bool vDissolve = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+	}
+
 	if (m_pModelCom[ENUM_CLASS(m_eLOD)] == nullptr)
 		m_eLOD = LOD::LOD0;
 
@@ -110,6 +135,24 @@ HRESULT CStaticMesh::Render()
 		_bool bIsNormal = true;
 		_bool bIsARM = true;
 		_bool bIsEmissive = true;
+
+		if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
+		{
+			auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+			if (iter != m_vecDissolveMeshNum.end())
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+			else
+			{
+				_float fDissolve = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+		}
 
 		_float fEmissive = 0.f;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))

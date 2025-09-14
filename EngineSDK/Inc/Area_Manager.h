@@ -25,10 +25,11 @@ public:
 	_int FindAreaContainingPoint();
 
 public:
-	const AABBBOX* GetAreaBounds(_int iAreaId) const;
-	void           GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
-	void		   GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
-	AREAMGR	   GetCurrentAreaMgr();
+	const AABBBOX*	GetAreaBounds(_int iAreaId) const;
+	void			GetActiveAreaBounds(vector<AABBBOX>& vecOutBounds, _float fPad = 0.f) const;
+	void			GetActiveAreaIds(vector<_uint>& vecOutAreaIds) const;
+	_int			GetCurAreaIds() { return m_iCurrentAreaId; }
+	AREAMGR			GetCurrentAreaMgr();
 
 
 public: /* [ µð¹ö±ë ÇÔ¼ö ]*/

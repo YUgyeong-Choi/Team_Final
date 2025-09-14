@@ -105,14 +105,18 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 		m_vPrevOuterPos = m_vCurOuterPos;
 	m_vCurOuterPos = m_vOuterPos;
 
+	// 트레일에 파티클이 달린 경우.
 	if (m_bHasEmitter && m_bTrailActive)
 	{
+		// 이전 위치와 현재 위치를 확인해서 진행 방향을 구함
 		_vector vDir = XMVector3Normalize(XMLoadFloat3(&m_vPrevOuterPos) - XMLoadFloat3(&m_vCurOuterPos));
 		if (XMVectorGetX(XMVector3Length(vDir)) < 0.00001f)
 			vDir = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+		// 이번 프레임에 새로 생성된 두 점 사이의 캣멀롬 보간 위치 배열을 받아옴
 		const vector<_float3>& vNodes =  m_pVIBufferCom->Get_InterpolatedNewNodes();
 		if (!vNodes.empty())
 		{
+			// 점마다 파티클 방출
 			for (auto& vPos : vNodes)
 			{
 				CParticleEffect::DESC desc = {};

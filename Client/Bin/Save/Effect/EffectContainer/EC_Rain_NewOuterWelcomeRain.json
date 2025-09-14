@@ -24,7 +24,7 @@
                 1.0,
                 0.4921466112136841
             ],
-            "DistortionStrength": 10.199999809265137,
+            "DistortionStrength": 8.399999809265137,
             "Duration": 1017,
             "EffectType": 1,
             "EmissiveIntensity": 0.45,
@@ -40,7 +40,7 @@
                         1.0,
                         0.4921466112136841
                     ],
-                    "Intensity": 1.3200000524520874,
+                    "Intensity": 1.5200000,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 4570.34765625,
+            "LifeTime": 13.34765625,
             "LifeTime_Particle": [
                 1.0,
                 3.0
@@ -112,8 +112,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                10.0,
-                12.0
+                8.0,
+                11.0
             ],
             "Spin": false,
             "StartTrack": 0,

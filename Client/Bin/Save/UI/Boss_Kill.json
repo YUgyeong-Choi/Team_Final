@@ -20,7 +20,7 @@
                         "EndAlpha": 0.5,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.0,
-                        "iEndFrame": 10,
+                        "iEndFrame": 30,
                         "iStartFrame": 0,
                         "isLoop": false
                     },
@@ -59,7 +59,7 @@
                         "EndAlpha": 1.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.0,
-                        "iEndFrame": 15,
+                        "iEndFrame": 45,
                         "iStartFrame": 0,
                         "isLoop": false
                     },
@@ -73,15 +73,15 @@
                             "X": 0.16500000655651093,
                             "Y": 0.30000001192092896
                         },
-                        "iEndFrame": 15,
-                        "iStartFrame": 0,
+                        "iEndFrame": 45,
+                        "iStartFrame": 30,
                         "isLoop": false
                     },
                     {
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 240,
+                        "iEndFrame": 300,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -216,7 +216,7 @@
                         "EndAlpha": 1.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.0,
-                        "iEndFrame": 30,
+                        "iEndFrame": 45,
                         "iStartFrame": 16,
                         "isLoop": false
                     },
@@ -224,7 +224,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 240,
+                        "iEndFrame": 300,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -269,7 +269,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 240,
+                        "iEndFrame": 300,
                         "iStartFrame": 180,
                         "isLoop": false
                     }
@@ -308,7 +308,7 @@
                         "EndAlpha": 0.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 1.0,
-                        "iEndFrame": 240,
+                        "iEndFrame": 300,
                         "iStartFrame": 180,
                         "isLoop": false
                     }

@@ -86,6 +86,14 @@ public:
 	void PrintMatrix(const char* szName, const _matrix& mat);
 
 	wstring Get_Name() { return wstring(m_szName); }
+
+
+
+protected:
+	void OnDissolve(_float fTimeDelta);
+	void OffDissolve(_float fTimeDelta);
+	void SwitchDissolve(_bool bDissolve, _float fDissolveSpeed, _float3 Color, vector<_uint> vecMeshNum);
+
 protected:
 	ID3D11Device*				m_pDevice = { nullptr };
 	ID3D11DeviceContext*		m_pContext = { nullptr };
@@ -113,10 +121,19 @@ protected:
 
 	float m_fTimeScale = 1.f; // 오브젝트 별 업데이트 속도
 
+
+
+protected:
+	_bool				m_bDissolveSwitch = { true };
+	_float				m_fDissolveSpeed = { 1.f };
+	_float				m_fDissolve = {};
+	_float3				m_vDissolveGlowColor = { 1.0f, 0.8f, 0.2f };
+	vector<_uint>		m_vecDissolveMeshNum = {};
+
 protected:
 	class CTexture* m_pDissolveMap = { nullptr };
 	_bool m_bIsDissolve = {};
-	_float m_fDissolveAmount = {};
+
 
 private:
 	mutex m_mtx = {};

@@ -65,6 +65,8 @@ void CWeapon::Priority_Update(_float fTimeDelta)
 
 void CWeapon::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
+
 	if (!m_bIsActive)
 		return;
 

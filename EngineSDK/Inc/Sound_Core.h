@@ -33,11 +33,19 @@ public:
 	void Set3DState(_float fMin, _float fMax);
 	_bool IsPlaying() const;
 	void SetPaused(_bool paused);
+	void StopAll();
 
+private:
+	void RemoveInactiveChannels();
 private:
 	FMOD::System* m_pCoreSystem = { nullptr };
 	shared_ptr<FMOD::Sound> m_pSound = {nullptr};
 	FMOD::Channel* m_pChannel = { nullptr };
+
+	vector<FMOD::Channel*> m_ActiveChannels;
+	_float m_fDefaultVolume = 1.0f;
+	_float m_fDefaultPitch = 1.0f;
+	_int m_iDefaultLoopCount = 0;
 
 	_float m_fVolume{ 1.f };
 	_float3		m_vSoundPos{};

@@ -746,7 +746,6 @@ public:
                 m_pOwner->m_pAnimator->SetBool("HasLamp", false);
                 m_pOwner->m_pAnimator->SetTrigger("UseItem");
                 m_pOwner->m_bUsePulse = true;
-                m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Item_Fail_", 3);
             }
             else
             {
@@ -3295,6 +3294,8 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
+
+        m_pOwner->SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3351,6 +3352,7 @@ public:
 
             m_bDoTwo = true;
 
+            m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
         }
@@ -3364,7 +3366,7 @@ public:
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();
-            m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+          //  m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
             CUI_Manager::Get_Instance()->On_Panel();
 

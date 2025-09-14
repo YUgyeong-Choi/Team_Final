@@ -47,6 +47,7 @@ private:
 	CAMERA_ROTFRAME m_EditOffSetRotKey = {};
 	CAMERA_FOVFRAME m_EditFovKey = {};
 	CAMERA_TARGETFRAME m_EditTargetKey = {};
+	CAMERA_DOF m_EditDofKey = {};
 	_int m_iChangeKeyFrame = 0;
 	CUTSCENE_TYPE m_eCutSceneType = CUTSCENE_TYPE::WAKEUP;
 

@@ -33,32 +33,40 @@ float2 g_TileDensity = float2(1.0f, 1.0f);
 Texture2D g_MaskTexture;
 bool g_bDissolve = false;
 float g_fDissolveAmount = 0.5f;
-float g_fDissolveRange = 0.10f;
+float g_fDissolveRange = 0.03f;
 float3 g_vDissolveGlowColor = float3(1.0f, 0.8f, 0.2f);
 
 struct SDissolveResult
 {
-    float fClip; // clip(fClip);
-    float fEdge; // 경계 밴드(0~1)
-    float fGlow; // 글로우 강도(0~1)
-    float3 vAddColor; // Out.Color.rgb += vAddColor;
+    float fClip;
+    float fEdge;
+    float fGlow;
+    float3 vAddColor;
 };
 
 static SDissolveResult DoDissolve_NoArgs(float2 vTexcoord)
 {
     const float fSafeRange = max(g_fDissolveRange, 1e-6f);
-    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord).r;
 
     SDissolveResult t;
-    t.fEdge = smoothstep(g_fDissolveAmount - fSafeRange,
-                             g_fDissolveAmount + fSafeRange,
-                             fMask);
-
+   
+    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord * 0.15f).r;
+    
+    const float fClipTerm = (g_fDissolveAmount + fSafeRange) - fMask;
+    t.fClip = fClipTerm;
+    
+    if (g_fDissolveAmount < 0.03f)
+        t.fClip = -1.0f;
+    
+    const float fCenter = g_fDissolveAmount;
+    t.fEdge = 1.0f - smoothstep(fCenter - fSafeRange, fCenter + fSafeRange, fMask);
+    
     t.fGlow = saturate(1.0f - abs(fMask - g_fDissolveAmount) / fSafeRange);
-    t.fClip = fMask - (g_fDissolveAmount - fSafeRange);
     t.vAddColor = g_vDissolveGlowColor * t.fGlow;
+
     return t;
 }
+
 
 struct VS_IN
 {
@@ -181,13 +189,14 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float2 vTriplanarUV;
     float3 vTriplanarBlend;
-    SDissolveResult tD = (SDissolveResult)0;
     
+    SDissolveResult tD = (SDissolveResult) 0;
     if (g_bDissolve)
     {
         tD = DoDissolve_NoArgs(In.vTexcoord);
         clip(tD.fClip); // 디스카드 처리
     }
+    
     
     
     // 디퓨즈 텍스처

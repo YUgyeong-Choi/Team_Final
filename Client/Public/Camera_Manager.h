@@ -36,6 +36,19 @@ public:
     _vector GetPureCamPos() const { return m_pCurCamera->GetPureCamPos(); }
 
     void Play_CutScene(CUTSCENE_TYPE cutSceneType);
+
+    void SetDOFDesc(const DOF_DESC& Desc) {
+		m_pCurCamera->SetDOFDesc(Desc);
+	}
+    void ResetDOFDesc() {
+        DOF_DESC dof{};
+        dof.fCloseIntensity = 1.f;
+        dof.fFarIntensity = 1.f;
+        dof.fCleanRange = { 0.f, 1000.f };
+        dof.fFeatherPx = 2.f;
+        dof.bIsUse = true;
+        m_pCurCamera->SetDOFDesc(dof);
+    }
 public:
     const _vector& GetCurCamRight() const { return m_vCurCamRight; }
     const _vector& GetCurCamUp() const { return m_vCurCamUp; }

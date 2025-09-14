@@ -1247,7 +1247,7 @@ HRESULT CMapLoader::Ready_Breakable(const _char* Map)
 					WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
 			CBreakableMesh::BREAKABLEMESH_DESC Desc{};
-			Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+			Desc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
 			Desc.WorldMatrix = WorldMatrix;
 			Desc.wsNavName = StringToWString(Map);
 

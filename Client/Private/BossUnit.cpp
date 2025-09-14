@@ -66,12 +66,21 @@ void CBossUnit::Update(_float fTimeDelta)
 			eDesc.fDelay = 2.f;
 			eDesc.strFilePath = TEXT("../Bin/Save/UI/Boss_Kill.json");
 
-			eDesc.fLifeTime = 6.f;
+			eDesc.fLifeTime = 8.f;
 			eDesc.useLifeTime = true;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
 				return;
+
+			_wstring strName = m_szMeshID;
+			_wstring strFilePath = TEXT("../Bin/Save/UI/Popup/Boss_Drop_") + strName + TEXT(".json");
+			eDesc.strFilePath = strFilePath;
+
+			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
+				return;
+
 
 		}
 		Safe_Release(m_pHPBar);
