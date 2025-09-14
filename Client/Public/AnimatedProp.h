@@ -38,12 +38,8 @@ public:
 
 	void Register_Events();
 
-	void NotifyPlayAnimation(_bool bPlay)
-	{
-		if (m_pAnimator)
-			m_pAnimator->SetPlaying(bPlay);
-		
-	}
+	void NotifyPlayAnimation(_bool bPlay);
+
 protected:
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources(_bool bSecondModel);

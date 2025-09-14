@@ -238,9 +238,6 @@
     <Filter Include="02.GameObjects\13. DynamicMesh">
       <UniqueIdentifier>{603fd7cb-9e42-4575-b9e8-b6874c9d9f10}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\14. AStar">
-      <UniqueIdentifier>{b465af8a-30b0-4d99-982d-fc5de51f5df9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
       <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
@@ -561,6 +558,9 @@
     </Filter>
     <Filter Include="02.GameObjects\15.StaticTrigger\TriggerRain">
       <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.UI\Container\Letter">
+      <UniqueIdentifier>{b57e7055-a7b1-4934-b8eb-ab440bacf724}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1000,9 +1000,6 @@
     <ClInclude Include="..\Public\DynamicMesh.h">
       <Filter>02.GameObjects\13. DynamicMesh</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AStar_Manager.h">
-      <Filter>02.GameObjects\14. AStar</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\SlideDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
@@ -1150,9 +1147,6 @@
     <ClInclude Include="..\Public\ShortCutDoor.h">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\StargazerEffect.h">
-      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\AnimatedProp.h">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
     </ClInclude>
@@ -1162,6 +1156,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\TriggerRain.h">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\StargazerEffect.h">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Letter.h">
+      <Filter>02.GameObjects\99.UI\Container\Letter</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1569,9 +1569,6 @@
     <ClCompile Include="..\Private\DynamicMesh.cpp">
       <Filter>02.GameObjects\13. DynamicMesh</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AStar_Manager.cpp">
-      <Filter>02.GameObjects\14. AStar</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\SlideDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
@@ -1695,9 +1692,6 @@
     <ClCompile Include="..\private\WatchDog.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Stargazer.cpp">
-      <Filter>02.GameObjects\16.Stargazer</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
       <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClCompile>
@@ -1722,9 +1716,6 @@
     <ClCompile Include="..\Private\ShortCutDoor.cpp">
       <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\StargazerEffect.cpp">
-      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\AnimatedProp.cpp">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
     </ClCompile>
@@ -1737,6 +1728,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\TriggerRain.cpp">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stargazer.cpp">
+      <Filter>02.GameObjects\16.Stargazer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Letter.cpp">
+      <Filter>02.GameObjects\99.UI\Container\Letter</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

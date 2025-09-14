@@ -127,12 +127,10 @@ void CUI_MonsterHP_Bar::Update(_float fTimeDelta)
 
     _float fRatio = *m_pHP / (m_fMaxHp);
     
-    if (m_fCurrentRatio > fRatio)
-    {
-        m_fCurrentRatio -= fTimeDelta * 2.f;
-    }
-    else
-        m_fCurrentRatio = fRatio;
+    _float t = fTimeDelta * 10.f;
+    t = t * t * (3.f - 2.f * t); // smoothstep
+
+    m_fCurrentRatio += (fRatio - m_fCurrentRatio) * t;
        
 }
 

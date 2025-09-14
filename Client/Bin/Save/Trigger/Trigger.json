@@ -154,6 +154,16 @@
     {
       "ClassType": 2,
       "TriggerType": 3,
+      "vPos": [ 277.530441, 3.676557, -19.049854 ],
+      "rotationDeg": [ 0.0, 0.0, 0.0 ],
+      "triggerOffset": [ 0.0, 0.0, 0.0 ],
+      "triggerSize": [ 2.0, 1.0, 5.0 ],
+      "PrototypeName": "Prototype_GameObject_UI_Guide",
+      "FilePaths": [ "../Bin/Save/UI/Guide/Guide_Dash.json" ]
+    },
+    {
+      "ClassType": 2,
+      "TriggerType": 4,
       "vPos": [ 26.533379, 1.0, 0.690163 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -163,7 +173,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 3,
+      "TriggerType": 5,
       "vPos": [ 3.382186, 1.0, 0.864605 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -173,7 +183,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 4,
+      "TriggerType": 6,
       "vPos": [ 61.975121, 0.5, -7.373825 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -184,7 +194,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 4,
+      "TriggerType": 7,
       "vPos": [ 84, 0.5, -7.373825 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -195,7 +205,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 5,
+      "TriggerType": 8,
       "vPos": [ 141, 2.7, -8 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -206,7 +216,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 6,
+      "TriggerType": 9,
       "vPos": [ 172, 5, -26 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -217,7 +227,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 7,
+      "TriggerType": 10,
       "vPos": [ 134, 13, -66 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
@@ -228,7 +238,7 @@
     },
     {
       "ClassType": 2,
-      "TriggerType": 8,
+      "TriggerType": 11,
       "vPos": [ 140, 13, -28 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],

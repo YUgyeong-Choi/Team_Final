@@ -37,10 +37,15 @@ public:
 
 	_bool Check_Player_Close();
 
+	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
+
 
 	HRESULT Bind_ShaderResources();
 	HRESULT Ready_Components();
 	HRESULT Ready_Effect();
+	HRESULT Ready_Collider();
 
 	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
 

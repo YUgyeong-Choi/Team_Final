@@ -91,6 +91,9 @@ public:
 	// 몬스터가 죽을 때 불러줌
 	void			Set_HitTarget(CUnit* pTarget, _bool bDead);
 
+	InputContext&			Get_Input() { return m_Input; }
+	void					Clear_Input() { m_Input = {}; }
+
 private: /* [ 피격 헬퍼함수 ] */
 	EHitDir			ComputeHitDir();
 	void			CalculateDamage(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -279,9 +282,11 @@ public: /* [ 부여 속성 관련 ] */
 	void Initialize_ElementConditions(const _float fDefaultDuration, const _float fDefaultWeight);
 
 public: /* [ 텔레포트 ] */
+	
 	void Start_Teleport();
 	void IsTeleport(_float fTimeDelta);
 	void SetTeleportPos(_float3 vPos) { m_vTeleportPos = vPos; }
+	_bool Get_IsTeleport() { return m_bTeleport; }
 
 public:/*[스탯 관련]*/
 	void Set_Stat(STAT_DESC eDesc) { m_eStat = eDesc; }

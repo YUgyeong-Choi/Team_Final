@@ -4,6 +4,8 @@
 #include "Effect_Manager.h"
 #include "Player.h"
 #include "UI_Manager.h"
+#include "UI_Guide.h"
+#include "UI_Letter.h"
 
 CErgoItem::CErgoItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CItem{ pDevice, pContext }
@@ -30,12 +32,17 @@ HRESULT CErgoItem::Initialize(void* pArg)
 
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
-	
+
+
 	ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
 	m_eItemTag = pDesc->eItemTag;
+
+	if (FAILED(Ready_Collider()))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -46,57 +53,63 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 	{
 		m_pTarget = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
 	}
-	_bool bCheckClose = Check_Player_Close();
-
-	if (bCheckClose)
+	
+	if (m_bDoOnce)
 	{
-		// 팝업 키기
-		if (!m_bDoOnce)
-		{
-			CUI_Manager::Get_Instance()->Activate_Popup(true);
-			CUI_Manager::Get_Instance()->Set_Popup_Caption(5);
-			m_bDoOnce = true;
-		}
-
 		// 키 입력 받아서 ...
 
 		if (m_pGameInstance->Key_Down(DIK_E))
 		{
-			static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(bCheckClose);
+			static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(true);
 			Set_bDead();
-			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			if (m_eItemTag != ITEM_TAG::PULSE_CELL)
+			m_pPhysXActorCom->RemovePhysX();
+			
+
+			CUI_Manager::Get_Instance()->Activate_Popup(false);
+				
+			if (m_eItemTag == ITEM_TAG::END)
 			{
-				// 아이템 태그에 맞춰서 어떤 아이템을 먹었는지 알려주기
+
+			}
+			else if (m_eItemTag == ITEM_TAG::PULSE_CELL)
+			{
+				// 펄스는 관련 guide ui 띄우기
+				CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+				eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Pulse.json")};
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
+
+			}
+			else if (m_eItemTag == ITEM_TAG::PASSENGER_NOTE)
+			{
+				CUI_Letter::UI_LETTER_DESC eDesc{};
+
+				eDesc.partPaths = { TEXT("../Bin/Save/UI/Letter/Letter_Page_0.json"), TEXT("../Bin/Save/UI/Letter/Letter_Page_1.json") };
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
+			}
+			else
+			{
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
 				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(m_eItemTag));
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
-			else
-			{
-				// 펄스는 관련 guide ui 띄우기
 
-			}
 
-			
 
 			// 이펙트 삭제 로직 필요
 			if (m_pEffect)
 				m_pEffect->End_Effect();
 			// 없어지는 이펙트 추가할 것 - 채영
 		}
+	}
+	
 
-	}
-	else
-	{
-		if (m_bDoOnce)
-		{
-			// 팝업 끄기
-			CUI_Manager::Get_Instance()->Activate_Popup(false);
-			m_bDoOnce = false;
-		}
-	}
+
 }
 
 void CErgoItem::Update(_float fTimeDelta)
@@ -106,7 +119,7 @@ void CErgoItem::Update(_float fTimeDelta)
 
 void CErgoItem::Late_Update(_float fTimeDelta)
 {
-	//m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 
 }
 
@@ -133,6 +146,14 @@ HRESULT CErgoItem::Render()
 		m_pModelCom->Render(i);
 	}*/
 
+#ifdef _DEBUG
+	if (m_pGameInstance->Get_RenderMapCollider())
+	{
+		if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
+			return E_FAIL;
+	}
+#endif
+
 	return S_OK;
 }
 
@@ -153,6 +174,31 @@ _bool CErgoItem::Check_Player_Close()
 	else
 		return false;
 	
+}
+
+void CErgoItem::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	// 팝업 키기
+	if (!m_bDoOnce)
+	{
+		CUI_Manager::Get_Instance()->Activate_Popup(true);
+		CUI_Manager::Get_Instance()->Set_Popup_Caption(5);
+		m_bDoOnce = true;
+	}
+}
+
+void CErgoItem::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+}
+
+void CErgoItem::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (m_bDoOnce)
+	{
+		// 팝업 끄기
+		CUI_Manager::Get_Instance()->Activate_Popup(false);
+		m_bDoOnce = false;
+	}
 }
 
 HRESULT CErgoItem::Bind_ShaderResources()
@@ -179,6 +225,11 @@ HRESULT CErgoItem::Ready_Components()
 	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 	//	return E_FAIL;
 
+	/* For.Com_PhysX */
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
+		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -190,6 +241,56 @@ HRESULT CErgoItem::Ready_Effect()
 	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
 	if (m_pEffect == nullptr)
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CErgoItem::Ready_Collider()
+{
+	// 3. Transform에서 S, R, T 분리
+	XMVECTOR S, R, T;
+	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+
+	// 3-1. 스케일, 회전, 위치 변환
+	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
+	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+
+	PxTransform pose(positionVec, rotationQuat);
+	PxMeshScale meshScale(scaleVec);
+
+	PxVec3 halfExtents = {};
+
+	/*if (pArg != nullptr)
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&pDesc->vExtent));
+	}
+	else
+	{
+		halfExtents = VectorToPxVec3(XMLoadFloat3(&m_vHalfExtents));
+	}*/
+
+	_float3 vHalf = _float3(0.5f, 0.75f, 0.5f);
+
+	halfExtents = VectorToPxVec3(XMLoadFloat3(&vHalf));
+	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
+	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
+	m_pPhysXActorCom->Set_ShapeFlag(false, true, true);
+
+	PxFilterData filterData{};
+	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
+	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	m_pPhysXActorCom->Set_SimulationFilterData(filterData);
+	m_pPhysXActorCom->Set_QueryFilterData(filterData);
+	m_pPhysXActorCom->Set_Owner(this);
+	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
+
+	PxActor* pActor = m_pPhysXActorCom->Get_Actor();
+	if (!pActor->getScene()) // nullptr이면 씬에 없음
+	{
+		m_pGameInstance->Get_Scene()->addActor(*pActor);
+	}
+
 
 	return S_OK;
 }
@@ -221,4 +322,6 @@ void CErgoItem::Free()
 
 	//Safe_Release(m_pModelCom);
 	//Safe_Release(m_pShaderCom);
+
+	Safe_Release(m_pPhysXActorCom);
 }
