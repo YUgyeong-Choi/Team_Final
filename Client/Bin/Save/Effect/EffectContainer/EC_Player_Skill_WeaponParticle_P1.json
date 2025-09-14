@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 699.4803466796875,
+            "LifeTime": 864.3572998046875,
             "LifeTime_Particle": [
                 0.029999999329447746,
                 0.4000000059604645
@@ -72,7 +72,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.0,
             "Name": "Player_Skill_WeaponParticle1",
-            "NumInstance": 30,
+            "NumInstance": 20,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -88,12 +88,12 @@
             "Pivot": [
                 0.0,
                 0.0,
-                -0.05000000074505806
+                -0.11999999731779099
             ],
             "Range": [
-                0.009999999776482582,
-                0.009999999776482582,
-                0.009999999776482582
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -106,6 +106,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.009999999776482582,
                 0.019999999552965164
@@ -116,6 +117,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_04_C_HJS",

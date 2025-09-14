@@ -218,61 +218,62 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 
 		/**** Position이랑 Direction 이제 최초 스폰 시에 초기화 하므로 주석처리함 ****/
 		
-		m_pParticleParamDesc[i].vTranslation = _float4(
-			m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
-			m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
-			m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
-			1.f
-		);
+		//m_pParticleParamDesc[i].vTranslation = _float4(
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
+		//	m_pGameInstance->Compute_Random(pDesc->vCenter.z - pDesc->vRange.z * 0.5f, pDesc->vCenter.z + pDesc->vRange.z * 0.5f),
+		//	1.f
+		//);
 
-		m_pParticleParamDesc[i].vInitOffset = _float3(
-			m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,
-			m_pParticleParamDesc[i].vTranslation.y - pDesc->vCenter.y,
-			m_pParticleParamDesc[i].vTranslation.z - pDesc->vCenter.z
-		);
+		//m_pParticleParamDesc[i].vInitOffset = _float3(
+		//	m_pParticleParamDesc[i].vTranslation.x - pDesc->vCenter.x,
+		//	m_pParticleParamDesc[i].vTranslation.y - pDesc->vCenter.y,
+		//	m_pParticleParamDesc[i].vTranslation.z - pDesc->vCenter.z
+		//);
 
-		_vector vDir = {};
-		switch (m_tCBuffer.iParticleType)
-		{
-		case Engine::PTYPE_SPREAD:
-		{
-			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
-			_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
-			vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
-		}
-			break;
-		case Engine::PTYPE_DIRECTIONAL:
-		{
-			_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
-			_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
-			vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
-			//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
-		}
-			break;
-		case Engine::PTYPE_ALLRANDOM:
-		{
-			vDir = XMVectorSetW(XMVector3Normalize(
-				XMVectorSet(
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					m_pGameInstance->Compute_Random(-1.f, 1.f),
-					0.f)), 0.f);
-		}
-			break;
-		case Engine::PTYPE_SHRINK:
-		{
-			_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
-			_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
-			vDir = XMVectorSetW(XMVector3Normalize(vPivot - vStart), 0.f);
-		}
-		break;
+		//_vector vDir = {};
+		//switch (m_tCBuffer.iParticleType)
+		//{
+		//case Engine::PTYPE_SPREAD:
+		//{
+		//	_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
+		//	_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+		//	vDir = XMVectorSetW(XMVector3Normalize(vStart - vPivot), 0.f);
+		//}
+		//	break;
+		//case Engine::PTYPE_DIRECTIONAL:
+		//{
+		//	_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+		//	_vector vCenter = XMLoadFloat3(&pDesc->vCenter);
+		//	vDir = XMVectorSetW(XMVector3Normalize(vCenter - vPivot), 0.f);
+		//	//vDir = XMVector3Normalize(XMLoadFloat4(&m_vDirection));
+		//}
+		//	break;
+		//case Engine::PTYPE_ALLRANDOM:
+		//{
+		//	vDir = XMVectorSetW(XMVector3Normalize(
+		//		XMVectorSet(
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			m_pGameInstance->Compute_Random(-1.f, 1.f),
+		//			0.f)), 0.f);
+		//}
+		//	break;
+		//case Engine::PTYPE_SHRINK:
+		//{
+		//	_vector vStart = XMLoadFloat4(&m_pParticleParamDesc[i].vTranslation);
+		//	_vector vPivot = XMLoadFloat3(&pDesc->vPivot);
+		//	vDir = XMVectorSetW(XMVector3Normalize(vPivot - vStart), 0.f);
+		//}
+		//break;
 
-		default:
-			break;
-		}
+		//default:
+		//	break;
+		//}
 
-		XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
+		//XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
 		
+		/*************************************************************************/
 
 
 	}

@@ -297,7 +297,7 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
     Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
     Out.vDistortion *= g_vColor;
     Out.vDistortion.b = g_fDistortionStrength / 255.f;
-    
+    Out.vDistortion.b *= g_vColor.a;
     return Out;
 }
 

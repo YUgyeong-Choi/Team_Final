@@ -1,5 +1,6 @@
 #include "TriggerRain.h"
 #include "GameInstance.h"
+#include "Effect_Manager.h"
 
 CTriggerRain::CTriggerRain(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -55,7 +56,7 @@ HRESULT CTriggerRain::Render()
 
 void CTriggerRain::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), m_bRainActive);
 		
 }
 

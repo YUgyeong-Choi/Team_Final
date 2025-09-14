@@ -27,7 +27,7 @@
             "DistortionStrength": 10.0,
             "Duration": 11,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 13,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -40,7 +40,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 8.920000076293945,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1675.843017578125,
+            "LifeTime": 1712.0601806640625,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.30000001192092896
@@ -71,7 +71,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml1",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -198,7 +198,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5148.42236328125,
+            "LifeTime": 5161.005859375,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.30000001192092896
@@ -208,7 +208,7 @@
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Lightning3Frame",
+            "Name": "larml2",
             "NumInstance": 4,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -335,7 +335,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5179.56005859375,
+            "LifeTime": 5256.46826171875,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.30000001192092896
@@ -345,7 +345,7 @@
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Lightning3Frame",
+            "Name": "larml3",
             "NumInstance": 4,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -472,7 +472,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5148.49169921875,
+            "LifeTime": 5225.39990234375,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.30000001192092896
@@ -482,7 +482,7 @@
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Lightning3Frame",
+            "Name": "larml4",
             "NumInstance": 4,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -575,7 +575,7 @@
             "DistortionStrength": 10.0,
             "Duration": 11,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 35,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -588,7 +588,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 15.710000038146973,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -609,7 +609,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1669.6275634765625,
+            "LifeTime": 1747.2218017578125,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.30000001192092896
@@ -619,7 +619,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml5",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -712,7 +712,7 @@
             "DistortionStrength": 10.0,
             "Duration": 13,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 41,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -725,7 +725,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 15.479999542236328,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -756,7 +756,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml6",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -849,7 +849,7 @@
             "DistortionStrength": 10.0,
             "Duration": 13,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 47,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -862,7 +862,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 8.119999885559082,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -893,7 +893,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml7",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -986,7 +986,7 @@
             "DistortionStrength": 10.0,
             "Duration": 13,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 52,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -999,7 +999,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 6.659999847412109,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -1030,7 +1030,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml8",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -1167,7 +1167,7 @@
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "Lightning3Frame",
+            "Name": "larml9",
             "NumInstance": 4,
             "NumKeyFrames": 1,
             "Orbit": false,
@@ -1260,7 +1260,7 @@
             "DistortionStrength": 10.0,
             "Duration": 8,
             "EffectType": 1,
-            "EmissiveIntensity": 5.800000190734863,
+            "EmissiveIntensity": 10.0,
             "EndTrack": 58,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
@@ -1273,7 +1273,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 18.219999313354492,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -1304,7 +1304,7 @@
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
-            "Name": "CircleLightning3Frame",
+            "Name": "larml0",
             "NumInstance": 6,
             "NumKeyFrames": 1,
             "Orbit": false,

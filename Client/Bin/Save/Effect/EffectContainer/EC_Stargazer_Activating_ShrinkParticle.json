@@ -25,10 +25,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 200,
+            "Duration": 153,
             "EffectType": 1,
             "EmissiveIntensity": 0.550000011920929,
-            "EndTrack": 200,
+            "EndTrack": 153,
             "FlipUV": false,
             "Gravity": 0.25,
             "IsGravity": false,
@@ -61,13 +61,13 @@
                     ]
                 }
             ],
-            "LifeTime": 6629.189453125,
+            "LifeTime": 6795.724609375,
             "LifeTime_Particle": [
                 2.200000047683716,
                 3.200000047683716
             ],
             "Local": true,
-            "Loop": false,
+            "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 5.0,
             "MinSpeed": 0.0,
@@ -139,5 +139,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 200
+    "MaxFrame": 150
 }
