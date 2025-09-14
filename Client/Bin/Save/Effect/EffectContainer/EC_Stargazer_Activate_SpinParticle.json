@@ -3,7 +3,7 @@
         {
             "Accel": [
                 0.0,
-                1.5
+                1.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -31,7 +31,7 @@
             "EndTrack": 200,
             "FlipUV": false,
             "Gravity": 0.0,
-            "IsGravity": true,
+            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
@@ -61,10 +61,10 @@
                     ]
                 }
             ],
-            "LifeTime": 7691.83154296875,
+            "LifeTime": 7805.958984375,
             "LifeTime_Particle": [
                 1.2000000476837158,
-                2.5
+                3.0
             ],
             "Local": true,
             "Loop": false,

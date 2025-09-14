@@ -397,6 +397,17 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			m_bIsRotatingToStargazer = false;
 		}
 	}
+
+	if (m_bCreateShrinkEffect)
+	{
+		m_fShrinkEffectDelay += fTimeDelta;
+		if (m_fShrinkEffectDelay >= 1.f)
+		{
+			m_pEffectSet->Activate_Stargazer_Shrink();
+			m_bCreateShrinkEffect = false;
+			m_fShrinkEffectDelay = 0.f;
+		}
+	}
 }
 
 void CStargazer::Update(_float fTimeDelta)
@@ -585,7 +596,7 @@ void CStargazer::Register_Events()
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
 			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_END);
 			m_pEffectSet->Activate_Stargazer_Spread();
-
+			m_bCreateShrinkEffect = true;
 			CUI_Container::UI_CONTAINER_DESC eDesc{};
 			eDesc.fLifeTime = 8.f;
 			eDesc.useLifeTime = true;

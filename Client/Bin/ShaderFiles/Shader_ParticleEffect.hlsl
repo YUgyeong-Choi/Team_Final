@@ -427,21 +427,23 @@ PS_OUT_WB PS_MAIN_RAINONLY(PS_IN In)
     
     vector vColor;
     
+    float vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    
     vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
     vColor.a = vPreColor.a * mask;
     //vColor.a *= saturate(In.vLifeTime.x - In.vLifeTime.y);
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x); // 0 ~ 1
     float fade = smoothstep(0.8, 1.0, lifeRatio); // 0.8 이후부터 서서히 1.0으로
     fade = 1.0 - fade; // 남은 생명에 비례해 감소
+    vColor.a *= vMask;
     vColor.a *= fade;
-    vColor = SoftEffect(vColor, In.vProjPos);
+    //vColor = SoftEffect(vColor, In.vProjPos);
 
     float3 vPremulRGB = vColor.rgb * vColor.a;
     Out.vAccumulation = float4(vPremulRGB, vColor.a);
     Out.fRevealage = vColor.a;
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
 
-    float vMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
     Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
     Out.vDistortion *= g_vColor;

@@ -31,6 +31,7 @@ public:
 
 	void Activate_Stargazer_Reassemble();
 	void Activate_Stargazer_Spread();
+	void Activate_Stargazer_Shrink();
 
 private:
 	HRESULT Bind_ShaderResources();

@@ -444,9 +444,9 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::DEAD_F):
 	case ENUM_CLASS(BossStateID::SPECIAL_DIE):
 		m_eCurrentState = EEliteState::DEAD;
-		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_BellyFire"));
-		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke1"));
-		CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2"));
+		EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_BellyFire"));
+		EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke1"));
+		EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2"));
 		break;
 	case ENUM_CLASS(BossStateID::TURN_L):
 	case ENUM_CLASS(BossStateID::TURN_R):
@@ -950,7 +950,7 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
 		{
 			SpawnFlameField();
-			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
+			EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
 			CEffectContainer::DESC Desc = {};
 
 			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -1087,7 +1087,7 @@ void CFuoco::Register_Events()
 			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
-			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
+			EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
 		});
 
 	m_pAnimator->RegisterEventListener("Phase2TurnFinished", [this]()
@@ -1709,7 +1709,7 @@ HRESULT CFuoco::Ready_Effect()
 	if (pEC == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 
-	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_BellyFire"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_BellyFire"), static_cast<CEffectContainer*>(pEC));
 
 	/**************************************************/
 	pEC = nullptr;
@@ -1721,7 +1721,7 @@ HRESULT CFuoco::Ready_Effect()
 	if (pEC == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 
-	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_HeadSmoke1"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
 	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, 0.45f));
@@ -1729,7 +1729,7 @@ HRESULT CFuoco::Ready_Effect()
 	if (pEC == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 
-	CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
 
 	return S_OK;
 }

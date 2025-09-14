@@ -209,6 +209,9 @@ private:
 	_int    m_iSwingComboLimit = 4;
 	_float  m_fCanSmashDistance = 6.f;
 
+	// ¿Ã∆Â∆Æ?
+	_bool	m_bLeftHand = true;
+
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;

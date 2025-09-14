@@ -1075,6 +1075,7 @@ void CFestivalLeader::Ready_EffectNames()
 {
 
 	// Phase 1
+	//m_EffectMap[EF_FIRE_FLAME].emplace_back(TEXT("EC_Fuoco_FlameThrow_P1"));
 
 	// Phase 2
 
@@ -1086,6 +1087,32 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	if (m_BoneRefs[Hammer] == nullptr || m_BoneRefs[Basket] == nullptr)
 		return;
 
+	//findBone("Bip001-L-Clavicle", EBossCollider::LeftShoulder);
+	//findBone("Bip001-R-Clavicle", EBossCollider::RightShoulder);
+	//findBone("Bip001-L-Calf", EBossCollider::LeftKnee);
+	//findBone("Bip001-R-Calf", EBossCollider::RightKnee);
+	//findBone("Bip001-R-Finger2Nub", EBossCollider::LeftMiddleFinger);
+	//findBone("Bip001-L-Finger2Nub", EBossCollider::RightMiddleFinger);
+	//findBone("Bn_Head_Jaw_02", EBossCollider::Head_Jaw);
+
+	CEffectContainer::DESC desc = {};
+	if (stEffectTag == TEXT("EC_Fes_OnehandSlam"))
+	{
+		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
 
 }
 
@@ -1144,7 +1171,18 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 
 HRESULT CFestivalLeader::Ready_Effect()
 {
+	CGameObject* pEC = { nullptr };
+	CEffectContainer::DESC P2HeadSmokeDesc = {};
+	P2HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_Head_Jaw_02"));
+	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
+	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
 }
 
