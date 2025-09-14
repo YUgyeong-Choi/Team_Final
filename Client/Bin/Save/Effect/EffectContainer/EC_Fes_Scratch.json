@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 11693.1650390625,
+            "LifeTime": 12109.189453125,
             "LifeTime_Particle": [
                 0.2199999988079071,
                 1.0
@@ -156,10 +156,10 @@
                 0.3507853150367737
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                0.6335078477859497,
+                0.6199454069137573,
+                0.5970231294631958,
+                0.3507853150367737
             ],
             "DistortionStrength": 10.0,
             "Duration": 124,
@@ -196,48 +196,21 @@
                         0.0,
                         0.0
                     ]
-                },
-                {
-                    "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Intensity": 1.0,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
                 }
             ],
-            "LifeTime": 6067.357421875,
+            "LifeTime": 6484.33642578125,
             "LifeTime_Particle": [
-                1.0,
+                0.30000001192092896,
                 1.399999976158142
             ],
             "Local": true,
             "Loop": false,
             "MaxLifeTime": 0.800000011920929,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 0.10000000149011612,
             "Name": "Fes_Scratch_Smoke1",
             "NumInstance": 20,
-            "NumKeyFrames": 2,
+            "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
                 0.0,
@@ -251,13 +224,13 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                -1.0,
-                -1.0
+                -0.10000000149011612,
+                -0.5
             ],
             "Range": [
-                1.0,
-                1.0,
-                1.0
+                0.5,
+                0.5,
+                0.5
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -273,18 +246,18 @@
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 1.0,
-                3.0
+                2.0
             ],
             "Speed": [
                 1.5399999618530273,
-                2.0
+                2.5
             ],
             "Spin": false,
             "StartTrack": 0,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_Smoke_04_C_LGS",
+                "T_SubUV_Smoke_12_8x8_SC_KMH",
                 "",
                 ""
             ],
@@ -297,8 +270,8 @@
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
             "TileTickPerSec": 60.0,
-            "TileX": 1,
-            "TileY": 1,
+            "TileX": 8,
+            "TileY": 8,
             "isTileLoop": false
         },
         {
@@ -362,7 +335,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5970.82470703125,
+            "LifeTime": 6387.8037109375,
             "LifeTime_Particle": [
                 3.0,
                 4.0

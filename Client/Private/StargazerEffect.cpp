@@ -174,6 +174,14 @@ void CStargazerEffect::Activate_Stargazer_Spread()
 	m_pFloatingEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Active_FloatingParticle"), &desc));
 	if (m_pFloatingEffect == nullptr)
 		return ;
+
+
+	CEffectContainer::DESC shdesc = {};
+	shdesc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&shdesc.PresetMatrix, XMMatrixTranslation(0.f, 3.f, 0.f));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Activating_ShrinkParticle"), &shdesc))
+		MSG_BOX("별바라기 수렴 이펙트 생성 실패");
+
 }
 
 void CStargazerEffect::Activate_Stargazer_Shrink()

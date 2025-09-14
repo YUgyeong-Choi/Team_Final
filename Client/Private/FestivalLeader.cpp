@@ -177,21 +177,91 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_PRESSING(DIK_LALT))
 	{
+		if (KEY_DOWN(DIK_MINUS))
+		{
+			m_fTimeScale = 0.5f;
+		}
+		if (KEY_DOWN(DIK_EQUALS))
+		{
+			m_fTimeScale = 1.f;
+		}
 		if (KEY_DOWN(DIK_Q))
 		{
+
+			// 오른손 왼손 회전 상태 뭔가 이상한 것 같은데 나중에 확인함
 			CEffectContainer::DESC desc = {};
 
-			desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			desc.pSocketMatrix = m_BoneRefs[EBossCollider::LeftForearm]->Get_CombinedTransformationMatrix();
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OldSparkDrop_P1"), &desc);
+			_matrix comb = socket * parent;
+
+			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+			_vector pos, rot, scale;
+			XMMatrixDecompose(&scale, &rot, &pos, comb);
+
+			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+			MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
+
+			socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+			socket = XMLoadFloat4x4(socketPtr);
+			comb = socket * parent;
+			position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+
+			XMMatrixDecompose(&scale, &rot, &pos, comb);
+
+			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+			
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
-		if (KEY_DOWN(DIK_2))
+		if (KEY_DOWN(DIK_W))
 		{
+			CEffectContainer::DESC desc = {};
 
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
+
+			_matrix comb = socket * parent;
+
+			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_OnehandSlam"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_DOWN(DIK_E))
+		{
+			CEffectContainer::DESC desc = {};
+
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
+
+			_matrix comb = socket * parent;
+
+			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_OnehandSlam"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
 	}
 #endif
@@ -926,6 +996,7 @@ void CFestivalLeader::Register_Events()
 					m_bSwitchHeadSpace = true;
 				}
 			}
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
 		});
 
 
@@ -1086,7 +1157,7 @@ void CFestivalLeader::Ready_EffectNames()
 {
 
 	// Phase 1
-	//m_EffectMap[EF_FIRE_FLAME].emplace_back(TEXT("EC_Fuoco_FlameThrow_P1"));
+
 
 	// Phase 2
 
@@ -1107,7 +1178,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	//findBone("Bn_Head_Jaw_02", EBossCollider::Head_Jaw);
 
 	CEffectContainer::DESC desc = {};
-	if (stEffectTag == TEXT("EC_Fes_OnehandSlam"))
+	if (stEffectTag == TEXT("EC_Fes_OnehandSlam")) // 한 손 바닥 찍기
 	{
 		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
 
@@ -1123,6 +1194,39 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_Scratch")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
+	{
+		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 사지 스파크
+	{
+
+	}
+	else if (stEffectTag == TEXT("EC_Fes_Falling_Smoke_P1")) // 넘어지며 몸통 먼지
+	{
+
+	}
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big")) // 관절 스파크 조금 큼
+	{
+
+	}
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small ")) // 관절 스파크 조금 작음
+	{
+
 	}
 
 }

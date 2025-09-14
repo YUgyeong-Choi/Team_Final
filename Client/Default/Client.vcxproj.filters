@@ -106,12 +106,6 @@
     <Filter Include="02.GameObjects\07.Effect\EffectContainer\Mesh">
       <UniqueIdentifier>{796d0e24-7864-414b-af5c-9f1657db5ce9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Deprecated">
-      <UniqueIdentifier>{4791dabd-c40a-44f5-9ab0-a3c816f83265}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
-      <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelCY">
       <UniqueIdentifier>{fe0db61e-17b3-4a02-b250-2ba12840b64c}</UniqueIdentifier>
     </Filter>
@@ -562,6 +556,12 @@
     <Filter Include="02.GameObjects\99.UI\Container\Letter">
       <UniqueIdentifier>{b57e7055-a7b1-4934-b8eb-ab440bacf724}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Deprecated">
+      <UniqueIdentifier>{4791dabd-c40a-44f5-9ab0-a3c816f83265}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
+      <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -864,9 +864,6 @@
     <ClInclude Include="..\public\Icon_Weapon.h">
       <Filter>02.GameObjects\99.UI\Dynamic\Icon\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Item.h">
-      <Filter>02.GameObjects\03.Item</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Lamp.h">
       <Filter>02.GameObjects\03.Item\Lamp</Filter>
     </ClInclude>
@@ -1165,6 +1162,9 @@
     </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Item.h">
+      <Filter>02.GameObjects\07.Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
