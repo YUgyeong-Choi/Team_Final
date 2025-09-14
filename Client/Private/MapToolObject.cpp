@@ -64,6 +64,9 @@ HRESULT CMapToolObject::Initialize(void* pArg)
 	//아이템 태그
 	m_eItemTag = pDesc->eItemTag;
 
+	//발소리 사운드
+	m_eFS_Sound = pDesc->eFS_Sound;
+
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 

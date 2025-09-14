@@ -37,6 +37,7 @@ public:
 		_int		iLightShape = { 0 };
 		_bool		bIsFloor = { false }; //바닥 여부
 		_bool		bCullNone = { false }; //컬링 여부
+		FOOTSTEP_SOUND eFS_Sound = { FOOTSTEP_SOUND::END };
 	}STATICMESH_DESC;
 
 protected:
@@ -66,6 +67,14 @@ public:
 
 private:
 	void Update_ColliderPos();
+public:
+	const wstring& Get_MeshName() const {
+		return m_strMeshName;
+	}
+public:
+	FOOTSTEP_SOUND Get_FootStepSound() const {
+		return m_eFS_Sound;
+	}
 
 protected: /* [ 초기화 변수 ] */
 	const _tchar*	m_szMeshID = { nullptr };
@@ -100,6 +109,10 @@ private:
 
 private:
 	LOD m_eLOD = { LOD::LOD0 }; // 현재 LOD 상태
+
+private:
+	//풋스텝 사운드
+	FOOTSTEP_SOUND m_eFS_Sound = { FOOTSTEP_SOUND::END };
 
 protected:
 

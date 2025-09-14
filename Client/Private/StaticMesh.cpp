@@ -48,6 +48,9 @@ HRESULT CStaticMesh::Initialize(void* pArg)
 	//컬링 여부
 	m_bCullNone = StaicMeshDESC->bCullNone;
 
+	//풋스텝 사운드
+	m_eFS_Sound = StaicMeshDESC->eFS_Sound;
+
 	if (FAILED(__super::Initialize(StaicMeshDESC)))
 		return E_FAIL;
 
@@ -493,15 +496,17 @@ HRESULT CStaticMesh::Ready_Collider()
 	
 
 	PxFilterData filterData{};
-	//바닥이면 FILTER_FLOOR 필터 추가
-	if (m_bIsFloor == true)
-	{
-		filterData.word0 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_FLOOR;
-	}
-	else
-	{
-		filterData.word0 = WORLDFILTER::FILTER_MAP;
-	}
+	
+	filterData.word0 = WORLDFILTER::FILTER_MAP; // 기본은 맵
+
+	// 바닥이면 바닥 플래그 추가
+	if (m_bIsFloor)
+		filterData.word0 |= WORLDFILTER::FILTER_FLOOR;
+
+	// 발소리 종류가 유효하면 FOOTSTEP 플래그 추가
+	if (m_eFS_Sound != FOOTSTEP_SOUND::END)
+		filterData.word0 |= WORLDFILTER::FILTER_FOOTSTEP;
+
 
 	//filterData.word1 = WORLDFILTER::FILTER_DYNAMICOBJ;
 

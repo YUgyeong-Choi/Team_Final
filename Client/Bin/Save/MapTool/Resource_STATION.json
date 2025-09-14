@@ -3,7 +3,7 @@
         "Collision": false,
         "ModelName": "ErgoItem",
         "NoInstancing": false,
-        "ObjectCount": 3,
+        "ObjectCount": 5,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/ErgoItem.bin"
     },
     {
@@ -70,42 +70,42 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_YW.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_01_Male",
         "NoInstancing": false,
         "ObjectCount": 4,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_02_Male",
         "NoInstancing": false,
         "ObjectCount": 1,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_02_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_03_Female",
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Female.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_03_Male",
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_03_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Female.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_05_Female",
         "NoInstancing": false,
         "ObjectCount": 1,

@@ -626,6 +626,19 @@ HRESULT CMapLoader::Ready_StaticMesh(_uint iObjectCount, const json& objects, st
 			StaticMeshDesc.bCullNone = false;
 #pragma endregion
 
+#pragma region 발소리
+		//발소리 사운드
+		if (objects[j].contains("FootstepSound"))
+		{
+			_int iFootstep = objects[j]["FootstepSound"].get<_int>();
+			StaticMeshDesc.eFS_Sound = static_cast<FOOTSTEP_SOUND>(iFootstep);
+		}
+		else
+		{
+			StaticMeshDesc.eFS_Sound = FOOTSTEP_SOUND::END; // 기본값
+		}
+#pragma endregion
+
 		StaticMeshDesc.iRender = 0;
 		StaticMeshDesc.iLevelID = iLevelIndex;
 

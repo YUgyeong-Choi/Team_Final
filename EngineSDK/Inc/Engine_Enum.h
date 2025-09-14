@@ -40,6 +40,7 @@ namespace Engine
 		FILTER_MAP = 1 << 7,
 		FILTER_INTERACT = 1 << 8,
 		FILTER_FLOOR = 1 << 9, //중력받는 것들이 FILTER_MAP과 모두 충돌검사하니 렉걸린다. 그래서 바닥이라는 필터를 만듬
+		FILTER_FOOTSTEP = 1 << 10, //밟으면 소리나는 것들을 위한 필터(시체, 나무, 돌 등 바닥)
 	};
 
 	enum class COLLIDERTYPE 

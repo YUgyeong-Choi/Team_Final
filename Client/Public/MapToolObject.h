@@ -13,6 +13,11 @@ NS_END
 
 NS_BEGIN(Client)
 
+/*
+맵툴 오브젝트를 상속받는
+몬스터 오브젝트, 데칼 오브젝트, 이런식으로 관리 했으면 좋았을 텐데
+*/
+
 class CMapToolObject final : public CGameObject
 {
 	friend class CMapTool;
@@ -43,7 +48,7 @@ public:
 		OBJ_TYPE	eObjType = { OBJ_TYPE::STATIC_MESH };
 		STARGAZER_TAG eStargazerTag = { STARGAZER_TAG::END };
 		ITEM_TAG eItemTag = { ITEM_TAG::END };
-
+		FOOTSTEP_SOUND eFS_Sound = { FOOTSTEP_SOUND::END };
 	}MAPTOOLOBJ_DESC;
 
 private:
@@ -104,7 +109,7 @@ private:
 	_bool	m_bNoInstancing = { false }; //인스턴싱을 못하게 한다.
 
 private:
-	_bool	m_bisFloor = { false }; //바닥인지 아닌지
+	_bool	m_bisFloor = { false }; //바닥인지 아닌지(네이밍을 조각들이 충돌하는지로 해야할지도)
 
 private:
 	_bool	m_bCullNone = { false };//RS 컬링 여부
@@ -123,6 +128,9 @@ private:
 
 private:
 	OBJ_TYPE m_eObjType = { OBJ_TYPE::STATIC_MESH };
+
+private:
+	FOOTSTEP_SOUND m_eFS_Sound = { FOOTSTEP_SOUND::END };
 
 private:
 	CShader* m_pShaderCom = { nullptr };
