@@ -31,15 +31,21 @@ protected:
 
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 protected:
+	_bool    m_bCutSceneOn = false;
 	_bool    m_bIsPhase2{ false };
 	_bool    m_bStartPhase2 = false;
 	_bool	 m_bPlayerCollided = false;
 	_float   m_fPhase2HPThreshold = 0.6f; // 60% 이하로 떨어지면 페이즈2 시작
 	_float   m_fFirstChaseBeforeAttack = 2.f;
-	_bool    m_bCutSceneOn = false;
+
 	EFuryState m_eFuryState = EFuryState::None;
 
 	class CSpringBoneSys* m_pSpringBoneSys = { nullptr };
+
+	const _float DAMAGE_LIGHT = 25.f;
+	const _float DAMAGE_MEDIUM = 30.f;
+	const _float DAMAGE_HEAVY = 35.f;
+	const _float DAMAGE_FURY = 40.f;
 public:
 	static CBossUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

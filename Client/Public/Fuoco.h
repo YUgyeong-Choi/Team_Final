@@ -228,10 +228,7 @@ private:
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
     const _float ATTACK_DISTANCE_MIDDLE = 7.f;
 	const _float ATTACK_DISTANCE_FAR = 15.f;
-    const _float DAMAGE_LIGHT = 10.f;   
-    const _float DAMAGE_MEDIUM = 15.f;  
-    const _float DAMAGE_HEAVY = 20.f; 
-    const _float DAMAGE_FURY = 25.f; 
+
 
    
 public:
