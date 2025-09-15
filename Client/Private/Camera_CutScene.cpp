@@ -1024,6 +1024,14 @@ void CCamera_CutScene::Event()
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 250)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+		}
+		if (m_iCurrentFrame == 499)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+		}
 		break;
 	default:
 		break;
