@@ -142,8 +142,8 @@ class CFestivalLeader final : public CBossUnit
 		EF_DEFAULT_SLAM_NOSMOKE = 3,
 		EF_NOSMOKE_KNEE = 4,
 		EF_SMOKE = 5,
-		EF_OLDSPARK_DROP_BIG= 6,
-		EF_OLDSPARK_DROP_SMALL = 7
+		EF_SPARK_FULLBODY = 6,
+		EF_SPARK_FORLEFT
 	};
 
 private:
@@ -256,8 +256,7 @@ private:
 
 	// »ó¼ö
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
-	const _float ATTACK_DISTANCE_MIDDLE = 7.f;
-	const _float ATTACK_DISTANCE_FAR = 15.f;
+	const _float ATTACK_DISTANCE_MIDDLE = 5.f;
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

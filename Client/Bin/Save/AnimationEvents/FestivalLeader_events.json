@@ -502,6 +502,10 @@
                 {
                     "EventName": "Turnning",
                     "Time": 17.0
+                },
+                {
+                    "EventName": "SparkEffect",
+                    "Time": 25.0
                 }
             ],
             "IsLoop": false,
@@ -678,6 +682,10 @@
                 {
                     "EventName": "Turnning",
                     "Time": 17.0
+                },
+                {
+                    "EventName": "SparkEffect",
+                    "Time": 53.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -860,8 +868,12 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "SparkEffect",
+                    "Time": 40.0
+                },
+                {
                     "EventName": "OnFury",
-                    "Time": 1.0
+                    "Time": 50.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",

@@ -42,10 +42,10 @@ protected:
 
 	class CSpringBoneSys* m_pSpringBoneSys = { nullptr };
 
-	const _float DAMAGE_LIGHT = 30.f;
-	const _float DAMAGE_MEDIUM = 35.f;
-	const _float DAMAGE_HEAVY = 40.f;
-	const _float DAMAGE_FURY = 50.f;
+	const _float DAMAGE_LIGHT = 35.f;
+	const _float DAMAGE_MEDIUM = 40.f;
+	const _float DAMAGE_HEAVY = 45.f;
+	const _float DAMAGE_FURY = 55.f;
 public:
 	static CBossUnit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

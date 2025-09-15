@@ -484,7 +484,7 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
     {
         _float fDistToPlayer = Get_DistanceToPlayer();
 
-        _float fFactor = clamp(fDistToPlayer / 3.5f, 0.f, 1.f);
+        _float fFactor = clamp(fDistToPlayer / m_fRootMotionClampDist, 0.f, 1.f);
         vWorldDelta *= fFactor;
     }
 
