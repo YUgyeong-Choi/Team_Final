@@ -701,6 +701,13 @@
     },
     {
         "Collision": false,
+        "ModelName": "SM_Interior_Vase_01",
+        "NoInstancing": false,
+        "ObjectCount": 6,
+        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Vase_01.bin"
+    },
+    {
+        "Collision": false,
         "ModelName": "SM_LightProp_FloorLight_02",
         "NoInstancing": true,
         "ObjectCount": 2,

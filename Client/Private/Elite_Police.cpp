@@ -110,7 +110,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	Ready_AttackPatternWeight();
 
-
+	m_fRootMotionClampDist = 3.5f;
 	// 플레이어 카메라 레이충돌 무시하기 위한
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
@@ -178,6 +178,11 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
+
+				static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 		}
 		else if (pCurState->stateName.find("Fatal_Hit_End") != pCurState->stateName.npos)
@@ -188,6 +193,11 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
+
+				static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 		}
 	}
@@ -237,10 +247,12 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			return;
 		}
 		// 
-		static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
-		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
-		CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
-		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+		CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+		eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Fable.json")};
+
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+			m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
 		m_isDropItem = true;
 	}
@@ -298,38 +310,63 @@ HRESULT CElite_Police::Ready_Actor()
 {
 	if (FAILED(__super::Ready_Actor()))
 		return E_FAIL;
-	_vector S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+	//_vector S, R, T;
+	//XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
+	//if (m_pRightElbowBone)
+	//{
+	//	auto elbowLocalMatrix = m_pRightElbowBone->Get_CombinedTransformationMatrix();
+	//	auto elbowWorldMatrix = XMLoadFloat4x4(elbowLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
+	//	XMMatrixDecompose(&S, &R, &T, elbowWorldMatrix);
+
+	//	PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
+	//	PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
+	//	PxTransform elbowPose(elbowPositionVec, elbowRotationQuat);
+	//	PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.85f);
+	//	m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, elbowPose, m_pGameInstance->GetMaterial(L"Default"));
+	//	m_pPhysXElbow->Set_ShapeFlag(false, true, true);
+	//	PxFilterData elbowFilterData{};
+	//	elbowFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+	//	elbowFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+	//	m_pPhysXElbow->Set_SimulationFilterData(elbowFilterData);
+	//	m_pPhysXElbow->Set_QueryFilterData(elbowFilterData);
+	//	m_pPhysXElbow->Set_Owner(this);
+	//	m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON_BODY);
+	//	m_pPhysXElbow->Set_Kinematic(true);
+	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
+	//	m_pPhysXElbow->Init_SimulationFilterData();
+	//	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+	//	{
+	//		if (auto pController = pPlayer->Get_Controller())
+	//		{
+	//			pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
+	//		}
+	//	}
+	//}
+
 	if (m_pRightElbowBone)
 	{
-		auto elbowLocalMatrix = m_pRightElbowBone->Get_CombinedTransformationMatrix();
-		auto elbowWorldMatrix = XMLoadFloat4x4(elbowLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-		XMMatrixDecompose(&S, &R, &T, elbowWorldMatrix);
+		const PxTransform elbowPose = GetBonePose(m_pRightElbowBone);
 
-		PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-		PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-		PxTransform elbowPose(elbowPositionVec, elbowRotationQuat);
-		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.85f);
-		m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, elbowPose, m_pGameInstance->GetMaterial(L"Default"));
+		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+		m_pPhysXElbow->Create_Collision(
+			m_pGameInstance->GetPhysics(),
+			elbowGeom,
+			elbowPose,
+			m_pGameInstance->GetMaterial(L"Default"));
 		m_pPhysXElbow->Set_ShapeFlag(false, true, true);
-		PxFilterData elbowFilterData{};
-		elbowFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-		elbowFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
-		m_pPhysXElbow->Set_SimulationFilterData(elbowFilterData);
-		m_pPhysXElbow->Set_QueryFilterData(elbowFilterData);
+		PxFilterData footFilterData{};
+		footFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
+		footFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
+		m_pPhysXElbow->Set_SimulationFilterData(footFilterData);
+		m_pPhysXElbow->Set_QueryFilterData(footFilterData);
 		m_pPhysXElbow->Set_Owner(this);
 		m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON_BODY);
 		m_pPhysXElbow->Set_Kinematic(true);
 		m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
-		m_pPhysXElbow->Init_SimulationFilterData();
-		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-		{
-			if (auto pController = pPlayer->Get_Controller())
-			{
-				pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
-			}
-		}
 	}
+
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
 	return S_OK;
 }
 

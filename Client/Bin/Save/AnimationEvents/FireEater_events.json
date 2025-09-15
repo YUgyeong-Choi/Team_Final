@@ -876,19 +876,11 @@
                     "Time": 1.0
                 },
                 {
-                    "EventName": "StandUpSound",
-                    "Time": 27.0
-                },
-                {
                     "EventName": "FastAnimSpeed",
                     "Time": 250.0
                 },
                 {
                     "EventName": "CameraShake",
-                    "Time": 252.0
-                },
-                {
-                    "EventName": "SlamSound",
                     "Time": 252.0
                 },
                 {

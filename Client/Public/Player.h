@@ -310,9 +310,14 @@ public:/*[스탯 관련]*/
 
 	_bool Check_LevelUp(_int iLevel);
 
+	void Recovery_Ergo();
+
 private:
 	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
 	void Detect_FootstepSurface(eAnimCategory eAnim);
+
+private:
+	void Check_Dead_FestivalReader();
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -351,7 +356,8 @@ private: /* [ 텔레포트 ] */
 	
 	_bool m_bTeleport = {};
 	_float m_fTeleportTime = {};
-	_float3 m_vTeleportPos = {};
+	// 기본 위치 정해주기
+	_float3 m_vTeleportPos = { 51.3f, 1.f, -5.1f };
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
@@ -485,6 +491,9 @@ private: /* [ 현재 플레이어 레벨 ] */
 	_float	m_fMaxErgo = { 100.f };
 	_float	m_fErgo = { 0.f };
 
+	// 죽으면 에르고를 여기로 채우고, 에르고를 먹으면 다시 차도록
+	_float  m_fLostErgo = {};
+
 private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bItemSwitch = {};
 	_float	 m_fItemTime = {};
@@ -519,6 +528,11 @@ private: /* [ 공격한 적 ] */
 
 private: // 그라인더용 변수
 	CSoundController* m_pGrinderSound = { nullptr };
+
+private:
+	// 일단 만들고 나중에 리팩토링 하기 - 매니저에서 생성하게 하기?
+	_bool m_isDeadFestivalReader = {};
+	_bool m_isMakeGuide = {};
 
 private:
 	STAT_DESC m_eStat = {};

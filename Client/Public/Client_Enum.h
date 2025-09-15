@@ -96,6 +96,7 @@ namespace Client
 		PASSENGER_NOTE, //승객의 쪽지
 		KEY,
 		KRAT_TIMES,// 크라트타임스
+		LOST_ERGO, //플레이어 에르고
 		END
 	};
 

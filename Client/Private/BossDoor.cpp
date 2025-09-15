@@ -59,16 +59,7 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
-			switch (m_eInteractType)
-			{
-			case Client::FESTIVALDOOR:
-				break;
-			case Client::FUOCO:
-				CCamera_Manager::Get_Instance()->SetbMoveable(false);
-				break;
-			default:
-				break;
-			}
+			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 		}
 	}
 
@@ -411,24 +402,24 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 	if (m_bMoveStart)
 	{
 		m_bFinish = true;
-		_vector vTargetPos;
 		switch (m_eInteractType)
 		{
 		case Client::FESTIVALDOOR:
 			//X:375.136841, Y:14.995386, Z:-48.836079
-			vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
+			m_vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
 			break;
 		case Client::FUOCO:
-			vTargetPos = _vector({ -3.1f, 0.3f, -235.80f, 1.f});
+			m_vTargetPos = _vector({ -3.2f, 0.3f, -235.87f, 1.f});
 			break;
 		default:
 			break;
 		}
 
-		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		if (m_pPlayer->MoveToDoor(fTimeDelta, m_vTargetPos))
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = true;
+			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
 		}
 	}
 
@@ -448,6 +439,8 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			break;
 		}
 
+		m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
+
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
 			m_bRotationStart = false;
@@ -455,6 +448,7 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			switch (m_eInteractType)
 			{
 			case Client::FESTIVALDOOR:
+				CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::FESTIVAL);
 				break;
 			case Client::FUOCO:
 				CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::FUOCO);

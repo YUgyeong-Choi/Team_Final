@@ -163,7 +163,7 @@ protected:
 	_float   m_fMaxRootMotionSpeed = 13.f;
 	_float   m_fRootMotionAddtiveScale =1.2f; // 루트 모션 추가 배율
 	_float   m_fChasingDistance = 1.5f; // 플레이어 추적 거리
-
+	_float   m_fRootMotionClampDist = 2.5f;
 	_bool    m_bRootMotionClamped = false;
 	_float   m_fChangeMoveDirCooldown = 0.f; // 이동 방향 변경 쿨타임
 	_float   m_fAddtiveRotSpeed = 1.f; // 회전 속도 추가값

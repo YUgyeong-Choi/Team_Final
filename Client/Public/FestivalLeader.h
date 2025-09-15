@@ -114,7 +114,7 @@ class CFestivalLeader final : public CBossUnit
 		FuryBodySlam = 13 // 두손내리치기
 	};
 
-	enum EBossCollider : _uint
+	enum EBossBones : _uint
 	{
 		Hammer,
 		Basket,
@@ -122,7 +122,28 @@ class CFestivalLeader final : public CBossUnit
 		RightHand,
 		LeftForearm,
 		RightForearm,
-		Count
+		Collider_Count,
+		LeftShoulder,
+		RightShoulder,
+		LeftKnee,
+		RightKnee,
+		LeftMiddleFinger,
+		RightMiddleFinger,
+		HeadJaw,
+		Total_Bones
+	};
+
+
+	enum EBossEffect : _uint
+	{
+		EF_NONE = 0,
+		EF_ONE_HANDSLAM = 1,
+		EF_SCRATCH = 2,
+		EF_DEFAULT_SLAM_NOSMOKE = 3,
+		EF_NOSMOKE_KNEE = 4,
+		EF_SMOKE = 5,
+		EF_SPARK_FULLBODY = 6,
+		EF_SPARK_FORLEFT
 	};
 
 private:
@@ -182,9 +203,9 @@ private:
 	virtual void Ready_SoundEvents() override;
 	virtual void EnterCutScene() override;
 private:
-	array<CPhysXDynamicActor*, EBossCollider::Count> m_Colliders{};
+	array<CPhysXDynamicActor*, EBossBones::Collider_Count> m_Colliders{};
 
-	array<CBone*, EBossCollider::Count> m_BoneRefs{};
+	array<CBone*, EBossBones::Total_Bones> m_BoneRefs{};
 	CBone* m_pRightWeaponBone{ nullptr };
 
 	class CWeapon_Monster* m_pHammer{ nullptr };
@@ -209,9 +230,10 @@ private:
 	_int    m_iSwingComboLimit = 4;
 	_float  m_fCanSmashDistance = 6.f;
 
-	// 이펙트?
+	// 이펙트
 	_bool	m_bLeftHand = true;
-
+	_bool   m_bLeftKnee = true;
+	_bool   m_bFullbodyEffect = false;
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
@@ -234,8 +256,7 @@ private:
 
 	// 상수
 	const _float ATTACK_DISTANCE_CLOSE = 1.f;
-	const _float ATTACK_DISTANCE_MIDDLE = 7.f;
-	const _float ATTACK_DISTANCE_FAR = 15.f;
+	const _float ATTACK_DISTANCE_MIDDLE = 5.f;
 
 public:
 	static CFestivalLeader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

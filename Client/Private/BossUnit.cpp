@@ -49,6 +49,10 @@ void CBossUnit::Update(_float fTimeDelta)
 	if (CalculateCurrentHpRatio() <= 0.f)
 	{
 		// Á×À½ Ã³¸®
+		m_fGroggyEndTimer = 0.f;
+		m_fGroggyThreshold = 1.f;
+		m_fGroggyGauge = 0.f;
+		m_bGroggyActive = false;
 		m_bUseLockon = false;
 		if (m_eCurrentState != EEliteState::DEAD&& m_eCurrentState != EEliteState::FATAL)
 		{

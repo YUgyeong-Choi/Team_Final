@@ -21,6 +21,9 @@
 #include "UI_Container.h"
 #include "UI_Manager.h"
 #include "Static_UI.h"
+#include "UI_Guide.h"
+
+#include "ErgoItem.h"
 
 #include "Client_Calculation.h"
 
@@ -3318,24 +3321,66 @@ public:
             CUI_Manager::Get_Instance()->Off_Panel();
             CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertDeath_01");
             m_bDoOnce = true;
+
+          
+            
         }
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
+
+            // 이제 lost ergo 죽은 위치에 추가 하기 위해 위치 지정 // 
+
+            _int iAreaID = m_pGameInstance->GetCurAreaIds();
+
+          
+
+            // 각각 문 앞에 생성
+            // 푸오코
+            if (19 == iAreaID)
+            {
+                _vector vPos = {-1.7f, 0.29f, -238.f, 1.f};   
+                _matrix vMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+                vMatrix.r[3] = vPos;
+                XMStoreFloat4x4(&m_matErgo, vMatrix);
+            }
+            // 축제 인도자
+            else if (60 == iAreaID)
+            {
+                _vector vPos = {371.f, 13.5f, -49.f,1.f};
+                _matrix vMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+                vMatrix.r[3] = vPos;
+                XMStoreFloat4x4(&m_matErgo, vMatrix);
+            }
+            // 지금 위치에 생성
+            else
+            {
+                XMStoreFloat4x4(&m_matErgo, m_pOwner->Get_TransfomCom()->Get_WorldMatrix());
+            }
+
+
+            m_pOwner->Reset();
+            m_pOwner->WeaponReset();
+
+
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_bWeaponEquipped = false;
 
+       
+
             /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
-            PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
-            PxTransform posTrans = PxTransform(pos);
+
+            PxVec3 pxPos(m_pOwner->m_vTeleportPos.x, m_pOwner->m_vTeleportPos.y, m_pOwner->m_vTeleportPos.z);
+            PxTransform posTrans = PxTransform(pxPos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
-         
+
             XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
+           
 
             // 페이드 되도록
 
@@ -3355,21 +3400,45 @@ public:
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
+
+
+            
+         
         }
 
 
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
-            m_pOwner->Reset();
-            m_pOwner->WeaponReset();
+           
 
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();
           //  m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
 
+      
+
+
             CUI_Manager::Get_Instance()->On_Panel();
 
+            if (m_pOwner->m_isDeadFestivalReader)
+            {
+                if (!m_pOwner->m_isMakeGuide)
+                {
+                    CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+                    eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_DeathBossRoom.json") };
+
+                    if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+                        ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player_UI_Guide"), &eDesc)))
+                        return;
+
+                    m_pOwner->m_isMakeGuide = true;
+                }
+            }
+
+           
+            
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3386,6 +3455,30 @@ public:
         m_pOwner->m_bIsInvincible = false;
         m_bDoOnce = false;
         m_bDoTwo = false;
+
+
+
+        if (m_pOwner->m_fLostErgo > 0.f)
+            m_pOwner->m_fLostErgo = 0.f;
+
+        m_pOwner->m_fLostErgo = m_pOwner->m_fErgo;
+
+        m_pOwner->Add_Ergo(-m_pOwner->m_fLostErgo);
+
+
+        // 이미 아이템이 존재하면, 지운다
+        CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"));
+        if (pObj)
+            pObj->Set_bDead();
+
+        CErgoItem::ERGOITEM_DESC eItemDesc = {};
+
+        eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
+        eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+        eItemDesc.WorldMatrix = m_matErgo;
+
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
+            m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
@@ -3418,6 +3511,7 @@ private:
 
 private:
     _float m_fRrevivalTime = {};
+    _float4x4 m_matErgo = {};
 };
 
 
