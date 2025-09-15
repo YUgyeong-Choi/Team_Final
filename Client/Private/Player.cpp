@@ -498,7 +498,7 @@ void CPlayer::Reset()
 	m_fMana = m_fMaxMana;
 	Callback_Mana();
 
-	m_bIsRrevival = true;
+	//m_bIsRrevival = true;
 
 	m_pBelt_Down->Reset();
 	m_pBelt_Up->Reset();

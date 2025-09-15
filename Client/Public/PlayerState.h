@@ -3359,7 +3359,8 @@ public:
             }
 
 
-
+            m_pOwner->Reset();
+            m_pOwner->WeaponReset();
 
 
             /* [ 무기 장착 해제 ] */
@@ -3367,18 +3368,19 @@ public:
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_bWeaponEquipped = false;
 
+       
+
             /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
 
             PxVec3 pxPos(m_pOwner->m_vTeleportPos.x, m_pOwner->m_vTeleportPos.y, m_pOwner->m_vTeleportPos.z);
-
-            // 플레이어 이동h
             PxTransform posTrans = PxTransform(pxPos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
-         
+
             XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
+           
 
             // 페이드 되도록
 
@@ -3407,13 +3409,15 @@ public:
 
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
-            m_pOwner->Reset();
-            m_pOwner->WeaponReset();
+           
 
             m_pOwner->m_bIsRrevival = true;
 
             m_pGameInstance->Reset_LevelUnits();
           //  m_pOwner->m_pSoundCom->Play("SE_PC_MT_Teleport_End");
+
+      
+
 
             CUI_Manager::Get_Instance()->On_Panel();
 
@@ -3433,19 +3437,7 @@ public:
                 }
             }
 
-            // 이미 아이템이 존재하면, 지운다
-            CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"));
-            if(pObj)
-                pObj->Set_bDead();
-
-            CErgoItem::ERGOITEM_DESC eItemDesc = {};
-
-            eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
-            eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-            eItemDesc.WorldMatrix = m_matErgo;
-
-            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
-                m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
+           
             
         }
 
@@ -3472,6 +3464,21 @@ public:
         m_pOwner->m_fLostErgo = m_pOwner->m_fErgo;
 
         m_pOwner->Add_Ergo(-m_pOwner->m_fLostErgo);
+
+
+        // 이미 아이템이 존재하면, 지운다
+        CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"));
+        if (pObj)
+            pObj->Set_bDead();
+
+        CErgoItem::ERGOITEM_DESC eItemDesc = {};
+
+        eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
+        eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+        eItemDesc.WorldMatrix = m_matErgo;
+
+        m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
+            m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override
