@@ -355,9 +355,9 @@ HRESULT CFestivalLeader::Ready_Components(void* pArg)
 			return E_FAIL;
 	}
 
-	///* For.Com_Sound */
-	//if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
-	//	return E_FAIL;
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FestivalLeader"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -635,7 +635,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		{
 			if (m_iSwingComboCount == 0 && m_bInSwingCombo == false) // 이전 콤보가 끝난 상태
 			{
-				m_iSwingComboLimit = GetRandomInt(0, 3); 
+				m_iSwingComboLimit = GetRandomInt(0, 2); 
 				m_bInSwingCombo = true;                  
 			}
 		}
@@ -1508,7 +1508,162 @@ void CFestivalLeader::Reset_EffectFlags()
 
 void CFestivalLeader::Ready_SoundEvents()
 {
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set_AllVolume(0.55f);
+	}
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Stop("SE_NPC_FS_FestivalLeader_Mud_01");
+				m_pSoundCom->Play("SE_NPC_FS_FestivalLeader_Mud_01");
+			}
+		});
 
+	m_pAnimator->RegisterEventListener("StandUpSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_MT_Standup_1");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("PhaseStartSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("Dialog_CH01_Spawn_text_2");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("SparkSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_FX_Spark_M_01");
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("RustleSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_MT_Rustle_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RattleSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_MT_Rattle_07");
+		
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("MovementSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_MT_Movement_0");
+
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("SlashSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_WS_Blunt_L_Slash");
+
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackLSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Attack_L_0",5,1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackMSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Attack_M_0", 6, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Attack_S_0", 5, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RoarSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Roar_0", 5, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("WooshSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_TrueOgre_Whoosh_03");
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("GroundImpactSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Judge_SK_Impact_Ground_Heavy_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("CreakSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_MT_Plate_Creak_01");
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("GroundExpSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Ground_L_Exp_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("MechanicSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Osis_Mechanic_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FuryStartSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_MT_Mechanic_M_Land_01");
+			}
+		});
+	
 }
 
 void CFestivalLeader::EnterCutScene()

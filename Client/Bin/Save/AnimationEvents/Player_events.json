@@ -41,6 +41,10 @@
                 {
                     "EventName": "ReceiveDamageToFatalTarget",
                     "Time": 127.0
+                },
+                {
+                    "EventName": "FatalSliceSound",
+                    "Time": 127.0
                 }
             ],
             "IsLoop": false,

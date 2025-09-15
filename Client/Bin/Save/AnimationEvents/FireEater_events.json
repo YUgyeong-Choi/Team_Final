@@ -373,6 +373,10 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "FuryStartSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "OnFury",
                     "Time": 4.0
                 },
@@ -509,6 +513,10 @@
             "Events": [
                 {
                     "EventName": "ActivateFuryState",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "FuryStartSound",
                     "Time": 1.0
                 },
                 {
