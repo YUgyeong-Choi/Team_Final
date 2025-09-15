@@ -85,6 +85,8 @@ private:
 	_float m_fSoundDelta = {};
 
 	CPlayer* m_pPlayer = { nullptr };
+
+	_vector m_vTargetPos;
 public:
 	static CBossDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

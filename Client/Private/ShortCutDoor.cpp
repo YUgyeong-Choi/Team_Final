@@ -263,7 +263,7 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		{
 		case Client::SHORTCUT:
 			if (m_bCanOpen)
-				vTargetPos = _vector({ 147.75f, 1.f, -25.81f, 1.f });
+				vTargetPos = _vector({ 147.75f, 1.f, -25.9f, 1.f });
 			else
 				vTargetPos = _vector({ 147.15f, 2.66f, -24.52f, 1.f });
 			break;
@@ -275,6 +275,7 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = true;
+			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetPos);
 		}
 	}
 
