@@ -129,7 +129,10 @@ class CFestivalLeader final : public CBossUnit
 		RightKnee,
 		LeftMiddleFinger,
 		RightMiddleFinger,
+		LeftMiddleFingerStart,
+		RightMiddleFingerStart,
 		HeadJaw,
+		Neck,
 		Total_Bones
 	};
 
@@ -226,7 +229,7 @@ private:
 	// 공격 관련
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
-	_int    m_iSwingComboCount = 0;
+	_int    m_iSwingComboCount = 0; 
 	_int    m_iSwingComboLimit = 4;
 	_float  m_fCanSmashDistance = 6.f;
 

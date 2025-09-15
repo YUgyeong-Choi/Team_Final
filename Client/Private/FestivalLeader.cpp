@@ -456,8 +456,10 @@ void CFestivalLeader::Ready_BoneInformation()
 	findBone("Bip001-R-Clavicle", EBossBones::RightShoulder);
 	findBone("Bip001-L-Calf", EBossBones::LeftKnee);
 	findBone("Bip001-R-Calf", EBossBones::RightKnee);
-	findBone("Bip001-R-Finger2Nub", EBossBones::LeftMiddleFinger);
-	findBone("Bip001-L-Finger2Nub", EBossBones::RightMiddleFinger);
+	findBone("Bip001-L-Finger2Nub", EBossBones::LeftMiddleFinger);
+	findBone("Bip001-R-Finger2Nub", EBossBones::RightMiddleFinger);
+	findBone("Ref_Bip001-L-Finger21", EBossBones::LeftMiddleFingerStart);
+	findBone("Skin_Bip001-R-Finger21", EBossBones::RightMiddleFingerStart);
 	findBone("Bn_Head_Jaw_02", EBossBones::HeadJaw);
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
@@ -1276,12 +1278,12 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_Fes_Scratch")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
 	{
-		_uint iFinger = m_bLeftHand ? LeftMiddleFinger : RightMiddleFinger;
+		_uint iFinger = m_bLeftHand ? LeftMiddleFingerStart : RightMiddleFingerStart;
 
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
 
-		const _float4x4* socketPtr = socketPtr = m_BoneRefs[iFinger]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = m_BoneRefs[iFinger]->Get_CombinedTransformationMatrix();
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1346,31 +1348,51 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LClavicle")) // 왼쪽 어깨 스파크
 	{
-		desc.pSocketMatrix = m_BoneRefs[LeftShoulder]->Get_CombinedTransformationMatrix();
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[LeftShoulder]->Get_CombinedTransformationMatrix());
+		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+		_matrix comb = socket * parent;
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼 손 스파크
 	{
-		desc.pSocketMatrix = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix());
+		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+		_matrix comb = socket * parent;
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크
 	{
-		desc.pSocketMatrix = m_BoneRefs[RightShoulder]->Get_CombinedTransformationMatrix();
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[RightShoulder]->Get_CombinedTransformationMatrix());
+		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+		_matrix comb = socket * parent;
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크, 쬐만함
 	{
-		desc.pSocketMatrix = m_BoneRefs[LeftForearm]->Get_CombinedTransformationMatrix();
-		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[LeftForearm]->Get_CombinedTransformationMatrix());
+		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+		_matrix comb = socket * parent;
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
 
 	// P2
