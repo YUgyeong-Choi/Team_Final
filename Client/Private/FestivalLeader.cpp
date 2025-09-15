@@ -1178,6 +1178,8 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	//findBone("Bn_Head_Jaw_02", EBossCollider::Head_Jaw);
 
 	CEffectContainer::DESC desc = {};
+
+	// P1
 	if (stEffectTag == TEXT("EC_Fes_OnehandSlam")) // 한 손 바닥 찍기
 	{
 		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
@@ -1212,19 +1214,92 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 사지 스파크
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 양 손 스파크
 	{
+		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+
+	}
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 양 무릎 스파크
+	{
+		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = nullptr;
+		if (!m_bLeftHand)
+			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Calf"));
+		else
+			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Calf"));
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
 	}
 	else if (stEffectTag == TEXT("EC_Fes_Falling_Smoke_P1")) // 넘어지며 몸통 먼지
 	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_iLockonBoneIndex);
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
 
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big")) // 관절 스파크 조금 큼
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LClavicle")) // 왼쪽 어깨 스파크
 	{
+		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Clavicle"));
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small ")) // 관절 스파크 조금 작음
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼 손 스파크
+	{
+		desc.pSocketMatrix = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	}
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크
+	{
+		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Clavicle"));
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	}
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크, 쬐만함
+	{
+		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Ref_Bip001-L-Forearm"));
+		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	}
+
+	// P2
+	else if (stEffectTag == TEXT("")) //
 	{
 
 	}
