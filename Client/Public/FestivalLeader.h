@@ -99,19 +99,19 @@ class CFestivalLeader final : public CBossUnit
 	enum EBossAttackPattern : _int
 	{
 		BAP_NONE = 0,
-		Slam = 1,
-		CrossSlam = 2,
-		JumpAttack = 3,
-		Strike = 4,
-		AlternateSmash = 5,
-		Spin = 6,
-		HalfSpin = 7,
-		HammerSlam = 8,
-		DashSwing = 9,
-		Swing = 10,
-		FuryHammerSlam = 11,
-		FurySwing = 12,
-		FuryBodySlam = 13
+		Slam = 1, // 왼손 찍기
+		CrossSlam = 2, // 긁기
+		JumpAttack = 3, // 넘어지기
+		Strike = 4, // 어깨빵
+		AlternateSmash = 5, // 번갈아 찍기
+		Spin = 6,  // 넘어지고 스핀
+		HalfSpin = 7, // 2타 중 2타
+		HammerSlam = 8, // 그냥 내려찍기 먼지구름두개
+		DashSwing = 9, // 달려와서 스윙
+		Swing = 10, // 2타 중 1타
+		FuryHammerSlam = 11, // 쾅쾅
+		FurySwing = 12, // 크게 퓨리 스윙
+		FuryBodySlam = 13 // 두손내리치기
 	};
 
 	enum EBossCollider : _uint
