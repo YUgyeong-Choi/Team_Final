@@ -138,7 +138,8 @@ private:
 		"ERGO_SHARD", //희미한 에르고 조각
 		"PASSENGER_NOTE", //승객의 쪽지
 		"KEY",
-		"KRAT_TIMES" //크라트 타임스
+		"KRAT_TIMES", //크라트 타임스
+		"LOST_ERGO",
 	};
 
 private:

@@ -178,6 +178,11 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
+
+				static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 		}
 		else if (pCurState->stateName.find("Fatal_Hit_End") != pCurState->stateName.npos)
@@ -188,6 +193,11 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
+
+				static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
+				CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
+				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 		}
 	}
@@ -237,10 +247,12 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			return;
 		}
 		// 
-		static_cast<CPlayer*>(m_pPlayer)->Set_GetKey();
-		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
-		CUI_Manager::Get_Instance()->Update_PickUpItem(ENUM_CLASS(ITEM_TAG::KEY));
-		CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
+		CUI_Guide::UI_GUIDE_DESC eDesc{};
+
+		eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Fable.json")};
+
+		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
+			m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
 		m_isDropItem = true;
 	}

@@ -207,6 +207,17 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 						m_pPlayer->Reset();
 						m_pGameInstance->Get_CurrentLevel()->Reset();
+
+						// 
+						_float3 vPos;
+
+						XMStoreFloat3(&vPos, Get_TransfomCom()->Get_State(STATE::POSITION));
+
+						// 플레이어 위치 세팅
+						vPos.y += 1.f;
+						vPos.x -= 2.5f;
+						m_pPlayer->SetTeleportPos(vPos);
+
 						return;
 					}
 					else

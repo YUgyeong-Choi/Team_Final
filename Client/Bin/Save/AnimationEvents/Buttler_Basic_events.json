@@ -197,6 +197,10 @@
             "Events": [
                 {
                     "EventName": "AddErgo",
+                    "Time": 280.0
+                },
+                {
+                    "EventName": "Dissolve",
                     "Time": 300.0
                 }
             ],
@@ -388,6 +392,10 @@
                 {
                     "EventName": "AddErgo",
                     "Time": 250.0
+                },
+                {
+                    "EventName": "Dissolve",
+                    "Time": 260.0
                 }
             ],
             "IsLoop": false,
@@ -405,6 +413,10 @@
                 {
                     "EventName": "AddErgo",
                     "Time": 186.0
+                },
+                {
+                    "EventName": "Dissolve",
+                    "Time": 200.0
                 }
             ],
             "IsLoop": false,

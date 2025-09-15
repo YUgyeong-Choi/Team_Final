@@ -324,6 +324,12 @@ void CPlayer::Update(_float fTimeDelta)
 
 
 	m_pSpringBoneSys->Update(fTimeDelta);
+
+	if (m_eCurrentState == EPlayerState::DEAD)
+	{
+		Check_Dead_FestivalReader();
+	}
+
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -492,7 +498,7 @@ void CPlayer::Reset()
 	m_fMana = m_fMaxMana;
 	Callback_Mana();
 
-	m_bIsRrevival = true;
+	//m_bIsRrevival = true;
 
 	m_pBelt_Down->Reset();
 	m_pBelt_Up->Reset();
@@ -2837,6 +2843,16 @@ _bool CPlayer::Check_LevelUp(_int iLevel)
 	return false;
 }
 
+void CPlayer::Recovery_Ergo()
+{
+	if (m_fLostErgo < 1.f)
+		return;
+
+	m_fErgo += m_fLostErgo;
+	m_fLostErgo = 0.f;
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
 void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 {
 	// ----------------------------
@@ -3057,6 +3073,20 @@ void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 		m_pPhysXActorCom->Add_RenderRay(_data);
 	}
 #endif
+}
+
+void CPlayer::Check_Dead_FestivalReader()
+{
+	if (m_isDeadFestivalReader)
+		return;
+
+	if (m_pGameInstance->GetCurAreaIds() == 60)
+	{
+		// 
+		m_isDeadFestivalReader = true;
+
+		
+	}
 }
 
 HRESULT CPlayer::Ready_Weapon()

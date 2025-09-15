@@ -92,6 +92,32 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
 					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 			}
+			else if (m_eItemTag == ITEM_TAG::KRAT_TIMES)
+			{
+				CUI_Letter::UI_LETTER_DESC eDesc{};
+
+				eDesc.partPaths = { TEXT("../Bin/Save/UI/Letter/Letter_NewsPaper_0.json"), TEXT("../Bin/Save/UI/Letter/Letter_NewsPaper_1.json") };
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Letter"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
+			}
+			else if (m_eItemTag == ITEM_TAG::LOST_ERGO)
+			{
+				CUI_Container::UI_CONTAINER_DESC eDesc{};
+				eDesc.fLifeTime = 6.f;
+				eDesc.useLifeTime = true;
+				eDesc.strFilePath = TEXT("../Bin/Save/UI/ErgoRecovery.json");
+
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Container"), &eDesc);
+
+				CUI_Container* pContainer = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Container")));
+
+				static_cast<CDynamic_UI*>(pContainer->Get_PartUI().back())->Set_isUVmove(true);
+
+				static_cast<CPlayer*>(m_pTarget)->Recovery_Ergo();
+				
+			}
 			else
 			{
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), false);
@@ -182,7 +208,12 @@ void CErgoItem::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	if (!m_bDoOnce)
 	{
 		CUI_Manager::Get_Instance()->Activate_Popup(true);
-		CUI_Manager::Get_Instance()->Set_Popup_Caption(5);
+
+		if (m_eItemTag != ITEM_TAG::LOST_ERGO)
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(5);
+		else
+			CUI_Manager::Get_Instance()->Set_Popup_Caption(6);
+
 		m_bDoOnce = true;
 	}
 }

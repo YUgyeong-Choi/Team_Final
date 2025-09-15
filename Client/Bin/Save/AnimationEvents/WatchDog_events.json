@@ -186,6 +186,10 @@
                 },
                 {
                     "EventName": "AddErgo",
+                    "Time": 200.0
+                },
+                {
+                    "EventName": "Dissolve",
                     "Time": 250.0
                 }
             ],

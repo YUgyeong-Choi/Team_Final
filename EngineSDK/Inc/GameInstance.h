@@ -274,6 +274,7 @@ public:
 	HRESULT Reset_Parm();
 	void SetPlayerPosition(const _vector& vPos);
 	void ToggleDebugArea();
+	_int GetCurAreaIds();
 #pragma endregion
 
 #pragma region PULLING_MANAGER
