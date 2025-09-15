@@ -289,31 +289,19 @@ void CFestivalLeader::Update(_float fTimeDelta)
 
 void CFestivalLeader::Late_Update(_float fTimeDelta)
 {
-	/* [ 가방 디졸브 예시 ] */
-	if (KEY_DOWN(DIK_U))
-		SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
-	if (KEY_DOWN(DIK_I))
-		SwitchDissolve(false, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
 
-	/* [ 아래의 조건으로 가방이 사라졌는지를 알 수 있음 ] */
-	if (!m_bDissolveSwitch && m_fDissolve <= 0.002f)
+	if (!m_bDissolveSwitch && m_fDissolve <= 0.003f)
 	{
 		if (m_pModelCom->IsMeshVisible(2))
 			m_pModelCom->SetMeshVisible(2, false);
 		if (m_pModelCom->IsMeshVisible(3))
 			m_pModelCom->SetMeshVisible(3, false);
 	}
-	else
-	{
-		if (!m_pModelCom->IsMeshVisible(2))
-			m_pModelCom->SetMeshVisible(2, true);
-		if (!m_pModelCom->IsMeshVisible(3))
-			m_pModelCom->SetMeshVisible(3, true);
-	}
-
-	//	(2 ~ 3 번 모델 렌더시 아래조건 통과하면 continue 하세요)
 
 	__super::Late_Update(fTimeDelta);
+
+	if (nullptr != m_pHPBar)
+		m_pHPBar->Late_Update(fTimeDelta);
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider())
 	{
@@ -325,8 +313,6 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 	}
 #endif
 
-	if (nullptr != m_pHPBar)
-		m_pHPBar->Late_Update(fTimeDelta);
 }
 
 HRESULT CFestivalLeader::Render()
@@ -645,11 +631,27 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::Atk_SwingCom_Start):
 	case ENUM_CLASS(BossStateID::Atk_DashSwingCom_Start):
-		m_iSwingComboCount++;
-		if (m_iSwingComboCount >= m_iSwingComboLimit)
+		if (m_iPrevNodeID != m_iCurNodeID)
 		{
-			m_pAnimator->SetBool("IsCombo", false);
-			m_iSwingComboCount = 0;
+			if (m_iSwingComboCount == 0 && m_bInSwingCombo == false) // 이전 콤보가 끝난 상태
+			{
+				m_iSwingComboLimit = GetRandomInt(0, 3); 
+				m_bInSwingCombo = true;                  
+			}
+		}
+		break;
+
+	case ENUM_CLASS(BossStateID::Atk_Swing_End):
+	case ENUM_CLASS(BossStateID::Atk_DashSwing_End):
+		if (m_iPrevNodeID != m_iCurNodeID)
+		{
+			m_iSwingComboCount++;
+			if (m_iSwingComboCount >= m_iSwingComboLimit)
+			{
+				m_pAnimator->SetBool("IsCombo", false);
+				m_iSwingComboCount = 0;
+				m_bInSwingCombo = false;
+			}
 		}
 		break;
 	case ENUM_CLASS(BossStateID::Atk_HalfSpin_Start):
@@ -882,10 +884,11 @@ void CFestivalLeader::Register_Events()
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
-		{
+		{			
+			SwitchEmissive(true, 0.9f);
 			if (m_pHPBar)
 				return;
-			SwitchEmissive(true, 0.9f);
+
 			CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 			eDesc.strName = TEXT("축제 인도자");
 			eDesc.isBoss = true;
@@ -963,11 +966,7 @@ void CFestivalLeader::Register_Events()
 			}
 		});
 
-	m_pAnimator->RegisterEventListener("OnSlamEffect", [this]()
-		{
-			//EffectSpawn_Active(SlamAtk, true);
 
-		});
 
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{
@@ -1053,7 +1052,7 @@ void CFestivalLeader::Register_Events()
 				|| m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop3)
 				|| m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop))
 			{
-				m_bLeftHand = true;
+				m_bLeftHand = m_bLeftHand ? false : true;
 			}
 			else
 			{
@@ -1063,9 +1062,15 @@ void CFestivalLeader::Register_Events()
 			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
 		});
 
-	m_pAnimator->RegisterEventListener("ScratchEffect", [this]()
+	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
 		{
-			m_bLeftHand = m_bLeftHand ? false : true;
+			m_bLeftHand = true;
+			EffectSpawn_Active(EF_SCRATCH, true);
+		});
+
+	m_pAnimator->RegisterEventListener("RightScratchEffect", [this]()
+		{
+			m_bLeftHand = false;
 			EffectSpawn_Active(EF_SCRATCH, true);
 		});
 
@@ -1075,32 +1080,63 @@ void CFestivalLeader::Register_Events()
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
 		});
 
+	m_pAnimator->RegisterEventListener("SmokeEffect", [this]()
+		{
+			m_bLeftHand = true;
+			EffectSpawn_Active(EF_SMOKE, true);
+		});
+
 	m_pAnimator->RegisterEventListener("KneeEffect", [this]()
 		{
 			m_bLeftHand = true;
 			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
 		});
 
-	m_pAnimator->RegisterEventListener("FallingEffect", [this]()
+	m_pAnimator->RegisterEventListener("LeftFallingEffect", [this]()
 		{
-			m_bLeftHand = m_bLeftHand ? false : true;
+			m_bLeftHand = true;
+			m_bLeftKnee = true;
 			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+		});
+
+	m_pAnimator->RegisterEventListener("RightFallingEffect", [this]()
+		{
+			m_bLeftHand = false;
+			m_bLeftKnee = false;
+			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
 		});
 
-	m_pAnimator->RegisterEventListener("SparkEffect", [this]()
-		{	if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_Slam_Loop))
-	{
-		EffectSpawn_Active(EF_SPARK_FORLEFT, true);
-	}
-		else
-	{
-		EffectSpawn_Active(EF_SPARK_FULLBODY, true);
-	}
+	m_pAnimator->RegisterEventListener("LShooulderSparkEffect", [this]()
+		{	
+			EffectSpawn_Active(EF_LShoulder_SPARK, true);
+	});
 
+	m_pAnimator->RegisterEventListener("RShooulderSparkEffect", [this]()
+		{
+			EffectSpawn_Active(EF_RShoulder_SPARK, true);
 		});
 
+	m_pAnimator->RegisterEventListener("LHandSparkEffect", [this]()
+		{
+			EffectSpawn_Active(EF_LHand_SPARK, true);
+		});
+
+	m_pAnimator->RegisterEventListener("LForearmSparkEffect", [this]()
+		{
+			EffectSpawn_Active(EF_LForearm_SPARK, true);
+		});
+
+	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
+		{
+
+			EffectSpawn_Active(EF_GROUND_SPARK, true, false);
+		});
+	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
+		{
+			EffectSpawn_Active(EF_GROUND_SPARK, false);
+		});
 }
 
 void CFestivalLeader::Ready_AttackPatternWeightForPhase1()
@@ -1231,18 +1267,16 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_SCRATCH].emplace_back(TEXT("EC_Fes_Scratch"));
 	m_EffectMap[EF_SMOKE].emplace_back(TEXT("EC_Fes_Falling_Smoke_P1"));
 
-	m_EffectMap[EF_SPARK_FULLBODY].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
-	m_EffectMap[EF_SPARK_FULLBODY].emplace_back(TEXT("EC_OldSparkDrop_Big_RClavicle"));
-	m_EffectMap[EF_SPARK_FULLBODY].emplace_back(TEXT("EC_OldSparkDrop_Big_LHand"));
-	m_EffectMap[EF_SPARK_FULLBODY].emplace_back(TEXT("EC_OldSparkDrop_Small_LForearm"));
-
-	m_EffectMap[EF_SPARK_FORLEFT].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
-	m_EffectMap[EF_SPARK_FORLEFT].emplace_back(TEXT("EC_OldSparkDrop_Big_LHand"));
-	m_EffectMap[EF_SPARK_FORLEFT].emplace_back(TEXT("EC_OldSparkDrop_Small_LForearm"));
+	m_EffectMap[EF_LShoulder_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
+	m_EffectMap[EF_RShoulder_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Big_RClavicle"));
+	m_EffectMap[EF_LHand_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Big_LHand"));
+	m_EffectMap[EF_LForearm_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Small_LForearm"));
 
 	// Phase 2
 	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2"));
 	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee"));
+
+	m_EffectMap[EF_GROUND_SPARK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 
 }
 
@@ -1374,9 +1408,18 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 
 	// P2
-	else if (stEffectTag == TEXT("")) //
+	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5")) //
 	{
+		auto worldmat = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+		_vector rot, trans, scale;
+		XMMatrixDecompose(&scale, &rot, &trans, worldmat);
 
+		_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-60.f)));
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot)*
+			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
+				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
+				worldmat.r[3].m128_f32[2]));
 	}
 
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
@@ -1418,7 +1461,10 @@ HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool
 HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의 로직에 따라서 함수 호출)
 {
 	if (m_ActiveEffect.empty())
+	{
+		Reset_EffectFlags();
 		return S_OK;
+	}
 
 	for (auto it = m_ActiveEffect.begin(); it != m_ActiveEffect.end(); )
 	{
@@ -1451,6 +1497,13 @@ HRESULT CFestivalLeader::Ready_Effect()
 	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
+}
+
+void CFestivalLeader::Reset_EffectFlags()
+{
+	m_bLeftHand = false;
+	m_bLeftKnee = false;
+	m_bFullbodyEffect = false;
 }
 
 void CFestivalLeader::Ready_SoundEvents()
