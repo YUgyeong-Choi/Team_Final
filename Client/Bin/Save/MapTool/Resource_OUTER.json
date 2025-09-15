@@ -826,21 +826,21 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_CarcassCorpsesM_06A.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_01_Male",
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_01_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_02_Male",
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_02_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_04_Female",
         "NoInstancing": false,
         "ObjectCount": 4,
@@ -854,14 +854,14 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_04_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_06_Female",
         "NoInstancing": false,
         "ObjectCount": 2,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_06_Female.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_06_Male",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -875,7 +875,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Corpse_07_Male.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_CH_PROB_Corpse_12_Female",
         "NoInstancing": false,
         "ObjectCount": 1,
