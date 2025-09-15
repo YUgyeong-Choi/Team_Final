@@ -28,6 +28,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 
 	MONSTER_BASE_DESC* pDesc = static_cast<MONSTER_BASE_DESC*>(pArg);
 
+	m_bIsDissolve = true;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -67,6 +69,8 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	
 	//m_eSpawnType = SPAWN_TYPE(pDesc->iSpawnType);
 
+	
+
 	return S_OK;
 }
 
@@ -84,6 +88,8 @@ void CMonster_Base::Priority_Update(_float fTimeDelta)
 
 void CMonster_Base::Update(_float fTimeDelta)
 {
+	
+
 	__super::Update(fTimeDelta);
 	
 	if (m_pNaviCom)
@@ -596,6 +602,15 @@ void CMonster_Base::Register_Events()
 		m_isLookAt = true;
 
 		});
+
+	m_pAnimator->RegisterEventListener("Dissolve", [this]() {
+
+		SwitchDissolve(false, 0.6f, _float3{ 0.f, 0.f, 0.f }, {});
+
+		});
+
+
+	
 
 }
 

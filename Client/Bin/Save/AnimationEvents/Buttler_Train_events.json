@@ -5,16 +5,16 @@
             "Duration": 213.0,
             "Events": [
                 {
+                    "EventName": "LookAt",
+                    "Time": 0.10000000149011612
+                },
+                {
                     "EventName": "AddAttackCount",
                     "Time": 6.0
                 },
                 {
                     "EventName": "NotLookAt",
                     "Time": 40.0
-                },
-                {
-                    "EventName": "LookAt",
-                    "Time": 0.10000000149011612
                 },
                 {
                     "EventName": "AttackOn",
@@ -34,12 +34,16 @@
             "Duration": 243.0,
             "Events": [
                 {
+                    "EventName": "LookAt",
+                    "Time": 0.0
+                },
+                {
                     "EventName": "AddAttackCount",
                     "Time": 30.0
                 },
                 {
-                    "EventName": "LookAt",
-                    "Time": 0.0
+                    "EventName": "NotLookAt",
+                    "Time": 40.0
                 },
                 {
                     "EventName": "AttackOn",
@@ -48,10 +52,6 @@
                 {
                     "EventName": "AttackOff",
                     "Time": 120.0
-                },
-                {
-                    "EventName": "NotLookAt",
-                    "Time": 40.0
                 }
             ],
             "IsLoop": false,
@@ -63,16 +63,16 @@
             "Duration": 184.0,
             "Events": [
                 {
-                    "EventName": "AddAttackCount",
-                    "Time": 45.0
-                },
-                {
                     "EventName": "LookAt",
                     "Time": 5.0
                 },
                 {
                     "EventName": "AttackOn",
                     "Time": 30.0
+                },
+                {
+                    "EventName": "AddAttackCount",
+                    "Time": 45.0
                 },
                 {
                     "EventName": "AttackOff",
@@ -255,6 +255,10 @@
                 {
                     "EventName": "AddErgo",
                     "Time": 200.0
+                },
+                {
+                    "EventName": "Dissolve",
+                    "Time": 250.0
                 }
             ],
             "IsLoop": false,
@@ -286,6 +290,10 @@
                 {
                     "EventName": "AddErgo",
                     "Time": 199.0
+                },
+                {
+                    "EventName": "Dissolve",
+                    "Time": 250.0
                 }
             ],
             "IsLoop": false,
@@ -824,12 +832,12 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "BackMoveEnd",
-                    "Time": 5.730977535247803
-                },
-                {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 5.730977535247803
                 }
             ],
             "IsLoop": false,
@@ -874,12 +882,12 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "BackMoveEnd",
-                    "Time": 4.966660022735596
-                },
-                {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 4.966660022735596
                 }
             ],
             "IsLoop": false,
@@ -898,12 +906,12 @@
             "Duration": 120.0,
             "Events": [
                 {
-                    "EventName": "BackMoveEnd",
-                    "Time": 5.735449314117432
-                },
-                {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "BackMoveEnd",
+                    "Time": 5.735449314117432
                 }
             ],
             "IsLoop": false,
