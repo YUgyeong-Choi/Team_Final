@@ -1048,7 +1048,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -1079,7 +1080,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -1310,7 +1312,8 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
+                    "FootstepSound": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -15058,7 +15061,7 @@
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -15089,7 +15092,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -15862,13 +15865,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Interior_TrashCan_01",
             "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -15891,15 +15894,15 @@
                             0.0
                         ],
                         [
-                            156.97471618652344,
-                            5.126212120056152,
-                            -57.693626403808594,
-                            0.9999998807907104
+                            156.117431640625,
+                            5.161594867706299,
+                            -57.24120330810547,
+                            1.0
                         ]
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -15963,7 +15966,7 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Interior_TrashCan_02",
             "NoInstancing": false,
             "ObjectCount": 2,
@@ -16000,7 +16003,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -16072,13 +16075,13 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Interior_Wall_10",
             "NoInstancing": false,
             "ObjectCount": 3,
             "Objects": [
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -16109,7 +16112,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -16140,7 +16143,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -51088,7 +51091,7 @@
             ]
         },
         {
-            "Collision": false,
+            "Collision": true,
             "ModelName": "SM_Station_toilet_01",
             "NoInstancing": false,
             "ObjectCount": 3,
@@ -51156,7 +51159,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [

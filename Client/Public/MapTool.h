@@ -139,7 +139,7 @@ private:
 		"PASSENGER_NOTE", //승객의 쪽지
 		"KEY",
 		"KRAT_TIMES", //크라트 타임스
-		"LOST_ERGO",
+		"LOST_ERGO", //플레이어가 흘린 에르고
 	};
 
 private:

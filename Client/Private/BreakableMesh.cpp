@@ -26,6 +26,8 @@ HRESULT CBreakableMesh::Initialize_Prototype()
 
 HRESULT CBreakableMesh::Initialize(void* pArg)
 {
+	m_bIsDissolve = true;
+
 	BREAKABLEMESH_DESC* pDesc = static_cast<BREAKABLEMESH_DESC*>(pArg);
 
 	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
@@ -85,6 +87,8 @@ void CBreakableMesh::Priority_Update(_float fTimeDelta)
 
 void CBreakableMesh::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
+
 	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
 		if (auto pActor = m_pPartPhysXActorComs[i]->Get_Actor())
@@ -102,6 +106,13 @@ void CBreakableMesh::Update(_float fTimeDelta)
 
 	if (m_bIsBroken)
 	{
+		if (m_fTimeAcc > m_fTime_Invisible * 0.7f)
+		{
+			if (m_bIsDissolve == true)
+			{
+				SwitchDissolve(false, 1.f, _float3(0.f, 0.f, 0.f), vector<_uint>{});
+			}
+		}
 		if (m_fTimeAcc > m_fTime_Invisible)
 		{
 			Invisible();
@@ -161,6 +172,8 @@ HRESULT CBreakableMesh::Render()
 
 void CBreakableMesh::Reset()
 {
+	SwitchDissolve(true, 1.f, _float3(1.f, 1.f, 1.f), vector<_uint>{});
+
 	m_bInvisible = false;
 	m_fTimeAcc = 0.f;
 
@@ -239,9 +252,25 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	}
 	else //아니면 그냥 모두에게 부서지게한다.
 	{
-		if (m_bBreakTriggered == false)
+		//플레이어면
+		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
-			m_bBreakTriggered = true;
+			//구르거나 백스텝 할때만
+			if (m_pPlayer->Get_PlayerState() == EPlayerState::ROLLING || m_pPlayer->Get_PlayerState() == EPlayerState::BACKSTEP)
+			{
+				if (m_bBreakTriggered == false)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+		else
+		{
+			//몬스터들은 그냥 몸빵으로 부수게
+			if (m_bBreakTriggered == false)
+			{
+				m_bBreakTriggered = true;
+			}
 		}
 	}
 
@@ -282,7 +311,18 @@ void CBreakableMesh::Break()
 
 	if (m_bFireEaterBossPipe == false)
 	{
-		m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3);
+		if (m_wsModelName.find(L"Vase") != wstring::npos)
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Jar_DLC_0", 3, 1);
+		}
+		else
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3, 1);
+		}
+	}
+	else
+	{
+		m_pSoundCom->Play_Random("AMB_OJ_PR_Pipe_Destruction_0", 3, 4);
 	}
 
 	m_bIsBroken = true;
@@ -321,6 +361,10 @@ void CBreakableMesh::Break()
 
 HRESULT CBreakableMesh::Render_Model()
 {
+	_bool vDissolve = false;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+		return E_FAIL;
+
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
@@ -344,6 +388,31 @@ HRESULT CBreakableMesh::Render_Model()
 
 HRESULT CBreakableMesh::Render_PartModels()
 {
+	if (m_bIsDissolve)
+	{
+		if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+
+		_bool vDissolve = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+
+		if (m_vecDissolveMeshNum.empty())
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		_bool vDissolve = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+	}
+
+
 	for (_uint i = 0; i < m_iPartModelCount; ++i)
 	{
 		/* [ 월드 스페이스 넘기기 ] */
@@ -353,6 +422,25 @@ HRESULT CBreakableMesh::Render_PartModels()
 		_uint		iNumMesh = m_pPartModelComs[i]->Get_NumMeshes();
 		for (_uint j = 0; j < iNumMesh; j++)
 		{
+
+			if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
+			{
+				auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+				if (iter != m_vecDissolveMeshNum.end())
+				{
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+						return E_FAIL;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+						return E_FAIL;
+				}
+				else
+				{
+					_float fDissolve = 1.f;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
+						return E_FAIL;
+				}
+			}
+
 			if (FAILED(m_pPartModelComs[i]->Bind_Material(m_pShaderCom, "g_DiffuseTexture", j, aiTextureType_DIFFUSE, 0)))
 				return E_FAIL;
 
@@ -720,6 +808,9 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 	wstring BaseTag = TEXT("Prototype_Component_Model_");
 
 	wstring MainTag = BaseTag + pDesc->ModelName;
+	
+	//모델이름 저장
+	m_wsModelName = pDesc->ModelName;
 
 	/* Com_Model */ //본 모델
 	if (FAILED(__super::Add_Component(m_iLevelID, MainTag,

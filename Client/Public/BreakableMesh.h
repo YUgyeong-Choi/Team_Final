@@ -77,6 +77,14 @@ private:
 	void Set_Active_StoreCells(_bool bActive);
 
 private:
+	//디졸브
+	//_bool m_bDissolve = { false };
+
+private:
+	//모델 이름
+	wstring m_wsModelName = {};
+
+private:
 	//자신이 가지고 있는 네비 셀 인덱스들, 자신이 부서지면 활성화 시킨다.
 	vector<_int> m_NavIndices = {};
 
