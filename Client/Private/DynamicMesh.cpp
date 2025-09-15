@@ -49,6 +49,7 @@ void CDynamicMesh::Priority_Update(_float fTimeDelta)
 
 void CDynamicMesh::Update(_float fTimeDelta)
 {
+	__super::Update(fTimeDelta);
 }
 
 void CDynamicMesh::Late_Update(_float fTimeDelta)

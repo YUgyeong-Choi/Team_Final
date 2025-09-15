@@ -436,7 +436,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 
 void CFestivalLeader::Ready_BoneInformation()
 {
-	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
+	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine1");
 
 	auto findBone = [&](const _char* name, EBossBones type)
 		{
