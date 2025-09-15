@@ -45,10 +45,13 @@ public:
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC);
+	HRESULT Ready_Effect();
 
 	void Next_Talk();
 
 	virtual void Reset_DoOnce() { m_bDoOnce = false; m_bActive = true; }
+
+	
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
@@ -69,6 +72,8 @@ private:
 private:
 	CSoundController* m_pSoundCom = { nullptr };
 	TRIGGERSOUND_TYPE m_eTriggerSoundType;
+	class CEffectContainer* m_pEffectSet = { nullptr };
+
 public:
 	static CTriggerTalk* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
