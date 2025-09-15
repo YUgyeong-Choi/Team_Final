@@ -226,6 +226,8 @@ void CMonster_Base::Reset()
 	m_isCollisionPlayer = {};
 	m_isFatal = {};
 	m_isGroogyLoop = {};
+
+	SwitchDissolve(true, 0.6f, _float3{ 0.f, 0.f, 0.f }, {});
 }
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)

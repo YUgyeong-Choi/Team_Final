@@ -12,6 +12,7 @@
 #include "UI_Guide.h"
 #include "PhysXStaticActor.h"
 
+
 CStargazer::CStargazer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 	, m_pShaderCom(nullptr)
@@ -183,6 +184,21 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
 				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
 
+				if (m_eStargazerTag == STARGAZER_TAG::FESTIVAL_LEADER_IN)
+				{
+					list<CGameObject*>& ObjList = m_pGameInstance->Get_ObjectList(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Stargazer"));
+
+					for (CGameObject* pObj : ObjList)
+					{
+						if (static_cast<CStargazer*>(pObj)->m_eStargazerTag == STARGAZER_TAG::FIRE_EATER)
+						{
+							static_cast<CStargazer*>(pObj)->Restore();
+
+							break;
+						}
+					}
+				}
+
 				return;
 			}
 			else if (STARGAZER_STATE::FUNCTIONAL == m_eState)
@@ -250,6 +266,17 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 							m_pPlayer->Reset();
 							m_pGameInstance->Get_CurrentLevel()->Reset();
+
+							_float3 vPos;
+
+							XMStoreFloat3(&vPos, Get_TransfomCom()->Get_State(STATE::POSITION));
+
+							// 플레이어 위치 세팅
+							vPos.y += 1.f;
+							vPos.x -= 2.5f;
+							m_pPlayer->SetTeleportPos(vPos);
+
+
 							return;
 						}
 
@@ -568,17 +595,22 @@ void CStargazer::Register_Events()
 			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_END);
 			m_pEffectSet->Activate_Stargazer_Spread();
 			
-			CUI_Container::UI_CONTAINER_DESC eDesc{};
-			eDesc.fLifeTime = 8.f;
-			eDesc.useLifeTime = true;
-			eDesc.strFilePath = TEXT("../Bin/Save/UI/StargazerActivated.json");
+			if (m_eStargazerTag != STARGAZER_TAG::FIRE_EATER)
+			{
+				CUI_Container::UI_CONTAINER_DESC eDesc{};
+				eDesc.fLifeTime = 8.f;
+				eDesc.useLifeTime = true;
+				eDesc.strFilePath = TEXT("../Bin/Save/UI/StargazerActivated.json");
 
-			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
-				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated"), &eDesc);
+				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated"), &eDesc);
 
-			CUI_Container* pObj = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated")));
+				CUI_Container* pObj = static_cast<CUI_Container*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_UI_Activated")));
 
-			static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
+				static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
+			}
+
+		
 
 			
 
@@ -661,6 +693,17 @@ void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bUseScript = false;
 	m_bUseOtherUI = false;
 	
+}
+
+void CStargazer::Restore()
+{
+	if (m_eState == STARGAZER_STATE::DESTROYED)
+	{
+		m_eState = STARGAZER_STATE::FUNCTIONAL;
+		m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
+
+		
+	}
 }
 
 
