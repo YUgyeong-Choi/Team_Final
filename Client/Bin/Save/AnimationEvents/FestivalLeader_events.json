@@ -504,8 +504,20 @@
                     "Time": 17.0
                 },
                 {
+                    "EventName": "LShooulderSparkEffect",
+                    "Time": 24.0
+                },
+                {
                     "EventName": "SparkEffect",
                     "Time": 25.0
+                },
+                {
+                    "EventName": "LForearmSparkEffect",
+                    "Time": 32.0
+                },
+                {
+                    "EventName": "LHandSparkEffect",
+                    "Time": 37.0
                 }
             ],
             "IsLoop": false,
@@ -529,8 +541,16 @@
                     "Time": 41.0
                 },
                 {
-                    "EventName": "FallingEffect",
+                    "EventName": "RightFallingEffect",
                     "Time": 42.0
+                },
+                {
+                    "EventName": "SmokeEffect",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "LeftFallingEffect",
+                    "Time": 42.79999923706055
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
@@ -644,12 +664,12 @@
                     "Time": 10.0
                 },
                 {
-                    "EventName": "ScratchEffect",
-                    "Time": 10.0
+                    "EventName": "LeftScratchEffect",
+                    "Time": 14.0
                 },
                 {
-                    "EventName": "ScratchEffect",
-                    "Time": 11.0
+                    "EventName": "RightScratchEffect",
+                    "Time": 15.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
@@ -684,8 +704,24 @@
                     "Time": 17.0
                 },
                 {
+                    "EventName": "LShooulderSparkEffect",
+                    "Time": 23.0
+                },
+                {
+                    "EventName": "RShooulderSparkEffect",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "LHandSparkEffect",
+                    "Time": 47.0
+                },
+                {
                     "EventName": "SparkEffect",
                     "Time": 53.0
+                },
+                {
+                    "EventName": "LForearmSparkEffect",
+                    "Time": 56.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -727,7 +763,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 80.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_07_Attack2",
@@ -748,7 +784,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 89.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_07_Attack3",
@@ -777,7 +813,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 80.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_07_End",
@@ -834,6 +870,14 @@
                     "Time": 7.0
                 },
                 {
+                    "EventName": "OneHandSlamEffect",
+                    "Time": 8.0
+                },
+                {
+                    "EventName": "OneHandSlamEffect",
+                    "Time": 9.0
+                },
+                {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 25.0
                 },
@@ -868,12 +912,28 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "LForearmSparkEffect",
+                    "Time": 23.0
+                },
+                {
+                    "EventName": "RShooulderSparkEffect",
+                    "Time": 32.0
+                },
+                {
                     "EventName": "SparkEffect",
                     "Time": 40.0
                 },
                 {
+                    "EventName": "LHandSparkEffect",
+                    "Time": 45.0
+                },
+                {
                     "EventName": "OnFury",
                     "Time": 50.0
+                },
+                {
+                    "EventName": "LShooulderSparkEffect",
+                    "Time": 58.0
                 },
                 {
                     "EventName": "SlowAnimSpeed",
@@ -966,6 +1026,10 @@
                 {
                     "EventName": "Turnning",
                     "Time": 17.0
+                },
+                {
+                    "EventName": "SparkEffect",
+                    "Time": 25.0
                 }
             ],
             "IsLoop": false,
@@ -985,12 +1049,28 @@
                     "Time": 35.0
                 },
                 {
+                    "EventName": "CameraShake",
+                    "Time": 41.0
+                },
+                {
+                    "EventName": "FallingEffect",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "SmokeEffect",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "FallingEffect",
+                    "Time": 42.79999923706055
+                },
+                {
                     "EventName": "ColliderLeftHandOff",
-                    "Time": 53.0
+                    "Time": 56.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
-                    "Time": 53.0
+                    "Time": 56.0
                 }
             ],
             "IsLoop": false,
@@ -1100,6 +1180,14 @@
                     "Time": 12.0
                 },
                 {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 14.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 18.0
+                },
+                {
                     "EventName": "ColliderHammerOff",
                     "Time": 22.0
                 }
@@ -1145,6 +1233,14 @@
                     "Time": 15.0
                 },
                 {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 18.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 22.0
+                },
+                {
                     "EventName": "ColliderHammerOff",
                     "Time": 28.0
                 }
@@ -1180,6 +1276,14 @@
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 14.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 17.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 35.0
                 },
                 {
                     "EventName": "ColliderHammerOff",
@@ -1319,12 +1423,28 @@
                     "Time": 92.0
                 },
                 {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 94.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 103.0
+                },
+                {
                     "EventName": "ColliderHammerOff",
                     "Time": 115.0
                 },
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 120.0
+                },
+                {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 132.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
+                    "Time": 140.0
                 },
                 {
                     "EventName": "ColliderHammerOff",

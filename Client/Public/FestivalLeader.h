@@ -145,8 +145,11 @@ class CFestivalLeader final : public CBossUnit
 		EF_DEFAULT_SLAM_NOSMOKE = 3,
 		EF_NOSMOKE_KNEE = 4,
 		EF_SMOKE = 5,
-		EF_SPARK_FULLBODY = 6,
-		EF_SPARK_FORLEFT
+		EF_GROUND_SPARK = 6,
+		EF_LShoulder_SPARK = 7,
+		EF_RShoulder_SPARK = 8,
+		EF_LHand_SPARK = 9,
+		EF_LForearm_SPARK = 10,
 	};
 
 private:
@@ -199,8 +202,9 @@ private:
 	virtual void ProcessingEffects(const _wstring& stEffectTag) override;
 	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) override;
 	virtual HRESULT Spawn_Effect();
-
 	virtual HRESULT Ready_Effect();
+	void Reset_EffectFlags();
+
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 	virtual void Ready_SoundEvents() override;
@@ -227,6 +231,7 @@ private:
 
 
 	// 공격 관련
+	_bool   m_bInSwingCombo = false;
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
 	_int    m_iSwingComboCount = 0; 

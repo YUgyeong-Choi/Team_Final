@@ -87,7 +87,8 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 			cout << "FireBall On_CollisionEnter Player" << endl;
 #endif
 	}
-	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
+	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI
+		|| eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT)
 	{
 		m_CollisionPriority[Environment] = pOther;
 	//	Set_bDead();

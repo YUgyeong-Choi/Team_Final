@@ -54,8 +54,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                5924.0,
-                36.0
+                9643.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                5924.0,
-                201.0
+                9643.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                -876.0,
-                36.0
+                2843.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -535,8 +535,8 @@
             "Name": "PutWeapon",
             "NodeId": 257,
             "NodePos": [
-                3374.0,
-                36.0
+                7093.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -730,8 +730,8 @@
             "Name": "SlidingDoor",
             "NodeId": 403,
             "NodePos": [
-                5074.0,
-                36.0
+                8793.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -745,8 +745,8 @@
             "Name": "DoubleDoor_Push_TrainStation",
             "NodeId": 404,
             "NodePos": [
-                -1726.0,
-                36.0
+                1993.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -760,8 +760,8 @@
             "Name": "Sit_Loop",
             "NodeId": 407,
             "NodePos": [
-                4224.0,
-                36.0
+                7943.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -775,8 +775,8 @@
             "Name": "Sit_End",
             "NodeId": 408,
             "NodePos": [
-                4224.0,
-                201.0
+                7943.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -790,8 +790,8 @@
             "Name": "OnLamp",
             "NodeId": 446,
             "NodePos": [
-                2524.0,
-                36.0
+                6243.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -880,8 +880,8 @@
             "Name": "Fail_Arm",
             "NodeId": 555,
             "NodePos": [
-                -26.0,
-                36.0
+                3693.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1386,8 +1386,8 @@
             "Name": "Teleport_End",
             "NodeId": 100238,
             "NodePos": [
-                8474.0,
-                36.0
+                12193.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1401,8 +1401,8 @@
             "Name": "Teleport_Start",
             "NodeId": 100242,
             "NodePos": [
-                8474.0,
-                201.0
+                12193.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1569,8 +1569,8 @@
             "Name": "Stargazer_Inactive_Start",
             "NodeId": 100309,
             "NodePos": [
-                7624.0,
-                36.0
+                11343.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1584,8 +1584,8 @@
             "Name": "Stargazer_Inactive_Loop",
             "NodeId": 100310,
             "NodePos": [
-                7624.0,
-                201.0
+                11343.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1599,8 +1599,8 @@
             "Name": "Stargazer_Inactive_End",
             "NodeId": 100311,
             "NodePos": [
-                7624.0,
-                366.0
+                11343.39453125,
+                299.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1614,8 +1614,8 @@
             "Name": "Stargazer_Active_Start",
             "NodeId": 100312,
             "NodePos": [
-                6774.0,
-                36.0
+                10493.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1629,8 +1629,8 @@
             "Name": "Stargazer_Active_Loop",
             "NodeId": 100313,
             "NodePos": [
-                6774.0,
-                201.0
+                10493.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1644,8 +1644,8 @@
             "Name": "Stargazer_Active_End",
             "NodeId": 100314,
             "NodePos": [
-                6774.0,
-                366.0
+                10493.39453125,
+                299.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1689,8 +1689,8 @@
             "Name": "DoubleDoor_Boss",
             "NodeId": 100333,
             "NodePos": [
-                -2576.0,
-                36.0
+                1143.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1704,8 +1704,8 @@
             "Name": "Door_Unlock",
             "NodeId": 100334,
             "NodePos": [
-                -3426.0,
-                36.0
+                293.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1719,8 +1719,8 @@
             "Name": "Door_Check",
             "NodeId": 100335,
             "NodePos": [
-                -3426.0,
-                201.0
+                293.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1734,8 +1734,8 @@
             "Name": "Door_PutWeapon",
             "NodeId": 100343,
             "NodePos": [
-                -3426.0,
-                366.0
+                293.39453125,
+                299.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1749,8 +1749,8 @@
             "Name": "Door_EquipWeapon",
             "NodeId": 100346,
             "NodePos": [
-                -3426.0,
-                531.0
+                293.39453125,
+                464.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1764,8 +1764,8 @@
             "Name": "LiftDoor_Fail",
             "NodeId": 100349,
             "NodePos": [
-                1674.0,
-                36.0
+                5393.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1779,8 +1779,8 @@
             "Name": "LiftDoor_Activate",
             "NodeId": 100350,
             "NodePos": [
-                1674.0,
-                201.0
+                5393.39453125,
+                134.70806884765625
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1794,8 +1794,8 @@
             "Name": "InnerDoor_Open",
             "NodeId": 100353,
             "NodePos": [
-                497.484375,
-                128.18807983398438
+                4543.39453125,
+                -30.29193115234375
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -27680,28 +27680,6 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
-                    "ParamName": "",
-                    "Type": "Bool",
-                    "fThreshold": 0.0,
-                    "iThreshold": 0
-                }
-            ],
-            "Duration": 0.20000000298023224,
-            "FromNodeId": 100333,
-            "HasExitTime": true,
-            "Link": {
-                "FromNodeId": 1003332,
-                "LinkId": 100338,
-                "ToNodeId": 1000001
-            },
-            "MaxTime": 1.0,
-            "MinTime": 0.0,
-            "ToNodeId": 100000
-        },
-        {
-            "Conditions": [
-                {
                     "Op": "IsFalse",
                     "ParamName": "Right",
                     "Type": "Bool",
@@ -27918,6 +27896,28 @@
             "MaxTime": 1.0,
             "MinTime": 0.0,
             "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100333,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003332,
+                "LinkId": 100355,
+                "ToNodeId": 1003461
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100346
         }
     ]
 }
