@@ -60,7 +60,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 
 	if (m_pAnimator)
 	{
-		m_HeadLocalInit = m_BoneRefs[EBossCollider::Hammer]->Get_TransformationMatrix_Float4x4();
+		m_HeadLocalInit = m_BoneRefs[EBossBones::Hammer]->Get_TransformationMatrix_Float4x4();
 		m_pAnimator->PlayClip(m_pModelCom->GetAnimationClipByName("AS_Idle_C_1"), false);
 		m_pAnimator->Update(0.016f);
 		m_pModelCom->Update_Bones();
@@ -70,9 +70,9 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 		m_pSpringBoneSys = CSpringBoneSys::Create(m_pModelCom, vector<string>{"Hair", "Head_Rope", "Coat"}, springParams);
 		if (m_pSpringBoneSys == nullptr)
 			return E_FAIL;
-		if (m_BoneRefs[EBossCollider::Hammer])
+		if (m_BoneRefs[EBossBones::Hammer])
 		{
-			_matrix cmHead = XMLoadFloat4x4(m_BoneRefs[EBossCollider::Hammer]->Get_CombinedTransformationMatrix()); // 머리 컴바인드
+			_matrix cmHead = XMLoadFloat4x4(m_BoneRefs[EBossBones::Hammer]->Get_CombinedTransformationMatrix()); // 머리 컴바인드
 			_matrix cmHand = XMLoadFloat4x4(m_pRightWeaponBone->Get_CombinedTransformationMatrix()); // 오른손 무기 소켓 컴바인드
 
 			//  손 기준 로컬 오프셋
@@ -387,18 +387,18 @@ HRESULT CFestivalLeader::Ready_Actor()
 
 	struct ColliderSetup
 	{
-		EBossCollider type;
+		EBossBones type;
 		PxGeometryHolder geom;
 		_vector offset = XMVectorZero();
 	};
 
 	vector<ColliderSetup> setupList = {
-		{EBossCollider::Hammer,      PxBoxGeometry(1.75f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
-		{EBossCollider::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
-		{EBossCollider::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
-		{EBossCollider::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
-		{EBossCollider::LeftForearm, PxSphereGeometry(1.3f),          XMVectorZero()},
-		{EBossCollider::RightForearm,PxSphereGeometry(0.96f),          XMVectorZero()}
+		{EBossBones::Hammer,      PxBoxGeometry(1.75f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
+		{EBossBones::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
+		{EBossBones::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
+		{EBossBones::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
+		{EBossBones::LeftForearm, PxSphereGeometry(1.3f),          XMVectorZero()},
+		{EBossBones::RightForearm,PxSphereGeometry(0.96f),          XMVectorZero()}
 	};
 
 	for (auto& setup : setupList)
@@ -437,7 +437,7 @@ void CFestivalLeader::Ready_BoneInformation()
 {
 	m_iLockonBoneIndex = m_pModelCom->Find_BoneIndex("Bip001-Spine");
 
-	auto findBone = [&](const _char* name, EBossCollider type)
+	auto findBone = [&](const _char* name, EBossBones type)
 		{
 			auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 				[&](CBone* pBone) { return !strcmp(pBone->Get_Name(), name); });
@@ -445,13 +445,19 @@ void CFestivalLeader::Ready_BoneInformation()
 				m_BoneRefs[static_cast<_int>(type)] = *it;
 		};
 
-	findBone("Bn_Head_Weapon", EBossCollider::Hammer);
-	findBone("Bn_Basket_Body", EBossCollider::Basket);
-	findBone("Ref_Bip001-L-Hand", EBossCollider::LeftHand);
-	findBone("Bip001-R-Hand", EBossCollider::RightHand);
-	findBone("Ref_Bip001-L-Forearm", EBossCollider::LeftForearm);
-	findBone("Skin_Bip001-R-Forearm", EBossCollider::RightForearm);
-
+	findBone("Bn_Head_Weapon", EBossBones::Hammer);
+	findBone("Bn_Basket_Body", EBossBones::Basket);
+	findBone("Ref_Bip001-L-Hand", EBossBones::LeftHand);
+	findBone("Bip001-R-Hand", EBossBones::RightHand);
+	findBone("Ref_Bip001-L-Forearm", EBossBones::LeftForearm);
+	findBone("Skin_Bip001-R-Forearm", EBossBones::RightForearm);
+	findBone("Bip001-L-Clavicle", EBossBones::LeftShoulder);
+	findBone("Bip001-R-Clavicle", EBossBones::RightShoulder);
+	findBone("Bip001-L-Calf", EBossBones::LeftKnee);
+	findBone("Bip001-R-Calf", EBossBones::RightKnee);
+	findBone("Bip001-R-Finger2Nub", EBossBones::LeftMiddleFinger);
+	findBone("Bip001-L-Finger2Nub", EBossBones::RightMiddleFinger);
+	findBone("Bn_Head_Jaw_02", EBossBones::HeadJaw);
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "BN_Weapon_R"); });
@@ -486,11 +492,11 @@ void CFestivalLeader::Update_Collider()
 		fOffsetY -= 0.1f;
 	}
 
-	for (_int i = 0; i < EBossCollider::Count; i++)
+	for (_int i = 0; i < EBossBones::Collider_Count; i++)
 	{
 		if (!m_Colliders[i] || !m_BoneRefs[i]) continue;
 
-		if (i == EBossCollider::Hammer)
+		if (i == EBossBones::Hammer)
 		{
 			//_vector vWorldOffset = XMVectorSet(fOffsetX, fOffsetY, fOffsetZ, 1.f);
 			_vector vWorldOffset = XMVectorSet(0.800000072f, 0.f,1.49011612e-08f, 1.f);
@@ -765,7 +771,7 @@ void CFestivalLeader::ApplyHeadSpaceSwitch(_float fTimeDelta)
 	// 로컬 = 추가회전과 저장해둔 부착 오프셋 회전 후에 위치
 	_matrix L = rotExtra * XMLoadFloat4x4(&m_StoredHeadLocalMatrix);
 
-	m_BoneRefs[EBossCollider::Hammer]->Set_TransformationMatrix(L);
+	m_BoneRefs[EBossBones::Hammer]->Set_TransformationMatrix(L);
 
 	// 뼈 정보 반영
 	m_pModelCom->Update_Bones();
@@ -901,46 +907,46 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("ColliderHammerOn", [this]()
 		{	
-			m_Colliders[EBossCollider::Hammer]->Set_SimulationFilterData(m_Colliders[EBossCollider::Hammer]->Get_FilterData());
+			m_Colliders[EBossBones::Hammer]->Set_SimulationFilterData(m_Colliders[EBossBones::Hammer]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderHammerOff", [this]()
 		{
-			m_Colliders[EBossCollider::Hammer]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::Hammer]->Init_SimulationFilterData();
 			m_bPlayerCollided = false;
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderBaskettOn", [this]()
 		{	
-			m_Colliders[EBossCollider::Basket]->Set_SimulationFilterData(m_Colliders[EBossCollider::Basket]->Get_FilterData());
+			m_Colliders[EBossBones::Basket]->Set_SimulationFilterData(m_Colliders[EBossBones::Basket]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderBasketOff", [this]()
 		{	
-			m_Colliders[EBossCollider::Basket]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::Basket]->Init_SimulationFilterData();
 			m_bPlayerCollided = false;
 		});
 
 	m_pAnimator->RegisterEventListener("ColliderRightHandOn", [this]()
 		{
 			
-			m_Colliders[EBossCollider::RightHand]->Set_SimulationFilterData(m_Colliders[EBossCollider::RightHand]->Get_FilterData());
-			m_Colliders[EBossCollider::RightForearm]->Set_SimulationFilterData(m_Colliders[EBossCollider::RightForearm]->Get_FilterData());
+			m_Colliders[EBossBones::RightHand]->Set_SimulationFilterData(m_Colliders[EBossBones::RightHand]->Get_FilterData());
+			m_Colliders[EBossBones::RightForearm]->Set_SimulationFilterData(m_Colliders[EBossBones::RightForearm]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderRightHandOff", [this]()
 		{
-			m_Colliders[EBossCollider::RightHand]->Init_SimulationFilterData();
-			m_Colliders[EBossCollider::RightForearm]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::RightHand]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::RightForearm]->Init_SimulationFilterData();
 			m_bPlayerCollided = false;
 
 		});
 	m_pAnimator->RegisterEventListener("ColliderLeftHandOn", [this]()
 		{
-			m_Colliders[EBossCollider::LeftHand]->Set_SimulationFilterData(m_Colliders[EBossCollider::LeftHand]->Get_FilterData());
-			m_Colliders[EBossCollider::LeftForearm]->Set_SimulationFilterData(m_Colliders[EBossCollider::LeftForearm]->Get_FilterData());
+			m_Colliders[EBossBones::LeftHand]->Set_SimulationFilterData(m_Colliders[EBossBones::LeftHand]->Get_FilterData());
+			m_Colliders[EBossBones::LeftForearm]->Set_SimulationFilterData(m_Colliders[EBossBones::LeftForearm]->Get_FilterData());
 		});
 	m_pAnimator->RegisterEventListener("ColliderLeftHandOff", [this]()
 		{
-			m_Colliders[EBossCollider::LeftHand]->Init_SimulationFilterData();
-			m_Colliders[EBossCollider::LeftForearm]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::LeftHand]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::LeftForearm]->Init_SimulationFilterData();
 			m_bPlayerCollided = false;
 		});
 
@@ -1037,6 +1043,58 @@ void CFestivalLeader::Register_Events()
 				pPanel->NotifyPlayAnimation(true);
 			}
 		});
+
+
+
+	m_pAnimator->RegisterEventListener("OneHandSlamEffect", [this]()
+		{
+			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)
+				|| m_iCurNodeID ==  ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop3)
+				|| m_iCurNodeID ==  ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop))
+			{
+				m_bLeftHand = true;
+			}
+			else
+			{
+				m_bLeftHand = false;
+			}
+
+			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
+		});
+
+	m_pAnimator->RegisterEventListener("ScratchEffect", [this]()
+		{
+			m_bLeftHand = m_bLeftHand ?  false : true;
+			EffectSpawn_Active(EF_SCRATCH, true);
+		});
+
+	m_pAnimator->RegisterEventListener("SlamNoSmokeEffect", [this]()
+		{
+			m_bLeftHand = true;
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+		});
+
+	m_pAnimator->RegisterEventListener("KneeEffect", [this]()
+		{
+			m_bLeftHand = true;
+			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
+		});
+
+	m_pAnimator->RegisterEventListener("FallingEffect", [this]()
+		{
+			m_bLeftHand = m_bLeftHand ? false : true;
+			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+		});
+
+	//m_pAnimator->RegisterEventListener("SparkEffect", [this]()
+	//	{
+	///*		m_bLeftHand = true;
+	//		EffectSpawn_Active(EF_ONE_HANDSLAM, true);
+	//		EffectSpawn_Active(EF_SCRATCH, true);
+	//		EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);*/
+	//	});
 
 }
 
@@ -1164,8 +1222,15 @@ void CFestivalLeader::Ready_EffectNames()
 
 	// Phase 1
 
+	m_EffectMap[EF_ONE_HANDSLAM].emplace_back(TEXT("EC_Fes_OnehandSlam"));
+	m_EffectMap[EF_SCRATCH].emplace_back(TEXT("EC_Fes_Scratch"));
+	m_EffectMap[EF_SMOKE].emplace_back(TEXT("EC_Fes_Falling_Smoke_P1"));
+	m_EffectMap[EF_OLDSPARK_DROP_BIG].emplace_back(TEXT("EC_OldSparkDrop_Big"));
+	m_EffectMap[EF_OLDSPARK_DROP_SMALL].emplace_back(TEXT("EC_OldSparkDrop_Small"));
 
 	// Phase 2
+	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2"));
+	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee"));
 
 }
 
@@ -1175,13 +1240,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	if (m_BoneRefs[Hammer] == nullptr || m_BoneRefs[Basket] == nullptr)
 		return;
 
-	//findBone("Bip001-L-Clavicle", EBossCollider::LeftShoulder);
-	//findBone("Bip001-R-Clavicle", EBossCollider::RightShoulder);
-	//findBone("Bip001-L-Calf", EBossCollider::LeftKnee);
-	//findBone("Bip001-R-Calf", EBossCollider::RightKnee);
-	//findBone("Bip001-R-Finger2Nub", EBossCollider::LeftMiddleFinger);
-	//findBone("Bip001-L-Finger2Nub", EBossCollider::RightMiddleFinger);
-	//findBone("Bn_Head_Jaw_02", EBossCollider::Head_Jaw);
+
 
 	CEffectContainer::DESC desc = {};
 
@@ -1205,11 +1264,12 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_Fes_Scratch")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
 	{
-		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+		_uint iFinger = m_bLeftHand ? LeftMiddleFinger : RightMiddleFinger;
 
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = socketPtr = m_BoneRefs[iFinger]->Get_CombinedTransformationMatrix();
+		
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1240,15 +1300,12 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 양 무릎 스파크
 	{
-		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
+		_uint iKnee= m_bLeftKnee ? LeftKnee : RightKnee;
 
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = nullptr;
-		if (!m_bLeftHand)
-			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Calf"));
-		else
-			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Calf"));
+		const _float4x4* socketPtr = m_BoneRefs[iKnee]->Get_CombinedTransformationMatrix();
+
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1277,7 +1334,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LClavicle")) // 왼쪽 어깨 스파크
 	{
-		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Clavicle"));
+		desc.pSocketMatrix = m_BoneRefs[LeftShoulder]->Get_CombinedTransformationMatrix();
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
@@ -1291,14 +1348,14 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크
 	{
-		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Clavicle"));
+		desc.pSocketMatrix = m_BoneRefs[RightShoulder]->Get_CombinedTransformationMatrix();
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 	}
 	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크, 쬐만함
 	{
-		desc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Ref_Bip001-L-Forearm"));
+		desc.pSocketMatrix = m_BoneRefs[LeftForearm]->Get_CombinedTransformationMatrix();
 		desc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
@@ -1310,6 +1367,8 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 	}
 
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
@@ -1369,7 +1428,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 {
 	CGameObject* pEC = { nullptr };
 	CEffectContainer::DESC P2HeadSmokeDesc = {};
-	P2HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_Head_Jaw_02"));
+	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
 	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
 	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);

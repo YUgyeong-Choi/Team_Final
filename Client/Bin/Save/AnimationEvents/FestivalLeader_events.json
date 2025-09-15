@@ -525,6 +525,10 @@
                     "Time": 41.0
                 },
                 {
+                    "EventName": "FallingEffect",
+                    "Time": 42.0
+                },
+                {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 56.0
                 },
@@ -636,6 +640,14 @@
                     "Time": 10.0
                 },
                 {
+                    "EventName": "ScratchEffect",
+                    "Time": 10.0
+                },
+                {
+                    "EventName": "ScratchEffect",
+                    "Time": 11.0
+                },
+                {
                     "EventName": "ColliderRightHandOff",
                     "Time": 17.0
                 },
@@ -697,6 +709,10 @@
                     "Time": 11.0
                 },
                 {
+                    "EventName": "OneHandSlamEffect",
+                    "Time": 14.0
+                },
+                {
                     "EventName": "ColliderLeftHandOff",
                     "Time": 28.0
                 }
@@ -712,6 +728,10 @@
                 {
                     "EventName": "ColliderRightHandOn",
                     "Time": 11.0
+                },
+                {
+                    "EventName": "OneHandSlamEffect",
+                    "Time": 17.0
                 },
                 {
                     "EventName": "ColliderRightHandOff",
@@ -737,6 +757,10 @@
                 {
                     "EventName": "ColliderLeftHandOn",
                     "Time": 11.0
+                },
+                {
+                    "EventName": "OneHandSlamEffect",
+                    "Time": 22.0
                 },
                 {
                     "EventName": "ColliderLeftHandOff",
