@@ -3329,34 +3329,36 @@ public:
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
 
-            // 이제 lost ergo 죽은 위치에 추가 // 
+            // 이제 lost ergo 죽은 위치에 추가 하기 위해 위치 지정 // 
 
             _int iAreaID = m_pGameInstance->GetCurAreaIds();
 
-            CErgoItem::ERGOITEM_DESC eItemDesc = {};
-
-            eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
-            eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+          
 
             // 각각 문 앞에 생성
             // 푸오코
             if (19 == iAreaID)
             {
-
+                _vector vPos = {-1.7f, 0.29f, -238.f, 1.f};   
+                _matrix vMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+                vMatrix.r[3] = vPos;
+                XMStoreFloat4x4(&m_matErgo, vMatrix);
             }
             // 축제 인도자
             else if (60 == iAreaID)
             {
-
+                _vector vPos = {371.f, 13.5f, -49.f,1.f};
+                _matrix vMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix();
+                vMatrix.r[3] = vPos;
+                XMStoreFloat4x4(&m_matErgo, vMatrix);
             }
             // 지금 위치에 생성
             else
             {
-                XMStoreFloat4x4(&eItemDesc.WorldMatrix, m_pOwner->Get_TransfomCom()->Get_WorldMatrix());
+                XMStoreFloat4x4(&m_matErgo, m_pOwner->Get_TransfomCom()->Get_WorldMatrix());
             }
 
-            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
-                m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
+
 
 
 
@@ -3367,8 +3369,11 @@ public:
 
             /* [ 사망 후 특정 위치에서 다시 살아난다. ] */
             m_pOwner->m_pTransformCom->RotateToDirectionImmediately(_fvector{ 1.f,0.f,0.f,0.f });
-            PxVec3 pos = PxVec3(51.3f, 1.f, -5.1f);
-            PxTransform posTrans = PxTransform(pos);
+
+            PxVec3 pxPos(m_pOwner->m_vTeleportPos.x, m_pOwner->m_vTeleportPos.y, m_pOwner->m_vTeleportPos.z);
+
+            // 플레이어 이동h
+            PxTransform posTrans = PxTransform(pxPos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
          
@@ -3428,6 +3433,20 @@ public:
                 }
             }
 
+            // 이미 아이템이 존재하면, 지운다
+            CGameObject* pObj = m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"));
+            if(pObj)
+                pObj->Set_bDead();
+
+            CErgoItem::ERGOITEM_DESC eItemDesc = {};
+
+            eItemDesc.eItemTag = ITEM_TAG::LOST_ERGO;
+            eItemDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+            eItemDesc.WorldMatrix = m_matErgo;
+
+            m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
+                m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
+            
         }
 
         if (m_pOwner->m_bIsRrevival)
@@ -3444,6 +3463,8 @@ public:
         m_pOwner->m_bIsInvincible = false;
         m_bDoOnce = false;
         m_bDoTwo = false;
+
+
 
         if (m_pOwner->m_fLostErgo > 0.f)
             m_pOwner->m_fLostErgo = 0.f;
@@ -3483,6 +3504,7 @@ private:
 
 private:
     _float m_fRrevivalTime = {};
+    _float4x4 m_matErgo = {};
 };
 
 

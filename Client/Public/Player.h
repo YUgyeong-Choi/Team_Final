@@ -356,7 +356,8 @@ private: /* [ 텔레포트 ] */
 	
 	_bool m_bTeleport = {};
 	_float m_fTeleportTime = {};
-	_float3 m_vTeleportPos = {};
+	// 기본 위치 정해주기
+	_float3 m_vTeleportPos = { 51.3f, 1.f, -5.1f };
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
