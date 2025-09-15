@@ -679,14 +679,14 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Table_09.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Interior_TrashCan_01",
         "NoInstancing": false,
         "ObjectCount": 3,
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_TrashCan_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Interior_TrashCan_02",
         "NoInstancing": false,
         "ObjectCount": 2,
@@ -700,7 +700,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Interior_Urinal_01.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Interior_Wall_10",
         "NoInstancing": false,
         "ObjectCount": 3,
@@ -1295,7 +1295,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_sink.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_Station_toilet_01",
         "NoInstancing": false,
         "ObjectCount": 3,

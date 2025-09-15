@@ -1,5 +1,5 @@
 {
-    "ModelCount": 357,
+    "ModelCount": 359,
     "Models": [
         {
             "Collision": false,
@@ -66952,6 +66952,18 @@
                     ]
                 }
             ]
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Vase_01",
+            "ObjectCount": 0,
+            "Objects": []
+        },
+        {
+            "Collision": false,
+            "ModelName": "SM_Interior_Vase_02",
+            "ObjectCount": 0,
+            "Objects": []
         },
         {
             "Collision": false,

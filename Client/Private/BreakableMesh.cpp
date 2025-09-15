@@ -239,9 +239,22 @@ void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	}
 	else //아니면 그냥 모두에게 부서지게한다.
 	{
-		if (m_bBreakTriggered == false)
+		if (eColliderType == COLLIDERTYPE::PLAYER)
 		{
-			m_bBreakTriggered = true;
+			if (m_pPlayer->Get_PlayerState() == EPlayerState::ROLLING || m_pPlayer->Get_PlayerState() == EPlayerState::BACKSTEP)
+			{
+				if (m_bBreakTriggered == false)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+		else
+		{
+			if (m_bBreakTriggered == false)
+			{
+				m_bBreakTriggered = true;
+			}
 		}
 	}
 
@@ -282,7 +295,18 @@ void CBreakableMesh::Break()
 
 	if (m_bFireEaterBossPipe == false)
 	{
-		m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3);
+		if (m_wsModelName.find(L"Vase") != wstring::npos)
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Jar_DLC_0", 3, 1);
+		}
+		else
+		{
+			m_pSoundCom->Play_Random("AMB_OJ_PR_Destruction_Wood_Box_Single_M_0", 3, 1);
+		}
+	}
+	else
+	{
+		m_pSoundCom->Play_Random("AMB_OJ_PR_Pipe_Destruction_0", 3, 4);
 	}
 
 	m_bIsBroken = true;
@@ -720,6 +744,9 @@ HRESULT CBreakableMesh::Ready_Components(void* pArg)
 	wstring BaseTag = TEXT("Prototype_Component_Model_");
 
 	wstring MainTag = BaseTag + pDesc->ModelName;
+	
+	//모델이름 저장
+	m_wsModelName = pDesc->ModelName;
 
 	/* Com_Model */ //본 모델
 	if (FAILED(__super::Add_Component(m_iLevelID, MainTag,
