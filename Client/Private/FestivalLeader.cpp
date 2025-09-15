@@ -1203,7 +1203,12 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = nullptr;
+		if (!m_bLeftHand)
+			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-R-Finger2Nub"));
+		else
+			socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Finger2Nub"));
+		//const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1232,7 +1237,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
 	}
-	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 양 무릎 스파크
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee")) // 넘어지며 양 무릎 스파크
 	{
 		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
 
