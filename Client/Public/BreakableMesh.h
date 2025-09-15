@@ -77,6 +77,10 @@ private:
 	void Set_Active_StoreCells(_bool bActive);
 
 private:
+	//µðÁ¹ºê
+	//_bool m_bDissolve = { false };
+
+private:
 	//¸ðµ¨ ÀÌ¸§
 	wstring m_wsModelName = {};
 
