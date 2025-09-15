@@ -244,7 +244,10 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		switch (m_eInteractType)
 		{
 		case Client::OUTDOOR:
-			vTargetPos = _vector({ 183.05f, 8.85f, -7.95f, 1.f });
+			if(m_bFinish)
+				vTargetPos = _vector({ 182.8f, 8.85f, -7.95f, 1.f });
+			else
+				vTargetPos = _vector({ 183.05f, 8.85f, -7.95f, 1.f });
 			break;
 		case INNERDOOR:
 			vTargetPos = _vector({ 33.917623f,0.059349f,0.559624f, 1.f });
@@ -257,6 +260,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = m_eInteractType == OUTDOOR ? true : false;
+			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetPos);
 		}
 	}
 
