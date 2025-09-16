@@ -41,12 +41,7 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(m_InitPos.x, m_InitPos.y, m_InitPos.z, 1.f));
-	
-
-	if (m_iID == 9999)
-		m_pTransformCom->SetUp_Scale(1.f, 1.f, 1.f);
-	else
-		m_pTransformCom->SetUp_Scale(0.35f, 0.35f, 0.35f);
+	m_pTransformCom->SetUp_Scale(0.35f, 0.35f, 0.35f);
 
 	return S_OK;
 }
@@ -218,7 +213,7 @@ HRESULT CDH_ToolMesh::Ready_Light()
 	}
 
 	//m_eTargetLevel = LEVEL::DH;
-	m_bLightDebug = true;
+	//m_bLightDebug = true;
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;
 
