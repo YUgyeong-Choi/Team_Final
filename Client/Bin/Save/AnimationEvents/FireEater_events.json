@@ -12,6 +12,10 @@
             "Duration": 142.0,
             "Events": [
                 {
+                    "EventName": "MoveSound",
+                    "Time": 3.0
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 21.0
                 },
@@ -36,6 +40,10 @@
                     "Time": 43.0
                 },
                 {
+                    "EventName": "RattleSound",
+                    "Time": 43.0
+                },
+                {
                     "EventName": "ColliderArmOff",
                     "Time": 59.0
                 }
@@ -48,6 +56,22 @@
             "ClipName": "AS_ATLBoss0_Skill_01_Loop",
             "Duration": 130.0,
             "Events": [
+                {
+                    "EventName": "AttackSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RunSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
                 {
                     "EventName": "Turnning",
                     "Time": 10.0
@@ -121,6 +145,12 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_01_Start",
             "Duration": 30.0,
+            "Events": [
+                {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -128,6 +158,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_02_End",
             "Duration": 44.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 6.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -136,6 +176,10 @@
             "ClipName": "AS_ATLBoss0_Skill_02_Start",
             "Duration": 106.0,
             "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 4.0
+                },
                 {
                     "EventName": "ColliderArmOn",
                     "Time": 54.0
@@ -175,6 +219,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_04_End",
             "Duration": 75.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 4.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -183,6 +237,18 @@
             "ClipName": "AS_ATLBoss0_Skill_04_Left",
             "Duration": 120.0,
             "Events": [
+                {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 4.650810718536377
+                },
                 {
                     "EventName": "ColliderArmOn",
                     "Time": 25.0
@@ -220,6 +286,14 @@
             "Duration": 120.0,
             "Events": [
                 {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 25.0
+                },
+                {
                     "EventName": "CameraShake",
                     "Time": 46.0
                 },
@@ -251,6 +325,22 @@
                 {
                     "EventName": "Turnning",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 10.0
                 },
                 {
                     "EventName": "ColliderArmOn",
@@ -290,11 +380,31 @@
                     "Time": 5.0
                 },
                 {
+                    "EventName": "LArm_RustleSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "RArmFallSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 6.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 10.0
+                },
+                {
                     "EventName": "CameraShake",
                     "Time": 28.0
                 },
                 {
                     "EventName": "OnSlamEffect",
+                    "Time": 28.0
+                },
+                {
+                    "EventName": "MoveSound",
                     "Time": 28.0
                 }
             ],
@@ -307,11 +417,23 @@
             "Duration": 130.0,
             "Events": [
                 {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "CameraShake",
                     "Time": 22.0
                 },
                 {
+                    "EventName": "MoveSound",
+                    "Time": 22.0
+                },
+                {
                     "EventName": "CameraShake",
+                    "Time": 48.0
+                },
+                {
+                    "EventName": "MoveSound",
                     "Time": 48.0
                 },
                 {
@@ -356,6 +478,14 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 6.0
+                },
+                {
                     "EventName": "DeactivateFuryState",
                     "Time": 58.0
                 }
@@ -389,7 +519,15 @@
                     "Time": 14.0
                 },
                 {
+                    "EventName": "MoveSound",
+                    "Time": 14.0
+                },
+                {
                     "EventName": "CameraShake",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "MoveSound",
                     "Time": 35.0
                 }
             ],
@@ -401,6 +539,14 @@
             "ClipName": "AS_ATLBoss0_Skill_06",
             "Duration": 106.0,
             "Events": [
+                {
+                    "EventName": "AttackSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
+                },
                 {
                     "EventName": "Turnning",
                     "Time": 6.0
@@ -454,6 +600,18 @@
             "Duration": 90.0,
             "Events": [
                 {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "LArm_RustleSound",
+                    "Time": 15.0
+                },
+                {
                     "EventName": "FurnaceOpenSound",
                     "Time": 17.0
                 },
@@ -470,6 +628,18 @@
             "ClipName": "AS_ATLBoss0_Skill_08",
             "Duration": 145.0,
             "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 2.3963942527770996
+                },
                 {
                     "EventName": "Turnning",
                     "Time": 13.0
@@ -525,6 +695,10 @@
                 },
                 {
                     "EventName": "FastAnimSpeed",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "AttackSound",
                     "Time": 5.0
                 },
                 {
@@ -621,6 +795,14 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 30.0
+                },
+                {
                     "EventName": "FireBall",
                     "Time": 50.0
                 },
@@ -644,6 +826,10 @@
                 {
                     "EventName": "Turnning",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 4.0
                 },
                 {
                     "EventName": "FireBall",
@@ -671,6 +857,14 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 30.0
+                },
+                {
                     "EventName": "FireBall",
                     "Time": 50.0
                 },
@@ -690,6 +884,16 @@
         {
             "ClipName": "AS_ATLBoss0_Skill_11_Start",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 2.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 60.0
@@ -701,6 +905,14 @@
                 {
                     "EventName": "FlamethrowerEndSound",
                     "Time": 1.526676893234253
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 4.0
                 }
             ],
             "IsLoop": false,
@@ -716,16 +928,20 @@
                     "Time": 4.0
                 },
                 {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
-                    "EventName": "Flamethrower",
-                    "Time": 35.0
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 20.0
                 },
                 {
-                    "EventName": "OnFlamethrowerEffect",
-                    "Time": 37.0
+                    "EventName": "Flamethrower",
+                    "Time": 35.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -745,16 +961,20 @@
                     "Time": 4.0
                 },
                 {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 17.0
                 },
                 {
-                    "EventName": "Flamethrower",
-                    "Time": 35.0
+                    "EventName": "OnFlamethrowerEffect",
+                    "Time": 20.0
                 },
                 {
-                    "EventName": "OnFlamethrowerEffect",
-                    "Time": 37.0
+                    "EventName": "Flamethrower",
+                    "Time": 35.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -776,6 +996,10 @@
                 {
                     "EventName": "FlamethrowerStartSound",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
                 }
             ],
             "IsLoop": false,
@@ -789,6 +1013,18 @@
                 {
                     "EventName": "Turnning",
                     "Time": 5.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 10.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 40.0
                 },
                 {
                     "EventName": "FireBall",
@@ -815,6 +1051,14 @@
             "ClipName": "AS_ATLBoss0_Skill_14",
             "Duration": 400.0,
             "Events": [
+                {
+                    "EventName": "MoveSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RArmFallSound",
+                    "Time": 4.0
+                },
                 {
                     "EventName": "FurnaceOpenSound",
                     "Time": 49.0
@@ -845,6 +1089,14 @@
                     "Time": 3.0
                 },
                 {
+                    "EventName": "BreakSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 10.0
+                },
+                {
                     "EventName": "ResetRootStep",
                     "Time": 25.0
                 },
@@ -860,6 +1112,16 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_ing",
             "Duration": 68.0,
+            "Events": [
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -867,6 +1129,16 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Start",
             "Duration": 34.0,
+            "Events": [
+                {
+                    "EventName": "RArmFallSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 3.439969301223755
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -917,6 +1189,10 @@
             "Duration": 100.0,
             "Events": [
                 {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "StandUpSound",
                     "Time": 6.0
                 }
@@ -930,8 +1206,16 @@
             "Duration": 180.0,
             "Events": [
                 {
-                    "EventName": "GroggySound",
-                    "Time": 3.254525899887085
+                    "EventName": "RecoilSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RArmFallSound",
+                    "Time": 3.875547170639038
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 5.0
                 }
             ],
             "IsLoop": false,
@@ -941,6 +1225,16 @@
         {
             "ClipName": "AS_Groggy_Start",
             "Duration": 80.0,
+            "Events": [
+                {
+                    "EventName": "RattleSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "GroggySound",
+                    "Time": 4.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -986,6 +1280,10 @@
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 50.0
                 }
             ],
             "IsLoop": true,
@@ -1004,6 +1302,10 @@
             "Duration": 115.0,
             "Events": [
                 {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "StandUpSound",
                     "Time": 17.0
                 }
@@ -1015,6 +1317,16 @@
         {
             "ClipName": "AS_Paralyzation_Loop",
             "Duration": 210.0,
+            "Events": [
+                {
+                    "EventName": "RecoilSound",
+                    "Time": 3.497372627258301
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 5.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -1022,6 +1334,24 @@
         {
             "ClipName": "AS_Paralyzation_Start",
             "Duration": 110.0,
+            "Events": [
+                {
+                    "EventName": "BreakSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "MoveSound",
+                    "Time": 92.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -1061,6 +1391,18 @@
                 {
                     "EventName": "CollidersOff",
                     "Time": 10.0
+                },
+                {
+                    "EventName": "RArmFallSound",
+                    "Time": 10.0
+                },
+                {
+                    "EventName": "BreakSound",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 435.0
                 }
             ],
             "IsLoop": false,
