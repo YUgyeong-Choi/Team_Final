@@ -321,6 +321,12 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ 컷씬 문용 사운드 ] */
 	ADD_SOUND_EX(CutSceneDoor, "../Bin/Resources/Sound/CutScene/Door/", false, false, false);
 
+	/* [ 번개 사운드 ] */
+	ADD_SOUND_EX(Thunder, "../Bin/Resources/Sound/Thunder/", false, false, false);
+
+	/* [ 스테이션 사운드 ] */
+	ADD_SOUND_EX(Station, "../Bin/Resources/Sound/Station/", true, false, false);
+
 	/* [ 트리거용 사운드 ] */
 	ADD_SOUND_EX(Trigger, "../Bin/Resources/Sound/Trigger/", false, false, false);
 

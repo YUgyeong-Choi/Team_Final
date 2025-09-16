@@ -128,7 +128,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 	if (LIGHT_DESC::TYPE_DIRECTIONAL == m_LightDesc.eType)
 	{
-		if (eArea == AREAMGR::FUOCO || eArea == AREAMGR::OUTER)
+		if (eArea == AREAMGR::FUOCO || eArea == AREAMGR::OUTER || eArea == AREAMGR::FESTIVAL)
 			return S_OK;
 
 		AREAMGR eAreaMgr = m_pGameInstance->GetCurrentAreaMgr();
@@ -144,7 +144,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
 				return E_FAIL;
 		}
-		else if (eAreaMgr == AREAMGR::OUTER)
+		else if (eAreaMgr == AREAMGR::OUTER || eAreaMgr == AREAMGR::FESTIVAL)
 		{
 			_float fFogDensity = 0.7f;
 			if (FAILED(pShader->Bind_RawValue("g_fFogPower", &fFogDensity, sizeof(_float))))
@@ -163,7 +163,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
 
-		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER)
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL)
 			return S_OK;
 
 		/* 빛정보를 쉐이더에 던진다. */
@@ -191,7 +191,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
 		
-		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER)
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL)
 			return S_OK;
 
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))

@@ -1167,6 +1167,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 		m_PatternCountMap[pattern] = 0;
 	}
 	SwitchFury(false, 1.f); 
+	m_pSoundCom->Play("Dialog_CH03_PhaseChange_01_text_3");
 }
 
 _int CFuoco::GetRandomAttackPattern(_float fDistance)
@@ -1742,12 +1743,48 @@ void CFuoco::Ready_SoundEvents()
 	m_pAnimator->RegisterEventListener("MoveSound", [this]()
 	{
 	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 
-	   m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Movement_", 6); }
+	   m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Movement_", 6);
+	   m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Rustle_0", 6,1);
+	}
+	);
+
+	m_pAnimator->RegisterEventListener("LArm_RustleSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_LArm_Rustle_0", 6,1);
+		}
+	);
+
+	m_pAnimator->RegisterEventListener("RattleSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Rattle_0", 9, 1);
+		}
+	);
+
+	m_pAnimator->RegisterEventListener("BreakSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Break_0", 3, 1);
+		}
+	);
+
+	m_pAnimator->RegisterEventListener("BodyFallSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Bodyfall_0", 6, 1);
+		}
+	);
+
+	m_pAnimator->RegisterEventListener("RecoilSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_Recoil_0", 3,1);
+
+		}
 	);
 
 	m_pAnimator->RegisterEventListener("FireBallSound", [this]()
 	{
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Fire_Ball_Shot_", 3); }
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Fire_Ball_Shot_", 3); 
+			m_pSoundCom->Play_Random("SE_NPC_SK_PJ_Fireball_Firing_0", 3,1); 
+		
+	}
 	);
 
 	m_pAnimator->RegisterEventListener("FlamethrowerStartSound", [this]() // 소리가 안나옴
@@ -1768,6 +1805,11 @@ void CFuoco::Ready_SoundEvents()
 	m_pAnimator->RegisterEventListener("StrikeSound", [this]()
 		{
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_RArm_Roll_", 3); }
+	);
+
+	m_pAnimator->RegisterEventListener("RArmFallSound", [this]()
+		{
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_MT_RArm_Fall_0", 3,1); }
 	);
 
 	m_pAnimator->RegisterEventListener("RunSound", [this]()
@@ -1857,6 +1899,14 @@ void CFuoco::Ready_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play("SE_NPC_MT_Mechanic_M_Land_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_",8);
 			}
 		});
 

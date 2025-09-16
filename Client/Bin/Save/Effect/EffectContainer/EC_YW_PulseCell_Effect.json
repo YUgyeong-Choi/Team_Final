@@ -1,0 +1,143 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                1.0,
+                1.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.481675386428833,
+                0.6987747550010681,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.11518287658691406,
+                0.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 170,
+            "EffectType": 1,
+            "EmissiveIntensity": 3.299999952316284,
+            "EndTrack": 170,
+            "FlipUV": false,
+            "Gravity": -0.5,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.11518287658691406,
+                        0.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 4.03000020980835,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -2.39857513406605e-07,
+                        0.00020114181097596884,
+                        4.2797410060302354e-07,
+                        1.0
+                    ],
+                    "Scale": [
+                        0.9999864101409912,
+                        0.9999958276748657,
+                        0.9999777674674988
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 6438.8125,
+            "LifeTime_Particle": [
+                1.0,
+                1.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 3.0,
+            "MaxSpeed": 3.0,
+            "MinSpeed": 0.0,
+            "Name": "YW_FulseCell",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "OrbitSpeed": [
+                180.0,
+                -180.0
+            ],
+            "PType": 2,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.30000001192092896,
+                0.30000001192092896,
+                0.30000001192092896
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.019999999552965164,
+                0.26899999380111694
+            ],
+            "Speed": [
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.0010000000474974513,
+            "TextureTags": [
+                "",
+                "T_LensFlare_04_C_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 200
+}

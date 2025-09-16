@@ -78,6 +78,7 @@ private:
 	class CGameObject*			m_pLastHitObject = { nullptr };
 	COLLIDERTYPE				m_eLastHitColType = { COLLIDERTYPE::PLAYER };
 	_float3						m_vSlashDir = {};
+	vector<class CSwordTrailEffect*> m_temp;
 
 public:
 	static CBayonet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

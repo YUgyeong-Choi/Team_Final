@@ -8,6 +8,8 @@
 #include "Player.h"
 #include "UI_Container.h"
 #include "UI_Guide.h"
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 
 CTriggerTalk::CTriggerTalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
@@ -43,6 +45,12 @@ HRESULT CTriggerTalk::Initialize(void* pArg)
 	if (TriggerTalkDESC->gameObjectTag != "")
 	{
 		if (FAILED(Ready_TriggerObject(TriggerTalkDESC)))
+			return E_FAIL;
+	}
+
+	if (m_eTriggerSoundType == TRIGGERSOUND_TYPE::SELECTWEAPON)
+	{
+		if (FAILED(Ready_Effect())) 
 			return E_FAIL;
 	}
 
@@ -89,11 +97,16 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 
 		if (m_pTriggerObject)
 			m_pTriggerObject->Set_bDead();
+
+		if (m_pEffectSet)
+			m_pEffectSet->End_Effect();
+
 		return;
 	}
 
 	if (!m_pPlayer)
 		m_pPlayer = GET_PLAYER(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION));
+
 }
 
 void CTriggerTalk::Update(_float fTimeDelta)
@@ -269,6 +282,27 @@ HRESULT CTriggerTalk::Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC)
 	return S_OK;
 }
 
+HRESULT CTriggerTalk::Ready_Effect()
+{
+	CEffectContainer::DESC Lightdesc = {};
+	
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixScaling(0.25f,0.25f,0.25f));
+
+	Lightdesc.PresetMatrix._41 = -1.25f;
+	Lightdesc.PresetMatrix._42 = 1.f;
+	Lightdesc.PresetMatrix._43 = -0.1f;
+	
+
+	m_pEffectSet = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_Interaction_S1"), &Lightdesc));
+
+	if(!m_pEffectSet)
+	   MSG_BOX("이펙트 생성 실패함");
+
+	return S_OK;
+}
+
 void CTriggerTalk::Next_Talk()
 {
 	m_iSoundIndex++;
@@ -350,4 +384,5 @@ void CTriggerTalk::Free()
 {
 	__super::Free();
 	Safe_Release(m_pSoundCom);
+
 }

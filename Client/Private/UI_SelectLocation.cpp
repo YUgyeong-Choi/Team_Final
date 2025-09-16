@@ -178,6 +178,11 @@ HRESULT CUI_SelectLocation::Ready_Button()
 			case STARGAZER_TAG::FIRE_EATER:
 				eButtonDesc.strCaption = TEXT("베니니 공장 중심부");
 				break;
+
+			case STARGAZER_TAG::FESTIVAL_LEADER_IN:
+				// 일단 몰라
+				eButtonDesc.strCaption = TEXT("크라트 호텔 입구");
+				break;
 				
 			default:
 				break;

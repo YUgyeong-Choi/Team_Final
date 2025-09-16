@@ -10,14 +10,14 @@
         "Parts": [
             {
                 "Color": {
-                    "A": 1.0,
+                    "A": 0.5,
                     "B": 0.0,
                     "G": 0.0,
                     "R": 0.0
                 },
                 "Features": [
                     {
-                        "EndAlpha": 0.5,
+                        "EndAlpha": 1.0,
                         "FeatureProtoTag": "Prototype_Component_UI_Feature_Fade",
                         "StartAlpha": 0.0,
                         "iEndFrame": 30,

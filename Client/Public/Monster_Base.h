@@ -99,6 +99,14 @@ public: /* [ Setup 함수 ] */
 
 	
 protected:
+	void Check_Drop_Ergo(_float fTimeDelta);
+
+protected:
+	const _float m_fAfter_Die_ErgoSpawnTime = { 2.f };
+	_float m_fAfter_Die_ErgoSpawnTimeAcc = { 0.f };
+	_bool m_bDropErgo = { false };
+
+protected:
 
 	//(영웅)halfExtents 몬스터 베이스에다가 넣어둘게요
 	_float3 m_vHalfExtents = { 0.5f, 1.f, 0.5f };

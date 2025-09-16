@@ -292,6 +292,8 @@ void CCamera_CutScene::Update(_float fTimeDelta)
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
 
+	m_pGameInstance->Set_Listener_Position(Get_TransfomCom(), {});
+
 	__super::Update(fTimeDelta);
 }
 
@@ -994,6 +996,12 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
+
+		if (m_iCurrentFrame == 20)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+		}
+
 		if (m_iCurrentFrame == 450)
 			m_pGameInstance->Start_BGM("FireEaterCutScene", true);
 
@@ -1008,19 +1016,73 @@ void CCamera_CutScene::Event()
 		}
 
 
-		if (m_iCurrentFrame == 20)
-		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
-		}
 
 		if (m_iCurrentFrame == 860)
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
+
+			
+		}
+
+		if (m_iCurrentFrame == 1400)
+		{
+			/*CEffectContainer::DESC Lightdesc = {};
+
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix,XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = -6.f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -198.f;
+
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			EFFECT_MANAGER->Store_EffectContainer(TEXT("Cutsence_Steam_0"), pEffect);
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 4.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -198.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			EFFECT_MANAGER->Store_EffectContainer(TEXT("Cutsence_Steam_1"), pEffect);
+
+
+			Lightdesc.PresetMatrix._41 = -0.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -200.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			EFFECT_MANAGER->Store_EffectContainer(TEXT("Cutsence_Steam_2"), pEffect);*/
+		
 		}
 
 		if (m_iCurrentFrame == 1650)
+		{
+			//EFFECT_MANAGER->
+
+			
+
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+		}
+			
+		if (m_iCurrentFrame == 1750)
+		{
+		/*	EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Cutsence_Steam_0"));
+			EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Cutsence_Steam_1"));
+			EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Cutsence_Steam_2"));*/
+		}
 
 		break;
 	}

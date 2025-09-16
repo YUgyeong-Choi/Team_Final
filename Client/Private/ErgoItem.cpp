@@ -27,10 +27,10 @@ HRESULT CErgoItem::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Effect()))
+	if (FAILED(Ready_Effect(pArg)))
 		return E_FAIL;
 
 
@@ -244,12 +244,14 @@ HRESULT CErgoItem::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CErgoItem::Ready_Components()
+HRESULT CErgoItem::Ready_Components(void* pArg)
 {
 	/* Com_Shader */
 	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
 	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 	//	return E_FAIL;
+	//ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+	//if (pDesc->eItemTag == ITEM_TAG::PULSE_CELL)
 
 	/* For.Com_Model */ 	//아이템 테스트용 모델
 	//if (FAILED(__super::Add_Component(m_iLevelID, TEXT("Prototype_Component_Model_ErgoItem"),
@@ -264,12 +266,23 @@ HRESULT CErgoItem::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CErgoItem::Ready_Effect()
+HRESULT CErgoItem::Ready_Effect(void* pArg)
 {
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+
+
+	ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+
+	wstring wsEffectName = {};
+
+	if (pDesc->eItemTag == ITEM_TAG::PULSE_CELL)
+		wsEffectName = TEXT("EC_YW_PulseCell_Effect");
+	else
+		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
+
+	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
 	if (m_pEffect == nullptr)
 		return E_FAIL;
 
