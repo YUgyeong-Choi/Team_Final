@@ -7,9 +7,9 @@
 
 #ifdef TESTMAP
 
-//#define TEST_TEST_MAP // 이거 키면 테스트맵
+#define TEST_TEST_MAP // 이거 키면 테스트맵
 //#define TEST_STATION_MAP //이거 키면 스테이션 맵 생성됨
-#define TEST_HOTEL_MAP //이거 키면   호텔 맵 생성됨
+//#define TEST_HOTEL_MAP //이거 키면   호텔 맵 생성됨
 //#define TEST_OUTER_MAP //이거 키면  외부 맵 생성됨
 //#define TEST_FIRE_EATER_MAP //이거 키면 푸오코 맵 생성됨
 
