@@ -1433,7 +1433,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		_vector finalRot = XMQuaternionMultiply(XMQuaternionInverse(rot), XMQuaternionRotationAxis(XMVectorSet(0.f, 0.f, 1.f, 0.f), XMConvertToRadians(-60.f)));
 
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(finalRot)*
+		XMStoreFloat4x4(&desc.PresetMatrix, /*XMMatrixRotationQuaternion(finalRot)**/
 			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
 				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
 				worldmat.r[3].m128_f32[2]));

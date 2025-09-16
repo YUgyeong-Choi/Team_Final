@@ -312,7 +312,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         // 속도 갱신: v = v + a*Δt (최소/최대 속도 제한 포함)
         pp.Speed = clamp(pp.Speed + pp.fAccel * DeltaTime, pp.fMinSpeed, pp.fMaxSpeed);
 
-        // 이동: Δs = v * Δt
+        // 이동: Δs = v * Δt 
         pos += dir * pp.Speed * DeltaTime;
 
         // 중력: Δs = 1/2 g (t^2 - (t-Δt)^2)  = g*(t-Δt/2)*Δt

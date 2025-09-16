@@ -16,18 +16,18 @@
                 1.0,
                 1.0,
                 1.0,
-                0.0
+                0.5235601663589478
             ],
             "Color": [
                 1.0,
                 1.0,
                 1.0,
-                0.7958115339279175
+                0.4921466112136841
             ],
-            "DistortionStrength": 13.100000381469727,
+            "DistortionStrength": 8.399999809265137,
             "Duration": 1017,
             "EffectType": 1,
-            "EmissiveIntensity": 0.0,
+            "EmissiveIntensity": 0.45,
             "EndTrack": 1017,
             "FlipUV": true,
             "Gravity": 14.399999618530273,
@@ -38,9 +38,9 @@
                         1.0,
                         1.0,
                         1.0,
-                        0.7958115339279175
+                        0.4921466112136841
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 1.5200000,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1720.107421875,
+            "LifeTime": 17.107421875,
             "LifeTime_Particle": [
                 1.0,
                 3.0
@@ -109,19 +109,19 @@
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.019999999552965164,
-                0.03500000014901161
+                0.029999999329447746
             ],
             "Speed": [
-                7.0,
-                12.0
+                10.0,
+                13.0
             ],
             "Spin": false,
             "StartTrack": 0,
             "StretchFactor": 0.052000001072883606,
             "TextureTags": [
-                "T_Shere_05_C_HJS",
-                "T_Rain_Drip_Mask_01_C_RSW",
-                "T_Decal_Crack_02_N_HJS",
+                "T_Shere_04_C_HJS",
+                "Rain_Noise_68_C_PCY",
+                "T_Rain_Drips_01_C_PCY",
                 ""
             ],
             "TextureUsage": [

@@ -1228,27 +1228,6 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
 	_matrix presetmat = XMMatrixIdentity();
 	CEffectContainer::DESC ECDesc = {};
-
-	//presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
 	CGameObject* pEC = { nullptr };
 
 	presetmat = XMMatrixTranslation(62.f, 10.f, -7.2f);
@@ -1259,7 +1238,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(88.8f, 10.f, -7.3f);
+	presetmat = XMMatrixTranslation(86.8f, 10.f, -7.3f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
 	if (pEC == nullptr)
