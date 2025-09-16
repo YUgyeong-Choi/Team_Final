@@ -115,66 +115,19 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 	{
 		EnterCutScene();
 	}
-#ifdef _DEBUG
 
-	if (KEY_DOWN(DIK_X))
+	if (KEY_DOWN(DIK_V))
 	{
-
-		static _int i = 0;
-		static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
-
-		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
-		switch (m_eCurAttackPattern)
-		{
-		case CFestivalLeader::Slam:
-			cout << "Slam" << endl;
-			break;
-		case CFestivalLeader::CrossSlam:
-			cout << "CrossSlam" << endl;
-			break;
-		case CFestivalLeader::JumpAttack:
-			cout << "JumpAttack" << endl;
-			break;
-		case CFestivalLeader::Strike:
-			cout << "Strike" << endl;
-			break;
-		case CFestivalLeader::Spin:
-			cout << "Spin" << endl;
-			break;
-		case CFestivalLeader::HalfSpin:
-			cout << "HalfSpin" << endl;
-			break;
-		case CFestivalLeader::HammerSlam:
-			cout << "HammerSlam" << endl;
-			break;
-		case CFestivalLeader::DashSwing:
-			cout << "DashSwing" << endl;
-			break;
-		case CFestivalLeader::Swing:
-			cout << "Swing" << endl;
-			break;
-		case CFestivalLeader::FuryHammerSlam:
-			cout << "FuryHammerSlam" << endl;
-			break;
-		case CFestivalLeader::FurySwing:
-			cout << "FurySwing" << endl;
-			break;
-		case CFestivalLeader::FuryBodySlam:
-			cout << "FuryBodySlam" << endl;
-			break;
-		default:
-			cout << "Unknown" << endl;;
-			break;
-		}
-		m_pAnimator->SetInt("SkillType", testArray[i++]);
-		if (i >= 13)
-			i = 0;
+		BreakPanel();
 	}
-
 	if (KEY_DOWN(DIK_C))
 	{
-		m_pAnimator->SetTrigger("Attack");
+		EnterNextCutScene();
 	}
+#ifdef _DEBUG
+
+
+	
 
 	if (KEY_PRESSING(DIK_LALT))
 	{
@@ -335,6 +288,7 @@ void CFestivalLeader::Reset()
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
+	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_bSwitchHeadSpace = false;
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
@@ -1034,18 +988,6 @@ void CFestivalLeader::Register_Events()
 		});
 
 
-	m_pAnimator->RegisterEventListener("BreakPanel", [this]()
-		{
-			auto panel = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"));
-
-			if (auto pPanel = dynamic_cast<CAnimatedProp*>(panel))
-			{
-				pPanel->NotifyPlayAnimation(true);
-			}
-		});
-
-
-
 	m_pAnimator->RegisterEventListener("OneHandSlamEffect", [this]()
 		{
 			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)
@@ -1669,6 +1611,7 @@ void CFestivalLeader::Ready_SoundEvents()
 void CFestivalLeader::EnterCutScene()
 {
 	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
+	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
 }
@@ -1693,6 +1636,24 @@ void CFestivalLeader::UpdatePatternWeight(_int iPattern)
 	}
 }
 
+
+void CFestivalLeader::BreakPanel()
+{
+	auto panel = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"));
+
+	if (auto pPanel = dynamic_cast<CAnimatedProp*>(panel))
+	{
+		pPanel->NotifyPlayAnimation(true);
+	}
+}
+
+void CFestivalLeader::EnterNextCutScene()
+{
+	if (m_pAnimator)
+	{
+		m_pAnimator->SetTrigger("NextCut");
+	}
+}
 
 void CFestivalLeader::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
