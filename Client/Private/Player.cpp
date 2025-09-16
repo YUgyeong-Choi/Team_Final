@@ -3732,7 +3732,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		m_bBurnSwitch = true;
 		if (m_pSoundCom &&! m_pSoundCom->IsPlaying("SE_PC_FX_Debuff_Fire_Loop"))
 		{
-			m_pSoundCom->SetVolume("SE_PC_FX_Debuff_Fire_Loop",1.2f);
+			m_pSoundCom->SetVolume("SE_PC_FX_Debuff_Fire_Loop",1.5f);
 			m_pSoundCom->Set_Loop("SE_PC_FX_Debuff_Fire_Loop");
 			m_pSoundCom->Play("SE_PC_FX_Debuff_Fire_Loop");
 		}
