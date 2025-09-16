@@ -1,6 +1,7 @@
 #include "Oil.h"
-#include "FireBall.h"
 #include "Player.h"
+#include "FireBall.h"
+#include "SoundController.h"
 #include "PhysXDynamicActor.h"
 
 CFireBall::CFireBall(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -31,6 +32,7 @@ HRESULT CFireBall::Initialize(void* pArg)
 	m_pPhysXActorCom->Set_SimulationFilterData(FilterData);
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
+	m_pSoundCom->Play("SE_NPC_SK_PJ_Fireball_Loop_01");
 	return S_OK;
 }
 
@@ -126,7 +128,10 @@ HRESULT CFireBall::Ready_Components()
 {
 	if (FAILED(__super::Ready_Components()))
 		return E_FAIL;
-	// 나중에 모델 불러오기
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -172,6 +177,7 @@ _bool CFireBall::ProcessCollisionPriority()
 				Set_bDead();
 				return true;;
 			}
+			m_pSoundCom->StopAll();
 		}
 	}
 
@@ -202,4 +208,5 @@ CGameObject* CFireBall::Clone(void* pArg)
 void CFireBall::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSoundCom);
 }
