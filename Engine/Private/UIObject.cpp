@@ -183,7 +183,9 @@ void CUIObject::FadeStart(_float fStartAlpha, _float fEndAlpha, _float fTime)
 void CUIObject::Fade(float fTimeDelta)
 {
 	if (!m_isFade)
-		return;
+		return; 
+
+	m_fFadeElapsedTime += fTimeDelta;
 
 	if (m_fFadeElapsedTime > m_fFadeTime)
 		m_fFadeElapsedTime = m_fFadeTime;
@@ -196,6 +198,8 @@ void CUIObject::Fade(float fTimeDelta)
 	{
 		m_isFade = false;
 		m_fFadeElapsedTime = 0.f;
+		
+		m_fCurrentAlpha = m_fEndAlpha;
 	}
 }
 
