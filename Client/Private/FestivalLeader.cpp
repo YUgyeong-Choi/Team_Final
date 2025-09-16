@@ -227,21 +227,16 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_W))
 		{
 			CEffectContainer::DESC desc = {};
-
-			desc.pSocketMatrix = nullptr;
-			desc.pParentMatrix = nullptr;
-			const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
 			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-			_matrix socket = XMLoadFloat4x4(socketPtr);
 			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			_matrix comb = socket * parent;
+			_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 
 			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
 			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_OnehandSlam"), &desc);
-			if (pEC == nullptr)
+
+			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HammerSlam"), &desc) == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
 		if (KEY_DOWN(DIK_E))
@@ -1442,6 +1437,17 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 			XMMatrixTranslation(worldmat.r[3].m128_f32[0],
 				m_pTransformCom->Get_State(STATE::POSITION).m128_f32[1],
 				worldmat.r[3].m128_f32[2]));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_P2_HammerSlam")) //
+	{
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
 
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)

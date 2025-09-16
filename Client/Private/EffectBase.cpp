@@ -269,7 +269,6 @@ void CEffectBase::Update_Keyframes()
 		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
 		vColor = XMLoadFloat4(&LastKeyFrame.vColor);
 		fIntensity = XMLoadFloat(&LastKeyFrame.fIntensity);
-
 	}
 	else
 	{

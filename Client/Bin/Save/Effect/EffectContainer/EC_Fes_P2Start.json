@@ -50,7 +50,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2523.822998046875,
+            "LifeTime": 2703.4580078125,
             "Loop": true,
             "Name": "Fes_P2Start_DownLFire1",
             "NumKeyFrames": 1,
@@ -89,8 +89,8 @@
             ],
             "CenterColor": [
                 1.0,
-                0.3769633173942566,
-                0.0,
+                0.2188536524772644,
+                0.07329845428466797,
                 1.0
             ],
             "Color": [
@@ -115,7 +115,7 @@
                         0.0,
                         1.0
                     ],
-                    "Intensity": 1.9600000381469727,
+                    "Intensity": 3.7300000190734863,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -136,7 +136,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5395.974609375,
+            "LifeTime": 5578.08837890625,
             "LifeTime_Particle": [
                 0.38999998569488525,
                 1.7000000476837158
@@ -228,10 +228,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 66,
+            "Duration": 53,
             "EffectType": 0,
             "EmissiveIntensity": 1.75,
-            "EndTrack": 66,
+            "EndTrack": 53,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -239,10 +239,10 @@
                         1.0,
                         0.0,
                         0.0,
-                        1.0
+                        0.0
                     ],
-                    "Intensity": 2.869999885559082,
-                    "Interpolation": 3,
+                    "Intensity": 4.239999771118164,
+                    "Interpolation": 2,
                     "Rotation": [
                         -0.0,
                         0.0,
@@ -251,7 +251,7 @@
                     ],
                     "Scale": [
                         3.0,
-                        9.0,
+                        6.0,
                         3.0
                     ],
                     "TrackPosition": 0.0,
@@ -260,12 +260,39 @@
                         1.0,
                         0.0
                     ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 4.239999771118164,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        3.0,
+                        9.0,
+                        3.0
+                    ],
+                    "TrackPosition": 5.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
                 }
             ],
-            "LifeTime": 1593.22412109375,
+            "LifeTime": 1772.52587890625,
             "Loop": true,
             "Name": "Fes_P2Start_UPFire1",
-            "NumKeyFrames": 1,
+            "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
             "StartTrack": 0,
@@ -306,7 +333,7 @@
             "Duration": 67,
             "EffectType": 0,
             "EmissiveIntensity": 1.75,
-            "EndTrack": 72,
+            "EndTrack": 79,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -319,15 +346,15 @@
                     "Intensity": 2.869999885559082,
                     "Interpolation": 0,
                     "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
+                        0.2374490350484848,
+                        -0.32099735736846924,
+                        -0.04605815187096596,
+                        0.9156731367111206
                     ],
                     "Scale": [
-                        5.0,
-                        5.0,
-                        5.0
+                        5.000691890716553,
+                        5.000689506530762,
+                        5.000035285949707
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -337,13 +364,13 @@
                     ]
                 }
             ],
-            "LifeTime": 2215.413330078125,
+            "LifeTime": 2245.97509765625,
             "Loop": true,
             "Name": "Fes_P2Start_DownLFire1",
             "NumKeyFrames": 1,
             "RenderGroup": 8,
             "ShaderPass": 5,
-            "StartTrack": 5,
+            "StartTrack": 12,
             "TextureTags": [
                 "",
                 "T_SubUV_Fire_10_9x9_SC_KMH",
@@ -363,6 +390,6 @@
             "TileY": 9
         }
     ],
-    "Loop": true,
-    "MaxFrame": 66
+    "Loop": false,
+    "MaxFrame": 82
 }

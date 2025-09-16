@@ -565,6 +565,9 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     if (j.contains("ShrinkThreshold"))
         VIBufferDesc.fShrinkThreshold = j["ShrinkThreshold"].get<_float>();
 
+    if (j.contains("IsCircleRange"))
+        VIBufferDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
+
     VIBufferDesc.isTool = false;
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,

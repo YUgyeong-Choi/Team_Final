@@ -592,7 +592,7 @@ namespace Engine
 		_float		fShrinkThreshold;
 
 		_float3		vOrbitAxis;      // normalized
-		_float		_pad1;
+		_uint		isCircleRange;	 // 초기 위치 원형 둘레에서 생성
 
 		_float3		vRange;			 // vRange
 		_float		_pad2;
