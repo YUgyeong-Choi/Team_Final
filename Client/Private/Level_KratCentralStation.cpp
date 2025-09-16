@@ -105,6 +105,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//if (FAILED(Ready_WaterPuddle()))
 	//	return E_FAIL;
 
+
 	Reset();
 	return S_OK;
 }

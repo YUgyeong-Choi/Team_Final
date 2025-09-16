@@ -38410,7 +38410,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -38441,7 +38441,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -38472,7 +38472,7 @@
                     ]
                 },
                 {
-                    "ColliderType": 0,
+                    "ColliderType": 1,
                     "IsFloor": false,
                     "LightShape": 0,
                     "WorldMatrix": [
@@ -101065,7 +101065,7 @@
             "ObjectCount": 1,
             "Objects": [
                 {
-                    "ColliderType": 1,
+                    "ColliderType": 2,
                     "FootstepSound": 3,
                     "IsFloor": false,
                     "LightShape": 0,
