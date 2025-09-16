@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Effect_Manager.h"
+#include "SoundController.h"
 #include "PhysX_IgnoreSelfCallback.h"
 
 #include "Player.h"
@@ -57,7 +58,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	SetRange(6.f);
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 	SetIntensity(1.f);
-
+	m_pSoundCom->Set3DState(0.f, 9.f);
 	return S_OK;
 }
 
@@ -75,7 +76,23 @@ void CPlayerLamp::Update(_float fTimeDelta)
 void CPlayerLamp::Late_Update(_float fTimeDelta)
 {
 	if (!m_bIsVisible)
+	{
+		m_fSoundElapsed += fTimeDelta;
+		if (m_fSoundElapsed >= m_fSoundInterval)
+		{
+			m_fSoundElapsed = 0.f;
+
+			if (m_pSoundCom)
+				m_pSoundCom->Play(m_strLampSound);
+		}
+
+		if (m_pSoundCom)
+		{
+			_float3 vPos{ 30.933064f, 1.5f, 0.672125f };
+			m_pSoundCom->Update3DPosition(vPos);
+		}
 		return;
+	}
 
 
 
@@ -99,6 +116,7 @@ void CPlayerLamp::Late_Update(_float fTimeDelta)
 
 		XMStoreFloat4(&m_pLight->Get_LightDesc()->vPosition, vPosition);
 	}
+
 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
@@ -231,6 +249,10 @@ HRESULT CPlayerLamp::Ready_Components()
 		TEXT("Com_Model_Light"), reinterpret_cast<CComponent**>(&m_pLightModelCom))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_LampAmb"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -291,6 +313,7 @@ void CPlayerLamp::Free()
 {
 	__super::Free();
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pLightModelCom);
 }

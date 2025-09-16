@@ -79,6 +79,11 @@ HRESULT CEliteUnit::Initialize(void* pArg)
 
      XMStoreFloat3(&m_InitPos, T);
      SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+
+     if (m_pSoundCom)
+     {
+         m_pSoundCom->Set3DState(0.f, 50.f);
+     }
     return S_OK;
 }
 
@@ -108,6 +113,13 @@ void CEliteUnit::Update(_float fTimeDelta)
         XMStoreFloat4(&m_vLockonPos, vLockonPos);
     }
     Spawn_Effect();
+
+    if (m_pSoundCom)
+    {
+        _float3 vPos{};
+        XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
+        m_pSoundCom->Update3DPosition(vPos);
+    }
 }
 
 void CEliteUnit::Late_Update(_float fTimeDelta)

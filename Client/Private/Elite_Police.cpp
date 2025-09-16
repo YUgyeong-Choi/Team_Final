@@ -112,9 +112,11 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	m_fRootMotionClampDist = 3.5f;
 	// 플레이어 카메라 레이충돌 무시하기 위한
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors(static_cast<CWeapon_Monster*>(m_pWeapon)->Get_PhysXActor()->Get_Actor());
+
+
+	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
+	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.8f);
 	return S_OK;
 }
 
@@ -278,13 +280,7 @@ void CElite_Police::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (m_pSoundCom)
-	{
 
-		_float3 vPos{};
-		XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
-		m_pSoundCom->Update3DPosition(vPos);
-	}
 
 }
 
@@ -315,8 +311,7 @@ HRESULT CElite_Police::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Police"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
-	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
-	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.8f);
+	
 	return S_OK;
 }
 
