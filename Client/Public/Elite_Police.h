@@ -90,8 +90,9 @@ private:
     virtual void ProcessingEffects(const _wstring& stEffectTag)  override;
     virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true)  override;
     virtual HRESULT Spawn_Effect();
-
     virtual HRESULT Ready_Effect();
+
+	virtual void Ready_SoundEvents() override;
 
     virtual void Register_Events() override;
 	virtual void Reset() override;

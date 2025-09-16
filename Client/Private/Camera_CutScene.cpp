@@ -7,6 +7,7 @@
 #include "Effect_Manager.h"
 #include "Player.h"
 #include "UI_Manager.h"
+#include "FestivalLeader.h"
 
 #pragma region help
 // ===== Speed-curve helpers =====
@@ -290,6 +291,8 @@ void CCamera_CutScene::Update(_float fTimeDelta)
 
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
+
+	m_pGameInstance->Set_Listener_Position(Get_TransfomCom(), {});
 
 	__super::Update(fTimeDelta);
 }
@@ -993,6 +996,12 @@ void CCamera_CutScene::Event()
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
 	{
+
+		if (m_iCurrentFrame == 20)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+		}
+
 		if (m_iCurrentFrame == 450)
 			m_pGameInstance->Start_BGM("FireEaterCutScene", true);
 
@@ -1007,23 +1016,127 @@ void CCamera_CutScene::Event()
 		}
 
 
-		if (m_iCurrentFrame == 20)
-		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
-		}
 
 		if (m_iCurrentFrame == 860)
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
+
+			
+		}
+
+		if (m_iCurrentFrame == 1550)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+
+			Lightdesc.PresetMatrix._41 = 4.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -203.f;
+
+
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+
+		}
+
+		if (m_iCurrentFrame == 1600)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+			Lightdesc.PresetMatrix._41 = -4.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -205.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+
 		}
 
 		if (m_iCurrentFrame == 1650)
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+		{
+			//EFFECT_MANAGER->
+			CEffectContainer::DESC Lightdesc = {};
 
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = 2.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -200.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+		}
+
+		if (m_iCurrentFrame == 1700)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = -1.f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -210.f;
+
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+			
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 250)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+		}
+		if (m_iCurrentFrame == 499)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+		}
+		if (m_iCurrentFrame == 400)
+		{
+			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
+		}
+
+		if (m_iCurrentFrame == 1005)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->EnterCutScene();
+		}
+
+		if (m_iCurrentFrame == 1190)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->BreakPanel();
+		}
+
+		if (m_iCurrentFrame == 1425)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->EnterNextCutScene();
+		}
+		
+		if (m_iCurrentFrame == 1490)
+		{
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+		}
+
 		break;
 	default:
 		break;

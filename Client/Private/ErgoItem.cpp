@@ -24,17 +24,23 @@ HRESULT CErgoItem::Initialize_Prototype()
 
 HRESULT CErgoItem::Initialize(void* pArg)
 {
+	ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+
+	if (pDesc->eItemTag == ITEM_TAG::PULSE_CELL)
+	{
+		m_bPulseCell = true;
+	}
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Effect()))
+	if (FAILED(Ready_Effect(pArg)))
 		return E_FAIL;
 
 
-	ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
@@ -145,13 +151,15 @@ void CErgoItem::Update(_float fTimeDelta)
 
 void CErgoItem::Late_Update(_float fTimeDelta)
 {
-	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
-
+	if (m_bPulseCell)
+	{
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
+	}
 }
 
 HRESULT CErgoItem::Render()
 {
-	/*if (FAILED(Bind_ShaderResources()))
+	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
@@ -167,10 +175,23 @@ HRESULT CErgoItem::Render()
 
 		}
 
+		_bool bIsEmissive = true;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Emissive", i, aiTextureType_EMISSIVE, 0)))
+			bIsEmissive = false;
+
+		/* [ 이미시브 맵이 있다면 사용하라 ] */
+		if (bIsEmissive)
+		{
+			_float fEmissive = 100.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+				return E_FAIL;
+		}
+
 		m_pShaderCom->Begin(0);
 
 		m_pModelCom->Render(i);
-	}*/
+	}
 
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderMapCollider())
@@ -234,27 +255,33 @@ void CErgoItem::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 HRESULT CErgoItem::Bind_ShaderResources()
 {
-	//if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
-	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
-	//	return E_FAIL;
-	//if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
-	//	return E_FAIL;
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CErgoItem::Ready_Components()
+HRESULT CErgoItem::Ready_Components(void* pArg)
 {
-	/* Com_Shader */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-	//	return E_FAIL;
+	if (m_bPulseCell)
+	{
+		/* Com_Shader */
+		if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
+			TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+			return E_FAIL;
 
-	/* For.Com_Model */ 	//아이템 테스트용 모델
-	//if (FAILED(__super::Add_Component(m_iLevelID, TEXT("Prototype_Component_Model_ErgoItem"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+		//ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+		//if (pDesc->eItemTag == ITEM_TAG::PULSE_CELL)
+
+		/* For.Com_Model */ 	//아이템 테스트용 모델
+		if (FAILED(__super::Add_Component(m_iLevelID, TEXT("Prototype_Component_Model_PulseCell"),
+			TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+			return E_FAIL;
+	}
 
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
@@ -264,12 +291,23 @@ HRESULT CErgoItem::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CErgoItem::Ready_Effect()
+HRESULT CErgoItem::Ready_Effect(void* pArg)
 {
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ErgoItem_M3P1_WB"), &desc));
+
+
+	//ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+
+	wstring wsEffectName = {};
+
+	if (m_bPulseCell)
+		wsEffectName = TEXT("EC_YW_PulseCell_Effect");
+	else
+		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
+
+	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
 	if (m_pEffect == nullptr)
 		return E_FAIL;
 
@@ -350,9 +388,12 @@ CGameObject* CErgoItem::Clone(void* pArg)
 void CErgoItem::Free()
 {
 	__super::Free();
-
-	//Safe_Release(m_pModelCom);
-	//Safe_Release(m_pShaderCom);
+	
+	if (m_bPulseCell)
+	{
+		Safe_Release(m_pModelCom);
+		Safe_Release(m_pShaderCom);
+	}
 
 	Safe_Release(m_pPhysXActorCom);
 }

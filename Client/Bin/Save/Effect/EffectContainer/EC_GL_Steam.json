@@ -1,0 +1,143 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -40.0,
+                -36.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                0.019999999552965164
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 240,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 240,
+            "FlipUV": false,
+            "Gravity": 1.0,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 11548.20703125,
+            "LifeTime_Particle": [
+                0.30000001192092896,
+                1.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 3.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fuoco_Cutscene_SteamGL",
+            "NumInstance": 500,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.5,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.25
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 1.0,
+            "Size": [
+                0.4000000059604645,
+                0.800000011920929
+            ],
+            "Speed": [
+                15.0,
+                18.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.05000000074505806,
+            "TextureTags": [
+                "",
+                "T_Smoke_04_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 1.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 300
+}

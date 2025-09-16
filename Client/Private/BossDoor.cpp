@@ -269,7 +269,8 @@ HRESULT CBossDoor::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),
+		TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
@@ -419,7 +420,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = true;
-			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
 		}
 	}
 
@@ -439,7 +439,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			break;
 		}
 
-		m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
 
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{

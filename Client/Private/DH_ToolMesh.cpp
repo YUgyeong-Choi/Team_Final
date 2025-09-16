@@ -26,6 +26,7 @@ HRESULT CDH_ToolMesh::Initialize(void* pArg)
 	m_szMeshID = PBRMeshDESC->szMeshID;
 	m_iID = PBRMeshDESC->iID;
 	m_eTargetLevel = PBRMeshDESC->eLEVEL;
+	m_InitPos = PBRMeshDESC->m_vInitPos;
 
 	PBRMeshDESC->fSpeedPerSec = 0.f;
 	PBRMeshDESC->fRotationPerSec = 0.f;

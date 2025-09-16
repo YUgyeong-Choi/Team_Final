@@ -1,4 +1,4 @@
-#include "Camera_Orbital.h"
+﻿#include "Camera_Orbital.h"
 #include "GameInstance.h"
 
 #include "PhysX_IgnoreSelfCallback.h"
@@ -71,7 +71,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
-	
+	m_pGameInstance->Set_Listener_Position(Get_TransfomCom(), {});
 	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 	//if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
 	//	m_fAlwaysDistanceTarget = 3.f;
@@ -114,7 +114,7 @@ void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 	if (m_pPlayer)
 	{
 		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(fPitch, fYaw));
-		Set_PitchYaw(fPitch, fYaw); // Set_PitchYaw ���ο��� Wrap ����
+		Set_PitchYaw(fPitch, fYaw); // Set_PitchYaw 내부에서 Wrap 적용
 
 		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
 		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
@@ -342,29 +342,62 @@ void CCamera_Orbital::Update_LockOnCameraLook(_float fTimeDelta)
 {
 	_vector vTargetLookPos = XMLoadFloat4(&static_cast<CUnit*>(m_pLockOnTarget)->Get_LockonPos());
 
-	// exp decay
+	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	const _float eyeHeight = 2.f; // 엔진/캐릭터 기준 눈높이
+	_vector vEye = vPlayerPos + XMVectorSet(0.f, eyeHeight, 0.f, 0.f);
+
+	_vector vToTarget = vTargetLookPos - vEye;
+	_float dist = XMVectorGetX(XMVector3Length(vToTarget));
+
+
+	_float eyeY = XMVectorGetY(vEye);
+	_float rawTargetY = XMVectorGetY(vTargetLookPos);
+	const _float minDY = -0.5f;  // 눈높이보다 너무 낮게 쳐다보지 않도록
+	const _float maxDY = 1.5f;  // 눈높이보다 너무 높게 쳐다보지 않도록
+	_float clampedTargetY = clamp(rawTargetY, eyeY + minDY, eyeY + maxDY);
+
+	// --- 핵심: 가까울수록 눈높이, 멀수록 타겟높이 ---
+	const _float minDist = 2.5f;   // 이 이하는 거의 눈높이만 신뢰
+	const _float maxDist = 12.0f;  // 이 이상은 타겟높이 신뢰
+	_float u = clamp((dist - minDist) / max(1e-6f, (maxDist - minDist)), 0.f, 1.f);
+
+	// 부드러운 상승 곡선(Smoothstep)
+	_float s = u * u * (3.f - 2.f * u);
+
+	// 근접에서도 약~간은 타겟 높이 반영하고 싶다면 w0 사용(원치 않으면 0.f로)
+	const _float w0 = 0.15f;          // 0.0f~0.2f 권장
+	_float w = w0 + (1.f - w0) * s;   // 최종 가중치 [w0, 1]
+
+	// 보정된 목표 Y
+	_float aimY = eyeY * (1.f - w) + clampedTargetY * w;
+
+	// 최종 aim point: xz는 타겟 유지, y만 보정
+	_vector vAim = XMVectorSet(XMVectorGetX(vTargetLookPos), aimY, XMVectorGetZ(vTargetLookPos), 0.f);
+
+	// exp decay (부드럽게 목표 지점 따라가기)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vAim, alpha);
 	m_pTransformCom->LookAt(m_vPrevLookTarget);
 
+	// 현재 카메라 LOOK벡터로부터 각도 재도출
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK) * -1;
 
 	const _float bx = XMVectorGetX(vCamLook);
 	const _float by = XMVectorGetY(vCamLook);
 	const _float bz = XMVectorGetZ(vCamLook);
 
-	// derive angles from current camera orientation
 	m_fYaw = WrapPi(atan2f(bx, bz));
 	m_fPitch = atan2f(by, sqrtf(bx * bx + bz * bz));
 
-	// distance-based pitch lift
-	_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	_float dist = XMVectorGetX(XMVector3Length(vTargetLookPos - vPlayerPos));
-	const _float maxDist = 10.f;
-	_float t = 1.f - clamp(dist / maxDist, 0.f, 1.f);
-	_float pitchOffset = XMConvertToRadians(10.f * t);
+	// distance-based pitch lift (원래 있던 로직 유지)
+	{
+		const _float maxDistPitch = 10.f;
+		_float t = 1.f - clamp(dist / maxDistPitch, 0.f, 1.f);
+		_float pitchOffset = XMConvertToRadians(10.f * t);
+		m_fPitch += pitchOffset;
+	}
 
-	m_fPitch += pitchOffset;
+	// 글로벌 피치 제한
 	m_fPitch = clamp(m_fPitch, XMConvertToRadians(-20.f), XMConvertToRadians(30.f));
 
 	Update_CameraPos(fTimeDelta);

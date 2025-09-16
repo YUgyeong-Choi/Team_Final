@@ -559,6 +559,9 @@
     <Filter Include="02.GameObjects\07.Effect\Deprecated\Explosion">
       <UniqueIdentifier>{bc5eb1b7-60bc-4699-a4fe-4b7b555d9aad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\19.Ergo">
+      <UniqueIdentifier>{c86694cb-d891-4d51-ac79-b9f1300b0d7d}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
@@ -1164,7 +1167,13 @@
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Item.h">
-      <Filter>02.GameObjects\07.Effect</Filter>
+      <Filter>02.GameObjects\03.Item</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Ergo.h">
+      <Filter>02.GameObjects\19.Ergo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AreaSoundBox.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1743,6 +1752,12 @@
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AreaSoundBox.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Ergo.cpp">
+      <Filter>02.GameObjects\19.Ergo</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

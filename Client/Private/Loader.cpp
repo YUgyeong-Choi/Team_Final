@@ -17,6 +17,7 @@
 #include "StargazerEffect.h"
 #include "ErgoItem.h"
 #include "BreakableMesh.h"
+#include "Ergo.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
@@ -75,6 +76,7 @@
 #include "PlayerLamp.h"
 #include "PlayerFrontCollider.h"
 #include "WaterPuddle.h"
+#include "AreaSoundBox.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -305,6 +307,8 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_BloodTest.json"))))
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/PE_Player_SkillWeaponParticle.json"))))
+		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_YW_ErgoTrail.json"))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -611,6 +615,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	PreTransformMatrix = XMMatrixIdentity();
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f);
 
+	//펄스 전지 모델
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PulseCell"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_CH_PROB_Potion_01.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Train"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Train.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -805,6 +814,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
 		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		CAreaSoundBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 	/* 상호 작용 문 */
@@ -887,6 +900,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	// 별바라기 전용 이펙트 세트
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StargazerEffect"),
 		CStargazerEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//에르고(몬스터 죽이면 램프에 들어오는 녀석)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Ergo"),
+		CErgo::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma region 맵 로딩
@@ -2116,7 +2134,7 @@ HRESULT CLoader::Loading_For_UI_Texture()
 
 	/* For.Prototype_Component_Texture_Button_Highlight*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Location"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_Location_%d.dds"),3))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/UI/Location/UIT_Location_%d.dds"),4))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Button_Highlight*/

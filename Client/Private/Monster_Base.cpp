@@ -132,6 +132,7 @@ void CMonster_Base::Update(_float fTimeDelta)
 
 	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 
+	Check_Drop_Ergo(fTimeDelta);
 	
 }
 
@@ -226,6 +227,11 @@ void CMonster_Base::Reset()
 	m_isCollisionPlayer = {};
 	m_isFatal = {};
 	m_isGroogyLoop = {};
+
+	SwitchDissolve(true, 0.6f, _float3{ 0.f, 0.f, 0.f }, {});
+
+	m_bDropErgo = false;
+	m_fAfter_Die_ErgoSpawnTimeAcc = 0.f;
 }
 
 HRESULT CMonster_Base::Ready_Components(void* pArg)
@@ -611,6 +617,37 @@ void CMonster_Base::Register_Events()
 
 
 	
+
+}
+
+void CMonster_Base::Check_Drop_Ergo(_float fTimeDelta)
+{
+	if (m_fHp <= 0 && m_isFatal == false)
+	{
+		if (m_fAfter_Die_ErgoSpawnTime > m_fAfter_Die_ErgoSpawnTimeAcc)
+		{
+			m_fAfter_Die_ErgoSpawnTimeAcc += fTimeDelta;
+		}
+		else
+		{
+			if (m_bDropErgo == false)
+			{
+				//죽으면 에르고 드랍
+				CGameObject::GAMEOBJECT_DESC Desc = {};
+				Desc.WorldMatrix = m_pTransformCom->Get_World4x4();
+				Desc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
+				if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Ergo"),
+					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Ergo"), &Desc)))
+				{
+
+				}
+
+				m_bDropErgo = true;
+			}
+
+		}
+
+	}
 
 }
 

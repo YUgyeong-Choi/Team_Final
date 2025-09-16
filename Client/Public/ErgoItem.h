@@ -43,8 +43,8 @@ public:
 
 
 	HRESULT Bind_ShaderResources();
-	HRESULT Ready_Components();
-	HRESULT Ready_Effect();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_Effect(void* pArg);
 	HRESULT Ready_Collider();
 
 	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
@@ -53,8 +53,12 @@ public:
 
 	_bool		m_bDoOnce = { false };
 
-	//CShader* m_pShaderCom = { nullptr };
-	//CModel* m_pModelCom = { nullptr };
+	//펄스 전지인가?
+	_bool		m_bPulseCell = { false };
+
+private:
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
 
 public:
 	static CErgoItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

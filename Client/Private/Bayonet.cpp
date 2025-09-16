@@ -117,7 +117,6 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)
