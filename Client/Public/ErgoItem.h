@@ -43,8 +43,8 @@ public:
 
 
 	HRESULT Bind_ShaderResources();
-	HRESULT Ready_Components();
-	HRESULT Ready_Effect();
+	HRESULT Ready_Components(void* pArg);
+	HRESULT Ready_Effect(void* pArg);
 	HRESULT Ready_Collider();
 
 	ITEM_TAG m_eItemTag = { ITEM_TAG::END };
