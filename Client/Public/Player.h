@@ -419,13 +419,13 @@ private: /* [ 이동관련 변수 ] */
 	_bool	 m_bSwitchBack = {};
 
 private: /* [ 인터렉션 관련변수 ] */
-	_bool  m_bInteraction[9] = { false };
-	_bool  m_bInteractionProb[9] = { false };
-	_bool  m_bInteractionProbMove[9] = { false };
-	_bool  m_bInteractionMove[9] = { false };
-	_bool  m_bInteractionRotate[9] = { false };
-	_bool  m_bInteractSound[9] = { false };
-	_float m_fInteractionTime[9] = { 0 };
+	_bool  m_bInteraction[1] = { false };
+	_bool  m_bInteractionProb[1] = { false };
+	_bool  m_bInteractionProbMove[1] = { false };
+	_bool  m_bInteractionMove[1] = { false };
+	_bool  m_bInteractionRotate[1] = { false };
+	_bool  m_bInteractSound[1] = { false };
+	_float m_fInteractionTime[1] = { 0 };
 	_bool  m_bHaveKey = false;
 	eTriggerEvent m_ecurTriggerEvent = eTriggerEvent::END;
 	unordered_set<string> m_MovableStates = {
