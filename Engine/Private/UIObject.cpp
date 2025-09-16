@@ -185,18 +185,18 @@ void CUIObject::Fade(float fTimeDelta)
 	if (!m_isFade)
 		return;
 
-	m_fFadeElapsedTime += fTimeDelta;
+	if (m_fFadeElapsedTime > m_fFadeTime)
+		m_fFadeElapsedTime = m_fFadeTime;
 
+	_float t = std::clamp(m_fFadeElapsedTime / m_fFadeTime, 0.f, 1.f);
+	m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
+
+	// 끝까지 도달하면 상태 종료
 	if (m_fFadeElapsedTime >= m_fFadeTime)
 	{
 		m_isFade = false;
 		m_fFadeElapsedTime = 0.f;
-		m_fCurrentAlpha = m_fEndAlpha;
-		return;
 	}
-
-	_float t = std::clamp(m_fFadeElapsedTime / m_fFadeTime, 0.f, 1.f);
-	m_fCurrentAlpha = LERP(m_fStartAlpha, m_fEndAlpha, t);
 }
 
 
