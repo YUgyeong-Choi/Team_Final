@@ -25,10 +25,10 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 170,
+            "Duration": 62,
             "EffectType": 1,
             "EmissiveIntensity": 3.299999952316284,
-            "EndTrack": 170,
+            "EndTrack": 62,
             "FlipUV": false,
             "Gravity": -0.5,
             "IsGravity": false,
@@ -61,7 +61,7 @@
                     ]
                 }
             ],
-            "LifeTime": 6438.8125,
+            "LifeTime": 6574.82080078125,
             "LifeTime_Particle": [
                 1.0,
                 1.0
@@ -108,8 +108,8 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.019999999552965164,
-                0.26899999380111694
+                0.017999999225139618,
+                0.06700000166893005
             ],
             "Speed": [
                 0.009999999776482582,
@@ -139,5 +139,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 200
+    "MaxFrame": 60
 }
