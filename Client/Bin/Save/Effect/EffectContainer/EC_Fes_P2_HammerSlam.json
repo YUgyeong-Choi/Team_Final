@@ -1,0 +1,247 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                0.24607330560684204
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.03813445568084717
+            ],
+            "DistortionStrength": 37.0,
+            "Duration": 62,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 62,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.14659684896469116
+                    ],
+                    "Intensity": 2.0299999713897705,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.0,
+                        6.0,
+                        2.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        8.0,
+                        2.0,
+                        8.0
+                    ],
+                    "TrackPosition": 60.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1782.610595703125,
+            "Loop": true,
+            "ModelTag": "SM_Cylinder_02_HJS",
+            "Name": "Mesh",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 6,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Aura_01_C_LGS",
+                "T_Mask_14_C_HJS",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "Color": [
+                0.47120416164398193,
+                0.45424485206604004,
+                0.4391326606273651,
+                0.36125653982162476
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 114,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 114,
+            "FlipUV": false,
+            "Gravity": -0.5,
+            "IsCircleRange": true,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.47120416164398193,
+                        0.45424485206604004,
+                        0.4391326606273651,
+                        0.36125653982162476
+                    ],
+                    "Intensity": 0.44999998807907104,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2482.253173828125,
+            "LifeTime_Particle": [
+                0.8999999761581421,
+                1.399999976158142
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 0.800000011920929,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Fes_hammerslam_p",
+            "NumInstance": 80,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -15.0,
+                15.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.10000000149011612,
+                0.0
+            ],
+            "Range": [
+                4.0,
+                1.0,
+                4.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.0,
+                3.0
+            ],
+            "Speed": [
+                4.0,
+                7.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Smoke_12_8x8_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 45.0,
+            "TileX": 8,
+            "TileY": 8,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 60
+}

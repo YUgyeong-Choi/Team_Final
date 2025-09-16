@@ -142,9 +142,6 @@
     <Filter Include="03. Observer\Slot">
       <UniqueIdentifier>{e266084c-38d3-42df-9999-4c7cde30193f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\Manager">
-      <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\LevelYW\YWTool">
       <UniqueIdentifier>{34b240a9-7dd2-4af1-af56-ac4236feb38c}</UniqueIdentifier>
     </Filter>
@@ -564,6 +561,9 @@
     </Filter>
     <Filter Include="02.GameObjects\19.Ergo">
       <UniqueIdentifier>{c86694cb-d891-4d51-ac79-b9f1300b0d7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\Manager">
+      <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

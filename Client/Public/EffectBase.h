@@ -18,8 +18,8 @@ public:
 	typedef struct tagEffectBaseDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		const _float4x4*	pSocketMatrix = { nullptr };
-		_int				iTileX = {};
-		_int				iTileY = {};
+		_int				iTileX = {1};
+		_int				iTileY = {1};
 		_bool				bBillboard = { true };
 		_bool				bAnimation = { true };
 
@@ -29,7 +29,7 @@ public:
 
 		/* PresetWorldMatrix */
 		_bool				bHasPresetMat = { false };
-		_float4x4			PresetMatrix;
+		_float4x4			PresetMatrix = {};
 	}DESC;
 
 	// Keyframes

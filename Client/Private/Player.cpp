@@ -3398,6 +3398,7 @@ HRESULT CPlayer::Ready_Stat()
 
 	return S_OK;
 }
+
 HRESULT CPlayer::Ready_Effect()
 {
 	CEffectContainer::DESC desc = {};

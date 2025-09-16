@@ -540,6 +540,7 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.vTileCnt = desc.vTileCnt;
 		m_tPCB.isTileLoop = desc.isTileLoop;
 		m_tPCB.fShrinkThreshold = desc.fShrinkThreshold;
+		m_tPCB.isCircleRange = desc.isCircleRange;
 	}
 
 	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
@@ -558,7 +559,12 @@ HRESULT CCYTool::Window_Particle()
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 10000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_tPCB.vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_tPCB.vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
-	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f");
+	ImGui::DragFloat3("Range", reinterpret_cast<_float*>(&m_vRange), 0.01f, 0.01f, 1000.f, "%.2f"); ImGui::SameLine();
+
+	m_bIsCircleRange = m_tPCB.isCircleRange == 0 ? false : true;
+	ImGui::Checkbox("CircleRange", &m_bIsCircleRange);
+	m_tPCB.isCircleRange = m_bIsCircleRange == true ? 1 : 0;
+
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.001f, 0.001f, 1000.f, "%.3f");
 	ImGui::DragFloat2("LifeTime", reinterpret_cast<_float*>(&m_vLifeTime), 0.01f, 0.f, 200.f, "%.2f");	
@@ -662,6 +668,7 @@ HRESULT CCYTool::Window_Particle()
 		desc.isTileLoop = m_tPCB.isTileLoop;
 		desc.fTileTickPerSec = m_tPCB.fTileTickPerSec;
 		desc.fShrinkThreshold = m_tPCB.fShrinkThreshold;
+		desc.isCircleRange = m_tPCB.isCircleRange;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
@@ -678,7 +685,7 @@ HRESULT CCYTool::Window_Mesh()
 	if (pME == nullptr)
 		return E_FAIL;
 
-	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\t4. Mask Only WB");
+	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave");
 	for (_uint i = 0; i < ME_END; i++)
 	{
 		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {

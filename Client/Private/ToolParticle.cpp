@@ -351,6 +351,8 @@ json CToolParticle::Serialize()
 	j["MinSpeed"] = m_tDesc.fMinSpeed;
 	j["ShrinkThreshold"] = m_tDesc.fShrinkThreshold;
 
+	j["IsCircleRange"] = m_tDesc.isCircleRange;
+
 	j["IsGravity"] = m_tDesc.bGravity;
 	j["Gravity"] = m_tDesc.fGravity;
 	j["isTileLoop"] = m_tDesc.isTileLoop;
@@ -411,6 +413,9 @@ void CToolParticle::Deserialize(const json& j)
 	if (j.contains("ShrinkThreshold"))
 		m_tDesc.fShrinkThreshold = j["ShrinkThreshold"].get<_float>();
 
+
+	if (j.contains("IsCircleRange"))
+		m_tDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
 
 	if (j.contains("IsGravity"))
 		m_tDesc.bGravity = j["IsGravity"].get<_bool>();

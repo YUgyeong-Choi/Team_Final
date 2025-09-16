@@ -292,11 +292,11 @@ PS_OUT_EFFECT_WB PS_MAIN_DISTORTION(PS_IN_BLEND In)
 {
     PS_OUT_EFFECT_WB Out = (PS_OUT_EFFECT_WB) 0;
 
-
-    Out.vDistortion = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0);
+    vector vDistort = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = vDistort;
+    Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0); // 0.5~1.0 -> 0.0~1.0
     Out.vDistortion *= g_vColor;
-    Out.vDistortion.b = g_fDistortionStrength / 255.f;
+    Out.vDistortion.b = saturate(g_fDistortionStrength / 255.f * (Out.vDistortion.r + Out.vDistortion.g));
     Out.vDistortion.b *= g_vColor.a;
     return Out;
 }
