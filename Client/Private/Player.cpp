@@ -163,7 +163,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_CAPSLOCK))
 	{
 		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
-		printf("PlayerPos X:%f, Y:%f, Z:%f\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
+		printf("PlayerPos %ff, %ff, %ff\n", XMVectorGetX(pos), XMVectorGetY(pos), XMVectorGetZ(pos));
 	}
 
 	if (KEY_DOWN(DIK_1))
@@ -341,12 +341,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
 	SitAnimationMove(fTimeDelta);
-
-	/* [ 이곳은 실험실입니다. ] */
-	if (KEY_DOWN(DIK_Y))
-	{
-		SwitchDissolve(true, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
-	}
 
 	/* [ 소모자원 리셋 ] */
 	if (KEY_DOWN(DIK_U))

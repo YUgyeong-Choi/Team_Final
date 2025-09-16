@@ -291,6 +291,8 @@ void CCamera_CutScene::Update(_float fTimeDelta)
 	if (m_bStopCamera)
 		fTimeDelta = 0.f;
 
+	m_pGameInstance->Set_Listener_Position(Get_TransfomCom(), {});
+
 	__super::Update(fTimeDelta);
 }
 

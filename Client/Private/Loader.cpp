@@ -75,6 +75,7 @@
 #include "PlayerLamp.h"
 #include "PlayerFrontCollider.h"
 #include "WaterPuddle.h"
+#include "AreaSoundBox.h"
 #pragma endregion
 
 #pragma region LEVEL_GL
@@ -804,6 +805,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
 		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		CAreaSoundBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

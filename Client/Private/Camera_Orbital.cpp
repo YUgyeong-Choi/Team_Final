@@ -71,7 +71,7 @@ void CCamera_Orbital::Update(_float fTimeDelta)
 	if (!m_pPlayer)
 		return;
 
-	
+	m_pGameInstance->Set_Listener_Position(Get_TransfomCom(), {});
 	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pPlayer);
 	//if (pPlayer->Get_PlayerState() != EPlayerState::IDLE)
 	//	m_fAlwaysDistanceTarget = 3.f;

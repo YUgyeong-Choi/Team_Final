@@ -1166,6 +1166,9 @@
     <ClInclude Include="..\public\Item.h">
       <Filter>02.GameObjects\07.Effect</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AreaSoundBox.h">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1743,6 +1746,9 @@
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AreaSoundBox.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
