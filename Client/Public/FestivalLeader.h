@@ -166,7 +166,7 @@ public:
 public:
 	void BreakPanel();
 	void EnterNextCutScene();
-	
+	virtual void EnterCutScene() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -210,7 +210,6 @@ private:
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 	virtual void Ready_SoundEvents() override;
-	virtual void EnterCutScene() override;
 private:
 	array<CPhysXDynamicActor*, EBossBones::Collider_Count> m_Colliders{};
 

@@ -7,6 +7,7 @@
 #include "Effect_Manager.h"
 #include "Player.h"
 #include "UI_Manager.h"
+#include "FestivalLeader.h"
 
 #pragma region help
 // ===== Speed-curve helpers =====
@@ -1036,6 +1037,20 @@ void CCamera_CutScene::Event()
 		{
 			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
 		}
+
+		if (m_iCurrentFrame == 1005)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->EnterCutScene();
+		}
+
+		if (m_iCurrentFrame == 1201)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->BreakPanel();
+		}
+		//EnterNextCutScene
+
 
 		break;
 	default:

@@ -118,7 +118,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_V))
 	{
-		BreakPanel();
+		Reset();
 	}
 	if (KEY_DOWN(DIK_C))
 	{
