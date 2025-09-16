@@ -316,7 +316,6 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{
-
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 			m_pAnimator->SetTrigger("Dead");
 			m_strStateName = "Dead";

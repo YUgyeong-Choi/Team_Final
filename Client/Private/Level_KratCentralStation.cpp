@@ -100,6 +100,15 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//if (FAILED(Ready_WaterPuddle()))
 	//	return E_FAIL;
 
+#pragma region YW 에르고 테스트
+	//CGameObject::GAMEOBJECT_DESC Desc = {};
+	//Desc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
+	//if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_Ergo"),
+	//	m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Ergo"), &Desc)))
+	//	return E_FAIL;
+#pragma endregion
+
+
 	Reset();
 
 	return S_OK;

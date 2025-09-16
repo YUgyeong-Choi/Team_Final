@@ -1,0 +1,78 @@
+{
+    "Animation": false,
+    "Billboard": false,
+    "CenterColor": [
+        0.011923948302865028,
+        0.16058920323848724,
+        0.7591623067855835,
+        1.0
+    ],
+    "Color": [
+        0.16874541342258453,
+        0.4096730351448059,
+        0.565445065498352,
+        0.9476439952850342
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 20,
+    "EffectType": 3,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 20,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                0.16874541342258453,
+                0.4096730351448059,
+                0.565445065498352,
+                0.9476439952850342
+            ],
+            "Intensity": 4.170000076293945,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeDuration": 0.44999998807907104,
+    "LifeTime": 0.0,
+    "Loop": true,
+    "Name": "EC_YW_ErgoTrail",
+    "NodeInterval": 0.016599999740719795,
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 0,
+    "StartTrack": 0,
+    "Subdivisions": 12,
+    "TextureTags": [
+        "T_Tile_Noise_49_C_HJS",
+        "",
+        "T_Tile_Noise_42_C_KMH",
+        "T_Tile_Noise_48_C_HJS"
+    ],
+    "TextureUsage": [
+        true,
+        false,
+        true,
+        true
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 100.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}

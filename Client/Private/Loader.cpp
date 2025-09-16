@@ -17,6 +17,7 @@
 #include "StargazerEffect.h"
 #include "ErgoItem.h"
 #include "BreakableMesh.h"
+#include "Ergo.h"
 #pragma endregion
 
 #pragma region LEVEL_KRAT_HOTEL
@@ -305,6 +306,8 @@ HRESULT CLoader::Loading_For_Static()
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_BloodTest.json"))))
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/PE_Player_SkillWeaponParticle.json"))))
+		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_YW_ErgoTrail.json"))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
@@ -887,6 +890,11 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	// 별바라기 전용 이펙트 세트
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_StargazerEffect"),
 		CStargazerEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	//에르고(몬스터 죽이면 램프에 들어오는 녀석)
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Ergo"),
+		CErgo::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma region 맵 로딩

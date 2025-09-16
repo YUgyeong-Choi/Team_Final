@@ -205,6 +205,7 @@
     <ClInclude Include="..\Public\DHTool.h" />
     <ClInclude Include="..\Public\DH_ToolMesh.h" />
     <ClInclude Include="..\public\ErgoItem.h" />
+    <ClInclude Include="..\public\Ergo.h" />
     <ClInclude Include="..\Public\FestivalLeader.h" />
     <ClInclude Include="..\Public\KeyDoor.h" />
     <ClInclude Include="..\public\MapLoader.h" />
@@ -403,6 +404,7 @@
     <ClCompile Include="..\Private\DHTool.cpp" />
     <ClCompile Include="..\Private\DH_ToolMesh.cpp" />
     <ClCompile Include="..\private\ErgoItem.cpp" />
+    <ClCompile Include="..\private\Ergo.cpp" />
     <ClCompile Include="..\Private\FestivalLeader.cpp" />
     <ClCompile Include="..\Private\KeyDoor.cpp" />
     <ClCompile Include="..\private\MapLoader.cpp" />
