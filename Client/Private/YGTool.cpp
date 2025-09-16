@@ -849,7 +849,7 @@ HRESULT CYGTool::Render_CameraTool()
 	
 
 	static _float fCurFov = 60.0f; // 초기값 (기본 FOV)
-	if (ImGui::DragFloat("FreeCam FOV", &fCurFov, 0.1f, 30.0f, 120.0f))
+	if (ImGui::DragFloat("FreeCam FOV", &fCurFov, 0.1f, 1.0f, 120.0f))
 	{
 		CCamera_Manager::Get_Instance()->GetFreeCam()->Set_Fov(XMConvertToRadians(fCurFov));
 	}
@@ -1587,7 +1587,7 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		const char* interpNames[] = { "NONE", "LERP", "CATMULL_ROM" };
 		int interpFov = static_cast<int>(m_EditTargetKey.interpTarget);
-		if (ImGui::Combo("Fov Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
+		if (ImGui::Combo("Target Interp", &interpFov, interpNames, IM_ARRAYSIZE(interpNames)))
 			m_EditTargetKey.interpTarget = static_cast<INTERPOLATION_CAMERA>(interpFov);
 
 		{ // [ *********** 그래프 ******************** ] 

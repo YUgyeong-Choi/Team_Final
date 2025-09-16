@@ -1,0 +1,103 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        0.24607330560684204
+    ],
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+    ],
+    "DistortionStrength": 32.79999923706055,
+    "Duration": 44,
+    "EffectType": 2,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 44,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.08376961946487427
+            ],
+            "Intensity": 2.0299999713897705,
+            "Interpolation": 2,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                2.0,
+                4.0,
+                2.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                8.0,
+                1.0,
+                8.0
+            ],
+            "TrackPosition": 42.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 1700.5533447265625,
+    "Loop": true,
+    "ModelTag": "SM_Cylinder_02_HJS",
+    "Name": "Fes_hammerslam_shockwave",
+    "NumKeyFrames": 2,
+    "RenderGroup": 8,
+    "ShaderPass": 6,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_Aura_01_C_LGS",
+        "T_Mask_14_C_HJS",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        true,
+        true,
+        false
+    ],
+    "Threshold": 0.8999999761581421,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}

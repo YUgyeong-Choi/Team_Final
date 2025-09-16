@@ -228,6 +228,8 @@ void CMonster_Base::Reset()
 	m_isFatal = {};
 	m_isGroogyLoop = {};
 
+	SwitchDissolve(true, 0.6f, _float3{ 0.f, 0.f, 0.f }, {});
+
 	m_bDropErgo = false;
 	m_fAfter_Die_ErgoSpawnTimeAcc = 0.f;
 }

@@ -189,6 +189,7 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.vRange = pDesc->vRange;
 	m_tCBuffer.fShrinkThreshold = pDesc->fShrinkThreshold;
 	XMStoreFloat4x4(&m_tCBuffer.g_CombinedMatrix, XMMatrixIdentity());
+	m_tCBuffer.isCircleRange = pDesc->isCircleRange ? 1 : 0;
 
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */

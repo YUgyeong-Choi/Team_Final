@@ -161,6 +161,15 @@ struct PS_OUT_EFFECT_WB
     vector vEmissive : SV_TARGET2;
 };
 
+struct PS_OUT_EFFECT_WB_D
+{
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
+    vector vDistortion : SV_TARGET3;
+};
+
+
 PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_SCROLL_WB(PS_IN In)
 {
     PS_OUT_EFFECT_WB Out;
@@ -212,6 +221,44 @@ PS_OUT_EFFECT_WB PS_MAIN_MASKONLY_WB(PS_IN In)
     Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
         
     
+    return Out;
+}
+
+PS_OUT_EFFECT_WB_D PS_MAIN_SHOCKWAVE(PS_IN In)
+{
+    PS_OUT_EFFECT_WB_D Out;
+        
+    float2 uv = In.vTexcoord;
+    
+    uv.x *= 5.0f; // 가로 타일링
+    
+    
+    float mask = g_MaskTexture1.Sample(DefaultSampler, uv).r;
+    if (mask < 0.003f)
+        discard;
+    float4 vPreColor;
+    float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    vector vColor;
+    
+    vColor.rgb = vPreColor.rgb * mask * g_fIntensity;
+    vColor.a = vPreColor.a * mask;
+    
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+    vector vDistort = g_MaskTexture2.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
+    Out.vDistortion = vDistort;
+    Out.vDistortion = saturate(Out.vDistortion * 2.0 - 1.0); // 0.5~1.0 -> 0.0~1.0
+    Out.vDistortion *= g_vColor;
+    Out.vDistortion.b = saturate(g_fDistortionStrength / 255.f * (Out.vDistortion.r + Out.vDistortion.g));
+    Out.vDistortion.b *= g_vColor.a;
+
     return Out;
 }
 
@@ -281,6 +328,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_WB();
+    }
+    pass Shockwave // 6
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SHOCKWAVE();
     }
    
 }

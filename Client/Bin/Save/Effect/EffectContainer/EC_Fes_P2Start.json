@@ -1,0 +1,395 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.18974262475967407,
+                0.07329845428466797,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 67,
+            "EffectType": 0,
+            "EmissiveIntensity": 1.75,
+            "EndTrack": 67,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.869999885559082,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        5.0,
+                        5.0,
+                        5.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        -1.5,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2703.4580078125,
+            "Loop": true,
+            "Name": "Fes_P2Start_DownLFire1",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_10_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 70.0,
+            "TileX": 9,
+            "TileY": 9
+        },
+        {
+            "Accel": [
+                -10.0,
+                -5.0
+            ],
+            "Animation": false,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.2188536524772644,
+                0.07329845428466797,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 91,
+            "EffectType": 1,
+            "EmissiveIntensity": 3.0,
+            "EndTrack": 91,
+            "FlipUV": false,
+            "Gravity": 1.0,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.7300000190734863,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 5578.08837890625,
+            "LifeTime_Particle": [
+                0.38999998569488525,
+                1.7000000476837158
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 1.2000000476837158,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 2.0,
+            "Name": "Fuoco_BellyFire_tickParticle1",
+            "NumInstance": 129,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.4472135901451111,
+                0.7745966911315918,
+                0.4472135901451111
+            ],
+            "OrbitSpeed": [
+                -120.0,
+                120.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.7799999713897705,
+                0.0
+            ],
+            "Range": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.019999999552965164,
+                0.05000000074505806
+            ],
+            "Speed": [
+                5.0,
+                10.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.019999999552965164,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.1882352977991104,
+                0.07450980693101883,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 53,
+            "EffectType": 0,
+            "EmissiveIntensity": 1.75,
+            "EndTrack": 53,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Intensity": 4.239999771118164,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        3.0,
+                        6.0,
+                        3.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 4.239999771118164,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        3.0,
+                        9.0,
+                        3.0
+                    ],
+                    "TrackPosition": 5.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1772.52587890625,
+            "Loop": true,
+            "Name": "Fes_P2Start_UPFire1",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_06_8x8_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 70.0,
+            "TileX": 8,
+            "TileY": 8
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.18974262475967407,
+                0.07329845428466797,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 67,
+            "EffectType": 0,
+            "EmissiveIntensity": 1.75,
+            "EndTrack": 79,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.869999885559082,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.2374490350484848,
+                        -0.32099735736846924,
+                        -0.04605815187096596,
+                        0.9156731367111206
+                    ],
+                    "Scale": [
+                        5.000691890716553,
+                        5.000689506530762,
+                        5.000035285949707
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        1.0,
+                        -1.5,
+                        1.0
+                    ]
+                }
+            ],
+            "LifeTime": 2245.97509765625,
+            "Loop": true,
+            "Name": "Fes_P2Start_DownLFire1",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 12,
+            "TextureTags": [
+                "",
+                "T_SubUV_Fire_10_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 70.0,
+            "TileX": 9,
+            "TileY": 9
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 82
+}

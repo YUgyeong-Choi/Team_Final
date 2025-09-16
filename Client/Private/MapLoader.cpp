@@ -1041,7 +1041,7 @@ HRESULT CMapLoader::Ready_Stargazer(const _char* Map)
 				WorldMatrix.m[row][col] = WorldMatrixJson[row][col];
 
 		CStargazer::STARGAZER_DESC Desc{};
-		Desc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+		Desc.iLevelID = m_pGameInstance->GetCurrentLevelIndex();
 		Desc.WorldMatrix = WorldMatrix;
 		if (StargazerData.contains("Tag") && StargazerData["Tag"].is_number_unsigned())
 		{

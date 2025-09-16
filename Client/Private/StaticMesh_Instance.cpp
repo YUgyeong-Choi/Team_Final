@@ -88,7 +88,7 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 		}
 	}
 
-	//현재 활성화된 지역이 스테이션입니다.
+	//현재 활성화된 지역이 푸오코입니다.
 	if (eAreaMgr == AREAMGR::FUOCO)
 	{
 		if (m_wsMap == TEXT("FIRE_EATER"))
@@ -97,8 +97,8 @@ void CStaticMesh_Instance::Late_Update(_float fTimeDelta)
 		}
 	}
 
-	//현재 활성화된 지역이 스테이션입니다.
-	if (eAreaMgr == AREAMGR::OUTER)
+	//현재 활성화된 지역이 외부입니다.
+	if (eAreaMgr == AREAMGR::OUTER || eAreaMgr == AREAMGR::FESTIVAL)
 	{
 		if (m_wsMap == TEXT("OUTER"))
 		{

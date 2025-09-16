@@ -67,7 +67,7 @@
       "TriggerType": 3,
       "ObjectTag": "",
       "CanCancel": 1,
-      "vPos": [ 56.663040, 0.2, 0.750669 ],
+      "vPos": [ 56.663040, 0.2, 0.0 ],
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ -2.0, 0.0, 0.0 ],
       "triggerSize": [ 0.6, 0.2, 0.4 ],

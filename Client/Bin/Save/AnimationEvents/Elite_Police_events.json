@@ -12,24 +12,40 @@
             "Duration": 170.0,
             "Events": [
                 {
+                    "EventName": "Turnnig",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 5.0
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 46.0
+                },
+                {
+                    "EventName": "WhooshSound",
+                    "Time": 53.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 54.0
                 },
                 {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 66.0
-                },
-                {
-                    "EventName": "Turnnig",
-                    "Time": 1.0
-                },
-                {
                     "EventName": "WeaponAttackOn",
                     "Time": 58.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 66.0
                 },
                 {
                     "EventName": "WeaponAttackOff",
@@ -52,8 +68,24 @@
             "Duration": 149.0,
             "Events": [
                 {
+                    "EventName": "StepSound",
+                    "Time": 2.0
+                },
+                {
                     "EventName": "SetRootStep",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 3.059699296951294
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -64,16 +96,20 @@
                     "Time": 40.0
                 },
                 {
+                    "EventName": "WeaponAttackOn",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "WhooshSound",
+                    "Time": 43.0
+                },
+                {
                     "EventName": "FastAnimSpeed",
                     "Time": 43.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
                     "Time": 60.0
-                },
-                {
-                    "EventName": "WeaponAttackOn",
-                    "Time": 42.0
                 },
                 {
                     "EventName": "WeaponAttackOff",
@@ -96,36 +132,72 @@
             "Duration": 197.0,
             "Events": [
                 {
-                    "EventName": "SetRootStep",
-                    "Time": 20.0
-                },
-                {
-                    "EventName": "ResetRootStep",
-                    "Time": 72.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
-                    "Time": 69.0
-                },
-                {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 82.0
-                },
-                {
-                    "EventName": "SlowAnimSpeed",
-                    "Time": 64.0
+                    "EventName": "StepSound",
+                    "Time": 2.0
                 },
                 {
                     "EventName": "Turnnig",
                     "Time": 3.0
                 },
                 {
-                    "EventName": "WeaponAttackOff",
-                    "Time": 92.0
+                    "EventName": "AttackSound",
+                    "Time": 3.4383745193481445
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 7.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 9.0
+                },
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "SlowAnimSpeed",
+                    "Time": 64.0
                 },
                 {
                     "EventName": "WeaponAttackOn",
                     "Time": 68.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 69.0
+                },
+                {
+                    "EventName": "WhooshSound",
+                    "Time": 69.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 72.0
+                },
+                {
+                    "EventName": "WhooshSound",
+                    "Time": 73.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 82.0
+                },
+                {
+                    "EventName": "WeaponAttackOff",
+                    "Time": 92.0
                 }
             ],
             "IsLoop": false,
@@ -144,20 +216,40 @@
             "Duration": 172.0,
             "Events": [
                 {
+                    "EventName": "AttackSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 6.0
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 62.0
+                },
+                {
+                    "EventName": "WhooshSound",
+                    "Time": 64.0
                 },
                 {
                     "EventName": "FastAnimSpeed",
                     "Time": 64.0
                 },
                 {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 77.0
-                },
-                {
                     "EventName": "WeaponAttackOn",
                     "Time": 65.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 77.0
                 },
                 {
                     "EventName": "WeaponAttackOff",
@@ -193,28 +285,40 @@
             "Duration": 150.0,
             "Events": [
                 {
-                    "EventName": "SetRootLargeStep",
-                    "Time": 60.0
+                    "EventName": "AttackSound",
+                    "Time": 4.0
                 },
                 {
-                    "EventName": "ResetRootStep",
-                    "Time": 89.0
-                },
-                {
-                    "EventName": "FastAnimSpeed",
-                    "Time": 65.0
-                },
-                {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 84.0
+                    "EventName": "MovementSound",
+                    "Time": 5.0
                 },
                 {
                     "EventName": "Turnnig",
                     "Time": 45.0
                 },
                 {
+                    "EventName": "SetRootLargeStep",
+                    "Time": 60.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 65.0
+                },
+                {
+                    "EventName": "ShoulderSound",
+                    "Time": 79.0
+                },
+                {
                     "EventName": "ElbowOn",
                     "Time": 80.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 89.0
                 },
                 {
                     "EventName": "ElbowOff",
@@ -230,20 +334,36 @@
             "Duration": 160.0,
             "Events": [
                 {
-                    "EventName": "FastAnimSpeed",
-                    "Time": 87.0
+                    "EventName": "MovementSound",
+                    "Time": 4.0
                 },
                 {
-                    "EventName": "ResetAnimSpeed",
-                    "Time": 106.0
+                    "EventName": "AttackSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 6.0
                 },
                 {
                     "EventName": "ElbowOn",
                     "Time": 85.0
                 },
                 {
+                    "EventName": "ShoulderSound",
+                    "Time": 87.0
+                },
+                {
+                    "EventName": "FastAnimSpeed",
+                    "Time": 87.0
+                },
+                {
                     "EventName": "ElbowOff",
                     "Time": 104.0
+                },
+                {
+                    "EventName": "ResetAnimSpeed",
+                    "Time": 106.0
                 }
             ],
             "IsLoop": false,
@@ -281,6 +401,12 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_End",
             "Duration": 265.0,
+            "Events": [
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 4.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -295,6 +421,16 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Ing",
             "Duration": 119.0,
+            "Events": [
+                {
+                    "EventName": "DmgSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "GrowlSound",
+                    "Time": 7.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -323,6 +459,12 @@
         {
             "ClipName": "AS_Groggy_Start",
             "Duration": 85.0,
+            "Events": [
+                {
+                    "EventName": "DmgSound",
+                    "Time": 5.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -330,6 +472,20 @@
         {
             "ClipName": "AS_Hit_Dead_B",
             "Duration": 109.0,
+            "Events": [
+                {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 50.0
+                },
+                {
+                    "EventName": "BodyFallSound",
+                    "Time": 62.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -385,6 +541,20 @@
         {
             "ClipName": "AS_Idle_Spawn_01_Loop",
             "Duration": 200.0,
+            "Events": [
+                {
+                    "EventName": "ImpactGroundSound",
+                    "Time": 72.0
+                },
+                {
+                    "EventName": "ImpactGroundSound",
+                    "Time": 156.0
+                },
+                {
+                    "EventName": "ImpactGroundSound",
+                    "Time": 191.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -413,6 +583,32 @@
         {
             "ClipName": "AS_Run_C_F",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 7.668935775756836
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 57.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 57.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -434,6 +630,20 @@
         {
             "ClipName": "AS_Turn_C_L",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 40.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 85.0
@@ -441,6 +651,20 @@
         {
             "ClipName": "AS_Turn_C_R",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 40.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 40.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 85.0
@@ -448,6 +672,28 @@
         {
             "ClipName": "AS_Walk_C_B",
             "Duration": 88.0,
+            "Events": [
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 84.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -462,6 +708,32 @@
         {
             "ClipName": "AS_Walk_C_F",
             "Duration": 88.0,
+            "Events": [
+                {
+                    "EventName": "WalkVoiceSound",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 84.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -476,6 +748,28 @@
         {
             "ClipName": "AS_Walk_C_L",
             "Duration": 88.0,
+            "Events": [
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 84.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -490,6 +784,32 @@
         {
             "ClipName": "AS_Walk_C_R",
             "Duration": 88.0,
+            "Events": [
+                {
+                    "EventName": "WalkVoiceSound",
+                    "Time": 20.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 33.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 84.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 84.0
+                }
+            ],
             "IsLoop": true,
             "RootMotion": false,
             "TickPerSecond": 55.0

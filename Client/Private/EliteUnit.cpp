@@ -837,7 +837,6 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
                 if (m_eCurrentState == EEliteState::FATAL || m_eCurrentState == EEliteState::PARALYZATION)
                     break;
                 SwitchFury(false, 1.f);
-                SwitchEmissive(false, 1.f);
                 m_bGroggyActive = false;
                 m_fGroggyGauge = 0.f;
                 m_pAnimator->SetPlayRate(1.f);

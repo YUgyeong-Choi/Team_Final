@@ -26,6 +26,7 @@ public:
 		_float2			vTileCnt = { 1.f,1.f };
 		_float			fTileTickPerSec = { 60.f };
 		_float			fShrinkThreshold = { 0.01f };
+		_bool			isCircleRange = { false };
 
 		/* --- Particle Parameters --- */
 		_float2			vLifeTime;
