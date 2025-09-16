@@ -231,6 +231,11 @@ void CUI_Manager::Background_Fade(_float fStartAlpha, _float fEndAlpha, _float f
 	if (nullptr == m_UImap.find(L"BackGround")->second)
 		return;
 
+	if (fStartAlpha == 0.f)
+	{
+		m_UImap.find(L"BackGround")->second->Set_Alpha(0.f);
+	}
+
 	
 	m_UImap.find(L"BackGround")->second->Reset_isFade();
 	m_UImap.find(L"BackGround")->second->FadeStart(fStartAlpha, fEndAlpha, fTime);
