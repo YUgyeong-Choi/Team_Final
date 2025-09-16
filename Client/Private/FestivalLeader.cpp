@@ -245,7 +245,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 			desc.pSocketMatrix = nullptr;
 			desc.pParentMatrix = nullptr;
-			const _float4x4* socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+			const _float4x4* socketPtr = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
 			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 			_matrix socket = XMLoadFloat4x4(socketPtr);
 			_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -254,8 +254,8 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_OnehandSlam"), &desc);
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2Start"), &desc);
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
@@ -280,6 +280,8 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 	Update_Collider();
+
+
 }
 
 void CFestivalLeader::Late_Update(_float fTimeDelta)
@@ -442,6 +444,7 @@ void CFestivalLeader::Ready_BoneInformation()
 	findBone("Ref_Bip001-L-Finger21", EBossBones::LeftMiddleFingerStart);
 	findBone("Skin_Bip001-R-Finger21", EBossBones::RightMiddleFingerStart);
 	findBone("Bn_Head_Jaw_02", EBossBones::HeadJaw);
+	findBone("Bip001-Neck", EBossBones::Neck);
 
 	auto it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "BN_Weapon_R"); });
@@ -1481,8 +1484,6 @@ HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool
 				++itEff;
 		}
 	}
-
-
 	return S_OK;
 }
 
@@ -1544,6 +1545,20 @@ void CFestivalLeader::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+}
+
+void CFestivalLeader::Calc_WeaponDir()
+{
+	if (m_bIsPhase2)
+	{
+		m_vPrevWeaponPos = m_vCurWeaponPos;
+		
+		auto CurMat = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+		_vector CurPos = CurMat.r[3];
+
+		XMStoreFloat3(&m_vCurWeaponPos, CurPos);
+		XMStoreFloat3(&m_vWeaponDir, CurPos - XMLoadFloat3(&m_vPrevWeaponPos));
+	}
 }
 
 void CFestivalLeader::UpdatePatternWeight(_int iPattern)

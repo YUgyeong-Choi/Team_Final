@@ -209,6 +209,9 @@ private:
 
 	virtual void Ready_SoundEvents() override;
 	virtual void EnterCutScene() override;
+
+	// effect
+	void Calc_WeaponDir();
 private:
 	array<CPhysXDynamicActor*, EBossBones::Collider_Count> m_Colliders{};
 
@@ -242,6 +245,9 @@ private:
 	_bool	m_bLeftHand = true;
 	_bool   m_bLeftKnee = true;
 	_bool   m_bFullbodyEffect = false;
+	_float3 m_vCurWeaponPos = {};
+	_float3 m_vPrevWeaponPos = {};
+	_float3 m_vWeaponDir = {};
 
 	EBossAttackPattern m_eCurAttackPattern = EBossAttackPattern::BAP_NONE;
 	EBossAttackPattern m_ePrevAttackPattern = EBossAttackPattern::BAP_NONE;
