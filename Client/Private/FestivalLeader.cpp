@@ -1248,7 +1248,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
 	else if (stEffectTag == TEXT("EC_Fes_Scratch")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
-	{
+	{   
 		_uint iFinger = m_bLeftHand ? LeftMiddleFingerStart : RightMiddleFingerStart;
 
 		desc.pSocketMatrix = nullptr;
