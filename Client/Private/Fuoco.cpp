@@ -1851,6 +1851,15 @@ void CFuoco::Ready_SoundEvents()
 			}
 			m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Growl_", 3);
 		});
+
+	m_pAnimator->RegisterEventListener("FuryStartSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_MT_Mechanic_M_Land_01");
+			}
+		});
+
 }
 
 void CFuoco::UpdatePatternWeight(_int iPattern)
