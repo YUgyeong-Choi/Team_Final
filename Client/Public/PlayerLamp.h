@@ -44,6 +44,10 @@ protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Light();
 
+public:
+	//에르고를 흡수 했을 때 나오는 이펙트 재생(영웅)
+	HRESULT Play_Absorbe_Effect();
+
 public: /* [ 소유자 (Unit) 을 가져온다. ] */
 	class CPlayer* Get_Owner() const { return m_pOwner; }
 	void Clear_Owner() { m_pOwner = nullptr; }

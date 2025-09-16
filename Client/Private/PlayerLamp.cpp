@@ -258,6 +258,13 @@ HRESULT CPlayerLamp::Ready_Light()
 	return S_OK;
 }
 
+HRESULT CPlayerLamp::Play_Absorbe_Effect()
+{
+	//여기서 흡수 이펙트 재생하면됨
+
+	return S_OK;
+}
+
 CPlayerLamp* CPlayerLamp::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPlayerLamp* pInstance = new CPlayerLamp(pDevice, pContext);
