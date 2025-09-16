@@ -1,0 +1,143 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -30.0,
+                -10.0
+            ],
+            "Animation": false,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.06989939510822296,
+                0.2253701239824295,
+                0.3926701545715332,
+                1.0
+            ],
+            "Color": [
+                0.018091607838869095,
+                0.0862904042005539,
+                0.3141361474990845,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 91,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 91,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.018091607838869095,
+                        0.0862904042005539,
+                        0.3141361474990845,
+                        1.0
+                    ],
+                    "Intensity": 10.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2721.943115234375,
+            "LifeTime_Particle": [
+                0.38999998569488525,
+                0.5
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 1.2000000476837158,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.30000001192092896,
+            "Name": "EC_GL_Door_Button_Fail",
+            "NumInstance": 50,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.40824827551841736,
+                0.8164965510368347,
+                0.40824827551841736
+            ],
+            "OrbitSpeed": [
+                -45.0,
+                45.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.029999999329447746,
+                0.0
+            ],
+            "Range": [
+                0.30000001192092896,
+                0.30000001192092896,
+                0.30000001192092896
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "Speed": [
+                3.0,
+                5.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 90
+}

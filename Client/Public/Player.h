@@ -312,6 +312,9 @@ public:/*[스탯 관련]*/
 
 	void Recovery_Ergo();
 
+public:
+	void Check_RainArea();
+
 private:
 	//발아래 뭐가 있는지확인(발소리). <카펫, 나무, 돌, 시체> 등등 소리 
 	void Detect_FootstepSurface(eAnimCategory eAnim);
@@ -358,6 +361,8 @@ private: /* [ 텔레포트 ] */
 	_float m_fTeleportTime = {};
 	// 기본 위치 정해주기
 	_float3 m_vTeleportPos = { 51.3f, 1.f, -5.1f };
+
+	_bool m_bCheckRain = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

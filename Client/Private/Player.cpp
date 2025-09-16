@@ -235,13 +235,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_E))
 		{
 			CEffectContainer::DESC Lightdesc = {};
-			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
 			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
 		}
-
+		
 		if (KEY_DOWN(DIK_Z))
 		{
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
@@ -2664,7 +2664,7 @@ void CPlayer::Start_Teleport()
 	m_bTeleport = true;
 	m_bIsInvincible = true;
 	m_bTeleportFadeStart = false;
-	
+	m_bCheckRain = false;
 	m_pAnimator->SetTrigger("Teleport");
 	SwitchDissolve(false, 0.4f, _float3{ 0.f, 0.749f, 1.f }, {});
 	//CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.f);
@@ -2710,12 +2710,21 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			Get_Controller()->Set_Transform(posTrans);
 			SwitchDissolve(true, 0.4f, _float3{ 0.f, 0.749f, 1.f }, {});
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 2.f);
+			
+			
 		}
 
+		if (!m_bCheckRain && m_fTeleportTime > 3.f)
+		{
+			Check_RainArea();
+			m_bCheckRain = true;
+		}
 	
 
 		if (!m_fIsInvincible && m_fTeleportTime > 5.f)
 		{
+		
+
 			m_bTeleport = false;
 			m_bTeleportFadeStart = false;
 			
@@ -2845,6 +2854,18 @@ void CPlayer::Recovery_Ergo()
 	m_fErgo += m_fLostErgo;
 	m_fLostErgo = 0.f;
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+}
+
+void CPlayer::Check_RainArea()
+{
+	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr())
+	{
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
+	}
+	else
+	{
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
+	}
 }
 
 void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)

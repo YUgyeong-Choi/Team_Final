@@ -69,6 +69,8 @@ public:
 	virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 
+	void Restore();
+
 private:
 	void LoadAnimDataFromJson(CModel* pModel, CAnimator* pAnimator);
 	void Find_Player();
