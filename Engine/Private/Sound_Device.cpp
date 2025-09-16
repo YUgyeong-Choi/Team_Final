@@ -47,7 +47,7 @@ HRESULT CSound_Device::Initialize()
     if (outputType != FMOD_OUTPUTTYPE_ASIO)
     {
         m_pCoreSystem->setDSPBufferSize(256, 4);
-        m_pCoreSystem->setSoftwareFormat(48000, FMOD_SPEAKERMODE_STEREO, 0);
+        m_pCoreSystem->setSoftwareFormat(48000, FMOD_SPEAKERMODE_DEFAULT, 0);
     }
 
     FMOD_ADVANCEDSETTINGS adv = {};

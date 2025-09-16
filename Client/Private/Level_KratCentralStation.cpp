@@ -2130,10 +2130,10 @@ HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 
 	//천막
 	Desc.vSecondWorldMatrix = _float4x4(
-		1.0f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.0f, 0.0f,
-		405.11f, 15.7f, -45.86f, 1.0f
+		1.3f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.3f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.3f, 0.0f,
+		405.11f, 16.f, -44.5f, 1.0f
 	);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"), &Desc)))
