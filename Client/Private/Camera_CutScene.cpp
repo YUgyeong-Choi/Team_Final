@@ -1106,13 +1106,22 @@ void CCamera_CutScene::Event()
 			unit->EnterCutScene();
 		}
 
-		if (m_iCurrentFrame == 1201)
+		if (m_iCurrentFrame == 1190)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->BreakPanel();
 		}
-		//EnterNextCutScene
 
+		if (m_iCurrentFrame == 1425)
+		{
+			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			unit->EnterNextCutScene();
+		}
+		
+		if (m_iCurrentFrame == 1490)
+		{
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+		}
 
 		break;
 	default:

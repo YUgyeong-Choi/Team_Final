@@ -201,7 +201,7 @@
             ],
             "fFov": 17.200000762939453,
             "interpFov": 1,
-            "keyFrame": 1415
+            "keyFrame": 1430
         },
         {
             "curveType": 0,
@@ -214,7 +214,7 @@
             ],
             "fFov": 60.0,
             "interpFov": 0,
-            "keyFrame": 1430
+            "keyFrame": 1445
         }
     ],
     "vecMatrixPosData": [
