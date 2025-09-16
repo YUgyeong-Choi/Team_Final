@@ -275,6 +275,6 @@
             "isTileLoop": false
         }
     ],
-    "Loop": false,
+    "Loop": true,
     "MaxFrame": 12
 }

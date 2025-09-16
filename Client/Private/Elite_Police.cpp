@@ -214,8 +214,8 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
-	
-	
+
+
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
@@ -233,8 +233,8 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
 				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
-			
-			
+
+
 
 			m_isFirstGroggy = true;
 		}
@@ -249,7 +249,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		// 
 		CUI_Guide::UI_GUIDE_DESC eDesc{};
 
-		eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Fable.json")};
+		eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Fable.json") };
 
 		m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
 			m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
@@ -278,6 +278,14 @@ void CElite_Police::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
+	if (m_pSoundCom)
+	{
+
+		_float3 vPos{};
+		XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
+		m_pSoundCom->Update3DPosition(vPos);
+	}
+
 }
 
 void CElite_Police::Late_Update(_float fTimeDelta)
@@ -303,6 +311,11 @@ HRESULT CElite_Police::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX2"), reinterpret_cast<CComponent**>(&m_pPhysXElbow))))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Police"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 1.f, 35.f);
 	return S_OK;
 }
 
@@ -429,28 +442,28 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 	if (m_bReturnToSpawn)
 	{
-	/*	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-		_vector vTarget = XMLoadFloat3(&m_InitPos);
-		_float fDistance = XMVectorGetX(XMVector3Length(vTarget - vPos));
-		_vector vDir = XMVector3Normalize(vTarget - vPos);
+		/*	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			_vector vTarget = XMLoadFloat3(&m_InitPos);
+			_float fDistance = XMVectorGetX(XMVector3Length(vTarget - vPos));
+			_vector vDir = XMVector3Normalize(vTarget - vPos);
 
-		m_pAnimator->SetFloat("Distance ", abs(fDistance));
-		m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
-		m_pAnimator->SetBool("Move", true);
-		m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
-		m_eCurrentState = EEliteState::WALK;
+			m_pAnimator->SetFloat("Distance ", abs(fDistance));
+			m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
+			m_pAnimator->SetBool("Move", true);
+			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
+			m_eCurrentState = EEliteState::WALK;
 
-		m_pTransformCom->LookAtWithOutY(vTarget);
-		m_pTransformCom->Go_Dir(vDir, fTimeDelta,nullptr,m_pNaviCom);
+			m_pTransformCom->LookAtWithOutY(vTarget);
+			m_pTransformCom->Go_Dir(vDir, fTimeDelta,nullptr,m_pNaviCom);
 
 
-		if (XMVectorGetX(XMVector3Length(vTarget - vPos)) < 0.5f)
-		{
-			m_bReturnToSpawn = false;
-			m_eCurrentState = EEliteState::IDLE;
-			m_pAnimator->SetBool("Move", false);
-		}
-		return;*/
+			if (XMVectorGetX(XMVector3Length(vTarget - vPos)) < 0.5f)
+			{
+				m_bReturnToSpawn = false;
+				m_eCurrentState = EEliteState::IDLE;
+				m_pAnimator->SetBool("Move", false);
+			}
+			return;*/
 	}
 
 	if (fDistance < m_fTooCloseDistance)
@@ -628,18 +641,18 @@ void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 	//	return;
 	if (m_pPlayer)
 	{
-	/*	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-		{
-			if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
+		/*	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
-				m_bReturnToSpawn = true;
-				return;
-			}
-			else
-			{
-				m_bReturnToSpawn = false;
-			}
-		}*/
+				if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
+				{
+					m_bReturnToSpawn = true;
+					return;
+				}
+				else
+				{
+					m_bReturnToSpawn = false;
+				}
+			}*/
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
 			_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -721,6 +734,124 @@ HRESULT CElite_Police::Spawn_Effect()
 HRESULT CElite_Police::Ready_Effect()
 {
 	return S_OK;
+}
+
+void CElite_Police::Ready_SoundEvents()
+{
+	m_pAnimator->RegisterEventListener("GrowlSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Growl_0", 12, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("MovementSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Movement_0", 9, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("BodyFallSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Bodyfall_0", 6, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RustleSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Rustle_0", 3, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ShoulderSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Shoulder_0", 3, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("StepSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Step_0", 8, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("WhooshSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("SE_NPC_Named_Police_MT_Whoosh_0", 3, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Attack_0", 12, 1);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("RunVoiceSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Run_0", 3, 1);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("WalkVoiceSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Walk_0", 3, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Dead_0", 6, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FootStepSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_FS_Boss_Judge_Foot_03");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DmgSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Dmg_", 3);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ImpactGroundSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+
+				m_pSoundCom->Play("SE_NPC_Named_Captain_SK_Impact_Ground_02");
+			}
+		});
 }
 
 void CElite_Police::Register_Events()

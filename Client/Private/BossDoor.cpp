@@ -420,7 +420,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = true;
-			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
 		}
 	}
 
@@ -440,7 +439,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			break;
 		}
 
-		m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, m_vTargetPos);
 
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{

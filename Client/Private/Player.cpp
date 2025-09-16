@@ -2040,7 +2040,7 @@ void CPlayer::Register_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play("SE_PC_MT_Arm_Fail_03");
-				m_pSoundCom->Play("SE_PC_FX_Spark_Arm_Loop");
+				m_pSoundCom->Play("SE_PC_FX_Spark_Arm_Loop_Cut");
 			}
 		});
 
@@ -2081,6 +2081,15 @@ void CPlayer::Register_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play_Random("VO_PC_Breath_", 3);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FatalSliceSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
+				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
 			}
 		});
 }
@@ -3736,11 +3745,18 @@ void CPlayer::BurnActive(_float fDeltaTime)
 	{
 		// 플레이어 점화 걸림
 		m_bBurnSwitch = true;
+		if (m_pSoundCom &&! m_pSoundCom->IsPlaying("SE_PC_FX_Debuff_Fire_Loop"))
+		{
+			m_pSoundCom->SetVolume("SE_PC_FX_Debuff_Fire_Loop",1.5f);
+			m_pSoundCom->Set_Loop("SE_PC_FX_Debuff_Fire_Loop");
+			m_pSoundCom->Play("SE_PC_FX_Debuff_Fire_Loop");
+		}
 	}
 	else
 	{
 		//플레이어 점화 종료
 		m_bBurnSwitch = false;
+		m_pSoundCom->StopAllSpecific("SE_PC_FX_Debuff_Fire_Loop");
 	}
 
 	m_pGameInstance->Notify(L"Player_Status", L"Fire", &fFireWeight);

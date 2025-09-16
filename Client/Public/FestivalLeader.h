@@ -142,8 +142,11 @@ class CFestivalLeader final : public CBossUnit
 		EF_DEFAULT_SLAM_NOSMOKE = 3,
 		EF_NOSMOKE_KNEE = 4,
 		EF_SMOKE = 5,
-		EF_SPARK_FULLBODY = 6,
-		EF_SPARK_FORLEFT
+		EF_GROUND_SPARK = 6,
+		EF_LShoulder_SPARK = 7,
+		EF_RShoulder_SPARK = 8,
+		EF_LHand_SPARK = 9,
+		EF_LForearm_SPARK = 10,
 	};
 
 private:
@@ -159,6 +162,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual void Reset() override;
+
+public:
+	void BreakPanel();
+	void EnterNextCutScene();
+	virtual void EnterCutScene() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -196,12 +204,12 @@ private:
 	virtual void ProcessingEffects(const _wstring& stEffectTag) override;
 	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) override;
 	virtual HRESULT Spawn_Effect();
-
 	virtual HRESULT Ready_Effect();
+	void Reset_EffectFlags();
+
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
 	virtual void Ready_SoundEvents() override;
-	virtual void EnterCutScene() override;
 private:
 	array<CPhysXDynamicActor*, EBossBones::Collider_Count> m_Colliders{};
 
@@ -224,6 +232,7 @@ private:
 
 
 	// 공격 관련
+	_bool   m_bInSwingCombo = false;
 	_int    m_iCrossComboCount = 0;
 	_int    m_iLastComboType = -1;
 	_int    m_iSwingComboCount = 0;

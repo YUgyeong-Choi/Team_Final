@@ -1,9 +1,10 @@
 #include "Level_JW.h"
+#include "PBRMesh.h"
 #include "GameInstance.h"
 #include "AnimTool.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
 #include "Level_Loading.h"
-#include "PBRMesh.h"
 
 static CGameObject* pMap2 = { nullptr };
 
@@ -58,6 +59,7 @@ void CLevel_JW::Late_Update(_float fTimeDelta)
 {
 	if (m_pGameInstance->Key_Down(DIK_F1))
 	{
+		CEffect_Manager::Get_Instance()->Remove_AllStoredECs();
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}

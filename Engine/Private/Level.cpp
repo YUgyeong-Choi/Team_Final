@@ -89,7 +89,7 @@ void CLevel::Update_ChangeBGM(_float fTimeDelta)
 	if (m_bBGMToVolume)
 	{
 		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
-		m_fBGMVolume = LerpFloat(m_fBGMVolume, 1.f, fTimeDelta * 2.f);
+		m_fBGMVolume = LerpFloat(m_fBGMVolume, 1.f, fTimeDelta * 1.5f);
 		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
 		// 만약에 m_fBGMVolume가 1이 되면

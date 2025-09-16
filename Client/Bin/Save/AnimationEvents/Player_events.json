@@ -41,6 +41,10 @@
                 {
                     "EventName": "ReceiveDamageToFatalTarget",
                     "Time": 127.0
+                },
+                {
+                    "EventName": "FatalSliceSound",
+                    "Time": 127.0
                 }
             ],
             "IsLoop": false,
@@ -838,7 +842,7 @@
                 },
                 {
                     "EventName": "ArmAttackSound",
-                    "Time": 22.0
+                    "Time": 23.0
                 },
                 {
                     "EventName": "ResetRootStep",
@@ -1684,11 +1688,11 @@
             "Events": [
                 {
                     "EventName": "SkillStartSound",
-                    "Time": 1.0
+                    "Time": 0.5
                 },
                 {
                     "EventName": "SkillEndSound",
-                    "Time": 2.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "OnSwordSkillTrail",
@@ -1888,11 +1892,11 @@
             "Events": [
                 {
                     "EventName": "SkillStartSound",
-                    "Time": 1.0
+                    "Time": 0.5
                 },
                 {
                     "EventName": "SkillEndSound",
-                    "Time": 2.0
+                    "Time": 1.0
                 },
                 {
                     "EventName": "OnSwordSkillTrail",
@@ -1920,12 +1924,12 @@
             "Duration": 143.0,
             "Events": [
                 {
-                    "EventName": "SkillEndSound",
+                    "EventName": "SkillStartSound",
                     "Time": 1.0
                 },
                 {
-                    "EventName": "SkillStartSound",
-                    "Time": 2.0
+                    "EventName": "SkillEndSound",
+                    "Time": 1.5
                 },
                 {
                     "EventName": "SetRootStep",
@@ -1940,16 +1944,16 @@
                     "Time": 51.0
                 },
                 {
+                    "EventName": "OffSwordSkillTrail",
+                    "Time": 56.0
+                },
+                {
                     "EventName": "ResetRootStep",
                     "Time": 63.0
                 },
                 {
                     "EventName": "OffWeaponCollider",
                     "Time": 73.0
-                },
-                {
-                    "EventName": "OffSwordSkillTrail",
-                    "Time": 84.0
                 }
             ],
             "IsLoop": false,
