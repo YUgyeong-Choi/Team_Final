@@ -1027,7 +1027,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 60번 구역 ] */
-		const vector<_uint> vecAdj60 = { 59 };
+		const vector<_uint> vecAdj60 = { 59, 58 };
 		if (!m_pGameInstance->AddArea_AABB(
 			60, a60Min, a60Max, vecAdj60, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;

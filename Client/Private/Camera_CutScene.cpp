@@ -1032,6 +1032,11 @@ void CCamera_CutScene::Event()
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
 		}
+		if (m_iCurrentFrame == 400)
+		{
+			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
+		}
+
 		break;
 	default:
 		break;
