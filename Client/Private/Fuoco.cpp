@@ -919,8 +919,8 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
-			m_fFireFlameDuration = 1.5f;
-			FlamethrowerAttack(20.f);
+			m_fFireFlameDuration = 2.f;
+			FlamethrowerAttack(25.f);
 		});
 
 	m_pAnimator->RegisterEventListener("IgnorePlayerCollision", [this]()
@@ -1397,7 +1397,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Right 방향
 	vDir.normalize();
 	vRight.normalize();
-	const _float pitchBiasDeg = -5.f;                
+	const _float pitchBiasDeg = -10.f;                
 	PxQuat qBias(XMConvertToRadians(pitchBiasDeg), vRight);
 	PxVec3 vDirBiased = qBias.rotate(vDir);
 
