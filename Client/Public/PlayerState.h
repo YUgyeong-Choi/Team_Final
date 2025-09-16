@@ -3399,10 +3399,7 @@ public:
 
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
-            EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
-
-
-            
+            m_pOwner->Check_RainArea();
          
         }
 
@@ -3479,6 +3476,8 @@ public:
 
         m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ErgoItem"),
             m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lost_Ergo"), &eItemDesc);
+
+        
     }
 
     virtual EPlayerState EvaluateTransitions(const CPlayer::InputContext& input) override

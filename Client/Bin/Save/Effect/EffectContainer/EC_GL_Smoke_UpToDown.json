@@ -1,0 +1,81 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.46073299646377563,
+                0.4583207666873932,
+                0.4583207666873932,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 20,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 20,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.46073299646377563,
+                        0.4583207666873932,
+                        0.4583207666873932,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        2.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 122.97056579589844,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_SubUV_SmokeDown_01_8x4_SC_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 4
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 200
+}

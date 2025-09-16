@@ -241,6 +241,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 						Script_Activate();
 						m_pPlayer->Reset();
 						m_pGameInstance->Get_CurrentLevel()->Reset();
+						CCamera_Manager::Get_Instance()->SetbMoveable(false);
 						return;
 					}
 
@@ -276,6 +277,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 							vPos.x -= 2.5f;
 							m_pPlayer->SetTeleportPos(vPos);
 
+							CCamera_Manager::Get_Instance()->SetbMoveable(false);
 
 							return;
 						}
