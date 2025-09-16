@@ -315,8 +315,8 @@ HRESULT CElite_Police::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Police"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
-	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 1.f, 3.5f);
-	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.6f);
+	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
+	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.8f);
 	return S_OK;
 }
 
