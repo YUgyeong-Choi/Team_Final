@@ -50,7 +50,7 @@
                     ]
                 }
             ],
-            "LifeTime": 966.6123046875,
+            "LifeTime": 1160.536865234375,
             "Loop": false,
             "Name": "Sprite",
             "NumKeyFrames": 1,
@@ -106,6 +106,7 @@
             "EndTrack": 65,
             "FlipUV": false,
             "Gravity": 7.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -136,7 +137,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1807.2186279296875,
+            "LifeTime": 2102.730712890625,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 1.5
@@ -147,7 +148,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 2.0,
             "Name": "player_Attack_blood1",
-            "NumInstance": 80,
+            "NumInstance": 200,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -162,13 +163,13 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.009999999776482582,
+                -0.07000000029802322,
                 0.0
             ],
             "Range": [
-                0.10000000149011612,
+                0.15000000596046448,
                 0.05000000074505806,
-                0.10000000149011612
+                0.15000000596046448
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -181,17 +182,18 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.014999999664723873,
-                0.029999999329447746
+                0.019999999552965164,
+                0.03500000014901161
             ],
             "Speed": [
-                3.0,
-                6.0
+                2.0,
+                7.0
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.029999999329447746,
+            "StretchFactor": 0.032999999821186066,
             "TextureTags": [
                 "",
                 "T_Shere_03_C_HJS",
@@ -242,6 +244,7 @@
             "EndTrack": 65,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -272,7 +275,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2531.842529296875,
+            "LifeTime": 2824.39599609375,
             "LifeTime_Particle": [
                 0.07999999821186066,
                 0.4000000059604645
@@ -317,12 +320,13 @@
                 1.399999976158142
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.6899999976158142,
-                1.1799999475479126
+                1.284999966621399
             ],
             "Speed": [
-                5.300000190734863,
+                6.0,
                 9.5600004196167
             ],
             "Spin": false,

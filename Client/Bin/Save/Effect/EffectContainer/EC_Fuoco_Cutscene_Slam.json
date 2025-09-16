@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -30.0,
-                -20.0
+                -13.0,
+                -10.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -31,6 +31,7 @@
             "EndTrack": 112,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -61,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 7812.19189453125,
+            "LifeTime": 7958.91259765625,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.800000011920929
@@ -70,7 +71,7 @@
             "Loop": false,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.20000000298023224,
+            "MinSpeed": 2.0,
             "Name": "Fuoco_Cutscene_Slamspark1",
             "NumInstance": 400,
             "NumKeyFrames": 1,
@@ -112,8 +113,8 @@
                 0.029999999329447746
             ],
             "Speed": [
-                6.0,
-                17.15999984741211
+                3.0,
+                10.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -153,13 +154,13 @@
                 0.4083769917488098,
                 0.4083769917488098,
                 0.4083769917488098,
-                0.481675386428833
+                0.19895285367965698
             ],
             "Color": [
-                0.5497382283210754,
-                0.5497382283210754,
-                0.5497382283210754,
-                0.0
+                0.3403141498565674,
+                0.3403141498565674,
+                0.3403141498565674,
+                0.20942407846450806
             ],
             "DistortionStrength": 10.0,
             "Duration": 114,
@@ -168,14 +169,15 @@
             "EndTrack": 114,
             "FlipUV": false,
             "Gravity": -0.30000001192092896,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.5497382283210754,
-                        0.5497382283210754,
-                        0.5497382283210754,
-                        0.0
+                        0.3403141498565674,
+                        0.3403141498565674,
+                        0.3403141498565674,
+                        0.20942407846450806
                     ],
                     "Intensity": 1.0,
                     "Interpolation": 0,
@@ -198,7 +200,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2168.35693359375,
+            "LifeTime": 2315.318359375,
             "LifeTime_Particle": [
                 1.0,
                 1.7999999523162842
@@ -209,7 +211,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.10000000149011612,
             "Name": "Fuoco_Cutscene_Dust1",
-            "NumInstance": 20,
+            "NumInstance": 30,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -276,8 +278,8 @@
         },
         {
             "Accel": [
-                -20.0,
-                -10.0
+                -12.0,
+                -7.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -305,6 +307,7 @@
             "EndTrack": 115,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -335,7 +338,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1133.4437255859375,
+            "LifeTime": 1282.4462890625,
             "LifeTime_Particle": [
                 0.15000000596046448,
                 0.800000011920929
@@ -344,7 +347,7 @@
             "Loop": false,
             "MaxLifeTime": 0.800000011920929,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.20000000298023224,
+            "MinSpeed": 1.0,
             "Name": "Fuoco_Cutscene_Slamspark2",
             "NumInstance": 200,
             "NumKeyFrames": 1,
@@ -442,6 +445,7 @@
             "EndTrack": 112,
             "FlipUV": false,
             "Gravity": 6.300000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -472,7 +476,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2074.171142578125,
+            "LifeTime": 2221.132568359375,
             "LifeTime_Particle": [
                 2.0,
                 3.0
@@ -579,6 +583,7 @@
             "EndTrack": 112,
             "FlipUV": false,
             "Gravity": 6.300000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -609,7 +614,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2071.284912109375,
+            "LifeTime": 2218.246337890625,
             "LifeTime_Particle": [
                 2.0,
                 3.0
@@ -716,6 +721,7 @@
             "EndTrack": 112,
             "FlipUV": false,
             "Gravity": 6.300000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -746,7 +752,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1944.610595703125,
+            "LifeTime": 2092.99560546875,
             "LifeTime_Particle": [
                 2.0,
                 3.0
@@ -853,6 +859,7 @@
             "EndTrack": 112,
             "FlipUV": false,
             "Gravity": 6.300000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -883,7 +890,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1887.717529296875,
+            "LifeTime": 2036.7200927734375,
             "LifeTime_Particle": [
                 2.0,
                 3.0
