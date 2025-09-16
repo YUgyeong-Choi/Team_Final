@@ -1344,7 +1344,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(88.8f, 10.f, -7.3f);
+	presetmat = XMMatrixTranslation(86.8f, 10.f, -7.3f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
 	if (pEC == nullptr)

@@ -448,7 +448,7 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_BuildingA_Wall_06.bin"
     },
     {
-        "Collision": false,
+        "Collision": true,
         "ModelName": "SM_BuildingA_Wall_08",
         "NoInstancing": false,
         "ObjectCount": 20,

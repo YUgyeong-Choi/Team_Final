@@ -531,6 +531,8 @@ void CMapToolObject::Free()
 		Safe_Release(m_pModelCom[i]);
 	}
 
+	//m_pEffect->End_Effect();
+
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pPhysXActorConvexCom);
 	Safe_Release(m_pPhysXActorTriangleCom);

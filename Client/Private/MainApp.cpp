@@ -331,7 +331,7 @@ HRESULT CMainApp::Ready_Sound()
 	ADD_SOUND_EX(Trigger, "../Bin/Resources/Sound/Trigger/", false, false, false);
 
 	/* [ UI용 사운드 ] */
-	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", true, false, false);
+	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", false, false, false);
 
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 	ADD_SOUND_EX(FestivalLeader, "../Bin/Resources/Sound/Unit/FestivalLeader/", true, false, false);
@@ -340,9 +340,9 @@ HRESULT CMainApp::Ready_Sound()
 
 
 	/* [ Breakable 부서지는 사운드 ] */
-	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
+	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", false, false, false);
 
-	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
+	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", false, false, false);
 
 	/* [ 숏컷 사운드 ] */ 
 	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);

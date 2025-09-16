@@ -117,67 +117,6 @@ void CBayonet::Priority_Update(_float fTimeDelta)
 void CBayonet::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-
-	/*if (KEY_PRESSING(DIK_G))
-	{
-		CEffectContainer::DESC desc = {};
-
-	//	auto worldmat = XMLoadFloat4x4(m_pWeaponEndMatrix) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
-	//	_vector rot, trans, scale;
-	//	XMMatrixDecompose(&scale, &rot, &trans, worldmat);
-
-	//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) *
-	//		XMMatrixTranslation(trans.m128_f32[0],
-	//			trans.m128_f32[1],
-	//			trans.m128_f32[2]));
-
-	//	if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_WeaponParticle_P1", &desc))
-	//		MSG_BOX("이펙트 생성 실패함");
-	//}
-	//if (KEY_DOWN(DIK_G))
-	//{
-	//	CEffectContainer::DESC desc = {};
-	//	
-	//	auto worldmat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(m_iHandleIndex)) * XMLoadFloat4x4(&m_CombinedWorldMatrix);
-
-	//	XMStoreFloat4x4(&desc.PresetMatrix,
-	//		XMMatrixTranslation(worldmat.r[3].m128_f32[0],
-	//			worldmat.r[3].m128_f32[1],
-	//			worldmat.r[3].m128_f32[2]));
-
-		if (nullptr == CEffect_Manager::Get_Instance()->Make_EffectContainer(static_cast<_uint>(m_iLevelID), L"EC_Player_Skill_Blink_P1S2", &desc))
-			MSG_BOX("이펙트 생성 실패함");
-		static _bool bTEactive = true;
-		bTEactive = !bTEactive;
-		Set_WeaponTrail_Active(bTEactive, TRAIL_SKILL_BLUE);
-	}*/
-
-	if (KEY_DOWN(DIK_T))
-	{
-		_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
-		_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
-
-		CSwordTrailEffect::DESC desc = {};
-		desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
-		desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
-		desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
-		desc.iLevelID = m_iLevelID;
-		// 기본 공격 트레일 - 디스토션, 약간 흰색
-		CSwordTrailEffect* pInst = dynamic_cast<CSwordTrailEffect*>((MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc)));
-		if (pInst != nullptr)
-			m_temp.push_back(pInst);
-		else
-			MSG_BOX("검 트레일 이펙트 생성 실패");
-	}
-	if (KEY_DOWN(DIK_Y))
-	{
-		if (!m_temp.empty())
-		{
-			m_temp.back()->Set_TrailActive(false);
-			m_temp.back()->Set_bDead();
-			m_temp.pop_back();
-		}
-	}
 }
 
 void CBayonet::Late_Update(_float fTimeDelta)

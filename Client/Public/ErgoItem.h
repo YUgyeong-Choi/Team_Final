@@ -53,8 +53,12 @@ public:
 
 	_bool		m_bDoOnce = { false };
 
-	//CShader* m_pShaderCom = { nullptr };
-	//CModel* m_pModelCom = { nullptr };
+	//펄스 전지인가?
+	_bool		m_bPulseCell = { false };
+
+private:
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
 
 public:
 	static CErgoItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
