@@ -295,7 +295,10 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     vector<_uint> vecFuocoIds = { 19 };
 
     // 현재 활성화된 지역이 외부지역입니다.
-    vector<_uint> vecOuterIds = { 22, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63 };
+    vector<_uint> vecOuterIds = { 22, 50, 51, 52, 53, 54, 61, 62, 63 };
+    
+    // 현재 활성화된 지역이 페스티벌 지역입니다.
+    vector<_uint> vecFestivalIds = { 55, 56, 57, 58, 59, 60 };
 
     // 현재 활성화된 지역이 디버깅입니다.
     vector<_uint> vecDebugIds = { 98, 99 };
@@ -321,6 +324,11 @@ AREAMGR CArea_Manager::GetCurrentAreaMgr()
     else if (find(vecOuterIds.begin(), vecOuterIds.end(), m_iCurrentAreaId) != vecOuterIds.end())
     {
         m_eAreaMgr = AREAMGR::OUTER;
+    }
+
+    else if (find(vecFestivalIds.begin(), vecFestivalIds.end(), m_iCurrentAreaId) != vecFestivalIds.end())
+    {
+        m_eAreaMgr = AREAMGR::FESTIVAL;
     }
 
     else if (find(vecDebugIds.begin(), vecDebugIds.end(), m_iCurrentAreaId) != vecDebugIds.end())

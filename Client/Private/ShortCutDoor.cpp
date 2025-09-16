@@ -25,6 +25,8 @@ HRESULT CShortCutDoor::Initialize_Prototype()
 
 HRESULT CShortCutDoor::Initialize(void* pArg)
 {
+	m_bIsDissolve = true;
+
 	CShortCutDoor::SHORTCUTDOORMESH_DESC* pDoorMeshDESC = static_cast<SHORTCUTDOORMESH_DESC*>(pArg);
 
 	m_eInteractType = pDoorMeshDESC->eInteractType;
@@ -503,12 +505,54 @@ HRESULT CShortCutDoor::Render_Key()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
+	if (m_bIsDissolve)
+	{
+		if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
+			return E_FAIL;
+
+		_bool vDissolve = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+
+		if (m_vecDissolveMeshNum.empty())
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+				return E_FAIL;
+		}
+	}
+	else
+	{
+		_bool vDissolve = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+			return E_FAIL;
+	}
+
 	_uint		iNumMesh = m_pModelComFrontKey->Get_NumMeshes();
 
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		m_pModelComFrontKey->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelComFrontKey->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+
+		if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
+		{
+			auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+			if (iter != m_vecDissolveMeshNum.end())
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+			else
+			{
+				_float fDissolve = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+		}
 
 		if (FAILED(m_pModelComFrontKey->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
@@ -557,6 +601,24 @@ HRESULT CShortCutDoor::Render_Key()
 	{
 		m_pModelComBackKey->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0);
 		m_pModelComBackKey->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0);
+
+		if (m_bIsDissolve && m_vecDissolveMeshNum.size() > 0)
+		{
+			auto iter = find(m_vecDissolveMeshNum.begin(), m_vecDissolveMeshNum.end(), i);
+			if (iter != m_vecDissolveMeshNum.end())
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_vDissolveGlowColor", &m_vDissolveGlowColor, sizeof(_float3))))
+					return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+			else
+			{
+				_float fDissolve = 1.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
+					return E_FAIL;
+			}
+		}
 
 		if (FAILED(m_pModelComBackKey->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
 		{
@@ -640,6 +702,8 @@ void CShortCutDoor::Play_Sounds(_float fTimeDelta)
 
 		if (m_fSoundTime > 6.3f && !m_bSoundPlay[3])
 		{
+			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.f, 0.f }, {});
+
 			m_pSoundCom->Play("AMB_OJ_DR_Metal_Squeak_Open2");
 			m_bSoundPlay[3] = true;
 			m_bSoundActive = false;

@@ -24,7 +24,7 @@ HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const DESC* pDesc)
 		m_fNodeInterval = pDesc->fNodeInterval;
 		m_Subdivisions = pDesc->Subdivisions;
 	}
-
+	m_iMaxNodeCount = 500;
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = m_iMaxNodeCount;
 	m_iVertexStride = sizeof(VTXPOS_TRAIL);

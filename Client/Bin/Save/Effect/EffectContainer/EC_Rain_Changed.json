@@ -118,12 +118,12 @@
             "Spin": false,
             "StartTrack": 0,
             "StretchFactor": 0.052000001072883606,
-            "TextureTags": [
-                "T_Shere_05_C_HJS",
-                "T_Rain_Drip_Mask_01_C_RSW",
-                "T_Decal_Crack_02_N_HJS",
-                ""
-            ],
+          "TextureTags": [
+            "T_Shere_05_C_HJS",
+            "Rain_Noise_68_C_PCY",
+            "T_Decal_Crack_02_N_HJS",
+            ""
+          ],
             "TextureUsage": [
                 true,
                 true,

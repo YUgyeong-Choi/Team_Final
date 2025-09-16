@@ -13,12 +13,12 @@
                 1.0,
                 1.0,
                 1.0,
-                0.8888888955116272
+                0.0458114929497242
             ],
             "DistortionStrength": 10.0,
             "Duration": 122,
             "EffectType": 0,
-            "EmissiveIntensity": 0.0,
+            "EmissiveIntensity": 7.25,
             "EndTrack": 122,
             "FlipUV": false,
             "KeyFrames": [
@@ -27,9 +27,9 @@
                         1.0,
                         1.0,
                         1.0,
-                        1.0
+                        0.04712039232254028
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 3.5399999618530273,
                     "Interpolation": 3,
                     "Rotation": [
                         0.0,
@@ -81,9 +81,9 @@
                         1.0,
                         1.0,
                         1.0,
-                        1.0
+                        0.0470588244497776
                     ],
-                    "Intensity": 1.0,
+                    "Intensity": 3.5399999618530273,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,

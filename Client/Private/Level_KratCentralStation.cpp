@@ -43,6 +43,8 @@
 #include "Dynamic_UI.h"
 
 #include "AnimatedProp.h"
+#include "Client_Calculation.h"
+#include "AreaSoundBox.h"
 
 CLevel_KratCentralStation::CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -68,6 +70,9 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_In_03");
 	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
 	m_pBGM->Play();
+
+	if (FAILED(Ready_Sound()))
+		return E_FAIL;
 
 	if (FAILED(Ready_Video()))
 		return E_FAIL;
@@ -100,8 +105,8 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	//if (FAILED(Ready_WaterPuddle()))
 	//	return E_FAIL;
 
-	Reset();
 
+	Reset();
 	return S_OK;
 }
 
@@ -187,24 +192,9 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_F8))
 		m_pGameInstance->ToggleDebugArea();
 
-	//	if (KEY_DOWN(DIK_X))
-	//	{
-		//_float3 pos = {};
-		//if (m_pPlayer)
-		//	XMStoreFloat3(&pos, m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
-
-		//_matrix presetmat = XMMatrixIdentity();
-		//CEffectContainer::DESC ECDesc = {};
-		//presetmat = XMMatrixTranslation(pos.x + m_pGameInstance->Compute_Random(-1.f, 1.f),
-		//	pos.y + m_pGameInstance->Compute_Random(0.f, 3.f),
-		//	pos.z + m_pGameInstance->Compute_Random(-1.f, 1.f));
-		//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-		//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain"), &ECDesc))
-		//	MSG_BOX("이펙트 생성 실패");
-		////if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-		////	MSG_BOX("이펙트 생성 실패");
-	//	}
-	//}
+	if (KEY_DOWN(DIK_Y))
+	{
+	}
 
 
 
@@ -214,11 +204,13 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 {
-
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
 	__super::Late_Update(fTimeDelta);
 
 	Add_RenderGroup_OctoTree();
+
+	/* [ 번개 라이트 설정 ] */
+	UpdateThunder(fTimeDelta);
 }
 
 HRESULT CLevel_KratCentralStation::Render()
@@ -315,6 +307,8 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 	if (FAILED(Ready_UI()))
 		return E_FAIL;
 	if (FAILED(Ready_Player()))
+		return E_FAIL;
+	if (FAILED(Ready_Thunder()))
 		return E_FAIL;
 
 
@@ -1027,7 +1021,7 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	}
 	{
 		/* [ 60번 구역 ] */
-		const vector<_uint> vecAdj60 = { 59 };
+		const vector<_uint> vecAdj60 = { 59, 58 };
 		if (!m_pGameInstance->AddArea_AABB(
 			60, a60Min, a60Max, vecAdj60, AREA::EAreaType::OUTDOOR, ENUM_CLASS(AREA::EAreaType::OUTDOOR)))
 			return E_FAIL;
@@ -1058,6 +1052,117 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 
 
 	return S_OK;
+}
+
+void CLevel_KratCentralStation::InitThunder()
+{
+	m_tThunder.fNextStrike = 1.f + (static_cast<_float>(rand()) / RAND_MAX) * 3.f;
+}
+
+void CLevel_KratCentralStation::UpdateThunder(_float fTimeDelta)
+{
+	_int iNumArea = m_pGameInstance->GetCurAreaIds();
+	if (iNumArea == 3 || iNumArea == 4 || iNumArea == 5
+		|| m_pGameInstance->GetCurrentAreaMgr() == AREAMGR::OUTER
+		|| m_pGameInstance->GetCurrentAreaMgr() == AREAMGR::FESTIVAL)
+	{
+		if (m_pGameInstance->GetCurrentAreaMgr() == AREAMGR::OUTER)
+			m_vecThunder[0]->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(231.6f, 50.f, 1.35f, 1.f));
+		else if (m_pGameInstance->GetCurrentAreaMgr() == AREAMGR::FESTIVAL)
+			m_vecThunder[0]->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(359.f, 50.f, -40.f, 1.f));
+
+		m_vecThunder[0]->SetbLightUse(true);
+
+		m_tThunder.fTimer += fTimeDelta;
+		_float fIntensity = 0.f;
+
+		if (!m_tThunder.bStriking)
+		{
+			// 대기 상태
+			if (m_tThunder.fTimer >= m_tThunder.fNextStrike)
+			{
+				m_tThunder.bStriking = true;
+				m_tThunder.iBlinkIndex = 0;
+				m_tThunder.fTimer = 0.f;
+				m_tThunder.fBlinkDuration = 0.1f + (static_cast<_float>(rand()) / RAND_MAX) * 0.05f;
+			}
+		}
+		else
+		{
+			// 깜빡임 중
+			if (m_tThunder.iBlinkIndex == 0)
+			{
+				_float fNoise = (static_cast<_float>(rand()) / RAND_MAX) * 0.3f;
+				fIntensity = 1.7f + fNoise;
+
+				if (m_tThunder.fTimer >= m_tThunder.fBlinkDuration)
+				{
+					// 두 번째 깜빡임 준비
+					m_tThunder.iBlinkIndex = 1;
+					m_tThunder.fTimer = 0.f;
+					m_tThunder.fBlinkDuration = 0.05f + (static_cast<_float>(rand()) / RAND_MAX) * 0.1f;
+				}
+			}
+			else if (m_tThunder.iBlinkIndex == 1)
+			{
+				_float fNoise = (static_cast<_float>(rand()) / RAND_MAX) * 0.2f;
+				fIntensity = 1.2f + fNoise;
+
+				if (m_tThunder.fTimer >= m_tThunder.fBlinkDuration)
+				{
+					PlayThunderSound();
+					m_tThunder.bStriking = false;
+					m_tThunder.fTimer = 0.f;
+					m_tThunder.fNextStrike = 4.5f + (static_cast<_float>(rand()) / RAND_MAX) * 6.f;
+				}
+			}
+		}
+
+		if (!m_vecThunder.empty() && m_vecThunder[0] != nullptr)
+			m_vecThunder[0]->SetIntensity(fIntensity);
+	}
+}
+
+void CLevel_KratCentralStation::PlayThunderSound()
+{
+	/* [ 사운드 크기 설정 ] */
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_01", 1.f);
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_02", 1.f);
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_03", 1.f);
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_04", 1.f);
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_05", 1.f);
+	m_pThunderSoundCom->SetVolume("AMB_SS_Thunder_Rumble_06", 1.f);
+
+	_int iRand = GetRandomInt(1, 6);
+	switch (iRand)
+	{
+	case 1:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_01");
+		break;
+
+	case 2:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_02");
+		break;
+
+	case 3:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_03");
+		break;
+
+	case 4:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_04");
+		break;
+
+	case 5:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_05");
+		break;
+
+	case 6:
+		m_pThunderSoundCom->Play("AMB_SS_Thunder_Rumble_06");
+		break;
+	
+	default:
+		break;
+	}
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Camera()
@@ -1228,26 +1333,6 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
 	_matrix presetmat = XMMatrixIdentity();
 	CEffectContainer::DESC ECDesc = {};
-
-	//presetmat = XMMatrixTranslation(52.83f, 0.09f, 1.57f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(69.25f, -0.22f, -8.17f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(99.86f, 0.64f, -13.69f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
-
-	//presetmat = XMMatrixTranslation(0.f, 0.f, 0.f);
-	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_ErgoItem_M3P1_WB_FRAMELOOPTEST"), &ECDesc))
-	//	MSG_BOX("이펙트 생성 실패");
 
 	CGameObject* pEC = { nullptr };
 
@@ -1660,6 +1745,358 @@ HRESULT CLevel_KratCentralStation::Ready_WaterPuddle()
 	return S_OK;
 }
 
+HRESULT CLevel_KratCentralStation::Ready_Thunder()
+{
+	CDH_ToolMesh::DHTOOL_DESC Desc{};
+	Desc.szMeshID = TEXT("PointLight");
+	lstrcpy(Desc.szName, TEXT("PointLight"));
+	
+	Desc.eLEVEL = LEVEL::KRAT_CENTERAL_STATION;
+
+
+	Desc.fRotationPerSec = 0.f;
+	Desc.fSpeedPerSec = 0.f;
+	Desc.m_vInitPos = _float3(51.f, 30.f, -21.f);
+	Desc.iID = 9999;
+
+	CGameObject* pGameObject = nullptr;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ToolMesh"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Thunder", &pGameObject, &Desc)))
+		return E_FAIL;
+	
+	CDH_ToolMesh* pThunder = dynamic_cast<CDH_ToolMesh*>(pGameObject);
+	pThunder->SetRange(150.f);
+	pThunder->SetIntensity(2.f);
+	pThunder->SetColor(_float4(0.6f, 0.75f, 1.0f, 1.0f));
+	m_vecThunder.push_back(dynamic_cast<CDH_ToolMesh*>(pGameObject));
+	
+	return S_OK;
+}
+
+HRESULT CLevel_KratCentralStation::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Thunder"),
+		TEXT("Com_ThunderSound"), reinterpret_cast<CComponent**>(&m_pThunderSoundCom))))
+		return E_FAIL;
+
+	/* [ 에어리어 박스를 설치해보자 ] */
+	CAreaSoundBox::AREASOUNDBOX_DESC eDesc = {};
+	eDesc.eTriggerBoxType = TRIGGERSOUND_TYPE::NONE;
+	eDesc.fMinMax = { 1.f , 30.f };
+	eDesc.fVolume = 1.f;
+	eDesc.szSoundID = TEXT("Station");
+	eDesc.strSoundName = "AMB_SS_Trainstation_Raindrop";
+	eDesc.vPosition = _float3(62.32f, -0.27f, -7.84f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+
+	//0. 기차통로
+	eDesc.strSoundName = "AMB_SS_Arcade_WineStoreroom_02";
+	eDesc.vPosition = _float3(15.02f, 0.084f, 0.69f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Arcade_WineStoreroom_02";
+	eDesc.vPosition = _float3(37.02f, 0.084f, 0.69f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//1. 기차역 빗소리
+	eDesc.strSoundName = "AMB_SS_Trainstation_Raindrop";
+	eDesc.vPosition = _float3(90.05f, -0.27f, -7.12f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//2. 기차역 빗소리
+	eDesc.strSoundName = "AMB_SS_Arcade_WineStoreroom_01";
+	eDesc.vPosition = _float3(127.08f, 1.61f, -7.82f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//3. 호텔 입구소리
+	eDesc.strSoundName = "AMB_SS_Arcade_WineStoreroom_02";
+	eDesc.vPosition = _float3(127.08f, 1.61f, -7.82f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//4. 호텔 로비소리
+	eDesc.strSoundName = "AMB_SS_Cathedral_Mine_Drone";
+	eDesc.vPosition = _float3(143.56f, 2.66f, -8.16f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Factory_Basement_Loop_02";
+	eDesc.vPosition = _float3(143.56f, 2.66f, -8.16f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//4. 호텔 20구역
+	eDesc.strSoundName = "AMB_SS_Arcade_WineStoreroom_02";
+	eDesc.vPosition = _float3(167.50f, 4.95f, -8.28f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_Drip_02";
+	eDesc.vPosition = _float3(183.39f, 8.89f, -8.12f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//4. 호텔 8구역
+	eDesc.strSoundName = "AMB_SS_Cathedral_Underground_Drone";
+	eDesc.vPosition = _float3(171.46f, 4.95f, -21.44f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//4. 호텔 9구역
+	eDesc.strSoundName = "AMB_SS_Cathedral_Underground_Drone";
+	eDesc.vPosition = _float3(171.63f, 4.95f, -35.54f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Factory_Basement_Loop_02";
+	eDesc.vPosition = _float3(179.32f, 6.65f, -8.037f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+
+	//4. 호텔 10구역
+	eDesc.strSoundName = "AMB_SS_Factory_Drip_02_Loop";
+	eDesc.vPosition = _float3(157.62f, 5.07f, -55.54f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//5. 호텔 11구역
+	eDesc.strSoundName = "AMB_SS_Factory_Basement_Loop_01";
+	eDesc.vPosition = _float3(167.46f, 7.69f, -64.39f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	eDesc.strSoundName = "AMB_SS_Factory_Drip_02_Loop";
+	eDesc.vPosition = _float3(145.71f, 13.41f, -66.92f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//6. 호텔 12구역
+	eDesc.strSoundName = "AMB_SS_Exhibition_Inside_02";
+	eDesc.vPosition = _float3(119.85f, 13.41f, -61.43f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	eDesc.strSoundName = "AMB_SS_Exhibition_Inside_02";
+	eDesc.vPosition = _float3(118.56f, 13.41f, -39.73f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+
+	//7. 호텔 13구역
+	eDesc.strSoundName = "AMB_SS_Factory_PropRoom_Loop_01";
+	eDesc.vPosition = _float3(118.76f, 13.43f, -19.81f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//8. 호텔 14구역
+	eDesc.strSoundName = "AMB_SS_Exhibition_Inside_02";
+	eDesc.vPosition = _float3(137.06f, 13.41f, -28.14f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Factory_Basement_Loop_01";
+	eDesc.vPosition = _float3(151.65f, 13.41f, -29.32f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//9. 호텔 15구역
+	eDesc.strSoundName = "AMB_SS_Factory_PropRoom_Loop_01";
+	eDesc.vPosition = _float3(162.70f, 13.44f, -24.99f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//10. 호텔 18구역
+	eDesc.strSoundName = "AMB_SS_Exhibition_Inside_02";
+	eDesc.vPosition = _float3(144.99f, 2.66f, -36.04f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//11. 엘리트 몬스터
+	eDesc.strSoundName = "AMB_SS_Grave_Valley_Crane";
+	eDesc.vPosition = _float3(148.51f, 5.38f, -42.02f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	
+	//12. 숏컷
+	eDesc.strSoundName = "AMB_SS_Lab_Fan_M_DLC";
+	eDesc.vPosition = _float3(147.43f, 2.65f, -26.4f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//13. 대문 앞
+	eDesc.strSoundName = "AMB_SS_OnTheBrige";
+	eDesc.vPosition = _float3(193.39f, 8.89f, -8.12f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_02";
+	eDesc.vPosition = _float3(197.39f, 8.89f, -8.12f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+
+	//50. 대문 앞
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(224.89f, 7.41f, -13.49f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(214.93f, 7.41f, -33.58f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	eDesc.strSoundName = "AMB_SS_Rain_07_03";
+	eDesc.vPosition = _float3(243.24f, 7.41f, -9.54f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(267.20f, 7.36f, -18.76f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//51. 샛길
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(261.76f, 11.38f, -52.22f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(265.265717f, 11.720646f, -69.103844f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//52. 중간
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(289.411530f, 7.374067f, -23.546703f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(288.239685f, 1.255161f, -3.136308f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//53. 통로
+	eDesc.strSoundName = "AMB_SS_Rain_07_04";
+	eDesc.vPosition = _float3(292.029144f, 7.424714f, -38.567604f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Monastery_Wind_High";
+	eDesc.vPosition = _float3(290.029144f, 7.424714f, -38.567604f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//54. 다리입구
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(314.179718f, 7.424715f, -39.300175f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//55. 1층
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(318.018982f, 0.456333f, -26.187710f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_03";
+	eDesc.vPosition = _float3(323.116608f, 0.456333f, -9.479903f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_04";
+	eDesc.vPosition = _float3(334.849762f, -4.499187f, -25.113424f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//56. 다리끝
+	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+	eDesc.vPosition = _float3(343.374847f, 7.424715f, -36.440987f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(345.374847f, 7.424715f, -36.440987f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//57. 보스샛길
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(364.335480f, 7.467113f, -30.350395f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//58. 보스 중간계단
+	eDesc.strSoundName = "AMB_SS_Rain_07_03";
+	eDesc.vPosition = _float3(357.521851f, 10.838378f, -48.273304f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Monastery_Wind_High";
+	eDesc.vPosition = _float3(351.521851f, 10.838378f, -48.273304f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+	//59. 보스맵
+	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.vPosition = _float3(385.177612f, 15.845862f, -47.998962f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+	eDesc.strSoundName = "AMB_SS_Rain_07_02";
+	eDesc.vPosition = _float3(403.043243f, 15.713462f, -48.864983f);
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+		return E_FAIL;
+
+
+
+	return S_OK;
+}
+
 HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 {
 	CAnimatedProp::ANIMTEDPROP_DESC Desc{};
@@ -1871,5 +2308,7 @@ void CLevel_KratCentralStation::Free()
 	Safe_Release(m_pShaderComInstance);
 
 	Safe_Release(m_pMapLoader);
+
+	Safe_Release(m_pThunderSoundCom);
 	//	Safe_Release(m_pStartVideo);
 }

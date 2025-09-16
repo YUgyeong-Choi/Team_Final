@@ -5,10 +5,27 @@
 #include "DHTool.h"
 #include "Monster_Base.h"
 
+NS_BEGIN(Engine)
+class CSoundController;
+class CSound_Core;
+NS_END
+
 NS_BEGIN(Client)
 
 class CLevel_KratCentralStation final : public CLevel
 {
+private:
+	struct Thunder
+	{
+		_float fTimer = 0.f;
+		_float fNextStrike = 0.f;
+		_float fStrikeTime = 0.f;
+		_bool  bStriking = false;
+
+		_int   iBlinkIndex = 0;
+		_float fBlinkDuration = 0.f;
+	} m_tThunder;
+
 private:
 	CLevel_KratCentralStation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CLevel_KratCentralStation() = default;
@@ -41,6 +58,8 @@ private:
 	HRESULT Ready_TriggerBGM();
 	HRESULT Ready_Rain();
 	HRESULT Ready_WaterPuddle();
+	HRESULT Ready_Thunder();
+	HRESULT Ready_Sound();
 
 
 	HRESULT Ready_AnimatedProp();
@@ -66,6 +85,11 @@ private:
 	void ToggleHoldMouse() { m_bHold = !m_bHold; }
 
 private:
+	void InitThunder();
+	void UpdateThunder(_float fTimeDelta);
+	void PlayThunderSound();
+
+private:
 	CShader* m_pShaderComPBR = { nullptr };
 	CShader* m_pShaderComANIM = { nullptr };
 	CShader* m_pShaderComInstance = { nullptr };
@@ -79,6 +103,10 @@ private:
 private:
 	_bool m_bHold = { true };
 	vector<class CDH_ToolMesh*> m_vecLights;
+	vector<class CDH_ToolMesh*> m_vecThunder;
+
+private:
+	CSoundController* m_pThunderSoundCom = { nullptr };
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
