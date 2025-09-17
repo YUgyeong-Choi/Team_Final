@@ -27,10 +27,11 @@
             "DistortionStrength": 10.0,
             "Duration": 102,
             "EffectType": 1,
-            "EmissiveIntensity": 1.0499999523162842,
+            "EmissiveIntensity": 3.4000000953674316,
             "EndTrack": 102,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -61,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2454.591552734375,
+            "LifeTime": 2495.6142578125,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -164,10 +165,11 @@
             "DistortionStrength": 10.0,
             "Duration": 73,
             "EffectType": 1,
-            "EmissiveIntensity": 0.8999999761581421,
+            "EmissiveIntensity": 2.6500000953674316,
             "EndTrack": 73,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -198,7 +200,7 @@
                     ]
                 }
             ],
-            "LifeTime": 488.1679992675781,
+            "LifeTime": 529.1905517578125,
             "LifeTime_Particle": [
                 0.019999999552965164,
                 0.30000001192092896
@@ -285,9 +287,9 @@
             ],
             "Color": [
                 1.0,
-                0.15706807374954224,
+                0.1568627506494522,
                 0.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 69,
@@ -304,7 +306,7 @@
                         1.0
                     ],
                     "Intensity": 2.109999895095825,
-                    "Interpolation": 1,
+                    "Interpolation": 2,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -351,7 +353,7 @@
                     ]
                 }
             ],
-            "LifeTime": 164.31988525390625,
+            "LifeTime": 205.34230041503906,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,

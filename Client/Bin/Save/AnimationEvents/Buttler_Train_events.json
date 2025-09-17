@@ -42,6 +42,10 @@
                     "Time": 30.0
                 },
                 {
+                    "EventName": "AttackSound",
+                    "Time": 30.0
+                },
+                {
                     "EventName": "NotLookAt",
                     "Time": 40.0
                 },
@@ -65,6 +69,10 @@
                 {
                     "EventName": "LookAt",
                     "Time": 5.0
+                },
+                {
+                    "EventName": "AttackSound",
+                    "Time": 10.0
                 },
                 {
                     "EventName": "AttackOn",
@@ -205,6 +213,12 @@
         {
             "ClipName": "AS_Down_Away_Land_B",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "FallSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -226,6 +240,12 @@
         {
             "ClipName": "AS_Down_Away_Land_F",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "FallSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -251,6 +271,14 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
                 },
                 {
                     "EventName": "AddErgo",
@@ -286,6 +314,14 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
                 },
                 {
                     "EventName": "AddErgo",
@@ -503,6 +539,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -516,6 +556,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -606,6 +650,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -640,6 +688,10 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": false,
@@ -677,6 +729,12 @@
         {
             "ClipName": "AS_Idle_Spawn_01_End",
             "Duration": 246.0,
+            "Events": [
+                {
+                    "EventName": "GetupSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 70.0
@@ -705,6 +763,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_B",
             "Duration": 135.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -733,6 +797,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_L",
             "Duration": 135.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -761,6 +831,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_R",
             "Duration": 135.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 70.0
@@ -800,6 +876,10 @@
                 {
                     "EventName": "LookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
                 }
             ],
             "IsLoop": true,
@@ -836,8 +916,16 @@
                     "Time": 0.10000000149011612
                 },
                 {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "BackMoveEnd",
                     "Time": 5.730977535247803
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,
@@ -851,6 +939,14 @@
                 {
                     "EventName": "LookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": true,
@@ -864,6 +960,14 @@
                 {
                     "EventName": "NotLookAt",
                     "Time": 0.10000000149011612
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": true,
@@ -886,8 +990,16 @@
                     "Time": 0.10000000149011612
                 },
                 {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "BackMoveEnd",
                     "Time": 4.966660022735596
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,
@@ -910,8 +1022,16 @@
                     "Time": 0.10000000149011612
                 },
                 {
+                    "EventName": "WalkSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "BackMoveEnd",
                     "Time": 5.735449314117432
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 61.0
                 }
             ],
             "IsLoop": false,

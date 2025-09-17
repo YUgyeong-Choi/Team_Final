@@ -10,7 +10,7 @@ class CTriggerRain : public CTriggerBox
 public:
 	typedef struct tagTriggerNoMeshDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
-
+		_bool bBossDoor = false;
 	}TRIGGERNOMESH_DESC;
 
 protected:
@@ -33,6 +33,7 @@ private:
 	HRESULT Ready_Components();
 
 	_bool m_bRainActive = true;
+	_bool m_bBossDoor = false;
 
 public:
 	static CTriggerRain* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

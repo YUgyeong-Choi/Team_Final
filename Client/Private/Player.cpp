@@ -1893,15 +1893,12 @@ void CPlayer::Register_Events()
 			if (m_pWeapon && m_pFatalTarget)
 			{
 				m_pWeapon->Clear_CollisionObj();
-				//++m_iFatalAttackCount;
-				//m_pWeapon->SetDamageRatio(0.5f + m_iFatalAttackCount);
+				
 				m_pFatalTarget->ReceiveDamage(m_pWeapon, COLLIDERTYPE::PLAYER_WEAPON);
-				//m_pWeapon->SetDamageRatio(1.f);
+			
 
 			}
 
-			if (m_iFatalAttackCount == 3)
-				m_iFatalAttackCount = 0;
 		});
 	m_pAnimator->RegisterEventListener("SetRootStep", [this]()
 		{

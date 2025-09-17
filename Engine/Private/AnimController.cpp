@@ -102,31 +102,6 @@ _bool CAnimController::Transition::Evaluates(CAnimController* pAnimController, C
 		}
 	}
 
-	// 모든 조건이 true면
-	// 디버그용 출력
-
-	for (const auto& condition : conditions)
-	{
-		switch (condition.type)
-		{
-		case ParamType::Bool:
-			//cout << "Condition passed: " << condition.paramName << " is true." << endl; // 디버그용 출력
-			break;
-		case ParamType::Int:
-			//cout << "Condition passed: " << condition.paramName << " is in range ("
-			//	<< condition.iThreshold << ")." << endl; // 디버그용 출력
-			break;
-		case ParamType::Float:
-			//cout << "Condition passed: " << condition.paramName << " is in range ("
-			//	<< condition.fThreshold << ")." << endl; // 디버그용 출력
-			break;
-		case ParamType::Trigger:
-			//cout << "Condition passed: " << condition.paramName << " trigger activated." << endl; // 디버그용 출력
-			break;
-		}
-	}
-
-
 	return true; // 모든 조건이 true
 }
 
@@ -368,6 +343,66 @@ void CAnimController::Update(_float fTimeDelta)
 		}
 	}
 }
+
+_bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState* toState, const Transition& tr, TransitionResult& outResult)
+{
+	if (!fromState || !toState) return false;
+
+	outResult = TransitionResult{};
+
+	bool bFromMasked = !fromState->maskBoneName.empty();
+	bool bToMasked = !toState->maskBoneName.empty();
+
+	if (!bFromMasked && !bToMasked) { // 통짜 → 통짜
+		outResult.eType = ETransitionType::FullbodyToFullbody;
+		outResult.pFromLowerAnim = fromState->clip;
+		outResult.pToLowerAnim = toState->clip;
+		outResult.pFromUpperAnim = fromState->clip;
+		outResult.pToUpperAnim = toState->clip;
+		outResult.bBlendFullbody = true;
+	}
+	else if (!bFromMasked && bToMasked) { // 통짜 → 상하체 분리
+		outResult.eType = ETransitionType::FullbodyToMasked;
+		outResult.pFromLowerAnim = fromState->clip;
+		outResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+		outResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+		outResult.pFromUpperAnim = fromState->clip;
+		outResult.fBlendWeight = toState->fBlendWeight;
+		outResult.bBlendFullbody = false;
+	}
+	else if (bFromMasked && !bToMasked) { // 상하체 분리 → 통짜
+		outResult.eType = ETransitionType::MaskedToFullbody;
+		outResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+		outResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+		outResult.pToLowerAnim = toState->clip;
+		outResult.pToUpperAnim = toState->clip;
+		outResult.fBlendWeight = fromState->fBlendWeight;
+		outResult.bBlendFullbody = false;
+	}
+	else { // 상하체 분리 → 상하체 분리
+		outResult.eType = ETransitionType::MaskedToMasked;
+		outResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+		outResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+		outResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+		outResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+		outResult.fBlendWeight = toState->fBlendWeight;
+		outResult.bBlendFullbody = false;
+	}
+
+	if (!outResult.pFromLowerAnim || !outResult.pToLowerAnim) return false;
+	if (outResult.eType == ETransitionType::FullbodyToMasked && !outResult.pToUpperAnim) return false;
+	if (outResult.eType == ETransitionType::MaskedToFullbody && !outResult.pFromUpperAnim) return false;
+	if (outResult.eType == ETransitionType::MaskedToMasked &&
+		(!outResult.pFromUpperAnim || !outResult.pToUpperAnim)) return false;
+
+	outResult.fUpperStartTime = toState->fUpperStartTime;
+	outResult.fLowerStartTime = toState->fLowerStartTime;
+	outResult.fDuration = tr.duration;
+	outResult.bCanSameAnimReset = toState->bCanSameAnimReset;
+
+	return true;
+}
+
 
 _float CAnimController::GetStateClipLength(const string& name)
 {
@@ -628,6 +663,7 @@ void CAnimController::SortTransitionByConditionsCount()
 			return a.conditions.size() > b.conditions.size();
 		});
 }
+
 
 CAnimController* CAnimController::Create()
 {

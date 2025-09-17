@@ -13,7 +13,7 @@
                 1.0,
                 1.0,
                 1.0,
-                0.03813445568084717
+                0.09772150963544846
             ],
             "DistortionStrength": 37.0,
             "Duration": 62,
@@ -77,7 +77,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1782.610595703125,
+            "LifeTime": 1877.2386474609375,
             "Loop": true,
             "ModelTag": "SM_Cylinder_02_HJS",
             "Name": "Mesh",
@@ -105,8 +105,8 @@
         },
         {
             "Accel": [
-                0.0,
-                0.0
+                -6.0,
+                -4.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -165,7 +165,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2482.253173828125,
+            "LifeTime": 2575.527099609375,
             "LifeTime_Particle": [
                 0.8999999761581421,
                 1.399999976158142
@@ -174,7 +174,7 @@
             "Loop": false,
             "MaxLifeTime": 0.800000011920929,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 1.0,
             "Name": "Fes_hammerslam_p",
             "NumInstance": 80,
             "NumKeyFrames": 1,

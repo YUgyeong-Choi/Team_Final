@@ -38,9 +38,9 @@
                         0.0
                     ],
                     "Scale": [
-                        5.0,
-                        5.0,
-                        5.0
+                        3.0,
+                        3.0,
+                        3.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -50,7 +50,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2703.4580078125,
+            "LifeTime": 2755.660888671875,
             "Loop": true,
             "Name": "Fes_P2Start_DownLFire1",
             "NumKeyFrames": 1,
@@ -106,6 +106,7 @@
             "EndTrack": 91,
             "FlipUV": false,
             "Gravity": 1.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -136,7 +137,7 @@
                     ]
                 }
             ],
-            "LifeTime": 5578.08837890625,
+            "LifeTime": 5630.20361328125,
             "LifeTime_Particle": [
                 0.38999998569488525,
                 1.7000000476837158
@@ -250,9 +251,9 @@
                         1.0
                     ],
                     "Scale": [
-                        3.0,
-                        6.0,
-                        3.0
+                        2.700000047683716,
+                        5.0,
+                        2.700000047683716
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -277,9 +278,9 @@
                         0.0
                     ],
                     "Scale": [
-                        3.0,
-                        9.0,
-                        3.0
+                        2.700000047683716,
+                        8.0,
+                        2.700000047683716
                     ],
                     "TrackPosition": 5.0,
                     "Translation": [
@@ -289,7 +290,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1772.52587890625,
+            "LifeTime": 1825.486328125,
             "Loop": true,
             "Name": "Fes_P2Start_UPFire1",
             "NumKeyFrames": 2,
@@ -352,9 +353,9 @@
                         0.9156731367111206
                     ],
                     "Scale": [
-                        5.000691890716553,
-                        5.000689506530762,
-                        5.000035285949707
+                        3.0,
+                        3.0,
+                        3.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [

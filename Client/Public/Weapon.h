@@ -100,7 +100,7 @@ public:
 	SKILL_DESC& Get_SkillDesc(_int iIndex) { return m_eSkillDesc[iIndex]; }
 	const _float4x4* Get_CombinedWorldMatrix() const { return &m_CombinedWorldMatrix; }
 
-protected:  /* [ 히트랙 ] */
+public:  /* [ 히트랙 ] */
 	// TimeScale 몇까지 내릴지, 내려가는 시간, 올라가는 시간
 	// 0.1f, 0.3f, 0.5f 면 1.0~0.1까지 타임스탬프가 0.3초 동안 내려가고, 0.1~1.0 까지 0.5초 동안 다시 올라간다.
 	void StartHitReg(_float fHitRegTarget, _float fHitRegStartSpeed, _float fHitRegEndSpeed);

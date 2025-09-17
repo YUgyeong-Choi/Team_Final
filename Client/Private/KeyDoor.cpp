@@ -221,6 +221,17 @@ void CKeyDoor::Play_Sound(_float fTimeDelta)
 		}
 		break;
 	}
+	case Client::INNERDOOR:
+	{
+		if (m_fSoundDelta > 0.2f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Train_Slide_M", 0.9f* g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_Train_Slide_M");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -260,6 +271,10 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = m_eInteractType == OUTDOOR ? true : false;
+			if (m_bRotationStart == false)
+			{
+				m_bStartSound = true;
+			}
 			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetPos);
 		}
 	}

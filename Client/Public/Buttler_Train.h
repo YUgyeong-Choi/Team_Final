@@ -44,15 +44,20 @@ public:
 
 	void Calc_Pos(_float fTimeDelta);
 
-	virtual void Register_Events();
+	virtual void Register_Events() override;
+	virtual void Register_SoundEvent() override;
 
-	virtual void Block_Reaction();
+	virtual void Block_Reaction() override;
 
 	virtual void Start_Fatal_Reaction();
 
 	virtual void Reset() override;
+
+	virtual void PlayDetectSound();
+
 private:
 	HRESULT Ready_Weapon(); 
+	virtual HRESULT Ready_Sound() override;
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
