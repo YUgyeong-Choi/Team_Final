@@ -1412,12 +1412,14 @@ PS_OUT PS_DOF_ROUND(PS_IN In)
     {
         float t = saturate(viewZ / nearFocus);
         float w = saturate(t / max(1e-6, g_fCloseIntensity)); // 0으로 나눔 방지
+        w = max(w, 0.5);
         result = lerp(blurCol, sharpCol, w);
     }
     else if (viewZ > farFocus) // 먼 쪽
     {
         float t = saturate(farFocus / viewZ);
         float w = saturate(t / max(1e-6, g_fFarIntensity));
+        w = max(w, 0.5);
         result = lerp(blurCol, sharpCol, w);
     }
     else
