@@ -41,7 +41,7 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead == true)
 		return;
 	m_fCurFrame += m_fTickPerSecond * fTimeDelta;
 	m_iCurFrame = static_cast<_int>(m_fCurFrame); // 캐스팅을 너무 많이 하는 것 같아서 그냥 별도로 저장
@@ -100,7 +100,7 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 
 void CEffectContainer::Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead == true)
 		return;
 	// EC의 combinedworldmatrix 갱신
 	_matrix matSocket = XMMatrixIdentity();
@@ -132,14 +132,15 @@ void CEffectContainer::Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Update(fTimeDelta);
 		}
 	}
 }
 
 void CEffectContainer::Late_Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead == true)
 		return;
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
@@ -147,7 +148,8 @@ void CEffectContainer::Late_Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Late_Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Late_Update(fTimeDelta);
 		}
 	}
 }
@@ -162,7 +164,9 @@ void CEffectContainer::End_Effect()
 {
 	for (auto& pEffect : m_Effects)
 	{
-		_float fDeathTime = pEffect->Ready_Death();
+		_float fDeathTime = {};
+		if (pEffect)
+			fDeathTime = pEffect->Ready_Death();
 		//if (pEffect->Get_EffectType() == EFF_PARTICLE)
 		//	static_cast<CParticleEffect*>(pEffect)->Set_Loop(false);
 		if (m_fDeadInterval < fDeathTime)
@@ -310,6 +314,8 @@ void CEffectContainer::Free()
 	__super::Free();
 	for (auto& pEffect : m_Effects)
 	{
+		if(pEffect)
+			pEffect->Set_bDead();
 		Safe_Release(pEffect);
 	}
 }
