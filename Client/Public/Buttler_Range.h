@@ -45,6 +45,7 @@ public:
 	void Calc_Pos(_float fTimeDelta);
 
 	virtual void Register_Events();
+	virtual void Register_SoundEvent() override;
 
 	virtual void Start_Fatal_Reaction();
 
