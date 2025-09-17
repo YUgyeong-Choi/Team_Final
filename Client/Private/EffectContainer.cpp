@@ -92,7 +92,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Priority_Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Priority_Update(fTimeDelta);
 		}
 	}
 }
