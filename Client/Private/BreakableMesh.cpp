@@ -67,6 +67,10 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 	}
 
 	m_pSoundCom->SetVolume(0.5f);
+	_float3 vPos = {};
+	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
+	m_pSoundCom->Update3DPosition(vPos);
+	m_pSoundCom->Set3DState(0.f, 10.f);
 
 	return S_OK;
 }
@@ -234,47 +238,12 @@ void CBreakableMesh::Reset()
 
 void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (m_bFireEaterBossPipe) //푸오코 기둥이면 푸오코에 의해서만 부서지고
-	{
-		//푸오코가 퓨리상태일 때
-		//pOther->퓨리일 때 트리거 트루
-		if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON)
-			&& m_bBreakTriggered == false)
-		{
-			if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
-			{
-				if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
-				{
-					m_bBreakTriggered = true;
-				}
-			}
-		}
-	}
-	else //아니면 그냥 모두에게 부서지게한다.
-	{
-		//플레이어면
-		if (eColliderType == COLLIDERTYPE::PLAYER)
-		{
-			//구르거나 백스텝 할때만
-			if (m_pPlayer->Get_PlayerState() == EPlayerState::ROLLING || m_pPlayer->Get_PlayerState() == EPlayerState::BACKSTEP)
-			{
-				if (m_bBreakTriggered == false)
-				{
-					m_bBreakTriggered = true;
-				}
-			}
-		}
-		else
-		{
-			//몬스터들은 그냥 몸빵으로 부수게
-			if (m_bBreakTriggered == false)
-			{
-				m_bBreakTriggered = true;
-			}
-		}
-	}
+	On_Collision_Check(pOther, eColliderType);
+}
 
-
+void CBreakableMesh::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
+{
+	On_Collision_Check(pOther, eColliderType);
 }
 
 void CBreakableMesh::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -356,6 +325,49 @@ void CBreakableMesh::Break()
 
 		//AddActor 이후 웨이크업해야한다
 		pRigid->wakeUp();
+	}
+}
+
+void CBreakableMesh::On_Collision_Check(CGameObject* pOther, COLLIDERTYPE eColliderType)
+{
+	if (m_bFireEaterBossPipe) //푸오코 기둥이면 푸오코에 의해서만 부서지고
+	{
+		//푸오코가 퓨리상태일 때
+		//pOther->퓨리일 때 트리거 트루
+		if ((eColliderType == COLLIDERTYPE::MONSTER || eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+			&& m_bBreakTriggered == false)
+		{
+			if (auto pFuoco = dynamic_cast<CFuoco*>(pOther))
+			{
+				if (pFuoco->GetFuryState() == CBossUnit::EFuryState::Fury)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+	}
+	else //아니면 그냥 모두에게 부서지게한다.
+	{
+		//플레이어면
+		if (eColliderType == COLLIDERTYPE::PLAYER)
+		{
+			//구르거나 백스텝 할때만
+			if (m_pPlayer->Get_PlayerState() == EPlayerState::ROLLING || m_pPlayer->Get_PlayerState() == EPlayerState::BACKSTEP)
+			{
+				if (m_bBreakTriggered == false)
+				{
+					m_bBreakTriggered = true;
+				}
+			}
+		}
+		else
+		{
+			//몬스터들은 그냥 몸빵으로 부수게
+			if (m_bBreakTriggered == false)
+			{
+				m_bBreakTriggered = true;
+			}
+		}
 	}
 }
 

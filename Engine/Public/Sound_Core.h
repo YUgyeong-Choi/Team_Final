@@ -42,7 +42,8 @@ private:
 	shared_ptr<FMOD::Sound> m_pSound = {nullptr};
 	FMOD::Channel* m_pChannel = { nullptr };
 
-	vector<FMOD::Channel*> m_ActiveChannels;
+	//vector<FMOD::Channel*> m_ActiveChannels;
+	list<FMOD::Channel*> m_ActiveChannels;
 	_float m_fDefaultVolume = 1.0f;
 	_float m_fDefaultPitch = 1.0f;
 	_int m_iDefaultLoopCount = 0;

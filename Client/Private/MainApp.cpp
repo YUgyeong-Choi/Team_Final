@@ -337,10 +337,12 @@ HRESULT CMainApp::Ready_Sound()
 	ADD_SOUND_EX(FestivalLeader, "../Bin/Resources/Sound/Unit/FestivalLeader/", true, false, false);
 	ADD_SOUND_EX(Police, "../Bin/Resources/Sound/Unit/Police/", true, false, false);
 
+	// 램프 줍기 전 사운드
+	ADD_SOUND_EX(LampAmb, "../Bin/Resources/Sound/LampAmb/", true, false, false);
 
 
 	/* [ Breakable 부서지는 사운드 ] */
-	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", false, false, false);
+	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
 
 	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", false, false, false);
 

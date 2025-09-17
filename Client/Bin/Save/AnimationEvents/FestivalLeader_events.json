@@ -31,6 +31,28 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_End",
             "Duration": 358.0,
+            "Events": [
+                {
+                    "EventName": "RattleSound",
+                    "Time": 2.1552765369415283
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 3.2798869609832764
+                },
+                {
+                    "EventName": "RustleSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 6.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 46.18000030517578
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -38,6 +60,12 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Ing",
             "Duration": 180.0,
+            "Events": [
+                {
+                    "EventName": "DmgLSound",
+                    "Time": 5.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -45,6 +73,16 @@
         {
             "ClipName": "AS_Fatal_NPC_Hit_Start",
             "Duration": 35.0,
+            "Events": [
+                {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "DmgMSound",
+                    "Time": 3.232527732849121
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -52,6 +90,12 @@
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 108.0,
+            "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 6.56071662902832
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -59,6 +103,16 @@
         {
             "ClipName": "AS_Groggy_Loop",
             "Duration": 180.0,
+            "Events": [
+                {
+                    "EventName": "SparkSound",
+                    "Time": 4.152947902679443
+                },
+                {
+                    "EventName": "DmgLSound",
+                    "Time": 5.4269795417785645
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 65.0
@@ -86,6 +140,18 @@
                 {
                     "EventName": "ColliderBasketOff",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 3.7741146087646484
+                },
+                {
+                    "EventName": "DmgMSound",
+                    "Time": 4.742301940917969
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 20.280000686645508
                 }
             ],
             "IsLoop": false,
@@ -308,20 +374,48 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_Fatal_NPC_Hit_End_1",
-            "Duration": 358.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
-        {
-            "ClipName": "AS_Fatal_NPC_Hit_Ing_1",
-            "Duration": 180.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_Fatal_NPC_Hit_End_1",
+        "Duration": 358.0,
+        "Events": [
+          {
+            "EventName": "RattleSound",
+            "Time": 2.1552765369415283
+          },
+          {
+            "EventName": "MovementSound",
+            "Time": 3.2798869609832764
+          },
+          {
+            "EventName": "RustleSound",
+            "Time": 5.0
+          },
+          {
+            "EventName": "WalkSound",
+            "Time": 6.0
+          },
+          {
+            "EventName": "WalkSound",
+            "Time": 46.18000030517578
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
+      {
+        "ClipName": "AS_Fatal_NPC_Hit_Ing_1",
+        "Duration": 180.0,
+        "Events": [
+          {
+            "EventName": "DmgLSound",
+            "Time": 5.0
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_Fatal_NPC_Hit_1",
             "Duration": 395.0,
@@ -329,48 +423,90 @@
             "RootMotion": true,
             "TickPerSecond": 65.0
         },
-        {
-            "ClipName": "AS_Fatal_NPC_Hit_Start_1",
-            "Duration": 35.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 65.0
-        },
-        {
-            "ClipName": "AS_Groggy_End_1",
-            "Duration": 108.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
-        {
-            "ClipName": "AS_Groggy_Loop_1",
-            "Duration": 180.0,
-            "IsLoop": false,
-            "RootMotion": true,
-            "TickPerSecond": 65.0
-        },
+      {
+        "ClipName": "AS_Fatal_NPC_Hit_Start_1",
+        "Duration": 35.0,
+        "Events": [
+          {
+            "EventName": "RattleSound",
+            "Time": 2.0
+          },
+          {
+            "EventName": "DmgMSound",
+            "Time": 3.232527732849121
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 65.0
+      },
+      {
+        "ClipName": "AS_Groggy_End_1",
+        "Duration": 108.0,
+        "Events": [
+          {
+            "EventName": "MovementSound",
+            "Time": 6.56071662902832
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
+      {
+        "ClipName": "AS_Groggy_Loop_1",
+        "Duration": 180.0,
+        "Events": [
+          {
+            "EventName": "SparkSound",
+            "Time": 4.152947902679443
+          },
+          {
+            "EventName": "DmgLSound",
+            "Time": 5.4269795417785645
+          }
+        ],
+        "IsLoop": false,
+        "RootMotion": true,
+        "TickPerSecond": 65.0
+      },
         {
             "ClipName": "AS_Groggy_Start_1",
             "Duration": 125.0,
-            "Events": [
-                {
-                    "EventName": "OffFury",
-                    "Time": 2.0
-                },
-                {
-                    "EventName": "ColliderLeftHandOff",
-                    "Time": 2.0
-                },
-                {
-                    "EventName": "ColliderRightHandOff",
-                    "Time": 2.0
-                },
-                {
-                    "EventName": "ColliderHammerOff",
-                    "Time": 2.0
-                }
-            ],
+          "Events": [
+            {
+              "EventName": "OffFury",
+              "Time": 1.0
+            },
+            {
+              "EventName": "ColliderLeftHandOff",
+              "Time": 1.0
+            },
+            {
+              "EventName": "ColliderRightHandOff",
+              "Time": 1.0
+            },
+            {
+              "EventName": "ColliderHammerOff",
+              "Time": 1.0
+            },
+            {
+              "EventName": "ColliderBasketOff",
+              "Time": 1.0
+            },
+            {
+              "EventName": "WalkSound",
+              "Time": 3.7741146087646484
+            },
+            {
+              "EventName": "DmgMSound",
+              "Time": 4.742301940917969
+            },
+            {
+              "EventName": "WalkSound",
+              "Time": 20.280000686645508
+            }
+          ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -459,6 +595,14 @@
                 {
                     "EventName": "CollidersOff",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 3.879901885986328
+                },
+                {
+                    "EventName": "DeadSound",
+                    "Time": 4.060140609741211
                 }
             ],
             "IsLoop": false,
@@ -613,7 +757,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 35.0
         },
         {
@@ -651,7 +795,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 28.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_01_Attack",
@@ -1443,12 +1587,32 @@
             "Duration": 440.0,
             "Events": [
                 {
+                    "EventName": "RoarSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 30.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 60.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 70.0
+                },
+                {
                     "EventName": "ColliderBaskettOn",
                     "Time": 78.0
                 },
                 {
                     "EventName": "ColliderBasketOff",
                     "Time": 90.0
+                },
+                {
+                    "EventName": "RoarSound",
+                    "Time": 100.0
                 },
                 {
                     "EventName": "DissolveOn",
@@ -1784,6 +1948,18 @@
             "Duration": 36.0,
             "Events": [
                 {
+                    "EventName": "SlashSound",
+                    "Time": 3.472728729248047
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 4.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 4.389190196990967
+                },
+                {
                     "EventName": "SlowAnimSpeed",
                     "Time": 9.0
                 },
@@ -1815,6 +1991,16 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_09_End",
             "Duration": 128.0,
+            "Events": [
+                {
+                    "EventName": "WalkSound",
+                    "Time": 3.1467084884643555
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 4.420942306518555
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -1826,6 +2012,18 @@
                 {
                     "EventName": "Turnning",
                     "Time": 2.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 2.5984270572662354
+                },
+                {
+                    "EventName": "AttackMSound",
+                    "Time": 3.6856820583343506
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 24.75
                 }
             ],
             "IsLoop": false,
@@ -1836,6 +2034,14 @@
             "ClipName": "AS_ATHBoss0_Skill_10_Attack",
             "Duration": 30.0,
             "Events": [
+                {
+                    "EventName": "SlashSound",
+                    "Time": 3.315396308898926
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 4.024019718170166
+                },
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 8.5
@@ -1868,6 +2074,16 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_10_End",
             "Duration": 126.0,
+            "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 4.653024673461914
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 15.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -1877,8 +2093,24 @@
             "Duration": 84.0,
             "Events": [
                 {
+                    "EventName": "MovementSound",
+                    "Time": 1.8400745391845703
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 2.569999933242798
+                },
+                {
+                    "EventName": "AttackMSound",
+                    "Time": 4.155618190765381
+                },
+                {
                     "EventName": "Turnning",
                     "Time": 41.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 45.0
                 }
             ],
             "IsLoop": false,
@@ -1889,6 +2121,14 @@
             "ClipName": "AS_ATHBoss0_Skill_11_Attack",
             "Duration": 48.0,
             "Events": [
+                {
+                    "EventName": "SlashSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "RoarSound",
+                    "Time": 5.334861755371094
+                },
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 14.0
@@ -1917,6 +2157,12 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_11_End",
             "Duration": 150.0,
+            "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 3.359576940536499
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 65.0
@@ -1932,6 +2178,22 @@
                 {
                     "EventName": "FuryStartSound",
                     "Time": 1.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "AttackMSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 60.0
                 }
             ],
             "IsLoop": false,
@@ -1945,6 +2207,30 @@
                 {
                     "EventName": "Turnning",
                     "Time": 5.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 38.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 38.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 59.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 59.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 72.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 72.0
                 }
             ],
             "IsLoop": false,
@@ -1955,6 +2241,10 @@
             "ClipName": "AS_ATHBoss0_Skill_12_Attack",
             "Duration": 30.0,
             "Events": [
+                {
+                    "EventName": "GroundImpactSound",
+                    "Time": 3.963270664215088
+                },
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 12.0
@@ -1989,6 +2279,26 @@
                     "Time": 22.0
                 },
                 {
+                    "EventName": "SlashSound",
+                    "Time": 22.0
+                },
+                {
+                    "EventName": "ColliderHammerOff",
+                    "Time": 27.0
+                },
+                {
+                    "EventName": "GroundImpactSound",
+                    "Time": 28.0
+                },
+                {
+                    "EventName": "ColliderHammerOn",
+                    "Time": 35.0
+                },
+                {
+                    "EventName": "GroundImpactSound",
+                    "Time": 47.0
+                },
+                {
                     "EventName": "ColliderHammerOff",
                     "Time": 53.0
                 }
@@ -2002,8 +2312,20 @@
             "Duration": 125.0,
             "Events": [
                 {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                },
+                {
                     "EventName": "OffFury",
                     "Time": 3.0
+                },
+                {
+                    "EventName": "MovementSound",
+                    "Time": 3.0004584789276123
+                },
+                {
+                    "EventName": "RoarSound",
+                    "Time": 4.127142429351807
                 }
             ],
             "IsLoop": false,
@@ -2013,6 +2335,24 @@
         {
             "ClipName": "AS_ATHBoss0_Skill_12_Start",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 2.0
+                },
+                {
+                    "EventName": "AttackLSound",
+                    "Time": 3.0285418033599854
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 3.5999205112457275
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -2043,7 +2383,27 @@
             "Duration": 260.0,
             "Events": [
                 {
+                    "EventName": "AttackMSound",
+                    "Time": 4.519930839538574
+                },
+                {
+                    "EventName": "RattleSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 55.0
+                },
+                {
                     "EventName": "ColliderHammerOn",
+                    "Time": 92.0
+                },
+                {
+                    "EventName": "SlashSound",
                     "Time": 92.0
                 },
                 {
@@ -2061,6 +2421,14 @@
                 {
                     "EventName": "ColliderHammerOn",
                     "Time": 120.0
+                },
+                {
+                    "EventName": "SlashSound",
+                    "Time": 120.0
+                },
+                {
+                    "EventName": "WalkSound",
+                    "Time": 125.0
                 },
                 {
                     "EventName": "OnGroundScratchEffect",

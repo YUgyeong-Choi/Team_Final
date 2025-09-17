@@ -383,7 +383,7 @@ void CBayonet::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		
 
 		
-		StartHitReg(0.1f, 0.015f, 0.025f);
+		StartHitReg(0.1f, 0.025f, 0.025f);
 
 		m_pSoundCom->Play_Random("SE_PC_SK_Hit_Skin_Slice_S_", 3);
 

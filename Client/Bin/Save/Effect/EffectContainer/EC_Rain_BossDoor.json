@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -0.5,
-                -0.5
+                0.0,
+                0.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -13,45 +13,46 @@
                 0.0
             ],
             "CenterColor": [
-                0.481675386428833,
-                0.6987747550010681,
                 1.0,
-                1.0
+                1.0,
+                1.0,
+                0.5235601663589478
             ],
             "Color": [
-                0.11518287658691406,
-                0.0,
                 1.0,
-                1.0
+                1.0,
+                1.0,
+                0.4921466112136841
             ],
-            "DistortionStrength": 10.0,
-            "Duration": 62,
+            "DistortionStrength": 8.399999618530273,
+            "Duration": 1017,
             "EffectType": 1,
-            "EmissiveIntensity": 3.299999952316284,
-            "EndTrack": 62,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 1017,
             "FlipUV": false,
-            "Gravity": -0.5,
+            "Gravity": 14.399999618530273,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.11518287658691406,
-                        0.0,
                         1.0,
-                        1.0
+                        1.0,
+                        1.0,
+                        0.4921466112136841
                     ],
-                    "Intensity": 4.03000020980835,
+                    "Intensity": 1.5199999809265137,
                     "Interpolation": 0,
                     "Rotation": [
-                        -2.39857513406605e-07,
-                        0.00020114181097596884,
-                        4.2797410060302354e-07,
-                        1.0
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
                     ],
                     "Scale": [
-                        0.9999864101409912,
-                        0.9999958276748657,
-                        0.9999777674674988
+                        1.0,
+                        1.0,
+                        1.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -61,18 +62,18 @@
                     ]
                 }
             ],
-            "LifeTime": 6665.248046875,
+            "LifeTime": 68.46520233154297,
             "LifeTime_Particle": [
                 1.0,
-                1.0
+                3.0
             ],
             "Local": true,
             "Loop": true,
-            "MaxLifeTime": 3.0,
-            "MaxSpeed": 3.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 300.0,
             "MinSpeed": 0.0,
-            "Name": "YW_FulseCell",
-            "NumInstance": 100,
+            "Name": "NEW_BossDoorRain",
+            "NumInstance": 500,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -81,19 +82,19 @@
                 0.0
             ],
             "OrbitSpeed": [
-                180.0,
-                180.0
+                -20.0,
+                20.0
             ],
-            "PType": 2,
+            "PType": 1,
             "Pivot": [
-                0.0,
-                0.0,
-                0.0
+                0.03999999910593033,
+                1.0,
+                0.20000000298023224
             ],
             "Range": [
-                0.0,
-                0.0,
-                0.0
+                5.0,
+                1.0,
+                5.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -105,29 +106,29 @@
                 0.0,
                 0.0
             ],
-            "ShaderPass": 3,
+            "ShaderPass": 5,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.017999999225139618,
-                0.18700000643730164
+                0.019999999552965164,
+                0.029999999329447746
             ],
             "Speed": [
-                0.5,
-                0.5
+                8.0,
+                11.0
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.0010000000474974513,
+            "StretchFactor": 0.07999999821186066,
             "TextureTags": [
-                "",
-                "T_LensFlare_04_C_RSW",
-                "",
+                "T_Shere_04_C_HJS",
+                "Rain_Noise_68_C_PCY",
+                "T_Rain_Drips_01_C_PCY",
                 ""
             ],
             "TextureUsage": [
-                false,
                 true,
-                false,
+                true,
+                true,
                 false
             ],
             "Threshold": 0.0,
@@ -139,5 +140,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 60
+    "MaxFrame": 100
 }

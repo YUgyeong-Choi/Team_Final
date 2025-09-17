@@ -146,6 +146,8 @@ CGameObject* CLayer::Get_Object(_uint iIndex)
 
 CGameObject* CLayer::Get_LastObject()
 {
+	if (m_GameObjects.empty())
+		return nullptr;
 	return m_GameObjects.back();
 }
 

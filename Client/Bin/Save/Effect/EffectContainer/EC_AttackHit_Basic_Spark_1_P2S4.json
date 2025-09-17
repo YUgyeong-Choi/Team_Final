@@ -31,6 +31,7 @@
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -61,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1597.4246826171875,
+            "LifeTime": 1748.129638671875,
             "LifeTime_Particle": [
                 0.009999999776482582,
                 0.30000001192092896
@@ -72,7 +73,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 10.0,
             "Name": "Hit_BasicSpark1",
-            "NumInstance": 100,
+            "NumInstance": 200,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -108,8 +109,8 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.004999999888241291,
-                0.009999999776482582
+                0.00800000037997961,
+                0.017999999225139618
             ],
             "Speed": [
                 35.0,
@@ -151,8 +152,8 @@
             ],
             "CenterColor": [
                 1.0,
-                0.45464766025543213,
-                0.39790576696395874,
+                0.36454594135284424,
+                0.29842931032180786,
                 1.0
             ],
             "Color": [
@@ -164,10 +165,11 @@
             "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
-            "EmissiveIntensity": 0.800000011920929,
+            "EmissiveIntensity": 2.5,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 1.5,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -198,7 +200,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1393.3787841796875,
+            "LifeTime": 1544.083740234375,
             "LifeTime_Particle": [
                 0.05000000074505806,
                 0.8999999761581421
@@ -209,7 +211,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.0,
             "Name": "Hit_BasicSpark2",
-            "NumInstance": 100,
+            "NumInstance": 200,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -245,8 +247,8 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
-                0.019999999552965164
+                0.014999999664723873,
+                0.02500000037252903
             ],
             "Speed": [
                 10.0,
@@ -285,9 +287,9 @@
             ],
             "Color": [
                 1.0,
-                0.4397905468940735,
-                0.0,
-                0.282722532749176
+                0.5821259021759033,
+                0.2513089179992676,
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -351,7 +353,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1216.889892578125,
+            "LifeTime": 1367.5948486328125,
             "Loop": true,
             "Name": "Hit_BasicSprite1",
             "NumKeyFrames": 2,
@@ -387,9 +389,9 @@
             ],
             "Color": [
                 1.0,
-                0.15706807374954224,
+                0.1568627506494522,
                 0.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -453,7 +455,7 @@
                     ]
                 }
             ],
-            "LifeTime": 946.6626586914063,
+            "LifeTime": 1097.3751220703125,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,
@@ -491,7 +493,7 @@
                 1.0,
                 0.1568627506494522,
                 0.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -555,7 +557,7 @@
                     ]
                 }
             ],
-            "LifeTime": 942.3489990234375,
+            "LifeTime": 1093.0614013671875,
             "Loop": true,
             "Name": "Hit_BasicLensFlareSprite1",
             "NumKeyFrames": 2,
@@ -590,10 +592,10 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                -0.09481990337371826,
+                -0.09481990337371826,
+                -0.09481990337371826,
+                -0.09481990337371826
             ],
             "DistortionStrength": 10.0,
             "Duration": 61,
@@ -657,7 +659,7 @@
                     ]
                 }
             ],
-            "LifeTime": 355.97021484375,
+            "LifeTime": 506.6530456542969,
             "Loop": true,
             "Name": "Hit_BasicDistortionSprite1",
             "NumKeyFrames": 2,

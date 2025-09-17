@@ -1,0 +1,102 @@
+{
+    "Animation": false,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        0.38825690746307373,
+        0.32460731267929077,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        0.21720898151397705,
+        0.10471206903457642,
+        0.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 61,
+    "EffectType": 0,
+    "EmissiveIntensity": 4.699999809265137,
+    "EndTrack": 61,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                0.15706807374954224,
+                0.0,
+                0.14659684896469116
+            ],
+            "Intensity": 4.349999904632568,
+            "Interpolation": 4,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "Color": [
+                1.0,
+                0.21720898151397705,
+                0.10471206903457642,
+                0.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "TrackPosition": 16.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 1408.703125,
+    "Loop": true,
+    "Name": "Hit_BasicSprite1",
+    "NumKeyFrames": 2,
+    "RenderGroup": 8,
+    "ShaderPass": 5,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_Ring_05_C_HJS",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}
