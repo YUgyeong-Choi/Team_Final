@@ -991,6 +991,10 @@ void CFestivalLeader::Register_Events()
 			}
 
 			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
+
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"));
 		});
 
 	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
@@ -1003,12 +1007,17 @@ void CFestivalLeader::Register_Events()
 		{
 			m_bLeftHand = false;
 			EffectSpawn_Active(EF_SCRATCH, true);
+
 		});
 
 	m_pAnimator->RegisterEventListener("SlamNoSmokeEffect", [this]()
 		{
 			m_bLeftHand = true;
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"));
 		});
 
 	m_pAnimator->RegisterEventListener("SmokeEffect", [this]()
@@ -1061,8 +1070,8 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
 		{
-
 			EffectSpawn_Active(EF_GROUND_SPARK, true, false);
+
 		});
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
 		{

@@ -29,6 +29,9 @@ protected:
 	virtual void Ready_AttackPatternWeightForPhase1();
 	virtual void Ready_AttackPatternWeightForPhase2();
 
+protected:
+	HRESULT Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag);
+
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 protected:
 	_bool    m_bCutSceneOn = false;
