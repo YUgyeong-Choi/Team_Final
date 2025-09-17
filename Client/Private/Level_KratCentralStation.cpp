@@ -285,12 +285,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -1371,7 +1371,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(366.2, 20.0f, -48.0f);
+	presetmat = XMMatrixTranslation(366.2f, 20.0f, -48.0f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossDoor"), &ECDesc);
 	if (pEC == nullptr)

@@ -121,6 +121,31 @@ float4 RandomOnCircle(uint iSeed, float3 Center, float Radius)
     return float4(Center + float3(x, 0.0f, z), 1.f);
 }
 
+// 원하는 방향의 평면 위 원 둘레 랜덤 좌표                  (영웅)
+//float4 RandomOnCircle(uint iSeed, float3 Center, float Radius, float3 Normal)
+//{
+//    // --- 안전한 법선 ---
+//    Normal = normalize(Normal);
+
+//    // --- 법선과 직교하는 벡터 하나 얻기 ---
+//    float3 ref = (abs(Normal.y) < 0.999f) ? float3(0, 1, 0) : float3(1, 0, 0);
+//    float3 tangent = normalize(cross(Normal, ref));
+
+//    // --- 두 번째 직교 벡터 ---
+//    float3 bitangent = cross(Normal, tangent);
+
+//    // --- 랜덤 각도 ---
+//    float angle = Random(iSeed, 0.0f, 6.2831853f);
+//    float c = cos(angle) * Radius;
+//    float s = sin(angle) * Radius;
+
+//    // --- 평면 위 점 ---
+//    float3 pos = Center + tangent * c + bitangent * s;
+
+//    return float4(pos, 1.f);
+//}
+
+
 float4 RandomInRange(uint iSeed, float3 Center, float3 Range)
 {
     return float4(
