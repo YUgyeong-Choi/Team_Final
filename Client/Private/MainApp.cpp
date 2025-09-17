@@ -347,6 +347,10 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ 숏컷 사운드 ] */ 
 	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
 
+	/* [ 일반 몬스터 사운드 ] */
+	ADD_SOUND_EX(Buttler, "../Bin/Resources/Sound/Unit/Buttler/", true, false, false);
+	ADD_SOUND_EX(Watchdog, "../Bin/Resources/Sound/Unit/Watchdog/", true, false, false);
+
 	return S_OK;
 }
 

@@ -61,6 +61,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 		m_isPatrol = true;
 
 	}
+
+	m_pSoundCom->Set3DState(0.f, 15.f);
 	
 	return S_OK; 
 }
@@ -137,6 +139,15 @@ void CButtler_Train::Update(_float fTimeDelta)
 	
 	}
 
+	if (m_pSoundCom)
+	{
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		_float3 f3Pos{};
+		XMStoreFloat3(&f3Pos, vPos);
+
+		m_pSoundCom->Update3DPosition(f3Pos);
+	}
 }
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
@@ -362,6 +373,17 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			return;
 		}
 
+		if (m_fHp > 0 && m_isFatal)
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 5.f);
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+
+			}
+		}
+
 		if (static_cast<CPlayer*>(m_pPlayer)->GetAnimCategory() == CPlayer::eAnimCategory::ARM_ATTACKCHARGE)
 		{
 			m_isLookAt = false;
@@ -555,6 +577,93 @@ void CButtler_Train::Register_Events()
 
 }
 
+void CButtler_Train::Register_SoundEvent()
+{
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Movement_04");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Movement_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("IdleSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 3.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Getup_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 8.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Dead_0" + to_string(iNum);
+			
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 17.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Attack_" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FallSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				string strTag = "SE_NPC_Servant02_MT_Bodyfall_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+}
+
 void CButtler_Train::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -616,6 +725,13 @@ void CButtler_Train::Reset()
 	m_pWeapon->SetDamage(40.f);
 }
 
+void CButtler_Train::PlayDetectSound()
+{
+	_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+	
+	m_pSoundCom->Play("VO_NPC_NHM_Servant02_Spawn_0" + to_string(iNum));
+}
+
 HRESULT CButtler_Train::Ready_Weapon()
 {
 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
@@ -646,6 +762,18 @@ HRESULT CButtler_Train::Ready_Weapon()
 
 	Safe_AddRef(m_pWeapon);
 
+
+	return S_OK;
+}
+
+HRESULT CButtler_Train::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
+	
 
 	return S_OK;
 }

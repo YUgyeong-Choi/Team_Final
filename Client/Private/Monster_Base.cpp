@@ -69,7 +69,10 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	
 	//m_eSpawnType = SPAWN_TYPE(pDesc->iSpawnType);
 
+	if (FAILED(Ready_Sound()))
+		return E_FAIL;
 	
+	Register_SoundEvent();
 
 	return S_OK;
 }
@@ -502,6 +505,9 @@ _bool CMonster_Base::Check_Detect()
 		m_pAnimator->SetBool("Detect", m_isDetect);
 		m_isPatrol = false;
 		//m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_TurnDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
+
+		PlayDetectSound();
+
 		return true;
 	}
 
@@ -619,6 +625,7 @@ void CMonster_Base::Register_Events()
 	
 
 }
+
 
 void CMonster_Base::Check_Drop_Ergo(_float fTimeDelta)
 {
