@@ -66,7 +66,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 		if (m_pGameInstance->Key_Down(DIK_E))
 		{
-			static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(true);
+			//if (m_bDead != true)
+				static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(true);
 			Set_bDead();
 
 			m_pPhysXActorCom->RemovePhysX();

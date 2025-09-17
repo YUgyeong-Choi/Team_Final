@@ -277,7 +277,7 @@ HRESULT CElite_Police::Ready_Actor()
 	{
 		const PxTransform elbowPose = GetBonePose(m_pRightElbowBone);
 
-		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(1.2f);
+		PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(1.3f);
 		m_pPhysXElbow->Create_Collision(
 			m_pGameInstance->GetPhysics(),
 			elbowGeom,
