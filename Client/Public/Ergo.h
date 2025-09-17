@@ -43,6 +43,9 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
+	//플레이어 램프
+	class CPlayerLamp* m_pLamp = { nullptr };
+
 	//램프의 월드 행렬
 	const _float4x4* m_pLampMatrix = { nullptr };
 	
