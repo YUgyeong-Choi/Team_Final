@@ -64,6 +64,8 @@ HRESULT CStargazer::Initialize(void* pArg)
 	if (FAILED(Ready_EffectSet()))
 		return E_FAIL;
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update(0.016f);
+	m_pModelCom[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update_Bones();
 	return S_OK;
 }
 

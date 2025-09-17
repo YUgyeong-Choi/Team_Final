@@ -41,8 +41,9 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
-	if (m_isActive == false || m_bDead == true)
+	if (m_isActive == false || m_bDead)
 		return;
+
 	m_fCurFrame += m_fTickPerSecond * fTimeDelta;
 	m_iCurFrame = static_cast<_int>(m_fCurFrame); // 캐스팅을 너무 많이 하는 것 같아서 그냥 별도로 저장
 	//m_fLifeTimeAcc += fTimeDelta;
@@ -100,7 +101,7 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 
 void CEffectContainer::Update(_float fTimeDelta)
 {
-	if (m_isActive == false || m_bDead == true)
+	if (m_isActive == false || m_bDead)
 		return;
 	// EC의 combinedworldmatrix 갱신
 	_matrix matSocket = XMMatrixIdentity();
@@ -140,7 +141,7 @@ void CEffectContainer::Update(_float fTimeDelta)
 
 void CEffectContainer::Late_Update(_float fTimeDelta)
 {
-	if (m_isActive == false || m_bDead == true)
+	if (m_isActive == false || m_bDead)
 		return;
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)

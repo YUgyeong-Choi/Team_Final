@@ -32,9 +32,10 @@ HRESULT COil::Initialize(void* pArg)
 	{
 		PxFilterData filterData{};
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-		filterData.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_FOOTSTEP;
+		filterData.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_FLOOR | WORLDFILTER::FILTER_FOOTSTEP
+			| WORLDFILTER::FILTER_DYNAMICOBJ;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
-
+		m_pPhysXActorCom->Set_ShapeFlag(true, false, false);
 		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);
 	}
 
@@ -139,7 +140,8 @@ void COil::Explode_Oil()
 
 void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI)
+	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI
+		||eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT|| eColliderType == COLLIDERTYPE::PLAYER)
 	{
 		if (m_bIsSpreaded == false)
 		{
@@ -151,6 +153,15 @@ void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _v
 
 void COil::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI
+		|| eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT || eColliderType == COLLIDERTYPE::PLAYER)
+	{
+		if (m_bIsSpreaded == false)
+		{
+			m_bCanSpread = true;
+			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Oil_Hit_", 3);
+		}
+	}
 }
 
 void COil::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
