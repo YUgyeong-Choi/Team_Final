@@ -2050,8 +2050,8 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 	//56. 다리끝
-	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
-	eDesc.vPosition = _float3(343.374847f, 7.424715f, -36.440987f);
+	eDesc.strSoundName = "AMB_SS_OnTheBrige";
+	eDesc.vPosition = _float3(328.757233f, 7.424715f, -36.812428f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
 		return E_FAIL;
