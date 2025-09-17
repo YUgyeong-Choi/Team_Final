@@ -122,6 +122,13 @@ private:
 	_uint m_iID = { 0 };
 	LEVEL m_eTargetLevel = { LEVEL::END };
 
+	_bool m_bSoundPlay = false;
+	_float m_fSoundInterval = 1.2f;   
+	_float m_fSoundElapsed = 0.f;   
+	string m_strLampSound = "AMB_OJ_FX_Monard_Gemini_01"; // 재생할 사운드 태그
+
+	class CSoundController* m_pSoundCom = { nullptr };
+
 public:
 	static CPlayerLamp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

@@ -1480,7 +1480,7 @@ void CFestivalLeader::Ready_SoundEvents()
 {
 	if (m_pSoundCom)
 	{
-		m_pSoundCom->Set_AllVolume(0.55f);
+		m_pSoundCom->Set_AllVolume(0.85f);
 	}
 	m_pAnimator->RegisterEventListener("WalkSound", [this]()
 		{

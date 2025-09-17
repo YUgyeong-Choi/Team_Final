@@ -221,6 +221,17 @@ void CKeyDoor::Play_Sound(_float fTimeDelta)
 		}
 		break;
 	}
+	case Client::INNERDOOR:
+	{
+		if (m_fSoundDelta > 0.2f)
+		{
+			m_bStartSound = false;
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Inner_Door", 0.7f * g_fInteractSoundVolume);
+			m_pSoundCom->Play("AMB_OJ_DR_Train_Slide_M");
+			m_fSoundDelta = 0.f;
+		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -288,7 +299,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
-		m_bStartSound = true;
+		awaaaaaxaeaewde = true;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
