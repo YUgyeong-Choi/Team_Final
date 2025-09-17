@@ -22,9 +22,9 @@
                 1.0,
                 1.0,
                 1.0,
-                0.5706806182861328
+                0.4921466112136841
             ],
-            "DistortionStrength": 3.799999952316284,
+            "DistortionStrength": 8.399999618530273,
             "Duration": 1017,
             "EffectType": 1,
             "EmissiveIntensity": 0.44999998807907104,
@@ -39,7 +39,7 @@
                         1.0,
                         1.0,
                         1.0,
-                        0.5706806182861328
+                        0.4921466112136841
                     ],
                     "Intensity": 1.5199999809265137,
                     "Interpolation": 0,
@@ -62,18 +62,18 @@
                     ]
                 }
             ],
-            "LifeTime": 350.0467529296875,
+            "LifeTime": 68.46520233154297,
             "LifeTime_Particle": [
-                2.0,
-                4.0
+                1.0,
+                3.0
             ],
             "Local": true,
             "Loop": true,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 300.0,
             "MinSpeed": 0.0,
-            "Name": "Rain_BossArea",
-            "NumInstance": 10000,
+            "Name": "NEW_BossDoorRain",
+            "NumInstance": 500,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -82,8 +82,8 @@
                 0.0
             ],
             "OrbitSpeed": [
-                -9.0,
-                9.0
+                -20.0,
+                20.0
             ],
             "PType": 1,
             "Pivot": [
@@ -92,9 +92,9 @@
                 0.20000000298023224
             ],
             "Range": [
-                45.0,
-                2.0,
-                46.0
+                5.0,
+                1.0,
+                5.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
