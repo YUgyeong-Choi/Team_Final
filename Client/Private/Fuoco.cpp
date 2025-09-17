@@ -80,10 +80,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_X))
 	{
-
-		
-
-		/*cout << "현재 공격 인덱스 " << i << endl;*/
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
 		switch (m_eCurAttackPattern)
 		{
@@ -141,15 +137,14 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("Attack");
 	}
 
-	//if (KEY_DOWN(DIK_B))
-	//{
-	//	EnterCutScene();
-	//	//m_bDebugMode = !m_bDebugMode;
-	//}
 
 	if (KEY_DOWN(DIK_V))
 	{
-		Reset();
+		m_bDebugMode = !m_bDebugMode;
+		if (m_bDebugMode)
+			cout << "디버그 모드 ON" << endl;
+		else
+			cout << "디버그 모드 OFF" << endl;
 	}
 
 #endif
@@ -363,6 +358,11 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 
+	if (m_bWaitPhase2Rotate)
+	{
+		return;
+	}
+
 	if (CheckConditionFlameField())
 	{
 		m_fAttackCooldown = 5.f;
@@ -388,11 +388,6 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		if (m_fAttackCooldown > 0.f)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
-
-
-	//if (fDistance >= 25.f)
-	//	return;
-
 
 #ifdef _DEBUG
 	if (m_bDebugMode)
@@ -919,7 +914,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
-			m_fFireFlameDuration = 2.f;
+			m_fFireFlameDuration = 1.7f;
 			FlamethrowerAttack(15.f);
 		});
 
@@ -1397,7 +1392,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Right 방향
 	vDir.normalize();
 	vRight.normalize();
-	const _float pitchBiasDeg = 3.f;                
+	const _float pitchBiasDeg = 1.f;                
 	PxQuat qBias(XMConvertToRadians(pitchBiasDeg), vRight);
 	PxVec3 vDirBiased = qBias.rotate(vDir);
 
