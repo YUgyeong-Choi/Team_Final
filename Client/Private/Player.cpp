@@ -2738,6 +2738,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();
 			
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertLocation_02");
 		}
 
 

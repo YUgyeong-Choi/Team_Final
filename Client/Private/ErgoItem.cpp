@@ -123,6 +123,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 				static_cast<CPlayer*>(m_pTarget)->Recovery_Ergo();
 				
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertRecovery");
 			}
 			else
 			{

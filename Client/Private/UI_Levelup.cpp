@@ -203,6 +203,9 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(0.f);
 
 			m_isRenderCorfirmUI = false;
+
+
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_LevelUP");
 		}
 		else
 		{
@@ -213,12 +216,13 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 				_wstring strErgo = to_wstring(static_cast<_int>(m_fErgo - m_fCurrentErgo));
 				static_cast<CDynamic_Text_UI*>(m_pConfirmUI->Get_PartUI().back())->Set_Caption(strErgo);
 
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 				
 			}
 				
 		}
 
-		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
+		
 
 		return;
 	}
