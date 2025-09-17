@@ -8,6 +8,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CPhysXDynamicActor;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -75,7 +76,7 @@ protected:
 	_vector m_vStartPos = XMVectorZero(); // 시작 위치
 
 	_float  m_fBasicDamage = { 5.f };
-
+	class CSoundController* m_pSoundCom = nullptr;
 	class CEffectContainer* m_pEffect = { nullptr }; // 최소 하나의 이펙트,
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -179,19 +179,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		}
 		if (KEY_DOWN(DIK_W))
 		{
-			// 공기팡
-			CEffectContainer::DESC desc = {};
-			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-
-			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
-
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
-
-			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HammerSlam"), &desc) == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
 		}
 		if (KEY_DOWN(DIK_E))
 		{
@@ -868,7 +856,10 @@ void CFestivalLeader::Register_Events()
 		});
 	m_pAnimator->RegisterEventListener("ColliderBasketOff", [this]()
 		{
-			m_Colliders[EBossBones::Basket]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::Basket]->Init_SimulationFilterData();	m_pAnimator->RegisterEventListener("ShockWaveEffect", [this]()
+				{
+					EffectSpawn_Active(EF_HAMMER_SLAM, true);
+				});
 			m_bPlayerCollided = false;
 		});
 
@@ -926,7 +917,6 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Phase2InvisibledModel", [this]()
 		{
-
 			if (m_pAnimator)
 			{
 				m_pAnimator->ApplyOverrideAnimController("Phase2");
@@ -1064,9 +1054,20 @@ void CFestivalLeader::Register_Events()
 
 			EffectSpawn_Active(EF_GROUND_SPARK, true, false);
 		});
+
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
 		{
 			EffectSpawn_Active(EF_GROUND_SPARK, false);
+		});
+
+	m_pAnimator->RegisterEventListener("ShockWaveEffect", [this]()
+		{
+			EffectSpawn_Active(EF_HAMMER_SLAM, true);
+		});
+
+	m_pAnimator->RegisterEventListener("P2_StartEffect", [this]()
+		{
+			EffectSpawn_Active(EF_P2_START, true);
 		});
 }
 
@@ -1208,6 +1209,9 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee"));
 
 	m_EffectMap[EF_GROUND_SPARK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
+	m_EffectMap[EF_HAMMER_SLAM].emplace_back(TEXT("EC_Fes_P2_HammerSlam"));
+	m_EffectMap[EF_P2_START].emplace_back(TEXT("EC_Fes_P2Start"));
+
 
 }
 
@@ -1382,6 +1386,21 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_P2Start"))
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
 
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)

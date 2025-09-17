@@ -1149,7 +1149,11 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	m_PatternCountMap.clear();
 	for (const auto& pattern : m_vecBossPatterns)
 	{
-		if (pattern == P2_FireOil || pattern == P2_FireBall ||
+		if (pattern == P2_FireOil)
+		{
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 3.f;;
+		}
+		else if (pattern == P2_FireBall ||
 			pattern == P2_FireFlame || pattern == P2_FireBall_B)
 		{
 			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
@@ -1232,18 +1236,18 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 		}
 	}
 
-	// 2페이즈 패턴 많이 보여주려고 가중치 올림
-	if (m_bIsPhase2)
-	{
-		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
-		{
-			if (pattern == P2_FireOil || pattern == P2_FireBall ||
-				pattern == P2_FireFlame || pattern == P2_FireBall_B)
-			{
-				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
-			}
-		}
-	}
+	//// 2페이즈 패턴 많이 보여주려고 가중치 올림
+	//if (m_bIsPhase2)
+	//{
+	//	for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+	//	{
+	//		if (pattern == P2_FireOil || pattern == P2_FireBall ||
+	//			pattern == P2_FireFlame || pattern == P2_FireBall_B)
+	//		{
+	//			weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
+	//		}
+	//	}
+	//}
 }
 
 void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
@@ -1735,6 +1739,11 @@ HRESULT CFuoco::Ready_Effect()
 
 void CFuoco::Ready_SoundEvents()
 {
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 60.f);
+		m_pSoundCom->SetVolume(1.f);
+	}
 	m_pAnimator->RegisterEventListener("MoveSound", [this]()
 	{
 	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 
