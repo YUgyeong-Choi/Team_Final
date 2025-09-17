@@ -953,16 +953,16 @@ void CFuoco::Register_Events()
 	m_pAnimator->RegisterEventListener("SpawnFlameField", [this]()
 		{
 			SpawnFlameField();
-			EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
-			CEffectContainer::DESC Desc = {};
+			//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_FieldBellyFire"));
+			//CEffectContainer::DESC Desc = {};
 
-			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			//_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
 
-			XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Erupt_P1"), &Desc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
+			//XMStoreFloat4x4(&Desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
+			//CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_Erupt_P1"), &Desc);
+			//if (pEC == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_FlameThrow_Short_", 3);
 		});
 
@@ -1087,10 +1087,10 @@ void CFuoco::Register_Events()
 			vPos += vLook * 0.6f;
 			XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1] + 0.5f, vPos.m128_f32[2]));
 
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-			EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
+			//CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_FlameField_BellyFire_P2"), &BellyFireDesc);
+			//if (pEC == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
+			//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_FieldBellyFire"), static_cast<CEffectContainer*>(pEC));
 		});
 
 	m_pAnimator->RegisterEventListener("Phase2TurnFinished", [this]()
@@ -1642,8 +1642,8 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		return;
 	}
 
-	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFuoco::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
@@ -1704,36 +1704,36 @@ HRESULT CFuoco::Ready_Effect()
 
 	// Static 이펙트
 
-	CEffectContainer::DESC BellyFireDesc = {};
-	BellyFireDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"));
+	//CEffectContainer::DESC BellyFireDesc = {};
+	//BellyFireDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Ball01"));
 
-	BellyFireDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixIdentity());
-	CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_BellyFire_P1S2"), &BellyFireDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//BellyFireDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&BellyFireDesc.PresetMatrix, XMMatrixIdentity());
+	//CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_BellyFire_P1S2"), &BellyFireDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_BellyFire"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_BellyFire"), static_cast<CEffectContainer*>(pEC));
 
-	/**************************************************/
-	pEC = nullptr;
-	CEffectContainer::DESC HeadSmokeDesc = {};
-	HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Head01"));
-	HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, -0.4f));
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_P2"), &HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	///**************************************************/
+	//pEC = nullptr;
+	//CEffectContainer::DESC HeadSmokeDesc = {};
+	//HeadSmokeDesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bone001-Head01"));
+	//HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, -0.4f));
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_P2"), &HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke1"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke1"), static_cast<CEffectContainer*>(pEC));
 
-	pEC = nullptr;
-	XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, 0.45f));
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_Small_P1"), &HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//pEC = nullptr;
+	//XMStoreFloat4x4(&HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(_vector{ 0.f, 0.f, 1.f, 0.f }, XMConvertToRadians(-90.f)) * XMMatrixTranslation(1.5f, -0.45f, 0.45f));
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fuoco_HeadSmoke_Small_P1"), &HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
 
 	return S_OK;
 }

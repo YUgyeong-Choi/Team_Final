@@ -470,8 +470,8 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 	if (pUnit->GetHP() <= 0.f)
 	{
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
-			return E_FAIL;
+		//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+		//	return E_FAIL;
 	}
 	else
 	{
@@ -483,7 +483,7 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 
 			XMStoreFloat4x4(&desc.PresetMatrix,
 				XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
+			//pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Thrust_Spiral_P2S1"), &desc);
 		}
 
 		// 베기 공격
@@ -498,18 +498,18 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 		{
 			XMStoreFloat4x4(&desc.PresetMatrix,
 				XMMatrixScaling(2.f, 2.f, 2.f) * mRoll * mAlign);
-			pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
-			Set_WeaponTrail_Active(true, TRAIL_BLOOD);
+			//pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Slash_x-1_P1S2"), &desc);
+			//Set_WeaponTrail_Active(true, TRAIL_BLOOD);
 
 		}
 	}
 
-	if (pEffect == nullptr)
-		return E_FAIL;
-	XMStoreFloat4x4(&desc.PresetMatrix, mAlign);
-	pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Attack_Blood"), &desc);
-	if (pEffect == nullptr)
-		return E_FAIL;
+	//if (pEffect == nullptr)
+	//	return E_FAIL;
+	//XMStoreFloat4x4(&desc.PresetMatrix, mAlign);
+	//pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Attack_Blood"), &desc);
+	//if (pEffect == nullptr)
+	//	return E_FAIL;
 
 
 	return S_OK;

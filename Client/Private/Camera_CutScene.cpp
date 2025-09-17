@@ -1028,55 +1028,40 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1550)
 		{
-			CEffectContainer::DESC Lightdesc = {};
-
-			CEffectContainer* pEffect = { nullptr };
-
-
-
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-
-			Lightdesc.PresetMatrix._41 = 4.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -203.f;
-
-
-
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
-
-
+			//CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+			//Lightdesc.PresetMatrix._41 = 4.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -203.f;
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 1600)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+			//Lightdesc.PresetMatrix._41 = -4.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -205.f;
 
-
-
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-			Lightdesc.PresetMatrix._41 = -4.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -205.f;
-
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
-
-
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 1650)
 		{
 			//EFFECT_MANAGER->
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
-			Lightdesc.PresetMatrix._41 = 2.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -200.f;
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
+			//Lightdesc.PresetMatrix._41 = 2.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -200.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
 		}
@@ -1092,11 +1077,11 @@ void CCamera_CutScene::Event()
 			Lightdesc.PresetMatrix._42 = 0.3f;
 			Lightdesc.PresetMatrix._43 = -210.f;
 
-			CEffectContainer* pEffect = { nullptr };
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//CEffectContainer* pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			if (pEffect == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
 		}
 			
 		break;

@@ -129,90 +129,90 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	
 
-	if (KEY_PRESSING(DIK_LALT))
-	{
-		if (KEY_DOWN(DIK_MINUS))
-		{
-			m_fTimeScale = 0.5f;
-		}
-		if (KEY_DOWN(DIK_EQUALS))
-		{
-			m_fTimeScale = 1.f;
-		}
-		if (KEY_DOWN(DIK_Q))
-		{
+	//if (KEY_PRESSING(DIK_LALT))
+	//{
+	//	if (KEY_DOWN(DIK_MINUS))
+	//	{
+	//		m_fTimeScale = 0.5f;
+	//	}
+	//	if (KEY_DOWN(DIK_EQUALS))
+	//	{
+	//		m_fTimeScale = 1.f;
+	//	}
+	//	if (KEY_DOWN(DIK_Q))
+	//	{
 
-			// 오른손 왼손 회전 상태 뭔가 이상한 것 같은데 나중에 확인함
-			CEffectContainer::DESC desc = {};
+	//		// 오른손 왼손 회전 상태 뭔가 이상한 것 같은데 나중에 확인함
+	//		CEffectContainer::DESC desc = {};
 
-			desc.pSocketMatrix = nullptr;
-			desc.pParentMatrix = nullptr;
-			const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
-			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-			_matrix socket = XMLoadFloat4x4(socketPtr);
-			_matrix parent = XMLoadFloat4x4(parentPtr);
+	//		desc.pSocketMatrix = nullptr;
+	//		desc.pParentMatrix = nullptr;
+	//		const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//		_matrix socket = XMLoadFloat4x4(socketPtr);
+	//		_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			_matrix comb = socket * parent;
+	//		_matrix comb = socket * parent;
 
-			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
-			_vector pos, rot, scale;
-			XMMatrixDecompose(&scale, &rot, &pos, comb);
+	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+	//		_vector pos, rot, scale;
+	//		XMMatrixDecompose(&scale, &rot, &pos, comb);
 
-			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+	//		rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
 
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
-			MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
+	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+	//		MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
 
-			socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
-			socket = XMLoadFloat4x4(socketPtr);
-			comb = socket * parent;
-			position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+	//		socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+	//		socket = XMLoadFloat4x4(socketPtr);
+	//		comb = socket * parent;
+	//		position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
 
-			XMMatrixDecompose(&scale, &rot, &pos, comb);
+	//		XMMatrixDecompose(&scale, &rot, &pos, comb);
 
-			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+	//		rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
 
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-		}
-		if (KEY_DOWN(DIK_W))
-		{
-			CEffectContainer::DESC desc = {};
-			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-			_matrix parent = XMLoadFloat4x4(parentPtr);
+	//		CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
+	//		if (pEC == nullptr)
+	//			MSG_BOX("이펙트 생성 실패함");
+	//	}
+	//	if (KEY_DOWN(DIK_W))
+	//	{
+	//		CEffectContainer::DESC desc = {};
+	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//		_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+	//		_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 
-			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
-			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HammerSlam"), &desc) == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-		}
-		if (KEY_DOWN(DIK_E))
-		{
-			CEffectContainer::DESC desc = {};
+	//		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HammerSlam"), &desc) == nullptr)
+	//			MSG_BOX("이펙트 생성 실패함");
+	//	}
+	//	if (KEY_DOWN(DIK_E))
+	//	{
+	//		CEffectContainer::DESC desc = {};
 
-			desc.pSocketMatrix = nullptr;
-			desc.pParentMatrix = nullptr;
-			const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
-			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-			_matrix socket = XMLoadFloat4x4(socketPtr);
-			_matrix parent = XMLoadFloat4x4(parentPtr);
+	//		desc.pSocketMatrix = nullptr;
+	//		desc.pParentMatrix = nullptr;
+	//		const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
+	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//		_matrix socket = XMLoadFloat4x4(socketPtr);
+	//		_matrix parent = XMLoadFloat4x4(parentPtr);
 
-			_matrix comb = socket * parent;
+	//		_matrix comb = socket * parent;
 
-			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
-			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2Start"), &desc);
-			if (pEC == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
-		}
-	}
+	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+	//		CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2Start"), &desc);
+	//		if (pEC == nullptr)
+	//			MSG_BOX("이펙트 생성 실패함");
+	//	}
+	//}
 #endif
 
 	if (nullptr != m_pHPBar)
@@ -1396,8 +1396,8 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
 
-	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
@@ -1456,27 +1456,27 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 
 HRESULT CFestivalLeader::Ready_Effect()
 {
-	CGameObject* pEC = { nullptr };
-	CEffectContainer::DESC P2HeadSmokeDesc = {};
-	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
-	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//CGameObject* pEC = { nullptr };
+	//CEffectContainer::DESC P2HeadSmokeDesc = {};
+	//P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+	//P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
-	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
-	
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	//
 
-	/**************************************/
-	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	///**************************************/
+	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
-	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 
 
 

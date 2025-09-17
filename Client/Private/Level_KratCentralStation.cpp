@@ -1331,53 +1331,54 @@ HRESULT CLevel_KratCentralStation::Ready_Video()
 
 HRESULT CLevel_KratCentralStation::Ready_Effect()
 {
-	_matrix presetmat = XMMatrixIdentity();
-	CEffectContainer::DESC ECDesc = {};
+	//_matrix presetmat = XMMatrixIdentity();
+	//CEffectContainer::DESC ECDesc = {};
 
-	CGameObject* pEC = { nullptr };
+	//CGameObject* pEC = { nullptr };
 
-	presetmat = XMMatrixTranslation(62.f, 10.f, -7.2f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패");
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
+	//presetmat = XMMatrixTranslation(62.f, 10.f, -7.2f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패");
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_1"), static_cast<CEffectContainer*>(pEC));
 
-	pEC = nullptr;
-	presetmat = XMMatrixTranslation(86.8f, 10.f, -7.3f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패");
+	//pEC = nullptr;
+	//presetmat = XMMatrixTranslation(86.8f, 10.f, -7.3f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_Changed"), &ECDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_2"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("StationRain_2"), static_cast<CEffectContainer*>(pEC));
 
-	pEC = nullptr;
-	presetmat = XMMatrixTranslation(194.0f, 18.f, -8.0f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_NewOuterWelcomeRain"), &ECDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패");
+	//pEC = nullptr;
+	//presetmat = XMMatrixTranslation(194.0f, 18.f, -8.0f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_NewOuterWelcomeRain"), &ECDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("OuterRain_1"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("OuterRain_1"), static_cast<CEffectContainer*>(pEC));
 
-	pEC = nullptr;
-	presetmat = XMMatrixTranslation(403.f, 31.f, -49.0f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossArea_Normal"), &ECDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패");
+	//pEC = nullptr;
+	//presetmat = XMMatrixTranslation(403.f, 31.f, -49.0f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//pEC = 
+	// (ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossArea_Normal"), &ECDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
 
-	pEC = nullptr;
-	presetmat = XMMatrixTranslation(366.2, 20.0f, -48.0f);
-	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
-	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossDoor"), &ECDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패");
+	//pEC = nullptr;
+	//presetmat = XMMatrixTranslation(366.2, 20.0f, -48.0f);
+	//XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	//pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossDoor"), &ECDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
 
 
 	return S_OK;

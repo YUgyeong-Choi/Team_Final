@@ -516,10 +516,10 @@ void CButtler_Range::Register_Events()
 			return;
 		}
 
-		CEffectContainer::DESC Effdesc = {};
-		XMStoreFloat4x4(&Effdesc.PresetMatrix, XMMatrixTranslation(vWeaponPos[0], vWeaponPos[1], vWeaponPos[2]));
-		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ButlerRange_Muzzle_P3"), &Effdesc))
-			MSG_BOX("이펙트 생성 실패함");
+		//CEffectContainer::DESC Effdesc = {};
+		//XMStoreFloat4x4(&Effdesc.PresetMatrix, XMMatrixTranslation(vWeaponPos[0], vWeaponPos[1], vWeaponPos[2]));
+		//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ButlerRange_Muzzle_P3"), &Effdesc))
+		//	MSG_BOX("이펙트 생성 실패함");
 
 		});
 

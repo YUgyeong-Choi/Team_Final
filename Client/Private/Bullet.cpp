@@ -73,13 +73,13 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
         pPlayer->SetfReceiveDamage(m_fDamge);
     }
 
-    CEffectContainer::DESC desc = {};
-    //_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-    _float3 vfloatpos = Get_WorldPosFromActor();
-    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
-    //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
-    if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
-        MSG_BOX("이펙트 생성 실패함");
+    //CEffectContainer::DESC desc = {};
+    ////_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+    //_float3 vfloatpos = Get_WorldPosFromActor();
+    //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
+    ////XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+    //if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
+    //    MSG_BOX("이펙트 생성 실패함");
 
     Set_bDead();
 
@@ -124,12 +124,12 @@ HRESULT CBullet::Ready_Effect()
     _matrix mRot = XMMatrixRotationQuaternion(qRot);
 
 
-    CEffectContainer::DESC desc = {};
-    desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-    XMStoreFloat4x4(&desc.PresetMatrix, mRot);
-    m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Trail_P1"), &desc));
-    if (nullptr == m_pEffect)
-        MSG_BOX("이펙트 생성 실패함");
+    //CEffectContainer::DESC desc = {};
+    //desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+    //XMStoreFloat4x4(&desc.PresetMatrix, mRot);
+    //m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Trail_P1"), &desc));
+    //if (nullptr == m_pEffect)
+    //    MSG_BOX("이펙트 생성 실패함");
 
     return S_OK;
 }

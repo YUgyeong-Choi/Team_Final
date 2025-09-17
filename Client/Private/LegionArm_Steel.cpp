@@ -145,18 +145,18 @@ void CLegionArm_Steel::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 		CPlayer::eAnimCategory eCategory = dynamic_cast<CPlayer*>(m_pOwner)->GetAnimCategory();
 
 		// 막타일 때 
-		if (pUnit->GetHP() <= 0.f)
-		{
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
-				return;
-		}
-		else
-		{
-			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
-			if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_LeftArm_Spark_1_P2S1"), &desc) == nullptr)
-				return;
-		}
+		//if (pUnit->GetHP() <= 0.f)
+		//{
+		//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+		//	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_Basic_Spark_1_P2S4"), &desc) == nullptr)
+		//		return;
+		//}
+		//else
+		//{
+		//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * mAlign);
+		//	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_AttackHit_LeftArm_Spark_1_P2S1"), &desc) == nullptr)
+		//		return;
+		//}
 
 		if (pEffect == nullptr)
 			return;

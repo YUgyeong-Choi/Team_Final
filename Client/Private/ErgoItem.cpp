@@ -293,23 +293,23 @@ HRESULT CErgoItem::Ready_Components(void* pArg)
 
 HRESULT CErgoItem::Ready_Effect(void* pArg)
 {
-	CEffectContainer::DESC desc = {};
-	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	//CEffectContainer::DESC desc = {};
+	//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
 
-	//ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+	////ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
 
-	wstring wsEffectName = {};
+	//wstring wsEffectName = {};
 
-	if (m_bPulseCell)
-		wsEffectName = TEXT("EC_YW_PulseCell_Effect");
-	else
-		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
+	//if (m_bPulseCell)
+	//	wsEffectName = TEXT("EC_YW_PulseCell_Effect");
+	//else
+	//	wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
 
-	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
-	if (m_pEffect == nullptr)
-		return E_FAIL;
+	//m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
+	//if (m_pEffect == nullptr)
+	//	return E_FAIL;
 
 	return S_OK;
 }

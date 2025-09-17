@@ -277,10 +277,10 @@ void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColli
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
 
 		CGameObject* pEffect = { nullptr };
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
+		//pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
 
-		if (pEffect == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
+		//if (pEffect == nullptr)
+		//	MSG_BOX("이펙트 생성 실패함");
 	}
 }
 

@@ -225,18 +225,18 @@ void CFlameField::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType
 
 HRESULT CFlameField::Effect_FlameField(const _fvector& vSpawnPos)
 {
-	CEffectContainer::DESC desc = {};
-	auto worldmat = m_pTransformCom->Get_WorldMatrix();
+	//CEffectContainer::DESC desc = {};
+	//auto worldmat = m_pTransformCom->Get_WorldMatrix();
 
-	_float3 pos;
-	XMStoreFloat3(&pos, vSpawnPos);
+	//_float3 pos;
+	//XMStoreFloat3(&pos, vSpawnPos);
 
-	// 위치만 반영된 월드 매트릭스 생성
-	_matrix matWorld = XMMatrixTranslation(pos.x, pos.y + 0.5f, pos.z);
-	_int iLevelID = m_pGameInstance->GetCurrentLevelIndex();
-	XMStoreFloat4x4(&desc.PresetMatrix, matWorld);
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
-		MSG_BOX("이펙트 생성 실패함");
+	//// 위치만 반영된 월드 매트릭스 생성
+	//_matrix matWorld = XMMatrixTranslation(pos.x, pos.y + 0.5f, pos.z);
+	//_int iLevelID = m_pGameInstance->GetCurrentLevelIndex();
+	//XMStoreFloat4x4(&desc.PresetMatrix, matWorld);
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(iLevelID), TEXT("EC_Fuoco_FlameField_Imsi_P2"), &desc))
+	//	MSG_BOX("이펙트 생성 실패함");
 	return S_OK;
 }
 

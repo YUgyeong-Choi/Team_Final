@@ -295,10 +295,10 @@ HRESULT CTriggerTalk::Ready_Effect()
 	Lightdesc.PresetMatrix._43 = -0.1f;
 	
 
-	m_pEffectSet = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_Interaction_S1"), &Lightdesc));
+	//m_pEffectSet = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_Interaction_S1"), &Lightdesc));
 
-	if(!m_pEffectSet)
-	   MSG_BOX("이펙트 생성 실패함");
+	//if(!m_pEffectSet)
+	//   MSG_BOX("이펙트 생성 실패함");
 
 	return S_OK;
 }
