@@ -31,6 +31,8 @@ HRESULT CTriggerRain::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	m_bBossDoor = TriggerNoMeshDESC->bBossDoor;
+
 	return S_OK;
 }
 
@@ -56,7 +58,10 @@ HRESULT CTriggerRain::Render()
 
 void CTriggerRain::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), m_bRainActive);
+	if (m_bBossDoor)
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
+	else
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), m_bRainActive);
 		
 }
 
@@ -67,7 +72,8 @@ void CTriggerRain::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 
 void CTriggerRain::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
-	m_bRainActive = !m_bRainActive;
+	if (!m_bBossDoor)
+		m_bRainActive = !m_bRainActive;
 }
 
 HRESULT CTriggerRain::Ready_Components()

@@ -198,7 +198,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 			desc.pSocketMatrix = nullptr;
 			desc.pParentMatrix = nullptr;
-			const _float4x4* socketPtr = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+			const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
 			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 			_matrix socket = XMLoadFloat4x4(socketPtr);
 			_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1458,7 +1458,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 {
 	CGameObject* pEC = { nullptr };
 	CEffectContainer::DESC P2HeadSmokeDesc = {};
-	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
+	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
 	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
 	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
@@ -1467,6 +1467,19 @@ HRESULT CFestivalLeader::Ready_Effect()
 
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
 	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	
+
+	/**************************************/
+	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
+
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
+
+
+
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
 }
