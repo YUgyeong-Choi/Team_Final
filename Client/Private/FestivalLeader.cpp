@@ -573,6 +573,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::Special_Die):
 		m_eCurrentState = EEliteState::DEAD;
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
 		break;
 	case ENUM_CLASS(BossStateID::Turn_L):
 	case ENUM_CLASS(BossStateID::Turn_R):
@@ -1481,8 +1482,16 @@ void CFestivalLeader::Ready_SoundEvents()
 {
 	if (m_pSoundCom)
 	{
-		m_pSoundCom->Set_AllVolume(0.85f);
+		m_pSoundCom->Set_AllVolume(1.f);
 	}
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dead_Post_0",4,1);
+			}
+		});
+
 	m_pAnimator->RegisterEventListener("WalkSound", [this]()
 		{
 			if (m_pSoundCom)
@@ -1512,6 +1521,7 @@ void CFestivalLeader::Ready_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
+				m_pSoundCom->SetVolume("SE_PC_SK_FX_Spark_M_01", 0.6f);
 				m_pSoundCom->Play("SE_PC_SK_FX_Spark_M_01");
 			}
 		});
@@ -1635,6 +1645,30 @@ void CFestivalLeader::Ready_SoundEvents()
 			}
 		});
 	
+
+	m_pAnimator->RegisterEventListener("DmgLSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dmg_L_0",5,1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DmgMSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dmg_M_0", 5, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DmgSSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dmg_S_0", 5, 1);
+			}
+		});
 }
 
 void CFestivalLeader::EnterCutScene()
