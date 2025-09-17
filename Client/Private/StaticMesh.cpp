@@ -331,7 +331,7 @@ HRESULT CStaticMesh::Add_Actor()
 	if (m_eColliderType == COLLIDER_TYPE::END)
 		return E_FAIL; //치명적 오류
 
-		m_pPhysXActorCom->Get_Actor()->userData = this;
+
 	HRESULT hr = { S_OK };
 	//충돌체가 있는 것만
 	if (m_eColliderType != COLLIDER_TYPE::NONE)
@@ -339,6 +339,7 @@ HRESULT CStaticMesh::Add_Actor()
 		//m_pGameInstance->Get_Scene()->lockWrite();
 		hr = m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
 
+		//m_pPhysXActorCom->Get_Actor()->userData = this;
 		//액터에 스태틱 메쉬를 저장해두자
 		//m_pGameInstance->Get_Scene()->unlockWrite();
 	}
