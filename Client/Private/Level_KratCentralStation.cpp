@@ -1361,6 +1361,15 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("OuterRain_1"), static_cast<CEffectContainer*>(pEC));
 
+	pEC = nullptr;
+	presetmat = XMMatrixTranslation(194.0f, 18.f, -8.0f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_NewOuterWelcomeRain"), &ECDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패");
+
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("OuterRain_1"), static_cast<CEffectContainer*>(pEC));
+
 
 	return S_OK;
 }

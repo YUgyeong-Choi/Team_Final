@@ -31,7 +31,8 @@
             "EndTrack": 114,
             "FlipUV": false,
             "Gravity": -2.0,
-            "IsGravity": false,
+            "IsCircleRange": false,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
@@ -61,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2110.56298828125,
+            "LifeTime": 2333.14306640625,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 1.5
@@ -72,7 +73,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.0,
             "Name": "Fes_P2_HeadSmoke1",
-            "NumInstance": 25,
+            "NumInstance": 80,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -112,8 +113,8 @@
                 1.2999999523162842
             ],
             "Speed": [
-                1.5399999618530273,
-                2.0
+                0.5,
+                1.0
             ],
             "Spin": false,
             "StartTrack": 0,
@@ -167,8 +168,9 @@
             "EmissiveIntensity": 0.800000011920929,
             "EndTrack": 20,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
-            "IsGravity": false,
+            "Gravity": -2.0,
+            "IsCircleRange": false,
+            "IsGravity": true,
             "KeyFrames": [
                 {
                     "Color": [
@@ -198,7 +200,7 @@
                     ]
                 }
             ],
-            "LifeTime": 326.33465576171875,
+            "LifeTime": 552.136474609375,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 1.5

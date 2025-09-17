@@ -1,0 +1,144 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                0.5235601663589478
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.5706806182861328
+            ],
+            "DistortionStrength": 3.799999952316284,
+            "Duration": 1017,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.44999998807907104,
+            "EndTrack": 1017,
+            "FlipUV": false,
+            "Gravity": 14.399999618530273,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.5706806182861328
+                    ],
+                    "Intensity": 1.5199999809265137,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 350.0467529296875,
+            "LifeTime_Particle": [
+                1.0,
+                3.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 300.0,
+            "MinSpeed": 0.0,
+            "Name": "Rain_BossArea",
+            "NumInstance": 10000,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -9.0,
+                9.0
+            ],
+            "PType": 1,
+            "Pivot": [
+                0.03999999910593033,
+                1.0,
+                0.20000000298023224
+            ],
+            "Range": [
+                40.0,
+                2.0,
+                40.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 5,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.019999999552965164,
+                0.029999999329447746
+            ],
+            "Speed": [
+                8.0,
+                11.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.07999999821186066,
+            "TextureTags": [
+                "T_Shere_04_C_HJS",
+                "Rain_Noise_68_C_PCY",
+                "T_Rain_Drips_01_C_PCY",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 100
+}
