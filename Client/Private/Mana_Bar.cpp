@@ -33,7 +33,7 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), this, [this](_wstring eventType, void* data) {
 		if (L"CurrentMana" == eventType)
 		{
 			m_fCurrentMana = *static_cast<_float*>(data);
@@ -66,6 +66,10 @@ HRESULT CMana_Bar::Initialize(void* pArg)
 
 void CMana_Bar::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CMana_Bar::Update(_float fTimeDelta)

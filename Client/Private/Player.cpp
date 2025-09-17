@@ -265,6 +265,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	PriorityUpdate_Slot(fTimeDelta);
 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CPlayer::Update(_float fTimeDelta)
@@ -2821,6 +2826,11 @@ void CPlayer::Apply_Stat()
 	Callback_HP();
 	Callback_Stamina();
 
+	Compute_MaxErgo(m_iLevel);
+
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"LevelUp"), &m_fMaxErgo);
 }
 
 void CPlayer::Add_Ergo(_float fErgo)
@@ -3292,7 +3302,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
 	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
-	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), this, [this](_wstring eventName, void* data) {
 
 		if (eventName == L"AddHp")
 		{

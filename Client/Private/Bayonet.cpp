@@ -67,7 +67,7 @@ HRESULT CBayonet::Initialize(void* pArg)
 	if (FAILED(Ready_Effect()))
 		return E_FAIL;
 
-	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(L"Weapon_Status", this, [this](const _wstring& eventName, void* data) {
 
 		if (L"AddDurablity" == eventName)
 		{
@@ -99,6 +99,12 @@ HRESULT CBayonet::Initialize(void* pArg)
 void CBayonet::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(L"Weapon_Status", this);
+	}
+
 
 	if (m_bHitRegActive)
 		Update_HitReg(fTimeDelta);
