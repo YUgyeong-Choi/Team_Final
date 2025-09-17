@@ -2079,6 +2079,8 @@ public:
                 if (m_fStateTime < 0.2f)
                 {
                     printf(" 너 퍼펙트 가드성공했어. \n");
+
+                    m_pOwner->m_pWeapon->StartHitReg(0.1f, 0.05f, 0.05f);
                     m_pOwner->m_bPerfectGardDamege = true;
                     m_pOwner->HPSubtract();
                     m_pOwner->m_pAnimator->SetInt("HitDir", 0);
@@ -2106,7 +2108,7 @@ public:
                 {
                     printf(" 너 가드성공했어. \n");
                     m_pOwner->m_bGardDamege = true;
-                    
+                    m_pOwner->m_pWeapon->StartHitReg(0.1f, 0.035f, 0.035f);
                     m_pOwner->m_pWeapon->Calc_Durability(3);
 
                     /* [ 이펙트를 생성한다. ] */
@@ -2122,6 +2124,10 @@ public:
 
                     m_pOwner->m_pAnimator->SetInt("HitDir", 0);
                     m_pOwner->m_pAnimator->SetTrigger("Hited");
+
+                    _vector vRot = { -2.f, 0.f, 0.f, 0.f };
+                    m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.2f);
+                    m_pCamera_Manager->GetCurCam()->StartShake(0.05f, 0.25f);
 
                     m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_M_Guard_Metal_", 6);
 

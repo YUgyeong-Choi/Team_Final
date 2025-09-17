@@ -112,64 +112,22 @@ HRESULT CElite_Police::Initialize(void* pArg)
 
 	m_fRootMotionClampDist = 3.5f;
 	// 플레이어 카메라 레이충돌 무시하기 위한
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
-	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors(static_cast<CWeapon_Monster*>(m_pWeapon)->Get_PhysXActor()->Get_Actor());
+
+
+	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
+	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.6f);
 	return S_OK;
 }
 
 void CElite_Police::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-#ifdef _DEBUG
-	if (KEY_DOWN(DIK_TAB))
-	{
-		cout << "현재 폴리스 상태 : ";
 
-		switch (m_eCurrentState)
-		{
-		case Client::CEliteUnit::EEliteState::IDLE:
-			cout << "IDLE" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::WALK:
-			cout << "WALK" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::RUN:
-			cout << "RUN" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::TURN:
-			cout << "TURN" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::ATTACK:
-			cout << "ATTACK" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::GROGGY:
-			cout << "GROGGY" << endl;
-			break;
-		case Client::CEliteUnit::EEliteState::PARALYZATION:
-			break;
-		case Client::CEliteUnit::EEliteState::FATAL:
-			break;
-		case Client::CEliteUnit::EEliteState::DEAD:
-			break;
-		case Client::CEliteUnit::EEliteState::CUTSCENE:
-			break;
-		case Client::CEliteUnit::EEliteState::NONE:
-			break;
-		default:
-			break;
-		}
-		m_pAnimator->SetInt("AttackType", COMBO5);
-		m_pAnimator->SetTrigger("Attack");
-	}
-#endif // _DEBUG
-
-	if (KEY_DOWN(DIK_Y))
-		m_pAnimator->SetTrigger("Fatal");
 	auto pCurState = m_pAnimator->Get_CurrentAnimController()->GetCurrentState();
 	if (pCurState && m_fHp <= 0.f)
 	{
-		if (pCurState->stateName.find("Death") != pCurState->stateName.npos)
+		if (m_iCurNodeID == ENUM_CLASS(EliteMonsterStateID::Death_B))
 		{
 
 			m_fEmissive = 0.f;
@@ -185,7 +143,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 		}
-		else if (pCurState->stateName.find("Fatal_Hit_End") != pCurState->stateName.npos)
+		else if (m_iCurNodeID == ENUM_CLASS(EliteMonsterStateID::Fatal_Hit_End))
 		{
 			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 			{
@@ -233,9 +191,6 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
 				m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
-
-
-
 			m_isFirstGroggy = true;
 		}
 	}
@@ -246,7 +201,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		{
 			return;
 		}
-		// 
+		
 		CUI_Guide::UI_GUIDE_DESC eDesc{};
 
 		eDesc.partPaths = { TEXT("../Bin/Save/UI/Guide/Guide_Fable.json") };
@@ -278,13 +233,7 @@ void CElite_Police::Update(_float fTimeDelta)
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
 
-	if (m_pSoundCom)
-	{
 
-		_float3 vPos{};
-		XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
-		m_pSoundCom->Update3DPosition(vPos);
-	}
 
 }
 
@@ -315,8 +264,7 @@ HRESULT CElite_Police::Ready_Components(void* pArg)
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Police"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
-	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
-	m_pSoundCom->SetVolume("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.8f);
+	
 	return S_OK;
 }
 
@@ -324,38 +272,6 @@ HRESULT CElite_Police::Ready_Actor()
 {
 	if (FAILED(__super::Ready_Actor()))
 		return E_FAIL;
-	//_vector S, R, T;
-	//XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-	//if (m_pRightElbowBone)
-	//{
-	//	auto elbowLocalMatrix = m_pRightElbowBone->Get_CombinedTransformationMatrix();
-	//	auto elbowWorldMatrix = XMLoadFloat4x4(elbowLocalMatrix) * m_pTransformCom->Get_WorldMatrix();
-	//	XMMatrixDecompose(&S, &R, &T, elbowWorldMatrix);
-
-	//	PxQuat elbowRotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-	//	PxVec3 elbowPositionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	//	PxTransform elbowPose(elbowPositionVec, elbowRotationQuat);
-	//	PxSphereGeometry elbowGeom = m_pGameInstance->CookSphereGeometry(0.85f);
-	//	m_pPhysXElbow->Create_Collision(m_pGameInstance->GetPhysics(), elbowGeom, elbowPose, m_pGameInstance->GetMaterial(L"Default"));
-	//	m_pPhysXElbow->Set_ShapeFlag(false, true, true);
-	//	PxFilterData elbowFilterData{};
-	//	elbowFilterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-	//	elbowFilterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
-	//	m_pPhysXElbow->Set_SimulationFilterData(elbowFilterData);
-	//	m_pPhysXElbow->Set_QueryFilterData(elbowFilterData);
-	//	m_pPhysXElbow->Set_Owner(this);
-	//	m_pPhysXElbow->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON_BODY);
-	//	m_pPhysXElbow->Set_Kinematic(true);
-	//	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXElbow->Get_Actor());
-	//	m_pPhysXElbow->Init_SimulationFilterData();
-	//	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-	//	{
-	//		if (auto pController = pPlayer->Get_Controller())
-	//		{
-	//			pController->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
-	//		}
-	//	}
-	//}
 
 	if (m_pRightElbowBone)
 	{
@@ -440,32 +356,6 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 {
 	if (m_bSpawned == false)
 		return;
-
-	if (m_bReturnToSpawn)
-	{
-		/*	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-			_vector vTarget = XMLoadFloat3(&m_InitPos);
-			_float fDistance = XMVectorGetX(XMVector3Length(vTarget - vPos));
-			_vector vDir = XMVector3Normalize(vTarget - vPos);
-
-			m_pAnimator->SetFloat("Distance ", abs(fDistance));
-			m_pTransformCom->Set_SpeedPerSec(m_fWalkSpeed);
-			m_pAnimator->SetBool("Move", true);
-			m_pAnimator->SetInt("MoveDir", ENUM_CLASS(EMoveDirection::FRONT));
-			m_eCurrentState = EEliteState::WALK;
-
-			m_pTransformCom->LookAtWithOutY(vTarget);
-			m_pTransformCom->Go_Dir(vDir, fTimeDelta,nullptr,m_pNaviCom);
-
-
-			if (XMVectorGetX(XMVector3Length(vTarget - vPos)) < 0.5f)
-			{
-				m_bReturnToSpawn = false;
-				m_eCurrentState = EEliteState::IDLE;
-				m_pAnimator->SetBool("Move", false);
-			}
-			return;*/
-	}
 
 	if (fDistance < m_fTooCloseDistance)
 	{
@@ -638,22 +528,8 @@ void CElite_Police::UpdateStateByNodeID(_uint iNodeID)
 
 void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 {
-	//if (m_bReturnToSpawn)
-	//	return;
 	if (m_pPlayer)
 	{
-		/*	if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			{
-				if (pPlayer->Get_PlayerState() == EPlayerState::DEAD)
-				{
-					m_bReturnToSpawn = true;
-					return;
-				}
-				else
-				{
-					m_bReturnToSpawn = false;
-				}
-			}*/
 		if (m_bPlayedDetect == false && Get_DistanceToPlayer() <= m_fDetectRange)
 		{
 			_vector vMyPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -674,17 +550,6 @@ void CElite_Police::UpdateSpecificBehavior(_float fTimeDelta)
 			m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 		}
 	}
-
-	//if (IsTargetInFront(180.f) == false)
-	//{
-
-	//	m_pAnimator->SetBool("Move", false);
-	//	m_pAnimator->SetInt("AttackType", COMBO4);
-	//	m_pAnimator->SetTrigger("Attack");
-	//	m_ePrevState = m_eCurrentState;
-	//	m_eCurrentState = EEliteState::ATTACK;
-	//	m_fAttackCooldown = m_fAttckDleay;
-	//}
 }
 
 void CElite_Police::EnableColliders(_bool bEnable)

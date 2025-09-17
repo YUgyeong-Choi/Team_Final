@@ -27,10 +27,11 @@
             "DistortionStrength": 10.0,
             "Duration": 70,
             "EffectType": 1,
-            "EmissiveIntensity": 1.0,
+            "EmissiveIntensity": 3.299999952316284,
             "EndTrack": 70,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -40,7 +41,7 @@
                         0.0,
                         1.0
                     ],
-                    "Intensity": 2.450000047683716,
+                    "Intensity": 2.5399999618530273,
                     "Interpolation": 0,
                     "Rotation": [
                         -0.0,
@@ -61,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2749.27685546875,
+            "LifeTime": 2785.157470703125,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.5
@@ -72,7 +73,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
             "Name": "SlashHit_Particle1",
-            "NumInstance": 150,
+            "NumInstance": 120,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -108,7 +109,7 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
+                0.019999999552965164,
                 0.029999999329447746
             ],
             "Speed": [
@@ -148,9 +149,9 @@
             ],
             "Color": [
                 1.0,
-                0.15706807374954224,
+                0.1568627506494522,
                 0.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 70,
@@ -214,7 +215,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1181.2261962890625,
+            "LifeTime": 1217.0989990234375,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,
@@ -258,7 +259,7 @@
             "Duration": 70,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
-            "EndTrack": 72,
+            "EndTrack": 75,
             "FlipUV": false,
             "KeyFrames": [
                 {
@@ -316,13 +317,13 @@
                     ]
                 }
             ],
-            "LifeTime": 199.18548583984375,
+            "LifeTime": 235.05784606933594,
             "Loop": true,
             "Name": "Hit_BasicSlashSprite1",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 8,
-            "StartTrack": 2,
+            "StartTrack": 5,
             "TextureTags": [
                 "",
                 "",

@@ -97,6 +97,8 @@ void CErgo::Update(_float fTimeDelta)
 			m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_TrailActive(false);
 			m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_bDead();
 			Set_bDead();
+
+			m_pLamp->Play_Absorbe_Effect();
 		}
 	}
 }
@@ -155,8 +157,14 @@ HRESULT CErgo::Find_Lamp()
 	if (pPlayer == nullptr)
 		return E_FAIL;
 
+	//플레이어 램프 획득
+	m_pLamp = pPlayer->Get_PlayerLamp();
+	if (m_pLamp == nullptr)
+		return E_FAIL;
+	Safe_AddRef(m_pLamp);
+
 	//램프의 월드행렬 획득
-	m_pLampMatrix = pPlayer->Get_PlayerLamp()->Get_CombinedWorldMatrix();
+	m_pLampMatrix = m_pLamp->Get_CombinedWorldMatrix();
 
 	if (m_pLampMatrix == nullptr)
 		return E_FAIL;
@@ -167,27 +175,6 @@ HRESULT CErgo::Find_Lamp()
 void CErgo::Absorbed()
 {
 	m_bAbsorbed = true;
-
-	//// 기준 위치 추출
-	//_float3 vLampPos = { m_pLampMatrix->_41, m_pLampMatrix->_42 , m_pLampMatrix->_43 };
-
-	//// 랜덤 방향
-	//_float3 vDir;
-	//vDir.x = m_pGameInstance->Compute_Random(-1.f, 1.f);
-	//vDir.y = m_pGameInstance->Compute_Random(-1.f, 1.f);
-	//vDir.z = m_pGameInstance->Compute_Random(-1.f, 1.f);
-	//_vector vRandDir = XMVector3Normalize(XMLoadFloat3(&vDir));
-
-	//// 랜덤 거리 (0 ~ 5)
-	//_float fDist = m_pGameInstance->Compute_Random(5.f, 10.f);
-
-	//// 최종 위치
-	//_vector vTargetPos = XMLoadFloat3(&vLampPos) + vRandDir * fDist;
-
-	//// 적용
-	//m_pTransformCom->Set_State(STATE::POSITION, vTargetPos);
-
-	//m_bAbsorbed = !m_bAbsorbed;
 }
 
 HRESULT CErgo::Ready_Components(void* pArg)
@@ -272,7 +259,7 @@ void CErgo::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-
+	Safe_Release(m_pLamp);
 
 	//for (_uint i = 0; i < ENUM_CLASS(EFFECTS::END); ++i)
 	//{

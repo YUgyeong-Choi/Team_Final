@@ -56,6 +56,9 @@ public: /* [ Setup 함수 ] */
 	HRESULT Ready_Actor(void* pArg);
 	HRESULT Ready_PartObject();
 	//HRESULT Ready_Weapon(); 무기는 필요한 애들만 만들기
+	virtual HRESULT Ready_Sound() { return S_OK; }
+
+	
 
 	_float Get_CurrentHp() { return m_fHp;  }
 
@@ -91,7 +94,8 @@ public: /* [ Setup 함수 ] */
 	virtual void Start_Fatal_Reaction() {};
 
 	virtual void Register_Events();
-
+	virtual void Register_SoundEvent() {};
+	virtual void PlayDetectSound() {};
 
 #ifdef _DEBUG
 	void SetLocalOffset();

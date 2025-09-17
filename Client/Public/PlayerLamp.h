@@ -44,6 +44,10 @@ protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Light();
 
+public:
+	//에르고를 흡수 했을 때 나오는 이펙트 재생(영웅)
+	HRESULT Play_Absorbe_Effect();
+
 public: /* [ 소유자 (Unit) 을 가져온다. ] */
 	class CPlayer* Get_Owner() const { return m_pOwner; }
 	void Clear_Owner() { m_pOwner = nullptr; }
@@ -117,6 +121,13 @@ private:
 
 	_uint m_iID = { 0 };
 	LEVEL m_eTargetLevel = { LEVEL::END };
+
+	_bool m_bSoundPlay = false;
+	_float m_fSoundInterval = 1.2f;   
+	_float m_fSoundElapsed = 0.f;   
+	string m_strLampSound = "AMB_OJ_FX_Monard_Gemini_01"; // 재생할 사운드 태그
+
+	class CSoundController* m_pSoundCom = { nullptr };
 
 public:
 	static CPlayerLamp* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

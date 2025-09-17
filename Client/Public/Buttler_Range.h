@@ -52,8 +52,11 @@ public:
 
 	virtual void RayCast(CPhysXActor* actor);
 
+	virtual void PlayDetectSound();
+
 private:
 	HRESULT Ready_Weapon();
+	virtual HRESULT Ready_Sound();
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };

@@ -49,12 +49,14 @@ public:
 
 public:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
+	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
 public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 	//virtual void On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 	//virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) {}
 private:
 	void Break();
+	void On_Collision_Check(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 private:
 	HRESULT Render_Model();

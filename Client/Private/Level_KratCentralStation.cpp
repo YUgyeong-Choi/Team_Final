@@ -96,7 +96,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;	
 	
-	if (FAILED(Ready_Rain()))
+	if (FAILED(Ready_RainTrigger()))
 		return E_FAIL;
 
 	if (FAILED(Ready_TriggerBGM()))
@@ -1361,6 +1361,24 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("OuterRain_1"), static_cast<CEffectContainer*>(pEC));
 
+	pEC = nullptr;
+	presetmat = XMMatrixTranslation(403.f, 31.f, -49.0f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossArea_Normal"), &ECDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패");
+
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
+
+	pEC = nullptr;
+	presetmat = XMMatrixTranslation(366.2, 20.0f, -48.0f);
+	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
+	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossDoor"), &ECDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패");
+
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
+
 
 	return S_OK;
 }
@@ -1719,7 +1737,7 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_Rain()
+HRESULT CLevel_KratCentralStation::Ready_RainTrigger()
 {
 	CTriggerRain::TRIGGERNOMESH_DESC Desc{};
 	Desc.vPos = _vector({ 191.78f, 8.5f, -8.3f});
@@ -1730,6 +1748,19 @@ HRESULT CLevel_KratCentralStation::Ready_Rain()
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerRain"), &Desc)))
 		return E_FAIL;
+
+
+	CTriggerRain::TRIGGERNOMESH_DESC BossdoorDesc{};
+	BossdoorDesc.vPos = _vector({ 366.f, 13.5f, -48.3f });
+	BossdoorDesc.Rotation = _float3(0.f, 0.f, 0.f);
+	BossdoorDesc.vTriggerOffset = _vector({});
+	BossdoorDesc.vTriggerSize = _vector({ 0.2f, 0.2f, 8.f, 0.f });
+	BossdoorDesc.m_vecSoundData = {};
+	BossdoorDesc.bBossDoor = true;
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerRain"), &BossdoorDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -2050,13 +2081,13 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 	//56. 다리끝
-	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
-	eDesc.vPosition = _float3(343.374847f, 7.424715f, -36.440987f);
-	eDesc.fMinMax = { 0.f , 100.f };
+	eDesc.strSoundName = "AMB_SS_OnTheBrige";
+	eDesc.vPosition = _float3(328.757233f, 7.424715f, -36.812428f);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
 		return E_FAIL;
 	eDesc.strSoundName = "AMB_SS_Rain_07_01";
+	eDesc.fMinMax = { 1.f , 30.f };
 	eDesc.vPosition = _float3(345.374847f, 7.424715f, -36.440987f);
 	eDesc.fMinMax = { 1.f , 30.f };
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),

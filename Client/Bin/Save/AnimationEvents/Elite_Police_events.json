@@ -445,6 +445,24 @@
         {
             "ClipName": "AS_Groggy_End",
             "Duration": 120.0,
+            "Events": [
+                {
+                    "EventName": "StepSound",
+                    "Time": 3.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 3.438352584838867
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 25.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 25.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -529,6 +547,30 @@
             "ClipName": "AS_Idle_Spawn_01_End",
             "Duration": 190.0,
             "Events": [
+                {
+                    "EventName": "MovementSound",
+                    "Time": 2.292471408843994
+                },
+                {
+                    "EventName": "RunVoiceSound",
+                    "Time": 3.848283529281616
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 123.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 123.0
+                },
+                {
+                    "EventName": "StepSound",
+                    "Time": 150.0
+                },
+                {
+                    "EventName": "FootStepSound",
+                    "Time": 150.0
+                },
                 {
                     "EventName": "Spawned",
                     "Time": 185.0
