@@ -273,9 +273,13 @@ void CEffectBase::Update_Keyframes()
 	else
 	{
 		if (m_KeyFrames.size() <= m_iCurKeyFrameIndex + 1)
-			MSG_BOX("비상!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return;
+
 		if (m_fCurrentTrackPosition >= m_KeyFrames[m_iCurKeyFrameIndex + 1].fTrackPosition)
 			++m_iCurKeyFrameIndex;
+
+		if (m_KeyFrames.size() <= m_iCurKeyFrameIndex + 1)
+			return;
 
 		_float			fRatio = (m_fCurrentTrackPosition - m_KeyFrames[m_iCurKeyFrameIndex].fTrackPosition) /
 			(m_KeyFrames[m_iCurKeyFrameIndex + 1].fTrackPosition - m_KeyFrames[m_iCurKeyFrameIndex].fTrackPosition);

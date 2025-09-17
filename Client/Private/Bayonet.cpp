@@ -64,8 +64,8 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
-	if (FAILED(Ready_Effect()))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect()))
+	//	return E_FAIL;
 
 	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
 
@@ -478,6 +478,7 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 		// 찌르기 공격
 		if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKA
 			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKB
+			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
 			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKA)
 		{
 
@@ -490,7 +491,6 @@ HRESULT CBayonet::Create_SlashEffect(CGameObject* pOther, COLLIDERTYPE eCollider
 		else if (eCategory == CPlayer::eAnimCategory::NORMAL_ATTACKB
 			|| eCategory == CPlayer::eAnimCategory::STRONG_ATTACKA
 			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKA
-			|| eCategory == CPlayer::eAnimCategory::CHARGE_ATTACKB
 			|| eCategory == CPlayer::eAnimCategory::SPRINT_ATTACKB
 			|| eCategory == CPlayer::eAnimCategory::MAINSKILLA
 			|| eCategory == CPlayer::eAnimCategory::MAINSKILLB
