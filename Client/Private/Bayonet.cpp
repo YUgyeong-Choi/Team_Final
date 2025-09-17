@@ -258,7 +258,7 @@ void CBayonet::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
 	else
 	{
 		if (m_pTrailEffect[eType])
-		m_pTrailEffect[eType]->Set_TrailActive(bActive);
+			m_pTrailEffect[eType]->Set_TrailActive(bActive);
 	}
 }
 
@@ -307,37 +307,37 @@ HRESULT CBayonet::Ready_Actor()
 
 HRESULT CBayonet::Ready_Effect()
 {
-	_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
-	_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
+	//_uint iInnerBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_B");
+	//_uint iOuterBoneIdx = m_pModelCom->Find_BoneIndex("BN_Blade_End");
 
-	CSwordTrailEffect::DESC desc = {};
-	desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
-	desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
-	desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
-	desc.iLevelID = m_iLevelID;
-	// 기본 공격 트레일 - 디스토션, 약간 흰색
-	m_pTrailEffect[TRAIL_DEFAULT] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (m_pTrailEffect[TRAIL_DEFAULT])
-		m_pTrailEffect[TRAIL_DEFAULT]->Set_TrailActive(false);
-	else
-		MSG_BOX("무기 트레일 사망");
+	//CSwordTrailEffect::DESC desc = {};
+	//desc.pInnerSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iInnerBoneIdx));
+	//desc.pOuterSocketMatrix = const_cast<_float4x4*>(m_pModelCom->Get_CombinedTransformationMatrix(iOuterBoneIdx));
+	//desc.pParentCombinedMatrix = &m_CombinedWorldMatrix;
+	//desc.iLevelID = m_iLevelID;
+	//// 기본 공격 트레일 - 디스토션, 약간 흰색
+	//m_pTrailEffect[TRAIL_DEFAULT] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (m_pTrailEffect[TRAIL_DEFAULT])
+	//	m_pTrailEffect[TRAIL_DEFAULT]->Set_TrailActive(false);
+	//else
+	//	MSG_BOX("무기 트레일 사망");
 
-	// 타격 피 트레일
-	m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_BloodTest"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (m_pTrailEffect[TRAIL_BLOOD])
-		m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
-	else
-		MSG_BOX("무기 스킬 트레일 사망");
+	//// 타격 피 트레일
+	//m_pTrailEffect[TRAIL_BLOOD] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_BloodTest"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (m_pTrailEffect[TRAIL_BLOOD])
+	//	m_pTrailEffect[TRAIL_BLOOD]->Set_TrailActive(false);
+	//else
+	//	MSG_BOX("무기 스킬 트레일 사망");
 
-	desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
-	//desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
-	desc.bHasEmitter = true;
-	// 스킬 공격 트레일 - 파란색
-	m_pTrailEffect[TRAIL_SKILL_BLUE] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (m_pTrailEffect[TRAIL_SKILL_BLUE])
-		m_pTrailEffect[TRAIL_SKILL_BLUE]->Set_TrailActive(false);
-	else
-		MSG_BOX("무기 스킬 트레일 사망");
+	//desc.strEmitterTag = L"PE_Player_SkillWeaponParticle";
+	////desc.strEmitterTag = L"EC_Player_Skill_WeaponParticle_P1";
+	//desc.bHasEmitter = true;
+	//// 스킬 공격 트레일 - 파란색
+	//m_pTrailEffect[TRAIL_SKILL_BLUE] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Skill"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (m_pTrailEffect[TRAIL_SKILL_BLUE])
+	//	m_pTrailEffect[TRAIL_SKILL_BLUE]->Set_TrailActive(false);
+	//else
+	//	MSG_BOX("무기 스킬 트레일 사망");
 
 
 	return S_OK;	
