@@ -2864,7 +2864,7 @@ void CPlayer::Recovery_Ergo()
 
 void CPlayer::Check_RainArea()
 {
-	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr())
+	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr() || AREAMGR::FESTIVAL == m_pGameInstance->GetCurrentAreaMgr())
 	{
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
 	}

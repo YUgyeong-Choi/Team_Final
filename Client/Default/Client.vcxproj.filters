@@ -412,9 +412,6 @@
     <Filter Include="02.GameObjects\99.UI\Container\Panel\Player\Arm">
       <UniqueIdentifier>{942c9929-9177-4a5e-88d8-4858d642d97d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\99.UI\Container\Monster">
-      <UniqueIdentifier>{3ee88807-5483-4c39-969c-48cf776b8700}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Popup">
       <UniqueIdentifier>{609ed156-5d98-42c5-a0c9-a3c033eb0b12}</UniqueIdentifier>
     </Filter>

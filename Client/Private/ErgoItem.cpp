@@ -71,7 +71,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 			m_pPhysXActorCom->RemovePhysX();
 			
-
+			m_bDoOnce = false;
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 				
 			if (m_eItemTag == ITEM_TAG::END)
@@ -137,6 +137,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			if (m_pEffect)
 				m_pEffect->End_Effect();
 			// 없어지는 이펙트 추가할 것 - 채영
+
+			
 		}
 	}
 	
