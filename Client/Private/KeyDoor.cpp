@@ -226,7 +226,7 @@ void CKeyDoor::Play_Sound(_float fTimeDelta)
 		if (m_fSoundDelta > 0.2f)
 		{
 			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_Inner_Door", 0.7f * g_fInteractSoundVolume);
+			m_pSoundCom->SetVolume("AMB_OJ_DR_Train_Slide_M", 0.9f* g_fInteractSoundVolume);
 			m_pSoundCom->Play("AMB_OJ_DR_Train_Slide_M");
 			m_fSoundDelta = 0.f;
 		}
@@ -271,6 +271,10 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = m_eInteractType == OUTDOOR ? true : false;
+			if (m_bRotationStart == false)
+			{
+				m_bStartSound = true;
+			}
 			m_pPlayer->Get_TransfomCom()->Set_State(STATE::POSITION, vTargetPos);
 		}
 	}
@@ -299,7 +303,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 	if (m_bStartCutScene)
 	{
 		m_bStartCutScene = false;
-		awaaaaaxaeaewde = true;
+		m_bStartSound = true;
 		// 문 여는 거 활성화
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);

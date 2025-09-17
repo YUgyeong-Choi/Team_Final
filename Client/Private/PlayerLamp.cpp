@@ -59,7 +59,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 	SetIntensity(1.f);
 	m_pSoundCom->Set3DState(0.f, 12.f);
-	m_pSoundCom->SetVolume(0.9f);
+	m_pSoundCom->SetVolume(0.8f);
 	return S_OK;
 }
 

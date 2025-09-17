@@ -32,7 +32,7 @@ HRESULT COil::Initialize(void* pArg)
 	{
 		PxFilterData filterData{};
 		filterData.word0 = WORLDFILTER::FILTER_MONSTERWEAPON;
-		filterData.word1 = WORLDFILTER::FILTER_MAP;
+		filterData.word1 = WORLDFILTER::FILTER_MAP | WORLDFILTER::FILTER_FOOTSTEP;
 		m_pPhysXActorCom->Set_SimulationFilterData(filterData);
 
 		m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::BOSS_WEAPON);

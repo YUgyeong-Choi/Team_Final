@@ -80,6 +80,10 @@ void CSound_Core::Play()
     }
 
     // 콜백 설정 - 채널 포인터의 주소를 userData로 전달
+	if (m_ActiveChannels.empty())
+	{
+		return;
+	}
     auto& channelRef = m_ActiveChannels.back();
     pNewChannel->setUserData(&channelRef);
     pNewChannel->setCallback(OnChannelEnd);

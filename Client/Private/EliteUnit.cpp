@@ -633,6 +633,10 @@ void CEliteUnit::Reset()
     m_iCurNodeID = -1;
     m_iPrevNodeID = -1;
     SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
+    if (m_pSoundCom)
+    {
+        m_pSoundCom->StopAll();
+    }
 }
 
 void CEliteUnit::Register_Events()
