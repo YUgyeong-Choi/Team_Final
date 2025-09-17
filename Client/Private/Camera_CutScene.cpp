@@ -662,7 +662,8 @@ void CCamera_CutScene::Interp_Dof(_int curFrame)
 			const INTERPOLATION_CAMERA interp = a.interpDof;
 			const int span = max(1, b.iKeyFrame - a.iKeyFrame);
 			float t = float(curFrame - a.iKeyFrame) / float(span);
-			float tRemap = RemapBySpeed(a.curveType, a.curveY, t);
+			float t2 = std::min(1.0f, t * 2.0f);
+			float tRemap = RemapBySpeed(a.curveType, a.curveY, t2);
 
 			DOF_DESC out{};
 			out.bIsUse = true;
@@ -1126,7 +1127,7 @@ void CCamera_CutScene::Event()
 			unit->BreakPanel();
 		}
 
-		if (m_iCurrentFrame == 1425)
+		if (m_iCurrentFrame == 1430)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
