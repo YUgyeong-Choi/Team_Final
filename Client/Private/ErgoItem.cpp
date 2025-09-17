@@ -390,6 +390,9 @@ void CErgoItem::Free()
 {
 	__super::Free();
 	
+	if (m_pEffect)
+		m_pEffect->Set_bDead();
+
 	if (m_bPulseCell)
 	{
 		Safe_Release(m_pModelCom);

@@ -3309,6 +3309,7 @@ public:
 
     virtual void Execute(_float fTimeDelta) override
     {
+        printf("마우스 인풋 눌림 ? %d", (m_pOwner->m_Input.bLeftMouseDown));
         m_fStateTime += fTimeDelta;
 
         if (m_fStateTime > 1.f && !m_bDoOnce)
@@ -3367,7 +3368,7 @@ public:
 
             m_pOwner->Reset();
             m_pOwner->WeaponReset();
-
+            m_pOwner->m_pAnimator->ResetParameters();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
@@ -3450,7 +3451,7 @@ public:
 
     virtual void Exit() override
     {
-        m_pOwner->m_pAnimator->ResetParameters();
+        //m_pOwner->m_pAnimator->ResetParameters();
         m_pOwner->m_pAnimator->SetBool("WasDead", false);
         m_fStateTime = 0.f;
         m_fRrevivalTime = 0.f;
