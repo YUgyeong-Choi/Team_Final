@@ -419,7 +419,6 @@ HRESULT CLevel_YG::Ready_Camera()
 
 HRESULT CLevel_YG::Ready_Lights()
 {
-	/*
 	wstring basePath = L"../Bin/Save/LightInfomation/";
 	wstring fileName = L"Light_Information.json";
 
@@ -444,7 +443,7 @@ HRESULT CLevel_YG::Ready_Lights()
 		_float fFalloff = jLight["Falloff"];
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
-		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
+		_bool  bVolumetricMode = jLight["Volumetric"];
 
 		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
 		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -475,25 +474,25 @@ HRESULT CLevel_YG::Ready_Lights()
 		pNewLight->SetfFalloff(fFalloff);
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
-		pNewLight->SetbVolumetric(m_iVolumetricMode);
+		pNewLight->SetbVolumetric(bVolumetricMode);
 
-		pNewLight->SetDebug(false);
+		//pNewLight->SetDebug(false);
 	}
-	*/
-	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YG));
 
-	LIGHT_DESC			LightDesc{};
+	//m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YG));
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.6f;
-	LightDesc.fIntensity = 0.8f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.fFogDensity = 0.f;
+	//LIGHT_DESC			LightDesc{};
 
-	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YG), LightDesc)))
-		return E_FAIL;
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.fAmbient = 0.6f;
+	//LightDesc.fIntensity = 0.8f;
+	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.fFogDensity = 0.f;
+
+	//if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YG), LightDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

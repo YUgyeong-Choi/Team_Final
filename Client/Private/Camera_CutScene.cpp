@@ -210,6 +210,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
+					m_fFov = XMConvertToRadians(60.f);
 				}
 			}
 		}
@@ -1127,13 +1128,13 @@ void CCamera_CutScene::Event()
 			unit->BreakPanel();
 		}
 
-		if (m_iCurrentFrame == 1430)
+		if (m_iCurrentFrame == 1440)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
 		}
 		
-		if (m_iCurrentFrame == 1490)
+		if (m_iCurrentFrame == 1510)
 		{
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
 		}

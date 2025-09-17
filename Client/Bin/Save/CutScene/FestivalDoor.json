@@ -3,15 +3,15 @@
     "Yaw": -1.5580906867980957,
     "bEndBlend": false,
     "bStartBlend": false,
-    "iEndFrame": 1600,
+    "iEndFrame": 1750,
     "vecDOFData": [
         {
-            "curveType": 0,
+            "curveType": 4,
             "curveY": [
                 0.0,
-                0.25,
-                0.5,
-                0.75,
+                0.07400000095367432,
+                0.23100000619888306,
+                0.671999990940094,
                 1.0
             ],
             "dofDesc": {
@@ -38,52 +38,8 @@
             ],
             "dofDesc": {
                 "cleanRange": [
-                    6.949999809265137,
-                    8.0
-                ],
-                "closeIntensity": 0.550000011920929,
-                "farIntensity": 1.5,
-                "featherPx": 1.0,
-                "isUse": true
-            },
-            "interpDof": 1,
-            "keyFrame": 820
-        },
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "dofDesc": {
-                "cleanRange": [
-                    6.75,
-                    12.75
-                ],
-                "closeIntensity": 1.649999976158142,
-                "farIntensity": 1.5,
-                "featherPx": 1.0,
-                "isUse": true
-            },
-            "interpDof": 1,
-            "keyFrame": 860
-        },
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
-            "dofDesc": {
-                "cleanRange": [
                     6.199999809265137,
-                    6.949999809265137
+                    14.800000190734863
                 ],
                 "closeIntensity": 0.8999999761581421,
                 "farIntensity": 1.2000000476837158,
@@ -113,7 +69,29 @@
                 "isUse": true
             },
             "interpDof": 192,
-            "keyFrame": 1180
+            "keyFrame": 1170
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "dofDesc": {
+                "cleanRange": [
+                    0.0,
+                    1000.0
+                ],
+                "closeIntensity": 0.0,
+                "farIntensity": 0.0,
+                "featherPx": 1.0,
+                "isUse": true
+            },
+            "interpDof": 192,
+            "keyFrame": 1171
         }
     ],
     "vecFovData": [
@@ -217,25 +195,12 @@
                 0.75,
                 1.0
             ],
-            "fFov": 60.0,
-            "interpFov": 0,
-            "keyFrame": 1180
-        },
-        {
-            "curveType": 0,
-            "curveY": [
-                0.0,
-                0.25,
-                0.5,
-                0.75,
-                1.0
-            ],
             "fFov": 22.0,
             "interpFov": 1,
-            "keyFrame": 1181
+            "keyFrame": 1171
         },
         {
-            "curveType": 0,
+            "curveType": 2,
             "curveY": [
                 0.0,
                 0.25,
@@ -258,7 +223,7 @@
             ],
             "fFov": 33.900001525878906,
             "interpFov": 0,
-            "keyFrame": 1455
+            "keyFrame": 1500
         }
     ],
     "vecMatrixPosData": [
@@ -542,7 +507,7 @@
                 1.0
             ],
             "interpMatrixPosition": 0,
-            "keyFrame": 1180,
+            "keyFrame": 1170,
             "worldMatrix": [
                 -0.9915480017662048,
                 -0.015814045444130898,
@@ -558,7 +523,7 @@
                 0.0,
                 407.0530090332031,
                 15.772000312805176,
-                -41.8849983215332,
+                -42.084999084472656,
                 1.0
             ]
         },
@@ -572,7 +537,7 @@
                 1.0
             ],
             "interpMatrixPosition": 0,
-            "keyFrame": 1181,
+            "keyFrame": 1171,
             "worldMatrix": [
                 -0.015091584995388985,
                 -1.369562141917413e-06,
@@ -593,7 +558,7 @@
             ]
         },
         {
-            "curveType": 0,
+            "curveType": 2,
             "curveY": [
                 0.0,
                 0.25,
@@ -631,8 +596,8 @@
                 0.75,
                 1.0
             ],
-            "interpMatrixPosition": 0,
-            "keyFrame": 1455,
+            "interpMatrixPosition": 1,
+            "keyFrame": 1500,
             "worldMatrix": [
                 -0.021284479647874832,
                 1.9772392079175916e-06,
@@ -647,6 +612,36 @@
                 -0.020840059965848923,
                 0.0,
                 383.1925964355469,
+                17.214000701904297,
+                -48.605953216552734,
+                1.0
+            ]
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
+            "interpMatrixPosition": 0,
+            "keyFrame": 1750,
+            "worldMatrix": [
+                -0.021284479647874832,
+                1.9772392079175916e-06,
+                -0.9997734427452087,
+                0.0,
+                -0.20314589142799377,
+                0.9791389107704163,
+                0.004326771013438702,
+                0.0,
+                0.9789170622825623,
+                0.20319196581840515,
+                -0.020840059965848923,
+                0.0,
+                382.0929870605469,
                 17.214000701904297,
                 -48.605953216552734,
                 1.0
@@ -804,7 +799,7 @@
                 1.0
             ],
             "distance": 3.0,
-            "interpFov": 1048576000,
+            "interpFov": -858993460,
             "keyFrame": 0,
             "pitch": -0.07600262761116028,
             "targetType": 1,
@@ -820,7 +815,7 @@
                 1.0
             ],
             "distance": 3.0,
-            "interpFov": 1048576000,
+            "interpFov": -858993460,
             "keyFrame": 10,
             "pitch": -0.07600262761116028,
             "targetType": 1,
@@ -836,7 +831,7 @@
                 1.0
             ],
             "distance": 3.0,
-            "interpFov": 1048576000,
+            "interpFov": -858993460,
             "keyFrame": 70,
             "pitch": -0.456163614988327,
             "targetType": 1,
