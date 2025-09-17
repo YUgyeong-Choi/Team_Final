@@ -676,6 +676,13 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 #endif
 }
 
+void CButtler_Range::PlayDetectSound()
+{
+	_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+	m_pSoundCom->Play("VO_NPC_NHM_Servant02_Spawn_0" + to_string(iNum));
+}
+
 HRESULT CButtler_Range::Ready_Weapon()
 {
 	CWeapon_Monster::MONSTER_WEAPON_DESC Desc{};
@@ -708,6 +715,19 @@ HRESULT CButtler_Range::Ready_Weapon()
 
 
 	return S_OK;
+}
+
+HRESULT CButtler_Range::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
+
+
+	return S_OK;
+
 }
 
 CButtler_Range* CButtler_Range::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
