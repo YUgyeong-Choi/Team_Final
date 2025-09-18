@@ -42,6 +42,51 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
+#ifdef _DEBUG
+	{
+
+		if (m_prevPtrs_Debug.size() != m_Effects.size())
+		{
+			// 처음 진입하거나 개수가 바뀌면 스냅샷 초기화
+			m_prevPtrs_Debug.resize(m_Effects.size());
+			for (size_t i = 0; i < m_Effects.size(); ++i)
+				m_prevPtrs_Debug[i] = reinterpret_cast<uintptr_t>(m_Effects[i]);
+		}
+
+		for (size_t i = 0; i < m_Effects.size(); ++i)
+		{
+			CEffectBase* p = m_Effects[i];
+
+			// ① 포인터가 nullptr이 되었는지 체크
+			if (p == nullptr)
+			{
+				OutputDebugString(L"[HeapCorruption?] m_Effects 원소가 nullptr로 바뀜!\n");
+				__debugbreak();
+			}
+
+			// ② 포인터 주소가 이전 프레임과 달라졌는지 체크
+			uintptr_t curAddr = reinterpret_cast<uintptr_t>(p);
+			if (curAddr != m_prevPtrs_Debug[i])
+			{
+				OutputDebugString(L"[HeapCorruption?] m_Effects 포인터 주소가 갑자기 바뀜!\n");
+				__debugbreak();
+			}
+
+			// ③ 유효한 메모리인지 접근 테스트 (댕글링 감지)
+			__try
+			{
+				volatile auto v = p->Get_EffectType();
+			}
+			__except (EXCEPTION_EXECUTE_HANDLER)
+			{
+				OutputDebugString(L"[HeapCorruption?] 무효 메모리 접근 (Use-After-Free?)!\n");
+				__debugbreak();
+			}
+
+			m_prevPtrs_Debug[i] = curAddr;
+		}
+	}
+#endif
 	if (m_isActive == false || m_bDead)
 		return;
 
@@ -83,15 +128,16 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+	/*
+	* 시퀀스와 최대한 비슷한 구조로 저장 
+	* 컨테이너의 (전체적인) 프레임을 돌리고
+	* 보유한 이펙트들의 재생 시간(시작~종료 프레임 내)에 컨테이너의 프레임이 존재할 경우 재생
+	* 업데이트만 시켜주면 이펙트들은 알아서 내부적으로 업데이트 및 재생함
+	*/
+
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
-		/*
-		* 시퀀스와 최대한 비슷한 구조로 저장 
-		* 컨테이너의 (전체적인) 프레임을 돌리고
-		* 보유한 이펙트들의 재생 시간(시작~종료 프레임 내)에 컨테이너의 프레임이 존재할 경우 재생
-		* 업데이트만 시켜주면 이펙트들은 알아서 내부적으로 업데이트 및 재생함
-		*/
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
@@ -197,86 +243,86 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 	else
 		m_bLoop = true;
 
-		for (const auto& jItem : j["EffectObject"])
+	for (const auto& jItem : j["EffectObject"])
+	{
+		// 이름
+		//if (jItem.contains("Name"))
+		//	m_strSeqItemName = jItem["Name"].get<string>();
+
+		// 타입
+		EFFECT_TYPE eEffectType = {};
+		if (jItem.contains("EffectType"))
+			eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
+
+		// Effect 객체 생성 및 역직렬화
+		CEffectBase* pInstance = { nullptr };
+
+		switch (eEffectType)
 		{
-			// 이름
-			//if (jItem.contains("Name"))
-			//	m_strSeqItemName = jItem["Name"].get<string>();
-
-			// 타입
-			EFFECT_TYPE eEffectType = {};
-			if (jItem.contains("EffectType"))
-				eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
-
-			// Effect 객체 생성 및 역직렬화
-			CEffectBase* pInstance = { nullptr };
-
-			switch (eEffectType)
-			{
-			case Client::EFF_SPRITE:
-			{
-				CSpriteEffect::DESC desc = {};
-				desc.strECName = m_strECName;
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.bTool = false;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
-			}
-			break;
-			case Client::EFF_PARTICLE:
-			{
-				CParticleEffect::DESC desc = {};
-				desc.strECName = m_strECName;
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				desc.bTool = false;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
-			}
-			break;
-			case Client::EFF_MESH:
-			{
-				CMeshEffect::DESC desc = {};
-				desc.strECName = m_strECName;
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				desc.bTool = false;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
-			}
-			break;
-			case Client::EFF_TRAIL:
-			{
-				// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
-				//CSwordTrailEffect::DESC desc = {};
-				//desc.strECName = m_strECName;
-				//desc.fRotationPerSec = XMConvertToRadians(90.f);
-				//desc.fSpeedPerSec = 5.f;
-				//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-				//desc.bTool = false;
-				//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-				//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));
-			}
-			break;
-			}
-			if (pInstance != nullptr)
-			{
-				if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
-					return E_FAIL;
-				_vector rot, scale, trans;
-				XMMatrixDecompose(&scale, &rot, &trans, m_pTransformCom->Get_WorldMatrix());
-				if (eEffectType == EFF_PARTICLE)
-					static_cast<CParticleEffect*>(pInstance)->Set_InitRotation(XMMatrixRotationQuaternion(rot));
-				m_Effects.push_back(pInstance);
-			}
-			else
-				return E_FAIL;
+		case Client::EFF_SPRITE:
+		{
+			CSpriteEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.bTool = false;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
 		}
-		return S_OK;
+		break;
+		case Client::EFF_PARTICLE:
+		{
+			CParticleEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
+		}
+		break;
+		case Client::EFF_MESH:
+		{
+			CMeshEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
+		}
+		break;
+		case Client::EFF_TRAIL:
+		{
+			// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
+			//CSwordTrailEffect::DESC desc = {};
+			//desc.strECName = m_strECName;
+			//desc.fRotationPerSec = XMConvertToRadians(90.f);
+			//desc.fSpeedPerSec = 5.f;
+			//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//desc.bTool = false;
+			//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+			//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));
+		}
+		break;
+		}
+		if (pInstance != nullptr)
+		{
+			if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
+				return E_FAIL; 
+			_vector rot, scale, trans;
+			XMMatrixDecompose(&scale, &rot, &trans, m_pTransformCom->Get_WorldMatrix());
+			if (eEffectType == EFF_PARTICLE)
+				static_cast<CParticleEffect*>(pInstance)->Set_InitRotation(XMMatrixRotationQuaternion(rot));
+			m_Effects.push_back(pInstance);
+		}
+		else
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 HRESULT CEffectContainer::Ready_Components()

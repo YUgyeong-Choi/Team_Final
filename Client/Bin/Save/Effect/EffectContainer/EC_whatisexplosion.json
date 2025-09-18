@@ -1,0 +1,280 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 73,
+            "EffectType": 0,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 73,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.190000057220459,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        4.0,
+                        4.0,
+                        4.0
+                    ],
+                    "TrackPosition": 23.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        4.0,
+                        4.0,
+                        4.0
+                    ],
+                    "TrackPosition": 68.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 783.6598510742188,
+            "Loop": true,
+            "Name": "normalexplosiondiffuse",
+            "NumKeyFrames": 3,
+            "RenderGroup": 9,
+            "ShaderPass": 4,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_SubUV_Explosion_01_10x10_SC_KMH",
+                "T_SubUV_Explosion_13_9x9_SC_KMH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 8,
+            "TileY": 8
+        },
+        {
+            "Accel": [
+                -100.0,
+                -50.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.43263620138168335,
+                0.17277485132217407,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 120,
+            "EffectType": 1,
+            "EmissiveIntensity": 4.699999809265137,
+            "EndTrack": 125,
+            "FlipUV": false,
+            "Gravity": -3.5999999046325684,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 1.5199999809265137,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2920.61083984375,
+            "LifeTime_Particle": [
+                0.09000000357627869,
+                1.2999999523162842
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -0.4999999403953552,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 4.0,
+            "Name": "Player_FatalCombo3_SparkParticle1",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.6324555277824402,
+                0.4472135901451111,
+                0.6324555277824402
+            ],
+            "OrbitSpeed": [
+                -100.0,
+                100.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.019999999552965164,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.029999999329447746,
+                0.05999999865889549
+            ],
+            "Speed": [
+                7.0,
+                30.0
+            ],
+            "Spin": false,
+            "StartTrack": 5,
+            "StretchFactor": 0.02500000037252903,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 78
+}
