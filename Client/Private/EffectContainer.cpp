@@ -93,7 +93,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Priority_Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Priority_Update(fTimeDelta);
 		}
 	}
 }
@@ -132,7 +133,8 @@ void CEffectContainer::Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Update(fTimeDelta);
 		}
 	}
 }
@@ -147,7 +149,8 @@ void CEffectContainer::Late_Update(_float fTimeDelta)
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			pEffect->Late_Update(fTimeDelta);
+			if (pEffect)
+				pEffect->Late_Update(fTimeDelta);
 		}
 	}
 }
@@ -162,7 +165,9 @@ void CEffectContainer::End_Effect()
 {
 	for (auto& pEffect : m_Effects)
 	{
-		_float fDeathTime = pEffect->Ready_Death();
+		_float fDeathTime = {};
+		if (pEffect)
+			fDeathTime = pEffect->Ready_Death();
 		//if (pEffect->Get_EffectType() == EFF_PARTICLE)
 		//	static_cast<CParticleEffect*>(pEffect)->Set_Loop(false);
 		if (m_fDeadInterval < fDeathTime)
@@ -310,6 +315,8 @@ void CEffectContainer::Free()
 	__super::Free();
 	for (auto& pEffect : m_Effects)
 	{
+		if(pEffect)
+			pEffect->Set_bDead();
 		Safe_Release(pEffect);
 	}
 }
