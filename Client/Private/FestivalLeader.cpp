@@ -179,6 +179,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		}
 		if (KEY_DOWN(DIK_W))
 		{
+			// 공기팡
 			CEffectContainer::DESC desc = {};
 			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 			_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -195,7 +196,6 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_E))
 		{
 			CEffectContainer::DESC desc = {};
-
 			desc.pSocketMatrix = nullptr;
 			desc.pParentMatrix = nullptr;
 			const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
@@ -335,7 +335,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 		{EBossBones::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
 		{EBossBones::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
 		{EBossBones::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
-		{EBossBones::LeftForearm, PxSphereGeometry(1.3f),          XMVectorZero()},
+		{EBossBones::LeftForearm, PxSphereGeometry(1.4f),          XMVectorZero()},
 		{EBossBones::RightForearm,PxSphereGeometry(0.96f),          XMVectorZero()}
 	};
 
@@ -480,25 +480,7 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 
-	if (fDistance >=6.f)
-	{
-		if (m_bIsPhase2)
-		{
-			if (m_fAttackCooldown <= 0.f)
-			{
-				m_pAnimator->SetInt("SkillType", DashSwing);
-				m_pAnimator->SetTrigger("Attack");
-				m_ePrevAttackPattern = m_eCurAttackPattern;
-				m_eCurAttackPattern = DashSwing;
-				m_ePrevState = m_eCurrentState;
-				m_eCurrentState = EEliteState::ATTACK;
-				m_fAttackCooldown = m_fAttckDleay + 2.f;
-			}
-		}
-		return;
-	}
-
-
+	
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
 		return;
@@ -590,7 +572,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		{
 			if (m_iSwingComboCount == 0 && m_bInSwingCombo == false) // 이전 콤보가 끝난 상태
 			{
-				m_iSwingComboLimit = GetRandomInt(0, 2); 
+				m_iSwingComboLimit = GetRandomInt(0, 1); 
 				m_bInSwingCombo = true;                  
 			}
 		}
@@ -683,6 +665,12 @@ void CFestivalLeader::UpdateSpecificBehavior(_float fTimeDelta)
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
 
+
+	if (m_eCurrentState == EEliteState::GROGGY || m_eCurrentState == EEliteState::FATAL
+		|| m_eCurrentState == EEliteState::DEAD)
+	{
+		EffectSpawn_Active(EF_GROUND_SPARK, false);
+	}
 }
 
 void CFestivalLeader::EnableColliders(_bool bEnable)
@@ -1003,6 +991,10 @@ void CFestivalLeader::Register_Events()
 			}
 
 			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
+
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"));
 		});
 
 	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
@@ -1015,12 +1007,17 @@ void CFestivalLeader::Register_Events()
 		{
 			m_bLeftHand = false;
 			EffectSpawn_Active(EF_SCRATCH, true);
+
 		});
 
 	m_pAnimator->RegisterEventListener("SlamNoSmokeEffect", [this]()
 		{
 			m_bLeftHand = true;
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"));
 		});
 
 	m_pAnimator->RegisterEventListener("SmokeEffect", [this]()
@@ -1073,8 +1070,8 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
 		{
-
 			EffectSpawn_Active(EF_GROUND_SPARK, true, false);
+
 		});
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
 		{
@@ -1115,8 +1112,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 		static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::STAMP); // 바스켓에 충돌했을 때를 생각해서 
 		m_bStartPhase2 = true;
 		vector<EBossAttackPattern> m_vecBossPatterns = {
-			Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
-			DashSwing ,Swing,FuryHammerSlam ,FurySwing
+			DashSwing,Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
+			Swing,FuryHammerSlam ,FurySwing
 		};
 		m_PatternWeightMap.clear();
 		m_PatternCountMap.clear();

@@ -4,6 +4,7 @@
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
 #include "UI_Container.h"
+#include "Static_Decal.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -129,6 +130,73 @@ void CBossUnit::Ready_AttackPatternWeightForPhase1()
 
 void CBossUnit::Ready_AttackPatternWeightForPhase2()
 {
+}
+
+HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag)
+{
+#pragma region 영웅 데칼 생성코드
+	CStatic_Decal::DECAL_DESC DecalDesc = {};
+	DecalDesc.bNormalOnly = true;
+	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
+	DecalDesc.bHasLifeTime = true;
+	DecalDesc.fLifeTime = 5.f;
+
+	auto worldmat = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+
+	// 기존 월드행렬
+	_matrix World = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+
+	// 스케일, 회전, 위치 분해
+	_vector vScale, vRotQuat, vTrans;
+	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
+
+	// 새 스케일 설정
+	vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
+
+	if (m_pNaviCom == nullptr)
+		return E_FAIL;
+	//네브메쉬 높이 값으로 변경
+	_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
+	vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
+
+	// Look 반대 방향
+	_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
+
+	_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
+
+	// Up은 기존 Up을 쓰고
+	_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
+
+	// Right는 Look과 Up으로 다시 계산
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
+
+	// Orthonormalize (보정)
+	vUp = XMVector3Cross(vLook, vRight);
+
+	// 회전 행렬 구성
+	_matrix RotMat = XMMatrixIdentity();
+	RotMat.r[0] = vRight;
+	RotMat.r[1] = vUp;
+	RotMat.r[2] = vLook;
+
+	// 다시 합성
+	_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
+		RotMat *
+		XMMatrixTranslationFromVector(vTrans);
+
+	// 적용
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	{
+		return E_FAIL;
+	}
+#pragma endregion
+
+	return S_OK;
 }
 
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

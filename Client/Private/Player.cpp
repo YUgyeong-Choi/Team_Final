@@ -3001,7 +3001,10 @@ void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 	if (bRayHit)
 	{
 		const PxRaycastHit& block = hit.block;
-		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		//CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData.);
+		CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hit.block.actor->userData);
+		CStaticMesh* pHitMesh = static_cast<CStaticMesh*> (pHitActor->Get_Owner());
+
 		if (pHitMesh)
 		{
 			//wcout << pHitMesh->Get_MeshName() << endl;
