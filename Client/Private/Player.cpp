@@ -2089,6 +2089,16 @@ void CPlayer::Register_SoundEvents()
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
 			}
 		});
+
+
+	m_pAnimator->RegisterEventListener("FestivalEnterSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
+				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
+			}
+		});
 }
 
 _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
