@@ -222,7 +222,11 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
-			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
+			_bool bFinish;
+			if (m_eCurrentCutScene == CUTSCENE_TYPE::FESTIVAL)
+				bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat, true);
+			else
+				Camera_Blending(fTimeDelta, targetMat, currentMat);
 
 			if (bFinish)
 			{
@@ -1127,13 +1131,13 @@ void CCamera_CutScene::Event()
 			unit->BreakPanel();
 		}
 
-		if (m_iCurrentFrame == 1430)
+		if (m_iCurrentFrame == 1440)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
 		}
 		
-		if (m_iCurrentFrame == 1490)
+		if (m_iCurrentFrame == 1510)
 		{
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
 		}
@@ -1180,12 +1184,14 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 
 _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
+	// 컷씬 카메라 오비탈 위치로
 	XMVECTOR curScale, curRotQuat, curTrans;
 	XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
 	XMMatrixDecompose(&curScale, &curRotQuat, &curTrans, currentMat);
 	XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
 
 	_float blendSpeed = 5.f;
+
 	_float t = fTimeDelta * blendSpeed;
 	t = min(t, 1.0f); // overshoot 방지
 
@@ -1200,11 +1206,88 @@ _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _m
 
 	m_pTransformCom->Set_WorldMatrix(blendedMat);
 
-	// 차이 계산
+	// fov 60으로
+	m_fFov = LerpFloat(m_fFov, XMConvertToRadians(60.f), t);
+
+	_bool bFinish = true;
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
-	if (XMVectorGetX(diff) < 0.00001f)
+	if (XMVectorGetX(diff) >= 0.001f)
 	{
-		return true; 
+		bFinish = false;
+	}
+
+	_float diffFov = m_fFov - 60.f;
+	if (diffFov >= 0.001f)
+	{
+		bFinish = false;
+	}
+	else
+		m_fFov = XMConvertToRadians(60.f);
+
+	return bFinish;
+}
+
+_bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat, _bool bActive)
+{
+	// --- 1) 시작/목표 1회만 캡처 ---
+	static bool   s_active = false;
+	static float  s_elapsed = 0.f;
+	static float  s_duration = 0.9f; // 총 블렌딩 시간(초)
+
+	static XMVECTOR s_startScale, s_startRot, s_startTrans;
+	static XMVECTOR s_tgtScale, s_tgtRot, s_tgtTrans;
+	static float    s_startFov, s_tgtFov;   // 라디안
+
+	// bActive가 false로 들어오면 언제든 리셋할 수 있게(옵션)
+	if (!bActive) s_active = false;
+
+	if (!s_active)
+	{
+		XMMatrixDecompose(&s_startScale, &s_startRot, &s_startTrans, currentMat);
+		XMMatrixDecompose(&s_tgtScale, &s_tgtRot, &s_tgtTrans, targetMat);
+
+		s_startFov = m_fFov;                     // 현재 FOV(라디안)
+		s_tgtFov = XMConvertToRadians(60.f);   // 목표 FOV(라디안)
+
+		s_elapsed = 0.f;
+		s_active = true;
+	}
+
+	// --- 2) 누적 진행도 0..1 ---
+	s_elapsed += fTimeDelta;
+	float u = min(1.0f, s_elapsed / max(0.0001f, s_duration));
+
+	// ===== Ease-In remap =====
+	// Quadratic Ease-In:  t = u^2  (초반 더 천천히)
+	// Cubic Ease-In:      t = u^3  (더 강한 Ease-In)
+	float tPos = u * u;           // 위치: quadratic ease-in
+	float tScl = u * u;           // 스케일: quadratic ease-in
+	float tFov = u * u;           // FOV: quadratic ease-in
+	float tRot = u * u * u;       // 회전: cubic ease-in (조금 더 부드럽게)
+
+	// --- 3) 시작↔목표 보간 (current 기준 재보간 금지) ---
+	XMVECTOR lerpPos = XMVectorLerp(s_startTrans, s_tgtTrans, tPos);
+	XMVECTOR slerpRot = XMQuaternionSlerp(s_startRot, s_tgtRot, tRot);
+	XMVECTOR lerpScale = XMVectorLerp(s_startScale, s_tgtScale, tScl);
+
+	_matrix blendedMat = XMMatrixScalingFromVector(lerpScale)
+		* XMMatrixRotationQuaternion(slerpRot)
+		* XMMatrixTranslationFromVector(lerpPos);
+	m_pTransformCom->Set_WorldMatrix(blendedMat);
+
+	// --- 4) FOV 보간 ---
+	m_fFov = s_startFov + (s_tgtFov - s_startFov) * tFov; // 라디안
+
+	// --- 5) 종료 처리 ---
+	if (u >= 1.0f)
+	{
+		m_pTransformCom->Set_WorldMatrix(XMMatrixScalingFromVector(s_tgtScale)
+			* XMMatrixRotationQuaternion(s_tgtRot)
+			* XMMatrixTranslationFromVector(s_tgtTrans));
+		m_fFov = s_tgtFov;
+
+		s_active = false;
+		return true;
 	}
 	return false;
 }

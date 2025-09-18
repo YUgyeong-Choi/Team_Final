@@ -76,6 +76,7 @@ private:
 
 	/* [ ø¿∫Ò≈ª √ ±‚ ¿ßƒ° ->  ƒ∆æ¿ √ ±‚ ¿ßƒ°] || [ ƒ∆æ¿ ≥° ¿ßƒ° ->  ø¿∫Ò≈ª √ ±‚ ¿ßƒ°] */
 	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
+	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat, _bool bActive);
 
 	/* [ ƒ∆æ¿ µ•¿Ã≈Õ ∑ŒµÂ ] */
 	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
