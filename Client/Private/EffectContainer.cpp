@@ -69,7 +69,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 			m_iCurFrame = 0;
 			for (auto& pEffect : m_Effects)
 			{
-				pEffect->Reset_TrackPosition();
+				if(pEffect)
+					pEffect->Reset_TrackPosition();
 			}
 		}
 		else

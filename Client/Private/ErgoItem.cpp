@@ -304,7 +304,7 @@ HRESULT CErgoItem::Ready_Effect(void* pArg)
 	wstring wsEffectName = {};
 
 	if (m_bPulseCell)
-		wsEffectName = TEXT("EC_YW_PulseCell_Effect");
+		wsEffectName = TEXT("EC_YW_PulseCell_Effect_Edit");
 	else
 		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
 

@@ -27,6 +27,9 @@ public:
 		_float			fTileTickPerSec = { 60.f };
 		_float			fShrinkThreshold = { 0.01f };
 		_bool			isCircleRange = { false };
+		_float3			vCircleNormal = { 0.f, 1.f, 0.f };
+		_bool			bLoopInSet = { false };
+		_float			fLoopInSet_LoopDelay = {};
 
 		/* --- Particle Parameters --- */
 		_float2			vLifeTime;
@@ -83,7 +86,7 @@ private:
 	//VTXPOS_PARTICLE_INSTANCE*	m_pVertexInstances = { nullptr };
 	//PARTICLEDESC*				m_pParticleDesc = { nullptr };	
 	// + => PPDESC ≈Î«’«‘
-	PPDESC* m_pParticleParamDesc = { nullptr };
+	PPDESC*						m_pParticleParamDesc = { nullptr };
 
 private:
 	/* [CS] */

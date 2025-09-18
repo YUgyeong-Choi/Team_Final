@@ -592,10 +592,14 @@ namespace Engine
 		_float		fShrinkThreshold;
 
 		_float3		vOrbitAxis;      // normalized
-		_uint		isCircleRange;	 // 초기 위치 원형 둘레에서 생성
+		_uint		bLoopInSet;		 // 전체 사망 기준 루프
+		//_float		_pad0;
 
 		_float3		vRange;			 // vRange
-		_float		_pad2;
+		_float		fLoopInSet_LoopDelay; // 전체 사망 기준 루프일 경우 전체 사망 후 더 딜레이를 줄 것인지?
+
+		_float3		vCircleNormal;	 // 원형 생성 시, 원의 기준 축 설정
+		_uint		isCircleRange;	 // 초기 위치 원형 둘레에서 생성
 
 		_float4		vSocketRot;
 
