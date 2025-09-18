@@ -502,7 +502,7 @@ void CAnimController::ResetParameters()
 			value.fValue = 0.f;
 			break;
 		case ParamType::Trigger:
-			value.bValue = false;
+			value.bTriggered = false;
 			break;
 		}
 	}

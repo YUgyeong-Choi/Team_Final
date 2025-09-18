@@ -243,6 +243,8 @@ public:
 
 			return; 
 		}
+		if (name == "NormalAttack")
+			cout << "Set Trigger: " << name << endl; // 디버그용 출력
 		auto& p = m_Params[name];
 		p.bTriggered = true;
 	}
