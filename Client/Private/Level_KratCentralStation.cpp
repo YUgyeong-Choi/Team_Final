@@ -2126,7 +2126,13 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 
-
+	// 축제의 인도자 입구 (컷씬카메라에서 특정 프레임에 사운드 종료하려고 layer따로 씀)
+	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+	eDesc.vPosition = _float3(374.98f, 14.95f, -48.74f);
+	eDesc.fMinMax = { 1.f , 60.f };
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_FestivalEntranceSound"), &eDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

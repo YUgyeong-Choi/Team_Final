@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "FestivalLeader.h"
-
+#include "AreaSoundBox.h"
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -1089,8 +1089,6 @@ void CCamera_CutScene::Event()
 		{
 			CEffectContainer::DESC Lightdesc = {};
 
-
-
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
 			Lightdesc.PresetMatrix._41 = -1.f;
 			Lightdesc.PresetMatrix._42 = 0.3f;
@@ -1106,6 +1104,12 @@ void CCamera_CutScene::Event()
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 125)
+		{
+			CAreaSoundBox* pSound = static_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
+			pSound->SoundVolumeToZero();
+		}
+
 		if (m_iCurrentFrame == 250)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
