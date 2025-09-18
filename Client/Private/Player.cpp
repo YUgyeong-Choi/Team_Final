@@ -236,9 +236,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc))
+			Lightdesc.PresetMatrix._41 = 406.f;
+			Lightdesc.PresetMatrix._42 = 20.f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
 		}
 		
