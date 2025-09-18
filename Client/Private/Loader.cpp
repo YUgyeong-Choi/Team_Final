@@ -510,6 +510,17 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_12_N_KMH.dds")))))
 		return E_FAIL;
 
+	//인도자 두손 모아 찍기 데칼
+	/* For.Prototype_Component_Texture_FestivalLeader_TwoHand_Mask*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_C_LKM.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FestivalLeader_TwoHand_Normal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_N_LKM.dds")))))
+		return E_FAIL;
+
 	m_fRatio = 0.1f;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));

@@ -971,7 +971,9 @@ void CFuoco::Register_Events()
 		{
 			Spawn_Decal(m_pFistBone, 
 				TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal"), 
-				TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask"));
+				TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask"),
+			XMVectorSet(10.f, 0.5f, 5.f, 0));
+
 		});
 
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
@@ -1495,7 +1497,8 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 
 		Spawn_Decal(m_pFistBone,
 			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"));
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(10.f, 0.5f, 10.f, 0));
 
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))

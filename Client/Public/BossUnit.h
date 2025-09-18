@@ -30,7 +30,7 @@ protected:
 	virtual void Ready_AttackPatternWeightForPhase2();
 
 protected:
-	HRESULT Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag);
+	HRESULT Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
 
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 protected:

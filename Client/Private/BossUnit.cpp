@@ -132,7 +132,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 {
 }
 
-HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag)
+HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
 {
 #pragma region 영웅 데칼 생성코드
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
@@ -153,7 +153,7 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 	XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
 
 	// 새 스케일 설정
-	vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
+	vScale = vDecalScale;
 
 	if (m_pNaviCom == nullptr)
 		return E_FAIL;
