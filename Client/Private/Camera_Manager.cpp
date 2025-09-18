@@ -110,8 +110,8 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
     /* [ 이건 램프 조명 온, 오프 ] */
     if (KEY_DOWN(DIK_U))
     {
-        CGameObject* pLampLight = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"))->back();
-        dynamic_cast<CDH_ToolMesh*>(pLampLight)->SetIntensity(0.f);
+        //CGameObject* pLampLight = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"))->back();
+        //dynamic_cast<CDH_ToolMesh*>(pLampLight)->SetIntensity(0.f);
     }
     return S_OK;
 }

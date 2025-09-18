@@ -49,6 +49,7 @@ HRESULT CErgoItem::Initialize(void* pArg)
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
 
+	//XMStoreFloat3(&m_vOriginPos, m_pTransformCom->Get_State(STATE::POSITION));
 
 	return S_OK;
 }
@@ -150,8 +151,22 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 void CErgoItem::Update(_float fTimeDelta)
 {
-	
+	//if (m_eItemTag == ITEM_TAG::PULSE_CELL)
+	//{
+	//	// 시간 누적
+	//	m_fAccTime += fTimeDelta;
+
+	//	_float fAmplitude = 0.1f;   // 위아래 진폭
+	//	_float fSpeed = 1.f;    // 움직이는 속도
+
+	//	// 기준 위치를 중심으로 sin 파 적용
+	//	_float3 vPos = m_vOriginPos;
+	//	vPos.y += sinf(m_fAccTime * fSpeed) * fAmplitude;
+
+	//	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetW(XMLoadFloat3(&vPos), 1.f));
+	//}
 }
+
 
 void CErgoItem::Late_Update(_float fTimeDelta)
 {
