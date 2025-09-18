@@ -600,6 +600,16 @@ _uint CGameInstance::Get_LightCount(_uint TYPE, _uint iLevel) const
 	return m_pLight_Manager->Get_LightCount(TYPE, iLevel);
 }
 
+void CGameInstance::AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight)
+{
+	m_pLight_Manager->Add_LightCustomObject(strCustomLightKey, pCustomLight);
+}
+
+vector<CGameObject*>* CGameInstance::Find_CustomLight(const wstring& strCustomLightKey)
+{
+	return m_pLight_Manager->Find_CustomLight(strCustomLightKey);
+}
+
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);

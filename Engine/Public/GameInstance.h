@@ -132,6 +132,8 @@ public:
 	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
 	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	_uint Get_LightCount(_uint TYPE, _uint iLevel) const;
+	void AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight);
+	vector<CGameObject*>* Find_CustomLight(const wstring& strCustomLightKey);
 #pragma endregion
 
 #pragma region FONT_MANAGER

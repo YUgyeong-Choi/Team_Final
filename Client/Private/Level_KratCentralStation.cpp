@@ -425,6 +425,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
 		_bool  bVolumetricMode = jLight["Volumetric"];
+		_int   iLightCustom = jLight["LightCustom"];
 
 		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
 		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -456,8 +457,12 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
 		pNewLight->SetbVolumetric(bVolumetricMode);
+		pNewLight->SetLightCustom(iLightCustom);
 
-		//pNewLight->SetDebug(false);
+		if (iLightCustom == 1)
+			m_pGameInstance->AddCustomLight(TEXT("Festival_Light"), pNewLight);
+		if (iLightCustom == 2)
+			m_pGameInstance->AddCustomLight(TEXT("Lamp_Light"), pNewLight);
 	}
 
 	return S_OK;
@@ -1121,6 +1126,10 @@ void CLevel_KratCentralStation::UpdateThunder(_float fTimeDelta)
 		if (!m_vecThunder.empty() && m_vecThunder[0] != nullptr)
 			m_vecThunder[0]->SetIntensity(fIntensity);
 	}
+	else
+	{
+		m_vecThunder[0]->SetIntensity(0.f);
+	}
 }
 
 void CLevel_KratCentralStation::PlayThunderSound()
@@ -1371,7 +1380,7 @@ HRESULT CLevel_KratCentralStation::Ready_Effect()
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("BossroomRain_1"), static_cast<CEffectContainer*>(pEC));
 
 	pEC = nullptr;
-	presetmat = XMMatrixTranslation(366.2, 20.0f, -48.0f);
+	presetmat = XMMatrixTranslation(366.2f, 20.0f, -48.0f);
 	XMStoreFloat4x4(&ECDesc.PresetMatrix, presetmat);
 	pEC = MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Rain_BossDoor"), &ECDesc);
 	if (pEC == nullptr)

@@ -1369,6 +1369,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB && IsStaminaEnough(1.f))
@@ -1494,6 +1497,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB && IsStaminaEnough(1.f))
@@ -1627,6 +1633,9 @@ public:
 
         if (0.75f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKB;
             if (m_bAttackA && IsStaminaEnough(1.f))
@@ -1757,6 +1766,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKA;
             if (m_bAttackA && IsStaminaEnough(1.f))
@@ -1885,6 +1897,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -1993,6 +2008,10 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
+
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2454,6 +2473,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2570,6 +2592,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2673,6 +2698,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -3367,7 +3395,7 @@ public:
 
             m_pOwner->Reset();
             m_pOwner->WeaponReset();
-
+            m_pGameInstance->Get_CurrentBGM()->StopAll();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();

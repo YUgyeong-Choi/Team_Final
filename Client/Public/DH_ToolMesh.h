@@ -74,6 +74,12 @@ public: /* [ 플레이어와의 거리 측정 ] */
 	void SetbLightUse(_bool bUse) { m_pLight->Get_LightDesc()->bIsUse = bUse; }
 	_bool GetbLightUse() { return m_pLight->Get_LightDesc()->bIsUse; }
 
+
+public:
+	void SetLightCustom(_int iType) { m_iLightCustom = iType; }
+	_int GetLightCustom() { return m_iLightCustom; }
+
+
 protected: /* [ 플레이어 ] */
 	CGameObject* m_pPlayer = { nullptr };
 
@@ -91,6 +97,10 @@ protected: /* [ 초기화 변수 ] */
 
 private:
 	_float m_fPlayerFar = { 40.f };
+	_bool m_bCinematicLight = {};
+	_int m_iLightCustom = { 0 };
+
+	_bool m_bLightOnOff = { true };
 
 private:
 	CLight* m_pLight = { nullptr };

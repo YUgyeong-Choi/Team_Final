@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "UI_Manager.h"
 
+#include "DH_ToolMesh.h"
 
 NS_BEGIN(Engine)
 class CGameObject;
@@ -113,6 +114,8 @@ private:
 	_bool m_bShowSpecial = false;
 
 	_double m_Accumulate = 0.0;
+
+
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

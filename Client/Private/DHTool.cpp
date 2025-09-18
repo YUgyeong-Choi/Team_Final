@@ -365,6 +365,24 @@ HRESULT CDHTool::Render_LightTool()
 
 	ImGui::Text("Light Parameters");
 
+	if (m_pSelectedObject != nullptr)
+	{
+		// 1. 선택된 오브젝트의 Count 값 가져오기
+		_int iCount = m_pSelectedObject->GetLightCustom();
+
+		// 2. 슬라이더 UI로 표시 및 조정
+		if (ImGui::SliderInt("LightCustom", &iCount, 0, 100))
+		{
+			// 3. 사용자가 값 변경 시 다시 적용
+			m_pSelectedObject->SetLightCustom(iCount);
+		}
+	}
+	else
+	{
+		_int iCount = 0;
+		ImGui::SliderInt("Count", &iCount, 0, 100);
+	}
+
 	// 세기(Intensity)
 	if (m_pSelectedObject != nullptr)
 	{
@@ -803,6 +821,7 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		_float fFogDensity = pToolMesh->GetfFogDensity();
 		_float fFogCutOff = pToolMesh->GetfFogCutOff();
 		_bool  bVolumetric = pToolMesh->GetbVolumetric();
+		_int   iLightCustom = pToolMesh->GetLightCustom();
 
 		XMFLOAT4X4 matOut;
 		XMStoreFloat4x4(&matOut, matWorld);
@@ -828,6 +847,7 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 		jLight["FogDensity"] = fFogDensity;
 		jLight["FogCutOff"] = fFogCutOff;
 		jLight["Volumetric"] = bVolumetric;
+		jLight["LightCustom"] = iLightCustom;
 
 		jLight["LightType"] = pToolMesh->GetLightType();
 		jLight["LevelType"] = static_cast<int>(eLType);
@@ -877,6 +897,7 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
 		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
+		_int iLightCustom = jLight["LightCustom"];
 
 		LIGHT_TYPE eLightType = static_cast<LIGHT_TYPE>(jLight["LightType"].get<int>());
 		LEVEL_TYPE eLevelType = static_cast<LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -908,6 +929,10 @@ void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
 		pNewLight->SetbVolumetric(m_iVolumetricMode);
+		pNewLight->SetLightCustom(iLightCustom);
+
+		if (iLightCustom == 1)
+			m_pGameInstance->AddCustomLight(TEXT("Festival_Light"), pNewLight);
 	}
 }
 

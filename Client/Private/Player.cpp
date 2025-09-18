@@ -346,7 +346,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 	{
 		Reset();
-		SwitchDissolve(false, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
 	}
 
 	/* [ 아이템 ] */
@@ -1423,8 +1422,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
-	case eAnimCategory::GRINDER:
+	case eAnimCategory::GRINDERSTART:
 	{
+
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+			m_bSetOnce = true;
+		}
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDERLOOP:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+			m_bSetOnce = true;
+		}
+
+		if (!m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0"))
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDEREND:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
+
+			m_bSetOnce = true;
+		}
+
 		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -1682,7 +1717,13 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
-	if (stateName == "Grinder") return eAnimCategory::GRINDER;
+	if (stateName.find("Grinder_Start") == 0)
+		return eAnimCategory::GRINDERSTART;
+	if (stateName.find("Grinder_Loop") == 0)
+		return eAnimCategory::GRINDERLOOP;
+	if (stateName.find("Grinder_End") == 0)
+		return eAnimCategory::GRINDEREND;
+
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0
 		||stateName.find("Item_Get_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
@@ -1993,12 +2034,12 @@ void CPlayer::Register_SoundEvents()
 
 	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
 		{
-			if (m_pSoundCom)
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+			//if (m_pSoundCom)
+			//	m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
 		});
 	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
 		{
-			if (m_pSoundCom)
+			/*if (m_pSoundCom)
 			{
 				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
 				if (m_bUseGrinder == false)
@@ -2012,16 +2053,16 @@ void CPlayer::Register_SoundEvents()
 					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
 					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
 				}
-			}
+			}*/
 		});
 	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
 		{
-			if (m_pSoundCom)
+			/*if (m_pSoundCom)
 			{
 				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
 				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
 				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}
+			}*/
 		});
 
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()

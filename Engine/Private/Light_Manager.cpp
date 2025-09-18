@@ -1,6 +1,8 @@
 #include "Light_Manager.h"
 #include "Light.h"
 
+#include "GameObject.h"
+
 CLight_Manager::CLight_Manager()
 {
 
@@ -135,6 +137,25 @@ _uint CLight_Manager::Get_LightCount(_uint TYPE, _uint iLevel)
 		return Pointcount;
 
 	return 0;
+}
+
+vector<CGameObject*>* CLight_Manager::Find_CustomLight(const wstring& wstrLightName)
+{
+	auto iter = m_unmapLight.find(wstrLightName);
+	if (iter != m_unmapLight.end())
+		return &(iter->second);
+
+	return nullptr;
+}
+
+HRESULT CLight_Manager::Add_LightCustomObject(const wstring& wstrLightName, CGameObject* pLight)
+{
+	if (pLight == nullptr)
+		return E_FAIL;
+
+	m_unmapLight[wstrLightName].push_back(pLight);
+
+	return S_OK;
 }
 
 
