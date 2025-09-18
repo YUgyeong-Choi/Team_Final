@@ -113,6 +113,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 	m_fRootMotionClampDist = 3.5f;
 	// 플레이어 카메라 레이충돌 무시하기 위한
 	m_pPhysXActorCom->Add_IngoreActors(static_cast<CWeapon_Monster*>(m_pWeapon)->Get_PhysXActor()->Get_Actor());
+	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXElbow->Get_Actor());
 
 
 	m_pSoundCom->Set3DState("SE_NPC_Named_Captain_SK_Impact_Ground_02", 0.f, 40.f);
