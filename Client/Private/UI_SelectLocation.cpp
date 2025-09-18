@@ -72,7 +72,7 @@ void CUI_SelectLocation::Priority_Update(_float fTimeDelta)
 
 		pStar->Script_Activate();
 
-
+		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 
 		return;
 

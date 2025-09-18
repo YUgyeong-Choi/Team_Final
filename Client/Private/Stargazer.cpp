@@ -305,6 +305,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 
 			Delete_Script();
 			m_pSoundCom->StopAll();
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 			return;
 		}
 
