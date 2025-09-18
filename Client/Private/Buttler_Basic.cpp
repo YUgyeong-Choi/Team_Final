@@ -516,6 +516,92 @@ void CButtler_Basic::Register_Events()
 	
 }
 
+void CButtler_Basic::Register_SoundEvent()
+{
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Movement_04");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Movement_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("IdleSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 3.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Getup_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 8.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Dead_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 17.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Attack_" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FallSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				string strTag = "SE_NPC_Servant02_MT_Bodyfall_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+}
+
 void CButtler_Basic::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -615,8 +701,6 @@ HRESULT CButtler_Basic::Ready_Sound()
 	/* For.Com_Sound */
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
-
-
 
 
 	return S_OK;

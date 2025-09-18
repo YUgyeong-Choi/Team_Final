@@ -265,6 +265,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	PriorityUpdate_Slot(fTimeDelta);
 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CPlayer::Update(_float fTimeDelta)
@@ -2779,6 +2784,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();
 			
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertLocation_02");
 		}
 
 
@@ -2861,6 +2867,11 @@ void CPlayer::Apply_Stat()
 	Callback_HP();
 	Callback_Stamina();
 
+	Compute_MaxErgo(m_iLevel);
+
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"LevelUp"), &m_fMaxErgo);
 }
 
 void CPlayer::Add_Ergo(_float fErgo)
@@ -2905,7 +2916,7 @@ void CPlayer::Recovery_Ergo()
 
 void CPlayer::Check_RainArea()
 {
-	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr())
+	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr() || AREAMGR::FESTIVAL == m_pGameInstance->GetCurrentAreaMgr())
 	{
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
 	}
@@ -3335,7 +3346,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
 	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
-	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), this, [this](_wstring eventName, void* data) {
 
 		if (eventName == L"AddHp")
 		{

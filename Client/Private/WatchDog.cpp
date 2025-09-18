@@ -53,6 +53,9 @@ HRESULT CWatchDog::Initialize(void* pArg)
 
 	m_CanFatal = false;
 
+	m_pSoundCom->Set3DState(0.f, 25.f);
+	m_pSoundCom->SetVolume(1.f);
+
 	return S_OK;
 }
 
@@ -462,6 +465,96 @@ void CWatchDog::Register_Events()
 		});
 }
 
+void CWatchDog::Register_SoundEvent()
+{
+
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant10_MT_Movement_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+		
+				m_pSoundCom->Play("VO_NPC_Watchdog_DMG_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->SetVolume("VO_NPC_Watchdog_Growl_0" + to_string(iNum), 0.8f);
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Growl_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Attack_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("JumpSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+
+				iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->SetVolume("VO_NPC_Watchdog_Growl_0" + to_string(iNum), 0.8f);
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Growl_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Lying_0" + to_string(iNum));
+
+				
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DieSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Die_0" + to_string(iNum));
+
+
+			}
+		});
+
+
+}
+
 void CWatchDog::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
@@ -506,6 +599,10 @@ void CWatchDog::Reset()
 	m_isFatal = false;
 
 
+}
+
+void CWatchDog::PlayDetectSound()
+{
 }
 
 HRESULT CWatchDog::Ready_Weapon()
@@ -554,6 +651,15 @@ HRESULT CWatchDog::Ready_Weapon()
 
 
     return S_OK;
+}
+
+HRESULT CWatchDog::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Watchdog"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CWatchDog* CWatchDog::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

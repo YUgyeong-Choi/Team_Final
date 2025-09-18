@@ -892,14 +892,19 @@ CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 	return m_pObserver_Manager->Find_Observer(strTag);
 }
 
-void CGameInstance::Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PullCallback(strTag, callback);
+	m_pObserver_Manager->Register_PullCallback(strTag, pOwner, callback);
 }
 
-void CGameInstance::Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PushCallback(strTag, callback);
+	m_pObserver_Manager->Register_PushCallback(strTag, pOwner, callback);
+}
+
+void CGameInstance::Remove_Callback(const _wstring& strTag, CGameObject* pOwner)
+{
+	m_pObserver_Manager->Remove_CallBack(strTag, pOwner);
 }
 
 void CGameInstance::Reset(const _wstring& strTag)

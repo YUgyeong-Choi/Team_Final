@@ -5,6 +5,7 @@
 #include "LockOn_Manager.h"
 #include "UI_Container.h"
 #include "Static_Decal.h"
+#include "UI_Manager.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -85,6 +86,8 @@ void CBossUnit::Update(_float fTimeDelta)
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
 				return;
+
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
 
 
 		}
