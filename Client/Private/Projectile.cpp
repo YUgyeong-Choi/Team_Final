@@ -111,6 +111,13 @@ void CProjectile::Update(_float fTimeDelta)
 		PxTransform pose = pActor->getGlobalPose();
 		_vector vPos = XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f);
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+		if (m_pSoundCom)
+		{
+			_float3 pos{};
+			XMStoreFloat3(&pos, vPos);
+			m_pSoundCom->Update3DPosition(pos);
+		}
 	}
 }
 
@@ -244,7 +251,9 @@ void CProjectile::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pPhysXActorCom);
 	if (m_pEffect)
 		m_pEffect->End_Effect();
+
 }

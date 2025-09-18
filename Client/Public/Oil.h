@@ -1,8 +1,6 @@
 #pragma once
 #include "Projectile.h"
-NS_BEGIN(Engine)
-class CSoundController;
-NS_END
+
 NS_BEGIN(Client)
 class COil final :public CProjectile
 {
@@ -37,7 +35,7 @@ private:
 	_float m_fDamge = 10.f;
 	_bool m_bCanSpread = false; // 기름이 퍼질 수 있는지 여부
 	_bool m_bIsSpreaded = false; // 기름이 퍼졌는지 여부
-	CSoundController* m_pSoundCom = nullptr;
+
 	PxBoxGeometry m_SpreadOilShape = PxBoxGeometry(1.0f,0.8f, 1.0f);
 	class CPlayer* m_pPlayer{ nullptr };
 	class CGameObject* m_pFuoco{ nullptr };

@@ -41,7 +41,7 @@ HRESULT COil::Initialize(void* pArg)
 
 	_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
 	m_pFuoco = m_pGameInstance->Get_LastObject(iLevelIndex, TEXT("Layer_Monster"));
-
+	m_pSoundCom->Set3DState(0.f, 50.f);
 	return S_OK;
 }
 
@@ -140,15 +140,6 @@ void COil::Explode_Oil()
 
 void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI
-		||eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT|| eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		if (m_bIsSpreaded == false)
-		{
-			m_bCanSpread = true;
-			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Oil_Hit_", 3);
-		}
-	}
 }
 
 void COil::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -250,5 +241,5 @@ CGameObject* COil::Clone(void* pArg)
 void COil::Free()
 {
 	__super::Free();
-	Safe_Release(m_pSoundCom);
+
 }
