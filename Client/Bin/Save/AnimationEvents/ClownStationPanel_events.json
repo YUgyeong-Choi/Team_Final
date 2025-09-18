@@ -3,6 +3,12 @@
         {
             "ClipName": "AS_Billboard_01_RSW",
             "Duration": 119.0,
+            "Events": [
+                {
+                    "EventName": "DeactivateDummyModel",
+                    "Time": 6.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 30.0

@@ -105,8 +105,6 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
         m_bFestivalLightSwitch = !m_bFestivalLightSwitch;
 
 	FestivalLight_OnOff(fTimeDelta);
-    
-
     return S_OK;
 }
 

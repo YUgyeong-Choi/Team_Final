@@ -3794,7 +3794,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		
 		if (m_fHp > 0.f)
 		{
-			m_fHp -= 0.05f;
+			m_fHp -= 0.2f;
 		}
 		else
 		{

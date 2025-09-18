@@ -71,6 +71,7 @@ void CFlameField::Update(_float fTimeDelta)
 				_vector vFieldPos = m_vBegningRayPos;
 
 				_vector vDir = vPlayerPos - vFieldPos;
+				vDir = XMVectorSetY(vDir, 0.f);
 				_float fDist = XMVectorGetX(XMVector3Length(vDir));
 
 				_float fAngle = atan2f(XMVectorGetZ(vDir), XMVectorGetX(vDir));
@@ -88,7 +89,7 @@ void CFlameField::Update(_float fTimeDelta)
 
 					if (fDist <= fMaxAllowedDist)
 					{
-						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.01f);
+						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.4f);
 						m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 					}
 				}
