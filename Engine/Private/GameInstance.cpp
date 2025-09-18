@@ -292,6 +292,11 @@ CSound_Core* CGameInstance::Get_CurrentBGM()
 	return m_pLevel_Manager->Get_CurrentLevel()->Get_BGM();
 }
 
+void CGameInstance::Stop_BGM()
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Stop_BGM();
+}
+
 
 #pragma endregion
 

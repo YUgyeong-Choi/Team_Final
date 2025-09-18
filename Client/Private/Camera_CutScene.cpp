@@ -107,6 +107,12 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	if (FAILED(InitDatas()))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(Add_Component(static_cast<int>(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_CutSceneExtra")),
+		TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
 	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::WAKEUP].vecWorldMatrixData.front().WorldMatrix);
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
@@ -283,6 +289,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			Event();
 		}
 	}
+
+
+	if (m_bSoundLerp)
+		Update_SoundLerp(fTimeDelta);
 }
 
 void CCamera_CutScene::Update(_float fTimeDelta)
@@ -1117,6 +1127,12 @@ void CCamera_CutScene::Event()
 		if (m_iCurrentFrame == 499)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+
+			m_strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 1.f;
+			m_bSoundLerp = true;
 		}
 		if (m_iCurrentFrame == 400)
 		{
@@ -1143,9 +1159,6 @@ void CCamera_CutScene::Event()
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterCutScene();
-
-			//
-		
 		}
 
 		
@@ -1180,6 +1193,12 @@ void CCamera_CutScene::Event()
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
 		}
+
+		if (m_iCurrentFrame == 1490)
+		{
+			m_bSoundLerp = true;
+			m_fTargetVolume = 0.f;
+		}
 		
 		if (m_iCurrentFrame == 1510)
 		{
@@ -1189,6 +1208,34 @@ void CCamera_CutScene::Event()
 		break;
 	default:
 		break;
+	}
+}
+
+void CCamera_CutScene::Update_SoundLerp(_float fTimeDelta)
+{
+	_bool bStart = m_fTargetVolume == 1.f ? true : false;
+
+	m_fSoundVolume = LerpFloat(m_fSoundVolume, m_fTargetVolume, fTimeDelta);
+	m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+
+	if (bStart)
+	{
+		if (m_fSoundVolume >= 0.99f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+		}
+	}
+	else
+	{
+		if (m_fSoundVolume <= 0.01f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+			m_pSoundCom->StopAll();
+		}
 	}
 }
 
@@ -1364,5 +1411,5 @@ CGameObject* CCamera_CutScene::Clone(void* pArg)
 void CCamera_CutScene::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pSoundCom);
 }

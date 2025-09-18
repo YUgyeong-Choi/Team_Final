@@ -20,9 +20,10 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Reset() { return S_OK; }
 
-	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="");
+	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="", _bool bLoop = true);
 	void Update_ChangeBGM(_float fTimeDelta);
 	class CSound_Core* Get_BGM() { return m_pBGM; }
+	void Stop_BGM();
 protected:
 	void HoldMouse();
 
@@ -40,6 +41,8 @@ protected:
 
 	_bool m_bCheckBGMFinish = false;
 	string m_strWillMainBGM;
+
+	_bool m_bSoundLoop = false;
 public:	
 	virtual void Free() override;
 

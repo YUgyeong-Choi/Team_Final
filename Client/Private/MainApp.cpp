@@ -340,7 +340,6 @@ HRESULT CMainApp::Ready_Sound()
 	// 램프 줍기 전 사운드
 	ADD_SOUND_EX(LampAmb, "../Bin/Resources/Sound/LampAmb/", true, false, false);
 
-
 	/* [ Breakable 부서지는 사운드 ] */ 
 	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
 
@@ -353,6 +352,8 @@ HRESULT CMainApp::Ready_Sound()
 	ADD_SOUND_EX(Buttler, "../Bin/Resources/Sound/Unit/Buttler/", true, false, false);
 	ADD_SOUND_EX(Watchdog, "../Bin/Resources/Sound/Unit/Watchdog/", true, false, false);
 
+	/* [ 컷씬때 추가로 필요한 사운드 ] */
+	ADD_SOUND_EX(CutSceneExtra, "../Bin/Resources/Sound/CutScene/Camera/", false, false);
 	return S_OK;
 }
 

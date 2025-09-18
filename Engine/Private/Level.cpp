@@ -26,6 +26,19 @@ void CLevel::Update(_float fTimeDelta)
     // 마우스를 화면 중앙으로 이동
     /*if (MOUSE_PRESSING(DIM::RBUTTON))
         HoldMouse();*/
+
+    if (m_bSoundLoop)
+    {
+        if (m_pBGM && !m_pBGM->IsPlaying())
+        {
+            m_pBGM->Stop();
+            Safe_Release(m_pBGM);
+            m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillMainBGM);
+            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+            m_pBGM->Play();
+            m_pBGM->Set_Loop(true);
+        }
+    }
 }
 
 void CLevel::Late_Update(_float fTimeDelta)
@@ -38,7 +51,7 @@ HRESULT CLevel::Render()
     return S_OK;
 }
 
-void CLevel::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
+void CLevel::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM, _bool bLoop)
 {
     if (!bNowPlaying)
     {
@@ -57,7 +70,7 @@ void CLevel::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, stri
 		m_strWillMainBGM = willMainBGM;
     }
 
-        
+	m_bSoundLoop = bLoop;
 }
 
 static _float LerpFloat(_float a, _float b, _float t)
@@ -110,9 +123,19 @@ void CLevel::Update_ChangeBGM(_float fTimeDelta)
             m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillMainBGM);
             m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
             m_pBGM->Play();
+            m_pBGM->Set_Loop(true);
 
             m_bCheckBGMFinish = false;
 		}
+    }
+}
+
+void CLevel::Stop_BGM()
+{
+    if (m_pBGM) {
+        m_bSoundLoop = false;
+        m_pBGM->Stop();
+        Safe_Release(m_pBGM);
     }
 }
 

@@ -100,7 +100,6 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
     m_vCurCamUp = XMVector3Normalize(m_pCurCamera->GetUpVector());
     m_vCurCamLook = XMVector3Normalize(m_pCurCamera->GetLookVector());
 
-
     /* [ 유경이 보아라 (멤버변수에 스피드 2개있는데 포그 , 밝기 스피드) ] */
     if (KEY_DOWN(DIK_Y))
         m_bFestivalLightSwitch = !m_bFestivalLightSwitch;
