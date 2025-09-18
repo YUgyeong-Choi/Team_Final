@@ -16,7 +16,7 @@
                 1.0,
                 1.0,
                 1.0,
-                0.019607843831181526
+                0.04712039232254028
             ],
             "Color": [
                 1.0,
@@ -25,10 +25,10 @@
                 0.0
             ],
             "DistortionStrength": 0.0,
-            "Duration": 240,
+            "Duration": 310,
             "EffectType": 1,
             "EmissiveIntensity": 1.0,
-            "EndTrack": 240,
+            "EndTrack": 310,
             "FlipUV": false,
             "Gravity": 1.0,
             "IsCircleRange": false,
@@ -42,7 +42,7 @@
                         0.0
                     ],
                     "Intensity": 1.0,
-                    "Interpolation": 2,
+                    "Interpolation": 0,
                     "Rotation": [
                         0.0,
                         0.0,
@@ -62,7 +62,7 @@
                     ]
                 }
             ],
-            "LifeTime": 11786.5,
+            "LifeTime": 11914.787109375,
             "LifeTime_Particle": [
                 0.30000001192092896,
                 1.0
@@ -71,19 +71,19 @@
             "Loop": true,
             "MaxLifeTime": 3.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 4.0,
             "Name": "Fuoco_Cutscene_SteamGL",
             "NumInstance": 500,
             "NumKeyFrames": 1,
-            "Orbit": false,
+            "Orbit": true,
             "OrbitAxis": [
                 0.0,
                 1.0,
                 0.0
             ],
             "OrbitSpeed": [
-                0.0,
-                0.0
+                -90.0,
+                90.0
             ],
             "PType": 0,
             "Pivot": [
@@ -110,7 +110,7 @@
             "ShrinkThreshold": 1.0,
             "Size": [
                 0.4000000059604645,
-                0.800000011920929
+                1.2000000476837158
             ],
             "Speed": [
                 15.0,

@@ -600,6 +600,16 @@ _uint CGameInstance::Get_LightCount(_uint TYPE, _uint iLevel) const
 	return m_pLight_Manager->Get_LightCount(TYPE, iLevel);
 }
 
+void CGameInstance::AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight)
+{
+	m_pLight_Manager->Add_LightCustomObject(strCustomLightKey, pCustomLight);
+}
+
+vector<CGameObject*>* CGameInstance::Find_CustomLight(const wstring& strCustomLightKey)
+{
+	return m_pLight_Manager->Find_CustomLight(strCustomLightKey);
+}
+
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
@@ -882,14 +892,19 @@ CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 	return m_pObserver_Manager->Find_Observer(strTag);
 }
 
-void CGameInstance::Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PullCallback(strTag, callback);
+	m_pObserver_Manager->Register_PullCallback(strTag, pOwner, callback);
 }
 
-void CGameInstance::Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PushCallback(strTag, callback);
+	m_pObserver_Manager->Register_PushCallback(strTag, pOwner, callback);
+}
+
+void CGameInstance::Remove_Callback(const _wstring& strTag, CGameObject* pOwner)
+{
+	m_pObserver_Manager->Remove_CallBack(strTag, pOwner);
 }
 
 void CGameInstance::Reset(const _wstring& strTag)

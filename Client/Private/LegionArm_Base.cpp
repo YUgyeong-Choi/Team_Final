@@ -31,7 +31,7 @@ HRESULT CLegionArm_Base::Initialize(void* pArg)
 
 	m_fLegionArmEnergy = m_fMaxLegionArmEnergy;
 
-	m_pGameInstance->Register_PullCallback(L"Weapon_Status", [this](const _wstring& eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(L"Weapon_Status", this, [this](const _wstring& eventName, void* data) {
 
 		if (L"AddLegion" == eventName)
 		{
@@ -57,6 +57,10 @@ HRESULT CLegionArm_Base::Initialize(void* pArg)
 
 void CLegionArm_Base::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(L"Weapon_Status", this);
+	}
 }
 
 void CLegionArm_Base::Update(_float fTimeDelta)

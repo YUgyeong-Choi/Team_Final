@@ -4,7 +4,7 @@
 
 CObserver_Slot::CObserver_Slot()
 {
-	Register_PullCallback([this](_wstring eventType, void* data) {
+	/*Register_PullCallback([this](_wstring eventType, void* data) {
 		
 		
 		if (L"ChangeUpBelt" == eventType)
@@ -70,7 +70,7 @@ CObserver_Slot::CObserver_Slot()
 
 		}
 
-		});
+		});*/
 }
 
 void CObserver_Slot::Free()

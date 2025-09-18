@@ -236,9 +236,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc))
+			Lightdesc.PresetMatrix._41 = 406.f;
+			Lightdesc.PresetMatrix._42 = 20.f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
 		}
 		
@@ -265,6 +271,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	PriorityUpdate_Slot(fTimeDelta);
 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CPlayer::Update(_float fTimeDelta)
@@ -346,7 +357,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 	{
 		Reset();
-		SwitchDissolve(false, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
 	}
 
 	/* [ 아이템 ] */
@@ -1423,8 +1433,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
-	case eAnimCategory::GRINDER:
+	case eAnimCategory::GRINDERSTART:
 	{
+
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+			m_bSetOnce = true;
+		}
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDERLOOP:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+			m_bSetOnce = true;
+		}
+
+		if (!m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0"))
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDEREND:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
+
+			m_bSetOnce = true;
+		}
+
 		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -1682,7 +1728,13 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
-	if (stateName == "Grinder") return eAnimCategory::GRINDER;
+	if (stateName.find("Grinder_Start") == 0)
+		return eAnimCategory::GRINDERSTART;
+	if (stateName.find("Grinder_Loop") == 0)
+		return eAnimCategory::GRINDERLOOP;
+	if (stateName.find("Grinder_End") == 0)
+		return eAnimCategory::GRINDEREND;
+
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0
 		||stateName.find("Item_Get_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
@@ -1993,12 +2045,12 @@ void CPlayer::Register_SoundEvents()
 
 	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
 		{
-			if (m_pSoundCom)
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+			//if (m_pSoundCom)
+			//	m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
 		});
 	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
 		{
-			if (m_pSoundCom)
+			/*if (m_pSoundCom)
 			{
 				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
 				if (m_bUseGrinder == false)
@@ -2012,16 +2064,16 @@ void CPlayer::Register_SoundEvents()
 					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
 					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
 				}
-			}
+			}*/
 		});
 	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
 		{
-			if (m_pSoundCom)
+			/*if (m_pSoundCom)
 			{
 				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
 				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
 				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}
+			}*/
 		});
 
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
@@ -2087,6 +2139,16 @@ void CPlayer::Register_SoundEvents()
 			{
 				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FestivalEnterSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
+				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
 			}
 		});
 }
@@ -2738,6 +2800,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();
 			
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertLocation_02");
 		}
 
 
@@ -2820,6 +2883,11 @@ void CPlayer::Apply_Stat()
 	Callback_HP();
 	Callback_Stamina();
 
+	Compute_MaxErgo(m_iLevel);
+
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"LevelUp"), &m_fMaxErgo);
 }
 
 void CPlayer::Add_Ergo(_float fErgo)
@@ -2864,7 +2932,7 @@ void CPlayer::Recovery_Ergo()
 
 void CPlayer::Check_RainArea()
 {
-	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr())
+	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr() || AREAMGR::FESTIVAL == m_pGameInstance->GetCurrentAreaMgr())
 	{
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
 	}
@@ -2960,7 +3028,10 @@ void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 	if (bRayHit)
 	{
 		const PxRaycastHit& block = hit.block;
-		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		//CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData.);
+		CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hit.block.actor->userData);
+		CStaticMesh* pHitMesh = static_cast<CStaticMesh*> (pHitActor->Get_Owner());
+
 		if (pHitMesh)
 		{
 			//wcout << pHitMesh->Get_MeshName() << endl;
@@ -3291,7 +3362,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
 	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
-	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), this, [this](_wstring eventName, void* data) {
 
 		if (eventName == L"AddHp")
 		{
@@ -4063,7 +4134,7 @@ void CPlayer::Create_HitEffect()
 	rand() % 4 == 0 ? qRot = XMQuaternionIdentity() : qRot; // 위로 피 나오는 것도 넣어야하는데 당장 조건이 뭔지 모르겠어서 일단 랜덤으로 함
 	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(qRot) * XMMatrixTranslation(vEffPos.x, vEffPos.y, vEffPos.z));
 	// 피 이펙트
-	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_TEST_BLOOD_UP"), &desc) == nullptr)
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Attack_Blood"), &desc) == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 }
 

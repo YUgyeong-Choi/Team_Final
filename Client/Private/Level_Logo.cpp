@@ -374,6 +374,7 @@ void CLevel_Logo::Check_Button()
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
 			++m_iButtonIndex;
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 		}
 			
 	}
@@ -384,7 +385,7 @@ void CLevel_Logo::Check_Button()
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
 			--m_iButtonIndex;
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
-			
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 		}
 			
 	}
@@ -397,7 +398,7 @@ void CLevel_Logo::Check_Button()
 		{
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(false);
 			if (i != m_iButtonIndex)
-				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
+				 CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 			m_iButtonIndex = i;
 			m_pButtons[m_iButtonIndex]->Set_isHighlight(true);
 

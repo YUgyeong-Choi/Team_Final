@@ -62,7 +62,6 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 
 	}
 
-	m_pSoundCom->Set3DState(0.f, 15.f);
 	
 	return S_OK; 
 }
@@ -139,15 +138,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 	
 	}
 
-	if (m_pSoundCom)
-	{
-		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-		_float3 f3Pos{};
-		XMStoreFloat3(&f3Pos, vPos);
-
-		m_pSoundCom->Update3DPosition(f3Pos);
-	}
+	
 }
 
 void CButtler_Train::Late_Update(_float fTimeDelta)
@@ -377,8 +368,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 5.f);
-				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
 				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
 
 			}

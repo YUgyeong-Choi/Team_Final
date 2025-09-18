@@ -97,7 +97,7 @@ protected:
 	_bool				m_bBillboard = { true };
 	_bool				m_bAnimation = { true };
 	_uint				m_iShaderPass = {};
-	_uint				m_iRenderGroup = {};
+	_uint				m_iRenderGroup = {ENUM_CLASS(RENDERGROUP::RG_EFFECT_WB)};
 	_bool				m_isLoop = { false };
 	_float				m_fTimeAcc = {};
 	EFFECT_TYPE			m_eEffectType = { EFF_END };

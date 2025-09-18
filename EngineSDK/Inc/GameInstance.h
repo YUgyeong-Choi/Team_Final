@@ -132,6 +132,8 @@ public:
 	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
 	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	_uint Get_LightCount(_uint TYPE, _uint iLevel) const;
+	void AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight);
+	vector<CGameObject*>* Find_CustomLight(const wstring& strCustomLightKey);
 #pragma endregion
 
 #pragma region FONT_MANAGER
@@ -238,8 +240,11 @@ public:
 	void Notify_Push(const _wstring& strTag, const _wstring& eventType, void* pData);
 
 	class CObserver* Find_Observer(const _wstring& strTag);
-	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
-	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
+
+	void Remove_Callback(const _wstring& strTag, CGameObject* pOwner);
+
 	void Reset(const _wstring& strTag);
 	void Reset_All();
 #pragma endregion

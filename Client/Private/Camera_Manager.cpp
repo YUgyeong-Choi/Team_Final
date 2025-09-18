@@ -100,6 +100,19 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
     m_vCurCamUp = XMVector3Normalize(m_pCurCamera->GetUpVector());
     m_vCurCamLook = XMVector3Normalize(m_pCurCamera->GetLookVector());
 
+
+    /* [ 유경이 보아라 (멤버변수에 스피드 2개있는데 포그 , 밝기 스피드) ] */
+    if (KEY_DOWN(DIK_Y))
+        m_bFestivalLightSwitch = !m_bFestivalLightSwitch;
+
+	FestivalLight_OnOff(fTimeDelta);
+    
+    /* [ 이건 램프 조명 온, 오프 ] */
+    if (KEY_DOWN(DIK_U))
+    {
+        CGameObject* pLampLight = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"))->back();
+        dynamic_cast<CDH_ToolMesh*>(pLampLight)->SetIntensity(0.f);
+    }
     return S_OK;
 }
 
@@ -143,6 +156,75 @@ void CCamera_Manager::Rot_Camera(_vector vRot, _float fDuration)
 {
     if (m_pCurCamera)
 		m_pCurCamera->StartRot(vRot, fDuration);
+}
+
+void CCamera_Manager::FestivalLight_OnOff(_float fTimeDelta)
+{
+    if (!m_vecCustomLight && m_bStartGame)
+    {
+        m_vecCustomLight = m_pGameInstance->Find_CustomLight(TEXT("Festival_Light"));
+    }
+
+    
+    if (!m_bDoOnce && m_bStartGame && m_vecCustomLight)
+    {
+        for (size_t i = 0; i < m_vecCustomLight->size(); i++)
+        {
+            // 페스티벌 조명의 집합을 여기에 모아놓는다.
+            CDH_ToolMesh* pLight = dynamic_cast<CDH_ToolMesh*>((*m_vecCustomLight)[i]);
+            m_pFestivalLight.push_back(pLight);
+
+            // 포그와 밝기 값을 저장해둔다.
+            CustomLightDesc customLightDesc{};
+            customLightDesc.fFestivalLightFogSaved = pLight->GetfFogDensity();
+            customLightDesc.fFestivalLightSaved = pLight->GetIntensity();
+            m_vecCustomLightDesc.push_back(customLightDesc);
+
+            // 처음에는 다 끈다.
+            pLight->SetIntensity(0.f);
+            pLight->SetfFogDensity(0.f);
+        }
+        m_bDoOnce = true;
+    }
+
+
+    if (m_pGameInstance->GetCurAreaIds() == 60 || m_pGameInstance->GetCurAreaIds() == 59)
+    {
+        if (m_bFestivalLightSwitch)
+        {
+            for (size_t i = 0; i < m_pFestivalLight.size(); i++)
+            {
+                if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity <= m_vecCustomLightDesc[i].fFestivalLightFogSaved)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightFogIntensity += fTimeDelta * m_fFestivalLightFogSpeed;
+                    m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
+                }
+
+                if (m_vecCustomLightDesc[i].fFestivalLightIntensity <= m_vecCustomLightDesc[i].fFestivalLightSaved)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightIntensity += fTimeDelta * m_fFestivalLightSpeed;
+                    m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                }
+            }
+        }
+        else if (!m_bFestivalLightSwitch)
+        {
+            for (size_t i = 0; i < m_pFestivalLight.size(); i++)
+            {
+                if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity > 0.f)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightFogIntensity -= fTimeDelta * m_fFestivalLightFogSpeed;
+                    m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
+                }
+
+                if (m_vecCustomLightDesc[i].fFestivalLightIntensity > 0.f)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightIntensity -= fTimeDelta * m_fFestivalLightSpeed;
+                    m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                }
+            }
+        }
+    }
 }
 
 

@@ -209,6 +209,7 @@ _int CUI_Manager::Check_Script_Click_Button()
 
 void CUI_Manager::Sound_Play(string soundTag)
 {
+	m_pSoundCom->Stop(soundTag);
 	m_pSoundCom->Play(soundTag);
 }
 
@@ -253,7 +254,10 @@ void CUI_Manager::Free()
 
 	m_pPanel.clear();
 
+	if (m_pSoundCom)
+		m_pSoundCom->StopAll();
+	Safe_Release(m_pSoundCom);
+
 	Safe_Release(m_pGameInstance);
 
-	Safe_Release(m_pSoundCom);
 }

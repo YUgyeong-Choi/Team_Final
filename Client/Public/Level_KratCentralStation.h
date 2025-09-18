@@ -102,8 +102,8 @@ private:
 
 private:
 	_bool m_bHold = { true };
-	vector<class CDH_ToolMesh*> m_vecLights;
-	vector<class CDH_ToolMesh*> m_vecThunder;
+	vector<class CDH_ToolMesh*> m_vecLights = {};
+	vector<class CDH_ToolMesh*> m_vecThunder = {};
 
 private:
 	CSoundController* m_pThunderSoundCom = { nullptr };

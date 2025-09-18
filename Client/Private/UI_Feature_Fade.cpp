@@ -32,7 +32,7 @@ HRESULT CUI_Feature_Fade::Initialize(void* pArg)
    
     m_iEndFrame = pDesc->iEndFrame;
 
-    m_iRange = m_iEndFrame - m_iStartFrame;
+    m_iRange = m_iEndFrame - m_iStartFrame + 1;
 
 
     m_strProtoTag = TEXT("Prototype_Component_UI_Feature_Fade");

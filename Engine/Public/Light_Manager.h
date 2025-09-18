@@ -28,9 +28,14 @@ public:
 	HRESULT Render_Volumetric_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _uint Level);
 	_uint Get_LightCount(_uint TYPE, _uint iLevel);
 
+public:
+	vector<CGameObject*>* Find_CustomLight(const wstring& wstrLightName);
+	HRESULT Add_LightCustomObject(const wstring& wstrLightName, CGameObject* pLight);
+
 private:
 	list<class CLight*>	m_Lights;
 	unordered_map<_uint, list<class CLight*>> m_LevelLights;
+	unordered_map<wstring, vector<CGameObject*>> m_unmapLight;
 	
 
 public:

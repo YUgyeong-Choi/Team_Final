@@ -476,7 +476,6 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     /* 이 버퍼 어디 저장해둬야 할 것 같다 */
     //왜저장하려했더라;
 
-
     if (j.contains("Name"))
     {
         strPrototypeTag += StringToWString(j["Name"].get<std::string>());
@@ -504,7 +503,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
         VIBufferDesc.vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
 
     if (j.contains("PType"))
-        VIBufferDesc.ePType = static_cast<PARTICLETYPE>(j["PType"].get<int>());
+        VIBufferDesc.ePType = static_cast<PARTICLETYPE>(j["PType"].get<_int>());
 
     if (j.contains("Loop"))
         VIBufferDesc.isLoop = j["Loop"].get<_bool>();
@@ -567,6 +566,15 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 
     if (j.contains("IsCircleRange"))
         VIBufferDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
+
+    if (j.contains("CircleNormal") && j["CircleNormal"].is_array() && j["CircleNormal"].size() == 3)
+        VIBufferDesc.vCircleNormal = { j["CircleNormal"][0].get<_float>(), j["CircleNormal"][1].get<_float>(), j["CircleNormal"][2].get<_float>() };
+
+    if (j.contains("LoopInSet"))
+        VIBufferDesc.bLoopInSet = j["LoopInSet"].get<_bool>();
+    if (j.contains("LoopInSet_Delay"))
+        VIBufferDesc.fLoopInSet_LoopDelay = j["LoopInSet_Delay"].get<_float>();
+
 
     VIBufferDesc.isTool = false;
 

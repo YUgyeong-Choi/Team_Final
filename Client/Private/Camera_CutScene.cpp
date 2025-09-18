@@ -1123,16 +1123,56 @@ void CCamera_CutScene::Event()
 			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
 		}
 
+		if (m_iCurrentFrame == 975)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 407.f;
+			Lightdesc.PresetMatrix._42 = 15.7f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc));
+		}
+
+	
+
 		if (m_iCurrentFrame == 1005)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterCutScene();
+
+			//
+		
 		}
+
+		
 
 		if (m_iCurrentFrame == 1190)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->BreakPanel();
+		}
+
+		if (m_iCurrentFrame == 1400)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = -1.f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -210.f;
+
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Dust"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐÇÔ");
+
+			//MSG_BOX("Æã");
+			//Æã
 		}
 
 		if (m_iCurrentFrame == 1440)

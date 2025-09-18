@@ -66,12 +66,13 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 		if (m_pGameInstance->Key_Down(DIK_E))
 		{
-			static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(true);
+			//if (m_bDead != true)
+				static_cast<CPlayer*>(m_pTarget)->NotifyCanGetItem(true);
 			Set_bDead();
 
 			m_pPhysXActorCom->RemovePhysX();
 			
-
+			m_bDoOnce = false;
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 				
 			if (m_eItemTag == ITEM_TAG::END)
@@ -123,6 +124,7 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 
 				static_cast<CPlayer*>(m_pTarget)->Recovery_Ergo();
 				
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertRecovery");
 			}
 			else
 			{
@@ -137,6 +139,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 			if (m_pEffect)
 				m_pEffect->End_Effect();
 			// 없어지는 이펙트 추가할 것 - 채영
+
+			
 		}
 	}
 	
@@ -303,7 +307,7 @@ HRESULT CErgoItem::Ready_Effect(void* pArg)
 	wstring wsEffectName = {};
 
 	if (m_bPulseCell)
-		wsEffectName = TEXT("EC_YW_PulseCell_Effect");
+		wsEffectName = TEXT("EC_YW_PulseCell_Effect_Edit");
 	else
 		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
 
@@ -389,6 +393,9 @@ void CErgoItem::Free()
 {
 	__super::Free();
 	
+	if (m_pEffect)
+		m_pEffect->Set_bDead();
+
 	if (m_bPulseCell)
 	{
 		Safe_Release(m_pModelCom);

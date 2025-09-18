@@ -65,7 +65,7 @@ HRESULT CPanel_Player_RD::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Weapon_Status"), this, [this](_wstring eventType, void* data) {
 
 		if (L"EquipWeapon" == eventType)
 		{
@@ -119,6 +119,41 @@ HRESULT CPanel_Player_RD::Initialize(void* pArg)
 
 void CPanel_Player_RD::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Weapon_Status"), this);
+
+		for (size_t i = 0; i < m_PartObjects.size() - 1; ++i)
+		{
+			m_PartObjects[i]->Set_bDead();
+		}
+
+		for (auto& pWeaponTexture : m_pWeaponTexture->Get_PartUI())
+		{
+			pWeaponTexture->Set_bDead();
+		}
+
+		if (!m_strWeaponTextureTag.empty() && L"Prototype_Component_Texture_Weapon_Default" != m_strWeaponTextureTag)
+		{
+			m_PartObjects.back()->Set_bDead();
+
+			for (auto& pTexture : m_pSkillType->Get_PartUI())
+			{
+				pTexture->Set_bDead();
+			}
+
+			for (auto& pTexture : m_pManaCost->Get_PartUI())
+			{
+				pTexture->Set_bDead();
+			}
+
+			for (auto& pTexture : m_pKeyIcon->Get_PartUI())
+			{
+				pTexture->Set_bDead();
+			}
+		}
+	}
+
 
 	for (size_t i = 0; i < m_PartObjects.size() - 1; ++i)
 	{

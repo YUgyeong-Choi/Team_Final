@@ -48,7 +48,7 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Slot_Belts"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Slot_Belts"), this, [this](_wstring eventType, void* data) {
 
 		if (L"ChangeUpBelt" == eventType)
 		{
@@ -119,7 +119,7 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 
 		});
 
-	m_pGameInstance->Register_PushCallback(TEXT("Slot_Belts"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Slot_Belts"), this, [this](_wstring eventType, void* data) {
 		
 		if (L"UseDownSelectItem" == eventType)
 		{
@@ -155,6 +155,12 @@ HRESULT CPanel_Player_LD::Initialize(void* pArg)
 void CPanel_Player_LD::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Slot_Belts"), this);
+	}
+
 }
 
 void CPanel_Player_LD::Update(_float fTimeDelta)

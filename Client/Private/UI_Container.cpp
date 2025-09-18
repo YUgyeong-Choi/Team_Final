@@ -167,7 +167,15 @@ void CUI_Container::Priority_Update(_float fTimeDelta)
 		if (m_fLifeTime < 0.f)
 		{
 			Set_bDead();
-			return;
+		}
+	}
+
+	if (m_bDead)
+	{
+		for (auto& pObj : m_PartObjects)
+		{
+			if (nullptr != pObj)
+				pObj->Set_bDead();
 		}
 	}
 

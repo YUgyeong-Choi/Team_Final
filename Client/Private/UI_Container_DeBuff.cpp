@@ -36,7 +36,7 @@ HRESULT CUI_Container_DeBuff::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), this, [this](_wstring eventType, void* data) {
 		if (L"Fire" == eventType)
 		{
 			m_fRatio = *static_cast<float*>(data);
@@ -56,6 +56,11 @@ HRESULT CUI_Container_DeBuff::Initialize(void* pArg)
 
 void CUI_Container_DeBuff::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
+
 	if (m_fRatio > 0.01f)
 		__super::Priority_Update(fTimeDelta);
 }

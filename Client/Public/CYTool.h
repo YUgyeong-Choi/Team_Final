@@ -137,6 +137,7 @@ private:
 	_bool					m_bUseOrbit;
 	_bool					m_bIsTileLoop = { false };
 	_bool					m_bIsCircleRange = { false };
+	_bool					m_bLoopInSet = { false };
 
 	PARTICLECBUFFER			m_tPCB = {};
 

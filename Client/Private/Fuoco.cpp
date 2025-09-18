@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "FlameField.h"
-#include "Static_Decal.h"
+//#include "Static_Decal.h"
 #include "GameInstance.h"
 #include "SpringBoneSys.h"
 #include "Effect_Manager.h"
@@ -80,10 +80,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_X))
 	{
-
-		
-
-		/*cout << "현재 공격 인덱스 " << i << endl;*/
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
 		switch (m_eCurAttackPattern)
 		{
@@ -141,15 +137,14 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pAnimator->SetTrigger("Attack");
 	}
 
-	//if (KEY_DOWN(DIK_B))
-	//{
-	//	EnterCutScene();
-	//	//m_bDebugMode = !m_bDebugMode;
-	//}
 
 	if (KEY_DOWN(DIK_V))
 	{
-		Reset();
+		m_bDebugMode = !m_bDebugMode;
+		if (m_bDebugMode)
+			cout << "디버그 모드 ON" << endl;
+		else
+			cout << "디버그 모드 OFF" << endl;
 	}
 
 #endif
@@ -363,6 +358,11 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 
+	if (m_bWaitPhase2Rotate)
+	{
+		return;
+	}
+
 	if (CheckConditionFlameField())
 	{
 		m_fAttackCooldown = 5.f;
@@ -388,11 +388,6 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		if (m_fAttackCooldown > 0.f)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
-
-
-	//if (fDistance >= 25.f)
-	//	return;
-
 
 #ifdef _DEBUG
 	if (m_bDebugMode)
@@ -919,7 +914,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
-			m_fFireFlameDuration = 2.f;
+			m_fFireFlameDuration = 1.7f;
 			FlamethrowerAttack(15.f);
 		});
 
@@ -974,67 +969,11 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("DecalScratchEffect", [this]()
 		{
-#pragma region 영웅 데칼 생성코드
-			CStatic_Decal::DECAL_DESC DecalDesc = {};
-			DecalDesc.bNormalOnly = true;
-			DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal");
-			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask");
-			DecalDesc.bHasLifeTime = true;
-			DecalDesc.fLifeTime = 5.f;
+			Spawn_Decal(m_pFistBone, 
+				TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal"), 
+				TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask"),
+			XMVectorSet(10.f, 0.5f, 5.f, 0));
 
-			auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-
-			// 기존 월드행렬
-			_matrix World = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
-
-			// 스케일, 회전, 위치 분해
-			_vector vScale, vRotQuat, vTrans;
-			XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
-
-			// 새 스케일 설정
-			vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
-
-			if (m_pNaviCom == nullptr)
-				return;
-			//네브메쉬 높이 값으로 변경
-			_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
-			vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
-
-			// Look 반대 방향
-			_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
-
-			_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
-
-			// Up은 기존 Up을 쓰고
-			_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
-
-			// Right는 Look과 Up으로 다시 계산
-			_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
-			// Orthonormalize (보정)
-			vUp = XMVector3Cross(vLook, vRight);
-
-			// 회전 행렬 구성
-			_matrix RotMat = XMMatrixIdentity();
-			RotMat.r[0] = vRight;
-			RotMat.r[1] = vUp;
-			RotMat.r[2] = vLook;
-
-			// 다시 합성
-			_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
-				RotMat *
-				XMMatrixTranslationFromVector(vTrans);
-
-			// 적용
-			XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-			{
-				//return E_FAIL;
-			}
-#pragma endregion
 		});
 
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
@@ -1154,7 +1093,11 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	m_PatternCountMap.clear();
 	for (const auto& pattern : m_vecBossPatterns)
 	{
-		if (pattern == P2_FireOil || pattern == P2_FireBall ||
+		if (pattern == P2_FireOil)
+		{
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 3.f;;
+		}
+		else if (pattern == P2_FireBall ||
 			pattern == P2_FireFlame || pattern == P2_FireBall_B)
 		{
 			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
@@ -1237,18 +1180,18 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 		}
 	}
 
-	// 2페이즈 패턴 많이 보여주려고 가중치 올림
-	if (m_bIsPhase2)
-	{
-		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
-		{
-			if (pattern == P2_FireOil || pattern == P2_FireBall ||
-				pattern == P2_FireFlame || pattern == P2_FireBall_B)
-			{
-				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
-			}
-		}
-	}
+	//// 2페이즈 패턴 많이 보여주려고 가중치 올림
+	//if (m_bIsPhase2)
+	//{
+	//	for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
+	//	{
+	//		if (pattern == P2_FireOil || pattern == P2_FireBall ||
+	//			pattern == P2_FireFlame || pattern == P2_FireBall_B)
+	//		{
+	//			weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
+	//		}
+	//	}
+	//}
 }
 
 void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
@@ -1397,7 +1340,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Right 방향
 	vDir.normalize();
 	vRight.normalize();
-	const _float pitchBiasDeg = 3.f;                
+	const _float pitchBiasDeg = 1.f;                
 	PxQuat qBias(XMConvertToRadians(pitchBiasDeg), vRight);
 	PxVec3 vDirBiased = qBias.rotate(vDir);
 
@@ -1556,46 +1499,10 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
-#pragma region 영웅 데칼 생성코드
-		CStatic_Decal::DECAL_DESC DecalDesc = {};
-		DecalDesc.bNormalOnly = true;
-		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Normal");
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Mask");
-		DecalDesc.bHasLifeTime = true;
-		DecalDesc.fLifeTime = 5.f;
-
-		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(socketPtr) * XMLoadFloat4x4(parentPtr);
-
-		// 스케일, 회전, 위치 분해
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
-
-		// 새 스케일 설정
-		vScale = XMVectorSet(8.f, 0.5f, 8.f, 0.f);
-
-		//네브메쉬 높이 값으로 변경
-		if (m_pNaviCom == nullptr)
-			return;
-		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
-
-		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
-
-		// 다시 합성
-		_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
-			XMMatrixIdentity() *
-			XMMatrixTranslationFromVector(vTrans);
-
-		// 적용
-		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-		{
-			//return E_FAIL;
-		}
-#pragma endregion
+		Spawn_Decal(m_pFistBone,
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(10.f, 0.5f, 10.f, 0));
 
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))
@@ -1740,6 +1647,11 @@ HRESULT CFuoco::Ready_Effect()
 
 void CFuoco::Ready_SoundEvents()
 {
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 60.f);
+		m_pSoundCom->SetVolume(1.f);
+	}
 	m_pAnimator->RegisterEventListener("MoveSound", [this]()
 	{
 	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 

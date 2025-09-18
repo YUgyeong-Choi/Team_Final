@@ -425,6 +425,7 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
 		_bool  bVolumetricMode = jLight["Volumetric"];
+		_int   iLightCustom = jLight["LightCustom"];
 
 		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
 		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -456,8 +457,12 @@ HRESULT CLevel_KratCentralStation::Ready_Lights()
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
 		pNewLight->SetbVolumetric(bVolumetricMode);
+		pNewLight->SetLightCustom(iLightCustom);
 
-		//pNewLight->SetDebug(false);
+		if (iLightCustom == 1)
+			m_pGameInstance->AddCustomLight(TEXT("Festival_Light"), pNewLight);
+		if (iLightCustom == 2)
+			m_pGameInstance->AddCustomLight(TEXT("Lamp_Light"), pNewLight);
 	}
 
 	return S_OK;
@@ -1120,6 +1125,10 @@ void CLevel_KratCentralStation::UpdateThunder(_float fTimeDelta)
 
 		if (!m_vecThunder.empty() && m_vecThunder[0] != nullptr)
 			m_vecThunder[0]->SetIntensity(fIntensity);
+	}
+	else
+	{
+		m_vecThunder[0]->SetIntensity(0.f);
 	}
 }
 

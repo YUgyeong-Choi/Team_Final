@@ -57,11 +57,14 @@ cbuffer ParticleCB : register(b0)
     float ShrinkThreshold;
     
     float3 OrbitAxis; // normalized
-    uint isCircleRange;
+    uint LoopInSet;
 
     float3 Range; // vRange
-    float _pad6;
+    float LoopInSet_LoopDelay;
     
+    float3 CircleNormal;
+    uint isCircleRange;
+
     float4 vSocketRot;
 
     row_major float4x4 g_CombinedMatrix;
@@ -112,14 +115,39 @@ float Random(uint iSeed, float fMin, float fMax)
 }
 
 // 원 둘레 위 랜덤 좌표
-float4 RandomOnCircle(uint iSeed, float3 Center, float Radius)
-{
-    float angle = Random(iSeed, 0.0f, 6.2831853f);
-    float x = cos(angle) * Radius;
-    float z = sin(angle) * Radius;
+//float4 RandomOnCircle(uint iSeed, float3 Center, float Radius)
+//{
+//    float angle = Random(iSeed, 0.0f, 6.2831853f);
+//    float x = cos(angle) * Radius;
+//    float z = sin(angle) * Radius;
 
-    return float4(Center + float3(x, 0.0f, z), 1.f);
+//    return float4(Center + float3(x, 0.0f, z), 1.f);
+//}
+
+// 원하는 방향의 평면 위 원 둘레 랜덤 좌표                  (영웅)
+float4 RandomOnCircle(uint iSeed, float3 Center, float Radius/*, float3 Normal*/)
+{
+    // --- 안전한 법선 ---
+    float3 Normal = normalize(CircleNormal);
+
+    // --- 법선과 직교하는 벡터 하나 얻기 ---
+    float3 ref = (abs(Normal.y) < 0.999f) ? float3(0, 1, 0) : float3(1, 0, 0);
+    float3 tangent = normalize(cross(Normal, ref));
+
+    // --- 두 번째 직교 벡터 ---
+    float3 bitangent = cross(Normal, tangent);
+
+    // --- 랜덤 각도 ---
+    float angle = Random(iSeed, 0.0f, 6.2831853f);
+    float c = cos(angle) * Radius;
+    float s = sin(angle) * Radius;
+
+    // --- 평면 위 점 ---
+    float3 pos = Center + tangent * c + bitangent * s;
+
+    return float4(pos, 1.f);
 }
+
 
 float4 RandomInRange(uint iSeed, float3 Center, float3 Range)
 {
@@ -155,8 +183,6 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         float fTileSizeX = 1.0f / float(vTileCnt.x);
         float fTileSizeY = 1.0f / float(vTileCnt.y);
         pp.vTileOffset = float2((iTileIdx % uint(vTileCnt.x)) * fTileSizeX, (iTileIdx / uint(vTileCnt.x)) * fTileSizeY);
-
-        
 
         const ParticleParam init = gInitInst[i]; // 항상 초기값 기준
         float3 pos = init.Translation.xyz;
@@ -341,16 +367,17 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         
         pp.fTileIdx += DeltaTime * fTileTickPerSec;
         
-        const bool firstLoop = (pp.bFirstLoopDiscard != 0);
-        const bool lifeEnded = pp.LifeTime.y >= pp.LifeTime.x;
-        const bool tileEnded = pp.fTileIdx >= vTileCnt.x * vTileCnt.y;
-        
         float3 velocity = pos - prevPos;
         if (isFirst)
             pp.VelocityDir = float4(0.f, 0.f, 0.f, 0.f);
         else
             pp.VelocityDir = float4(normalize(velocity), length(velocity));
-        
+
+        const bool firstLoop = (pp.bFirstLoopDiscard != 0);
+        const bool lifeEnded = pp.LifeTime.y >= pp.LifeTime.x;
+        const bool tileEnded = pp.fTileIdx >= vTileCnt.x * vTileCnt.y;
+        const bool SetLifeEnded = pp.LifeTime.y >= LoopInSet_LoopDelay;
+
         //bool needReset = firstLoop ? lifeEnded 
         //                : ((isTileLoop != 0) ? tileEnded
         //                                        : ((isLoop != 0) && lifeEnded));
@@ -365,7 +392,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
         
         bool needReset = false;
 
-        if (isTileLoop != 0)
+        if (isTileLoop != 0) // true
         {
             if (firstLoop)
                 needReset = lifeEnded; // 첫 루프는 lifeTime으로만 끊어줌
@@ -378,6 +405,10 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
                 needReset = lifeEnded; // 원래 로직 그대로
             else if (isLoop != 0)
                 needReset = lifeEnded;
+        }
+        if (LoopInSet != 0) // true
+        {
+            needReset = SetLifeEnded;
         }
         if (ParticleType == 3)
         {

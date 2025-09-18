@@ -74,6 +74,15 @@ HRESULT CMonster_Base::Initialize(void* pArg)
 	
 	Register_SoundEvent();
 
+
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->SetVolume(0.6f);
+		m_pSoundCom->StopAll();
+		m_pSoundCom->Set3DState(0.f, 15.f);
+	}
+	
+
 	return S_OK;
 }
 
@@ -137,6 +146,16 @@ void CMonster_Base::Update(_float fTimeDelta)
 
 	Check_Drop_Ergo(fTimeDelta);
 	
+
+	if (m_pSoundCom)
+	{
+		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		_float3 f3Pos{};
+		XMStoreFloat3(&f3Pos, vPos);
+
+		m_pSoundCom->Update3DPosition(f3Pos);
+	}
 }
 
 void CMonster_Base::Late_Update(_float fTimeDelta)
