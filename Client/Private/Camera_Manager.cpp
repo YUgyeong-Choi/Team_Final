@@ -160,11 +160,13 @@ void CCamera_Manager::Rot_Camera(_vector vRot, _float fDuration)
 
 void CCamera_Manager::FestivalLight_OnOff(_float fTimeDelta)
 {
-    if(!m_vecCustomLight && m_bStartGame)
+    if (!m_vecCustomLight && m_bStartGame)
+    {
         m_vecCustomLight = m_pGameInstance->Find_CustomLight(TEXT("Festival_Light"));
+    }
 
     
-    if (!m_bDoOnce && m_bStartGame && m_vecCustomLight != nullptr)
+    if (!m_bDoOnce && m_bStartGame && m_vecCustomLight)
     {
         for (size_t i = 0; i < m_vecCustomLight->size(); i++)
         {
@@ -185,37 +187,41 @@ void CCamera_Manager::FestivalLight_OnOff(_float fTimeDelta)
         m_bDoOnce = true;
     }
 
-    if (m_bFestivalLightSwitch)
-    {
-        for (size_t i = 0; i < m_pFestivalLight.size(); i++)
-        {
-            if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity <= m_vecCustomLightDesc[i].fFestivalLightFogSaved)
-            {
-                m_vecCustomLightDesc[i].fFestivalLightFogIntensity += fTimeDelta * m_fFestivalLightFogSpeed;
-                m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
-            }
 
-            if (m_vecCustomLightDesc[i].fFestivalLightIntensity <= m_vecCustomLightDesc[i].fFestivalLightSaved)
+    if (m_pGameInstance->GetCurAreaIds() == 60 || m_pGameInstance->GetCurAreaIds() == 59)
+    {
+        if (m_bFestivalLightSwitch)
+        {
+            for (size_t i = 0; i < m_pFestivalLight.size(); i++)
             {
-                m_vecCustomLightDesc[i].fFestivalLightIntensity += fTimeDelta * m_fFestivalLightSpeed;
-                m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity <= m_vecCustomLightDesc[i].fFestivalLightFogSaved)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightFogIntensity += fTimeDelta * m_fFestivalLightFogSpeed;
+                    m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
+                }
+
+                if (m_vecCustomLightDesc[i].fFestivalLightIntensity <= m_vecCustomLightDesc[i].fFestivalLightSaved)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightIntensity += fTimeDelta * m_fFestivalLightSpeed;
+                    m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                }
             }
         }
-    }
-    else
-    {
-        for (size_t i = 0; i < m_pFestivalLight.size(); i++)
+        else if (!m_bFestivalLightSwitch)
         {
-            if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity > 0.f)
+            for (size_t i = 0; i < m_pFestivalLight.size(); i++)
             {
-                m_vecCustomLightDesc[i].fFestivalLightFogIntensity -= fTimeDelta * m_fFestivalLightFogSpeed;
-                m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
-            }
+                if (m_vecCustomLightDesc[i].fFestivalLightFogIntensity > 0.f)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightFogIntensity -= fTimeDelta * m_fFestivalLightFogSpeed;
+                    m_pFestivalLight[i]->SetfFogDensity(m_vecCustomLightDesc[i].fFestivalLightFogIntensity);
+                }
 
-            if (m_vecCustomLightDesc[i].fFestivalLightIntensity > 0.f)
-            {
-                m_vecCustomLightDesc[i].fFestivalLightIntensity -= fTimeDelta * m_fFestivalLightSpeed;
-                m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                if (m_vecCustomLightDesc[i].fFestivalLightIntensity > 0.f)
+                {
+                    m_vecCustomLightDesc[i].fFestivalLightIntensity -= fTimeDelta * m_fFestivalLightSpeed;
+                    m_pFestivalLight[i]->SetIntensity(m_vecCustomLightDesc[i].fFestivalLightIntensity);
+                }
             }
         }
     }
