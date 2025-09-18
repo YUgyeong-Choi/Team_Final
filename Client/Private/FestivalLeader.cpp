@@ -319,7 +319,7 @@ HRESULT CFestivalLeader::Ready_Actor()
 	};
 
 	vector<ColliderSetup> setupList = {
-		{EBossBones::Hammer,      PxBoxGeometry(1.75f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
+		{EBossBones::Hammer,      PxBoxGeometry(2.2f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
 		{EBossBones::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
 		{EBossBones::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
 		{EBossBones::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
@@ -428,7 +428,7 @@ void CFestivalLeader::Update_Collider()
 		if (i == EBossBones::Hammer)
 		{
 			//_vector vWorldOffset = XMVectorSet(fOffsetX, fOffsetY, fOffsetZ, 1.f);
-			_vector vWorldOffset = XMVectorSet(0.800000072f, 0.f, 1.49011612e-08f, 1.f);
+			_vector vWorldOffset = XMVectorSet(1.5f, 0.f, 1.49011612e-08f, 1.f);
 			_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
 			m_Colliders[i]->Set_Transform(GetBonePose(m_BoneRefs[i], &matWorldOffset));
 		}
@@ -811,7 +811,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
-			SetTurnTimeDuringAttack(0.9f, 1.f);
+			SetTurnTimeDuringAttack(0.9f, 1.5f);
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
@@ -1708,6 +1708,47 @@ void CFestivalLeader::Ready_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dmg_S_0", 5, 1);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FistSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Seed_Clown_SK_Fist_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RockDebrisSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Rock_Debris_L_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DropBasketSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_GetHit_M_Parry_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("PullOutHeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Judge_SK_Dead_Explo_01");
+				m_pSoundCom->Play("SE_PC_SK_GetHit_M_Sword_PerfectGuard_03");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("PullOutFireSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Bomb");
 			}
 		});
 }

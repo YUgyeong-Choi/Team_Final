@@ -656,6 +656,10 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "FestivalEnterSound",
+                    "Time": 45.0
+                },
+                {
                     "EventName": "ResetRootStep",
                     "Time": 575.0
                 }
