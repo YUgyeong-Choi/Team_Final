@@ -34,6 +34,7 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(pDesc->PresetMatrix);
 	m_pSocketMatrix = pDesc->pSocketMatrix;
 	m_pParentMatrix = pDesc->pParentMatrix;
+	m_strECName = pDesc->strECName;
 	if (FAILED(Load_JsonFiles(pDesc->j)))
 		return E_FAIL;
     return S_OK;
@@ -215,6 +216,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			case Client::EFF_SPRITE:
 			{
 				CSpriteEffect::DESC desc = {};
+				desc.strECName = m_strECName;
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
 				desc.bTool = false;
@@ -226,6 +228,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			case Client::EFF_PARTICLE:
 			{
 				CParticleEffect::DESC desc = {};
+				desc.strECName = m_strECName;
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
 				desc.pSocketMatrix = &m_CombinedWorldMatrix;
@@ -237,6 +240,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			case Client::EFF_MESH:
 			{
 				CMeshEffect::DESC desc = {};
+				desc.strECName = m_strECName;
 				desc.fRotationPerSec = XMConvertToRadians(90.f);
 				desc.fSpeedPerSec = 5.f;
 				desc.pSocketMatrix = &m_CombinedWorldMatrix;
@@ -249,6 +253,7 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 			{
 				// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
 				//CSwordTrailEffect::DESC desc = {};
+				//desc.strECName = m_strECName;
 				//desc.fRotationPerSec = XMConvertToRadians(90.f);
 				//desc.fSpeedPerSec = 5.f;
 				//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();

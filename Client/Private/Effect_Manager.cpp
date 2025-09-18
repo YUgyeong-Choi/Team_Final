@@ -190,7 +190,7 @@ CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wst
     ECDesc.iLevelID = iLevelIndex;
     ECDesc.fRotationPerSec = XMConvertToRadians(90.f); // 수정하고싶으면 툴에서 수정해서 파싱하던가 하쇼
     ECDesc.fSpeedPerSec = 10.f;
-
+    ECDesc.strECName = strECTag;
     CGameObject* pInstance = { nullptr };
     if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         iLevelIndex, TEXT("Layer_Effect"), &pInstance , &ECDesc)))
@@ -330,7 +330,6 @@ HRESULT CEffect_Manager::Ready_Effect(const _wstring strEffectPath)
     return S_OK;
 }
 
-
 HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
 {
     //CEffectContainer* pInstance = CEffectContainer::Create();
@@ -341,6 +340,8 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
         MSG_BOX("EC Filepath Open Failed");
         return E_FAIL;
     }
+     
+    m_strECFilename = path(strECPath).stem().wstring();
 
     ifs >> j;
     ifs.close();
@@ -472,7 +473,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Textures(const json& j)
 HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 {
     CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_") + m_strECFilename + TEXT("_");
     /* 이 버퍼 어디 저장해둬야 할 것 같다 */
     //왜저장하려했더라;
 
@@ -589,7 +590,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 HRESULT CEffect_Manager::Ready_Prototype_Trail_VIBuffers(const json& j)
 {
     CVIBuffer_SwordTrail::DESC VIBufferDesc = {};
-    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_") + m_strECFilename + TEXT("_");
 
     if (j.contains("Name"))
     {

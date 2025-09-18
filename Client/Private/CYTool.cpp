@@ -494,7 +494,10 @@ void CCYTool::Change_SelectedItem(class CEffectBase* pEffect)
 HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
-
+	if (m_iLastSelected != m_iSelected)
+	{
+		m_iLastSelected = m_iSelected;
+	}
 	ImGui::SeparatorText("Select Pass");
 	ImGui::Text("3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
 
@@ -516,6 +519,8 @@ HRESULT CCYTool::Window_Particle()
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
 	if (m_iLastSelected != m_iSelected)
 	{
+		m_iLastSelected = m_iSelected;
+
 		auto& desc = pPE->Get_InstanceBufferDesc();
 
 		m_eParticleType = desc.ePType;
@@ -529,7 +534,6 @@ HRESULT CCYTool::Window_Particle()
 		m_vAccel = desc.vAccel;
 		m_vMin_MaxSpeed.x = desc.fMinSpeed;
 		m_vMin_MaxSpeed.y = desc.fMaxSpeed;
-		m_iLastSelected = m_iSelected;
 		m_tPCB.bUseGravity = desc.bGravity;
 		m_tPCB.fGravity = desc.fGravity;
 		m_tPCB.vOrbitAxis = desc.vOrbitAxis;
@@ -711,7 +715,10 @@ HRESULT CCYTool::Window_Mesh()
 	CToolMeshEffect* pME = dynamic_cast<CToolMeshEffect*>(m_pSequence->m_Items[m_iSelected].pEffect);
 	if (pME == nullptr)
 		return E_FAIL;
-
+	if (m_iLastSelected != m_iSelected)
+	{
+		m_iLastSelected = m_iSelected;
+	}
 	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave");
 	for (_uint i = 0; i < ME_END; i++)
 	{
@@ -765,7 +772,10 @@ HRESULT CCYTool::Window_Mesh()
 HRESULT CCYTool::Window_Trail()
 {
 	CToolTrail* pTE = dynamic_cast<CToolTrail*>(m_pSequence->m_Items[m_iSelected].pEffect);
-
+	if (m_iLastSelected != m_iSelected)
+	{
+		m_iLastSelected = m_iSelected;
+	}
 	ImGui::Text("Select Pass\n0. Default\n1.Drop");
 
 	for (_uint i = 0; i < TE_END; i++)
@@ -1082,6 +1092,7 @@ HRESULT CCYTool::Load_EffectSet()
 		}
 		m_bOpenLoadEffectContainer = false;
 		m_iSelected = -1;
+		m_iLastSelected = -1;
 		IFILEDIALOG->Close();
 	}
 	return S_OK;
