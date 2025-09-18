@@ -151,7 +151,9 @@ class CFestivalLeader final : public CBossUnit
 		EF_LHand_SPARK = 9,
 		EF_LForearm_SPARK = 10,
 		EF_P2_START = 11,
-		EF_HAMMER_SLAM = 12
+		EF_HAMMER_SLAM = 12,
+		EF_HAMMER_SLAM_END = 13,
+		EF_BASKET_SLAM = 14
 	};
 
 private:

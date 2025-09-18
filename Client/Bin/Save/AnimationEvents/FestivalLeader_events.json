@@ -1671,6 +1671,10 @@
                     "Time": 82.0
                 },
                 {
+                    "EventName": "P2_BaskeEffect",
+                    "Time": 82.0
+                },
+                {
                     "EventName": "DropBasketSound",
                     "Time": 86.0
                 },
@@ -2087,6 +2091,10 @@
                 {
                     "EventName": "MovementSound",
                     "Time": 4.420942306518555
+                },
+                {
+                    "EventName": "HammerSlamEndEffect",
+                    "Time": 112.0
                 }
             ],
             "IsLoop": false,

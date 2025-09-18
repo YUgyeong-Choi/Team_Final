@@ -3337,7 +3337,7 @@ public:
 
     virtual void Execute(_float fTimeDelta) override
     {
-        printf("마우스 인풋 눌림 ? %d", (m_pOwner->m_Input.bLeftMouseDown));
+
         m_fStateTime += fTimeDelta;
 
         if (m_fStateTime > 1.f && !m_bDoOnce)

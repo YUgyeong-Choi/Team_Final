@@ -205,7 +205,6 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 {
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
-	__super::Late_Update(fTimeDelta);
 
 	Add_RenderGroup_OctoTree();
 
@@ -285,12 +284,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 	//고사양 모드
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 
 	//저사양 모드
-	//if (FAILED(Ready_Lights_LowQuality()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights_LowQuality()))
+		return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -547,6 +546,9 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	for (_uint iIdx : VisitCell)
 	{
 		CGameObject* pObj = AllStaticMesh[iIdx];
+
+		if (nullptr == pObj || pObj->Get_isActive() == false)
+			continue;
 
 		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
 		{
@@ -2164,18 +2166,18 @@ HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 	Desc.szMeshID = TEXT("ClownPanel");
 	Desc.szSecondMeshID = TEXT("ClownStationPanel");
 	Desc.WorldMatrix = _float4x4(
-	 1.0f, 0.0f, 0.0f, 0.0f ,
-	 0.0f, 1.0f, 0.0f, 0.0f ,
-	 0.0f, 0.0f, 1.0f, 0.0f ,
-	 403.78f, 15.7f, -49.5f, 1.0f 
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		403.78f, 15.5f, -49.5f, 1.0f
 	);
 
 	//천막
 	Desc.vSecondWorldMatrix = _float4x4(
-		1.3f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.3f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.3f, 0.0f,
-		405.11f, 16.f, -44.5f, 1.0f
+		1.35f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.35f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.35f, 0.0f,
+		405.11f, 15.5f, -44.5f, 1.0f
 	);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"), &Desc)))
