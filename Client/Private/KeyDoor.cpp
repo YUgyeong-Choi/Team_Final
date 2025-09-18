@@ -63,7 +63,9 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 			case INNERDOOR:
 				m_bFinish = true;
 				m_bMoveStart = true;
-				m_pPlayer->Interaction_Door(m_eInteractType, this);
+
+				CCamera_Manager::Get_Instance()->SetbMoveable(false);
+				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				break;
 			}
 			if (m_bFinish)
@@ -261,7 +263,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 				vTargetPos = _vector({ 183.05f, 8.85f, -7.95f, 1.f });
 			break;
 		case INNERDOOR:
-			vTargetPos = _vector({ 33.917623f,0.059349f,0.559624f, 1.f });
+			vTargetPos = _vector({ 33.75f,0.059f,0.58f, 1.f });
 			break;
 		default:
 			break;
@@ -270,7 +272,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
 		{
 			m_bMoveStart = false;
-			m_bRotationStart = m_eInteractType == OUTDOOR ? true : false;
+			m_bRotationStart = true;
 			if (m_bRotationStart == false)
 			{
 				m_bStartSound = true;
@@ -308,7 +310,7 @@ void CKeyDoor::Move_Player(_float fTimeDelta)
 		m_pPlayer->Interaction_Door(m_eInteractType, this);
 		CCamera_Manager::Get_Instance()->SetbMoveable(true);
 
-		if (m_pPlayer->Get_HaveKey())
+		if (m_pPlayer->Get_HaveKey()&& m_eInteractType == INTERACT_TYPE::OUTDOOR)
 		{
 			CCamera_Manager::Get_Instance()->Play_CutScene(CUTSCENE_TYPE::OUTDOOOR);
 			CUI_Manager::Get_Instance()->Off_Panel();

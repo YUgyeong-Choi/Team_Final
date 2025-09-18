@@ -1565,7 +1565,7 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	KeyDoorDesc.WorldMatrix = matWorldFloat;
 	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	KeyDoorDesc.vColliderSize = _vector({ 0.4f, 0.7f, 0.4f, 0.f });
+	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 1.f, 1.0f, 0.f });
 
 	KeyDoorDesc.eInteractType = INTERACT_TYPE::INNERDOOR;
 	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });

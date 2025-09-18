@@ -222,11 +222,11 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
-			_bool bFinish;
+			_bool bFinish = false;
 			if (m_eCurrentCutScene == CUTSCENE_TYPE::FESTIVAL)
 				bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat, true);
 			else
-				Camera_Blending(fTimeDelta, targetMat, currentMat);
+				bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 
 			if (bFinish)
 			{
