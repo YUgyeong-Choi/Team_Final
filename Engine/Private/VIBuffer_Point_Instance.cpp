@@ -190,7 +190,9 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 	m_tCBuffer.fShrinkThreshold = pDesc->fShrinkThreshold;
 	XMStoreFloat4x4(&m_tCBuffer.g_CombinedMatrix, XMMatrixIdentity());
 	m_tCBuffer.isCircleRange = pDesc->isCircleRange ? 1 : 0;
-
+	m_tCBuffer.vCircleNormal = pDesc->vCircleNormal;
+	m_tCBuffer.bLoopInSet = pDesc->bLoopInSet;
+	m_tCBuffer.fLoopInSet_LoopDelay = pDesc->vLifeTime.y + pDesc->fLoopInSet_LoopDelay;
 #pragma region INSTANCEBUFFER
 	/* [ CS ] */
 	// 버퍼 생성용 정보들 전부 CS.cpp쪽으로 옮김
@@ -217,8 +219,10 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 			0.f
 		);
 
+#pragma region 초기 위치 설정
+
 		/**** Position이랑 Direction 이제 최초 스폰 시에 초기화 하므로 주석처리함 ****/
-		
+
 		//m_pParticleParamDesc[i].vTranslation = _float4(
 		//	m_pGameInstance->Compute_Random(pDesc->vCenter.x - pDesc->vRange.x * 0.5f, pDesc->vCenter.x + pDesc->vRange.x * 0.5f),
 		//	m_pGameInstance->Compute_Random(pDesc->vCenter.y - pDesc->vRange.y * 0.5f, pDesc->vCenter.y + pDesc->vRange.y * 0.5f),
@@ -273,8 +277,10 @@ HRESULT CVIBuffer_Point_Instance::Make_InstanceBuffer(const DESC* pDesc)
 		//}
 
 		//XMStoreFloat4(&m_pParticleParamDesc[i].vDirection, vDir);
-		
+
 		/*************************************************************************/
+
+#pragma endregion
 
 
 	}

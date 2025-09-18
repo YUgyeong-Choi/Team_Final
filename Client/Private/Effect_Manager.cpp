@@ -567,6 +567,15 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
     if (j.contains("IsCircleRange"))
         VIBufferDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
 
+    if (j.contains("CircleNormal") && j["CircleNormal"].is_array() && j["CircleNormal"].size() == 3)
+        VIBufferDesc.vCircleNormal = { j["CircleNormal"][0].get<_float>(), j["CircleNormal"][1].get<_float>(), j["CircleNormal"][2].get<_float>() };
+
+    if (j.contains("LoopInSet"))
+        VIBufferDesc.bLoopInSet = j["LoopInSet"].get<_bool>();
+    if (j.contains("LoopInSet_Delay"))
+        VIBufferDesc.fLoopInSet_LoopDelay = j["LoopInSet_Delay"].get<_float>();
+
+
     VIBufferDesc.isTool = false;
 
     if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
