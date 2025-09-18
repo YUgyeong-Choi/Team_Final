@@ -100,8 +100,6 @@ private:
 	_bool m_bCinematicLight = {};
 	_int m_iLightCustom = { 0 };
 
-	_bool m_bLightOnOff = { true };
-
 private:
 	CLight* m_pLight = { nullptr };
 
