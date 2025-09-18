@@ -101,6 +101,7 @@ private:
 
 private:
     _bool m_bStartGame = {};
+    vector<CGameObject*>* m_vecCustomLight = { nullptr };
 
 private:
     _bool m_bCameraSwitchEnabled = { true }; //O,P로 카메라 전환하는거 막고싶어서 만듬(영웅)

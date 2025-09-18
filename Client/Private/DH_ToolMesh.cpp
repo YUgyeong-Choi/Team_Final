@@ -212,8 +212,8 @@ HRESULT CDH_ToolMesh::Ready_Light()
 		LightDesc.bIsUse = true;
 	}
 
-	//m_eTargetLevel = LEVEL::DH;
 	//m_eTargetLevel = LEVEL::YG;
+	//m_eTargetLevel = LEVEL::DH;
 	//m_bLightDebug = true;
 	if (FAILED(m_pGameInstance->Add_LevelLightDataReturn(ENUM_CLASS(m_eTargetLevel), LightDesc, &m_pLight)))
 		return E_FAIL;

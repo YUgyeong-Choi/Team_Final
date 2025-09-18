@@ -160,13 +160,16 @@ void CCamera_Manager::Rot_Camera(_vector vRot, _float fDuration)
 
 void CCamera_Manager::FestivalLight_OnOff(_float fTimeDelta)
 {
-    if (!m_bDoOnce && m_bStartGame)
+    if(!m_vecCustomLight && m_bStartGame)
+        m_vecCustomLight = m_pGameInstance->Find_CustomLight(TEXT("Festival_Light"));
+
+    
+    if (!m_bDoOnce && m_bStartGame && m_vecCustomLight != nullptr)
     {
-        auto vecCustomLight = m_pGameInstance->Find_CustomLight(TEXT("Festival_Light"));
-        for (size_t i = 0; i < vecCustomLight->size(); i++)
+        for (size_t i = 0; i < m_vecCustomLight->size(); i++)
         {
             // 페스티벌 조명의 집합을 여기에 모아놓는다.
-            CDH_ToolMesh* pLight = dynamic_cast<CDH_ToolMesh*>((*vecCustomLight)[i]);
+            CDH_ToolMesh* pLight = dynamic_cast<CDH_ToolMesh*>((*m_vecCustomLight)[i]);
             m_pFestivalLight.push_back(pLight);
 
             // 포그와 밝기 값을 저장해둔다.
