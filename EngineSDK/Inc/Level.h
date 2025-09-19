@@ -20,7 +20,7 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Reset() { return S_OK; }
 
-	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="", _bool bLoop = true);
+	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="", _bool bLoop = false);
 	void Update_ChangeBGM(_float fTimeDelta);
 	class CSound_Core* Get_BGM() { return m_pBGM; }
 	void Stop_BGM();

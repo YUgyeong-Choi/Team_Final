@@ -41,7 +41,7 @@ public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	class CLevel* Get_CurrentLevel() const;
 	void Reset_LevelUnits();
-	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="");
+	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="", _bool bLoop = false);
 	class CSound_Core* Get_CurrentBGM();
 	void Stop_BGM();
 #pragma endregion
