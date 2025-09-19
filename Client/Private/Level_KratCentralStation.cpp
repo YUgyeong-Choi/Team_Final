@@ -25,6 +25,7 @@
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
 #include "TriggerRain.h"
+#include "Trigger_Effect.h"
 
 #include "PBRMesh.h"
 #include "WaterPuddle.h"
@@ -96,7 +97,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;	
 	
-	if (FAILED(Ready_RainTrigger()))
+	if (FAILED(Ready_TriggerEffect()))
 		return E_FAIL;
 
 	if (FAILED(Ready_TriggerBGM()))
@@ -200,6 +201,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+	
 	__super::Update(fTimeDelta);
 }
 
@@ -1749,7 +1751,7 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_RainTrigger()
+HRESULT CLevel_KratCentralStation::Ready_TriggerEffect()
 {
 	CTriggerRain::TRIGGERNOMESH_DESC Desc{};
 	Desc.vPos = _vector({ 191.78f, 8.5f, -8.3f});
@@ -1771,6 +1773,21 @@ HRESULT CLevel_KratCentralStation::Ready_RainTrigger()
 	BossdoorDesc.bBossDoor = true;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerRain"), &BossdoorDesc)))
+		return E_FAIL;
+
+	// 이펙트 트리거 미리 생성, 간판 스파크 용으로 일단 생성
+	CTrigger_Effect::TRIGGER_EFFECT_DESC sparkDesc = {};
+	_vector vPos = { 366.f, 13.5f, -49.f,1.f };
+	sparkDesc.vPos = vPos;
+	sparkDesc.Rotation = _float3(0.f, 0.f, 0.f);
+	sparkDesc.vTriggerOffset = _vector({});
+	sparkDesc.vTriggerSize = _vector({ 1.f, 0.2f, 8.f, 0.f });
+	sparkDesc.m_vecSoundData = {};
+	sparkDesc.strEffectTag = { TEXT("EC_OldSparkDrop_Big"),  TEXT("EC_OldSparkDrop_Big_1"),  TEXT("EC_OldSparkDrop_Big"), TEXT("EC_OldSparkDrop_Big_3"), TEXT("EC_OldSparkDrop_Big_2") };
+	sparkDesc.vMakePos = { _float4(400.f, 25.f, -48.25f,1.f), _float4(400.f, 25.5f, -44.5f,1.f), _float4(400.f, 25.f, -53.f,1.f), _float4(400.f, 24.5f, -46.f,1.f), _float4(400.f, 25.f, -52.f,1.f) };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerEffect"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerSpark"), &sparkDesc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -68,6 +68,7 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 HRESULT CEffect_Manager::Update(_float fTimeDelta)
 {
     //m_fAccTime += fTimeDelta;
+
     return S_OK;
 }
 
