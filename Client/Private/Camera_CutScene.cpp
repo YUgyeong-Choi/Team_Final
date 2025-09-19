@@ -1092,7 +1092,7 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02", true);
 		}
 
 		if (m_iCurrentFrame == 1700)
@@ -1249,7 +1249,7 @@ void CCamera_CutScene::Event()
 		
 		if (m_iCurrentFrame == 1510)
 		{
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle", true);
 		}
 
 		if (m_iCurrentFrame == 1700)
