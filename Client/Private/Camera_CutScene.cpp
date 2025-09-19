@@ -1017,14 +1017,13 @@ void CCamera_CutScene::Event()
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
 		}
 
-		if (m_iCurrentFrame == 450)
+		if (m_iCurrentFrame == 550)
 		{
 			m_strSoundName = "FireEaterCutScene";
 			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
 			m_pSoundCom->Play(m_strSoundName);
 			m_fTargetVolume = 1.f;
 			m_bSoundLerp = true;
-			m_pGameInstance->Stop_BGM();
 		}
 
 		if (m_iCurrentFrame == 575)
@@ -1133,13 +1132,10 @@ void CCamera_CutScene::Event()
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
 		}
 
-		if (m_iCurrentFrame == 400)
+		if (m_iCurrentFrame == 495)
 		{
-			m_strSoundName = "SE_CIN_Boss_F_Guide_Appearance_No_BGM";
-			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
-			m_pSoundCom->Play(m_strSoundName);
-			m_fTargetVolume = 1.f;
-			m_bSoundLerp = true;
+			m_pSoundCom->SetVolume("SE_CIN_Boss_F_Guide_Appearance_No_BGM", 1.f);
+			m_pSoundCom->Play("SE_CIN_Boss_F_Guide_Appearance_No_BGM");
 		}
 
 		if (m_iCurrentFrame == 499)
@@ -1149,7 +1145,7 @@ void CCamera_CutScene::Event()
 			m_strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
 			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
 			m_pSoundCom->Play(m_strSoundName);
-			m_fTargetVolume = 1.f;
+			m_fTargetVolume = 0.7f;
 			m_bSoundLerp = true;
 		}
 
@@ -1478,5 +1474,10 @@ CGameObject* CCamera_CutScene::Clone(void* pArg)
 void CCamera_CutScene::Free()
 {
 	__super::Free();
-	Safe_Release(m_pSoundCom);
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->StopAll();
+		Safe_Release(m_pSoundCom);
+	}
+
 }

@@ -113,6 +113,10 @@ namespace Engine
 		};
 	}
 
+	static _vector Float3ToVec(const _float3& f, float w = 0.f) {
+		return XMVectorSet(f.x, f.y, f.z, w);
+	}
+
 #include <filesystem>
 #include <string>
 	namespace fs = std::filesystem;
