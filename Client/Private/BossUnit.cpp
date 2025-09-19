@@ -44,6 +44,11 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 	{
 		Ready_AttackPatternWeightForPhase2();
 	}
+
+	if (KEY_DOWN(DIK_I))
+	{
+		ReChallenge();
+	}
 }
 
 void CBossUnit::Update(_float fTimeDelta)
@@ -105,6 +110,15 @@ void CBossUnit::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+	SwitchEmissive(true, 0.9f);
+}
+
+void CBossUnit::ReChallenge()
+{
+	m_eCurrentState = EEliteState::IDLE;
+	m_ePrevState = EEliteState::IDLE;
+	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
+	m_pAnimator->SetPlaying(true);
 	SwitchEmissive(true, 0.9f);
 }
 

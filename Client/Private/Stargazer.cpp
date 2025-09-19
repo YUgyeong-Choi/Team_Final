@@ -143,6 +143,12 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			if (m_bTalkActive)
 			{
 				m_pSoundCom->StopAll();
+				if (m_pSoundCom->IsPlaying("AMB_OJ_PR_Stargazer_Active_Loop_DLC") == false)
+				{
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+					m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+				}
 				if (nullptr != m_pGuide)
 				{
 					m_bUseOtherUI = true;
