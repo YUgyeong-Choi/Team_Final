@@ -1483,9 +1483,6 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
-	}
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 }
