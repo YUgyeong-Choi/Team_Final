@@ -3396,7 +3396,7 @@ public:
 
             m_pOwner->Reset();
             m_pOwner->WeaponReset();
-            m_pGameInstance->Get_CurrentBGM()->StopAll();
+            m_pGameInstance->Stop_BGM();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();

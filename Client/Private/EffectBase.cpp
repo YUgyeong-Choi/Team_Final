@@ -39,6 +39,7 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_iShaderPass = pDesc->iShaderPass;
 	m_bAnimation = pDesc->bAnimation;
 	m_isLoop = pDesc->isLoop;
+	m_strECName = pDesc->strECName;
 
 	for (_uint i = 0; i < TU_END; i++)
 	{

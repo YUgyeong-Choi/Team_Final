@@ -81,6 +81,7 @@ public:
         m_bCameraSwitchEnabled = bCameraSwitchEnabled;
     }
 
+	void CutSceneLight_OnOff(_bool bOnOff, _float fLightSpeed, _float fFogSpeed);
 public:
 	void Set_StartGame(_bool bStart) { m_bStartGame = bStart; }
 	_bool Get_StartGame() const { return m_bStartGame; }
@@ -122,7 +123,7 @@ private: /* [ ∂Û¿Ã∆Æ ] */
 	vector<CustomLightDesc> m_vecCustomLightDesc = {};
 
 
-    _bool m_bFestivalLightSwitch = {};
+    _bool m_bFestivalLightSwitch = true;
 
     _bool m_bDoOnce = {};
 

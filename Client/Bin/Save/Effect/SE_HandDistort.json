@@ -1,0 +1,75 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "DistortionStrength": 15.100000381469727,
+    "Duration": 100,
+    "EffectType": 0,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 100,
+    "FlipUV": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                0.0,
+                -0.00024424170260317624,
+                1.0
+            ],
+            "Scale": [
+                0.9999827742576599,
+                0.9999827742576599,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 1969.7298583984375,
+    "Loop": true,
+    "Name": "handdistortion",
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 8,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "",
+        "T_SubUV_LoopSmokeMV_01_8x8_SC_RSW",
+        ""
+    ],
+    "TextureUsage": [
+        false,
+        false,
+        true,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 78.0,
+    "TileX": 8,
+    "TileY": 8
+}

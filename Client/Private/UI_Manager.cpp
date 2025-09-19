@@ -207,6 +207,11 @@ _int CUI_Manager::Check_Script_Click_Button()
 	return static_cast<CUI_Script_Talk*>(m_UImap.find(L"TalkScript")->second)->Check_Click_Button();
 }
 
+void CUI_Manager::Set_Volume(string soundTag, _float fVolume)
+{
+	m_pSoundCom->SetVolume(soundTag, fVolume);
+}
+
 void CUI_Manager::Sound_Play(string soundTag)
 {
 	m_pSoundCom->Stop(soundTag);

@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                -3.549999952316284,
-                -7.760000228881836
+                -0.7599999904632568,
+                -2.509999990463257
             ],
             "Animation": true,
             "Billboard": false,
@@ -18,6 +18,11 @@
                 1.0,
                 0.27225130796432495
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 1.0,
@@ -30,9 +35,9 @@
             "EmissiveIntensity": 0.15000000596046448,
             "EndTrack": 33,
             "FlipUV": false,
-            "Gravity": -0.5,
+            "Gravity": 0.0,
             "IsCircleRange": false,
-            "IsGravity": true,
+            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
@@ -62,24 +67,26 @@
                     ]
                 }
             ],
-            "LifeTime": 1172.410400390625,
+            "LifeTime": 1740.5767822265625,
             "LifeTime_Particle": [
                 1.100000023841858,
                 2.640000104904175
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
-            "MaxSpeed": 1000.0,
-            "MinSpeed": 3.1500000953674316,
+            "MaxSpeed": 10.0,
+            "MinSpeed": 0.009999999776482582,
             "Name": "YW_Metal_Dust",
             "NumInstance": 3000,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
-                0.6154574155807495,
-                0.6154574155807495,
-                0.4923659563064575
+                0.0,
+                1.0,
+                0.0
             ],
             "OrbitSpeed": [
                 -180.0,
@@ -92,9 +99,9 @@
                 0.0
             ],
             "Range": [
-                10.0,
-                5.179999828338623,
-                10.0
+                20.0,
+                1.0,
+                20.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -109,8 +116,8 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.0010000000474974513,
-                0.029999999329447746
+                0.05000000074505806,
+                0.10000000149011612
             ],
             "Speed": [
                 1.0,
@@ -118,7 +125,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.10999999940395355,
+            "StretchFactor": 0.2939999997615814,
             "TextureTags": [
                 "T_Spark_01_C_HJS",
                 "T_Shere_05_C_HJS",

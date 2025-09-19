@@ -200,6 +200,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+	__super::Update(fTimeDelta);
 }
 
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
@@ -284,12 +285,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 	//고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 
 	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -2137,7 +2138,13 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 
-
+	// 축제의 인도자 입구 (컷씬카메라에서 특정 프레임에 사운드 종료하려고 layer따로 씀)
+	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+	eDesc.vPosition = _float3(374.98f, 14.95f, -48.74f);
+	eDesc.fMinMax = { 1.f , 60.f };
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_FestivalEntranceSound"), &eDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

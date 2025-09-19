@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "FestivalLeader.h"
-
+#include "AreaSoundBox.h"
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -106,6 +106,12 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 
 	if (FAILED(InitDatas()))
 		return E_FAIL;
+
+	/* For.Com_Sound */
+	if (FAILED(Add_Component(static_cast<int>(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_CutSceneExtra")),
+		TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 
 	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::WAKEUP].vecWorldMatrixData.front().WorldMatrix);
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
@@ -283,6 +289,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			Event();
 		}
 	}
+
+
+	if (m_bSoundLerp)
+		Update_SoundLerp(fTimeDelta);
 }
 
 void CCamera_CutScene::Update(_float fTimeDelta)
@@ -1082,14 +1092,12 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02", true);
 		}
 
 		if (m_iCurrentFrame == 1700)
 		{
 			CEffectContainer::DESC Lightdesc = {};
-
-
 
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
 			Lightdesc.PresetMatrix._41 = -1.f;
@@ -1106,6 +1114,13 @@ void CCamera_CutScene::Event()
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 125)
+		{
+			CAreaSoundBox* pSound = static_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
+			if(pSound)
+				pSound->SoundVolumeToZero();
+		}
+
 		if (m_iCurrentFrame == 250)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
@@ -1113,10 +1128,21 @@ void CCamera_CutScene::Event()
 		if (m_iCurrentFrame == 499)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+
+			m_strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 1.f;
+			m_bSoundLerp = true;
 		}
 		if (m_iCurrentFrame == 400)
 		{
 			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
+		}
+
+		if (m_iCurrentFrame == 600)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 1.5f,1.5f);
 		}
 
 		if (m_iCurrentFrame == 975)
@@ -1133,18 +1159,21 @@ void CCamera_CutScene::Event()
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc));
 		}
 
-	
-
 		if (m_iCurrentFrame == 1005)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterCutScene();
-
-			//
-		
 		}
 
-		
+		if (m_iCurrentFrame == 1100)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1120)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
+		}
 
 		if (m_iCurrentFrame == 1190)
 		{
@@ -1152,20 +1181,61 @@ void CCamera_CutScene::Event()
 			unit->BreakPanel();
 		}
 
+		if (m_iCurrentFrame == 1250)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1270)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1380)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1380)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 4.f, 4.f);
+		}
+
+		if (m_iCurrentFrame == 1400)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 4.f, 4.f);
+		}
+
+		if (m_iCurrentFrame == 1415)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
+		}
+
+		if (m_iCurrentFrame == 1425)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 6.f, 6.f);
+		}
+
 		if (m_iCurrentFrame == 1400)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
-			Lightdesc.PresetMatrix._41 = -1.f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -210.f;
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 407.f;
+			Lightdesc.PresetMatrix._42 = 15.7f;
+			Lightdesc.PresetMatrix._43 = -49.f;
 
 			CEffectContainer* pEffect = { nullptr };
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Dust"), &Lightdesc));
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			//pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Paper_Dust"), &Lightdesc));
+
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
 
 			//MSG_BOX("펑");
 			//펑
@@ -1176,15 +1246,79 @@ void CCamera_CutScene::Event()
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
 		}
+
+		if (m_iCurrentFrame == 1490)
+		{
+			m_bSoundLerp = true;
+			m_fTargetVolume = 0.f;
+		}
+
+		if (m_iCurrentFrame == 1500)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 407.f;
+			Lightdesc.PresetMatrix._42 = 15.7f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			//pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Paper_Dust"), &Lightdesc));
+
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
+
+			//MSG_BOX("펑");
+			//펑
+		}
 		
 		if (m_iCurrentFrame == 1510)
 		{
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle", true);
+		}
+
+		if (m_iCurrentFrame == 1700)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
 		}
 
 		break;
 	default:
 		break;
+	}
+}
+
+void CCamera_CutScene::Update_SoundLerp(_float fTimeDelta)
+{
+	_bool bStart = m_fTargetVolume == 1.f ? true : false;
+
+	m_fSoundVolume = LerpFloat(m_fSoundVolume, m_fTargetVolume, fTimeDelta);
+	m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+
+	if (bStart)
+	{
+		if (m_fSoundVolume >= 0.99f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+		}
+	}
+	else
+	{
+		if (m_fSoundVolume <= 0.01f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+			m_pSoundCom->StopAll();
+		}
 	}
 }
 
@@ -1360,5 +1494,5 @@ CGameObject* CCamera_CutScene::Clone(void* pArg)
 void CCamera_CutScene::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pSoundCom);
 }

@@ -326,6 +326,7 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Interaction_01");
 			m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Interaction_01");
 			m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 			return;
 		}
 

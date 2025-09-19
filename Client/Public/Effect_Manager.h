@@ -71,6 +71,7 @@ private:
 
 private:
     _float                  m_fAccTime = {};
+    _wstring                m_strECFilename;
 
 public:
     virtual void Free() override;

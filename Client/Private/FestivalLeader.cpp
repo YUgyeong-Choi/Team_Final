@@ -179,7 +179,22 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 		}
 		if (KEY_DOWN(DIK_W))
 		{
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine1"));
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
 
+			_matrix comb = socket * parent;
+
+			//_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_NormalExplosions3"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
 		}
 		if (KEY_DOWN(DIK_E))
 		{
@@ -1468,7 +1483,6 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-
 	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
 		MSG_BOX("이펙트 생성 실패함");
 }

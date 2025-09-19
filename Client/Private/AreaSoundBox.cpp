@@ -1,6 +1,6 @@
 #include "AreaSoundBox.h"
 #include "GameInstance.h"
-
+#include "Client_Calculation.h"
 CAreaSoundBox::CAreaSoundBox(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTriggerBox{ pDevice, pContext }
 {
@@ -26,6 +26,7 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 	m_eTriggerSoundType = AreaSoundBoxDESC->eTriggerBoxType;
 	m_szSoundID = AreaSoundBoxDESC->szSoundID;
 	m_strSoundName = AreaSoundBoxDESC->strSoundName;
+	m_fSoundVolume = AreaSoundBoxDESC->fVolume;
 
 	if (FAILED(CGameObject::Initialize(AreaSoundBoxDESC)))
 		return E_FAIL;
@@ -53,6 +54,9 @@ void CAreaSoundBox::Update(_float fTimeDelta)
 {
 	if (!m_pSoundCom->IsPlaying(m_strSoundName))
 		m_pSoundCom->Play(m_strSoundName);
+
+	if (m_bSoundToZero)
+		Update_SoundToZero(fTimeDelta);
 }
 
 void CAreaSoundBox::Late_Update(_float fTimeDelta)
@@ -88,6 +92,11 @@ void CAreaSoundBox::SoundStop()
 	m_pSoundCom->StopAll();
 }
 
+void CAreaSoundBox::SoundVolumeToZero()
+{
+	m_bSoundToZero = true;
+}
+
 HRESULT CAreaSoundBox::Ready_Components()
 {
 	/* For.Com_Sound */
@@ -96,6 +105,18 @@ HRESULT CAreaSoundBox::Ready_Components()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CAreaSoundBox::Update_SoundToZero(_float fTimeDelta)
+{
+	m_fSoundVolume = LerpFloat(m_fSoundVolume, 0.f, fTimeDelta);
+	m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+	if (m_fSoundVolume <= 0.01f)
+	{
+		m_fSoundVolume = 0.f;
+		m_bSoundToZero = false;
+		m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+	}
 }
 
 
