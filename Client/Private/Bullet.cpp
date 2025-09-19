@@ -32,6 +32,12 @@ HRESULT CBullet::Initialize(void* pArg)
     // 이펙트?
     // 모르겟음 필요하면 넣기
 
+    if (FAILED(Ready_Sound()))
+        return E_FAIL;
+
+
+   
+
     return S_OK;
 }
 
@@ -46,6 +52,17 @@ void CBullet::Update(_float fTimeDelta)
         return;
 
     __super::Update(fTimeDelta);
+
+    if (m_pSoundCom)
+    {
+        _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+        _float3 f3Pos{};
+        XMStoreFloat3(&f3Pos, vPos);
+
+        m_pSoundCom->Update3DPosition(f3Pos);
+    }
+
 }
 
 void CBullet::Late_Update(_float fTimeDelta)
@@ -132,6 +149,26 @@ HRESULT CBullet::Ready_Effect()
         MSG_BOX("이펙트 생성 실패함");
 
     return S_OK;
+}
+
+HRESULT CBullet::Ready_Sound()
+{
+    /* For.Com_Sound */
+    if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+        return E_FAIL;
+ 
+    m_pSoundCom->Set3DState(0.f, 25.f);
+
+    _int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+    string strTag = "SE_NPC_SK_PJ_Bullet_0" + to_string(iNum);
+
+    m_pSoundCom->SetVolume(strTag, 1.5f);
+    m_pSoundCom->Play(strTag);
+
+
+    return S_OK;
+
 }
 
 CBullet* CBullet::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

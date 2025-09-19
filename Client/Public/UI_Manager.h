@@ -56,6 +56,7 @@ public:
 
     _int Check_Script_Click_Button();
   
+    void Set_Volume(string soundTag, _float fVolume);
     void Sound_Play(string soundTag);
 
     void Update_PickUpItem(_int iItemType);

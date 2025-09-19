@@ -13,7 +13,7 @@ void CObserver::OnNotify(const _wstring& eventType, void* data)
 
 void CObserver::OnNotify_Pull(const _wstring& eventType, void* data)
 {
-	for (auto& pair : m_PushCallbacks)
+	for (auto& pair : m_PullCallbacks)
 	{
 		if(pair.first && !pair.first->Get_bDead())
 			pair.second(eventType, data);
