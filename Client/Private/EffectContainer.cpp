@@ -83,21 +83,21 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-	/*
-	* 시퀀스와 최대한 비슷한 구조로 저장 
-	* 컨테이너의 (전체적인) 프레임을 돌리고
-	* 보유한 이펙트들의 재생 시간(시작~종료 프레임 내)에 컨테이너의 프레임이 존재할 경우 재생
-	* 업데이트만 시켜주면 이펙트들은 알아서 내부적으로 업데이트 및 재생함
-	*/
-
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
+		/*
+		* 시퀀스와 최대한 비슷한 구조로 저장 
+		* 컨테이너의 (전체적인) 프레임을 돌리고
+		* 보유한 이펙트들의 재생 시간(시작~종료 프레임 내)에 컨테이너의 프레임이 존재할 경우 재생
+		* 업데이트만 시켜주면 이펙트들은 알아서 내부적으로 업데이트 및 재생함
+		*/
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			if (pEffect)
-				pEffect->Priority_Update(fTimeDelta);
+			pEffect->Priority_Update(fTimeDelta);
 		}
 	}
 }
@@ -133,11 +133,13 @@ void CEffectContainer::Update(_float fTimeDelta)
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
+
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			if (pEffect)
-				pEffect->Update(fTimeDelta);
+			pEffect->Update(fTimeDelta);
 		}
 	}
 }
@@ -149,11 +151,13 @@ void CEffectContainer::Late_Update(_float fTimeDelta)
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
+
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
-			if (pEffect)
-				pEffect->Late_Update(fTimeDelta);
+			pEffect->Late_Update(fTimeDelta);
 		}
 	}
 }
