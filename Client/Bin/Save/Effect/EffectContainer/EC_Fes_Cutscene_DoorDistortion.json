@@ -13,7 +13,7 @@
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 61.0,
             "Duration": 91,
@@ -158,7 +158,7 @@
                     ]
                 }
             ],
-            "LifeTime": 488.8023986816406,
+            "LifeTime": 532.547607421875,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 5,
@@ -196,7 +196,7 @@
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 52.20000076293945,
             "Duration": 91,
@@ -341,7 +341,7 @@
                     ]
                 }
             ],
-            "LifeTime": 488.8023986816406,
+            "LifeTime": 532.547607421875,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 5,
@@ -379,7 +379,7 @@
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.0
             ],
             "DistortionStrength": 77.9000015258789,
             "Duration": 88,
@@ -497,7 +497,7 @@
                     ]
                 }
             ],
-            "LifeTime": 451.0399475097656,
+            "LifeTime": 453.13433837890625,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 4,
@@ -524,8 +524,8 @@
         },
         {
             "Accel": [
-                -25.0,
-                -20.0
+                -22.0,
+                -19.0
             ],
             "Animation": true,
             "Billboard": false,
@@ -589,7 +589,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2989.654052734375,
+            "LifeTime": 3032.744140625,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -602,7 +602,7 @@
             "MaxSpeed": 500.0,
             "MinSpeed": 0.10000000149011612,
             "Name": "fes_cutscene_door_sp1",
-            "NumInstance": 80,
+            "NumInstance": 130,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -647,7 +647,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.024000000208616257,
+            "StretchFactor": 0.03200000151991844,
             "TextureTags": [
                 "",
                 "T_Shere_07_C_LGS",
@@ -677,10 +677,10 @@
                 1.0
             ],
             "Color": [
-                0.6895644068717957,
-                0.6073298454284668,
+                0.6901960968971252,
+                0.6078431606292725,
                 1.0,
-                0.3926701545715332
+                0.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 91,
@@ -798,7 +798,7 @@
                     ]
                 }
             ],
-            "LifeTime": 213.09365844726563,
+            "LifeTime": 256.76336669921875,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 4,
