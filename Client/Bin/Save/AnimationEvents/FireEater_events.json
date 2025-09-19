@@ -36,6 +36,10 @@
                     "Time": 41.0
                 },
                 {
+                    "EventName": "RockDebrisSound",
+                    "Time": 41.0
+                },
+                {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 43.0
                 },
@@ -97,6 +101,10 @@
                     "Time": 56.0
                 },
                 {
+                    "EventName": "RockDebrisSound",
+                    "Time": 56.0
+                },
+                {
                     "EventName": "ColliderArmOff",
                     "Time": 61.0
                 }
@@ -127,6 +135,10 @@
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
+                    "Time": 48.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
                     "Time": 48.0
                 },
                 {
@@ -181,7 +193,19 @@
                     "Time": 4.0
                 },
                 {
+                    "EventName": "OnGroundScratchEffect",
+                    "Time": 52.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
+                    "Time": 53.0
+                },
+                {
                     "EventName": "ColliderArmOn",
+                    "Time": 54.0
+                },
+                {
+                    "EventName": "OffGroundScratchEffect",
                     "Time": 54.0
                 },
                 {
@@ -259,6 +283,10 @@
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
+                    "Time": 31.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
                     "Time": 31.0
                 },
                 {
@@ -352,6 +380,10 @@
                 },
                 {
                     "EventName": "OnGroundScratchEffect",
+                    "Time": 39.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
                     "Time": 39.0
                 },
                 {
@@ -454,6 +486,10 @@
                 },
                 {
                     "EventName": "SlamSound",
+                    "Time": 99.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
                     "Time": 99.0
                 },
                 {
@@ -666,6 +702,10 @@
                 },
                 {
                     "EventName": "SlamSound",
+                    "Time": 42.0
+                },
+                {
+                    "EventName": "RockDebrisSound",
                     "Time": 42.0
                 },
                 {

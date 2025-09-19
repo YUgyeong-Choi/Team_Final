@@ -153,7 +153,8 @@ class CFestivalLeader final : public CBossUnit
 		EF_P2_START = 11,
 		EF_HAMMER_SLAM = 12,
 		EF_HAMMER_SLAM_END = 13,
-		EF_BASKET_SLAM = 14
+		EF_BASKET_SLAM = 14,
+		EF_GROGGY = 15
 	};
 
 private:
@@ -252,6 +253,7 @@ private:
 	// ¿Ã∆Â∆Æ
 	_bool	m_bLeftHand = true;
 	_bool   m_bLeftKnee = true;
+	_bool   m_bHeadSpark = false;
 	_bool   m_bFullbodyEffect = false;
 	_float3 m_vCurWeaponPos = {};
 	_float3 m_vPrevWeaponPos = {};

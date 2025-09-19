@@ -41,12 +41,20 @@
                     "Time": 3.2798869609832764
                 },
                 {
+                    "EventName": "SparkSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "RustleSound",
                     "Time": 5.0
                 },
                 {
                     "EventName": "WalkSound",
                     "Time": 6.0
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 15.0
                 },
                 {
                     "EventName": "WalkSound",
@@ -62,6 +70,14 @@
             "Duration": 180.0,
             "Events": [
                 {
+                    "EventName": "SparkSound",
+                    "Time": 2.9051294326782227
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "DmgLSound",
                     "Time": 5.0
                 }
@@ -75,12 +91,20 @@
             "Duration": 35.0,
             "Events": [
                 {
+                    "EventName": "GroggyEffect",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "RattleSound",
                     "Time": 2.0
                 },
                 {
                     "EventName": "DmgMSound",
                     "Time": 3.232527732849121
+                },
+                {
+                    "EventName": "SparkSound",
+                    "Time": 5.056473255157471
                 }
             ],
             "IsLoop": false,
@@ -104,10 +128,6 @@
             "ClipName": "AS_Groggy_Loop",
             "Duration": 180.0,
             "Events": [
-                {
-                    "EventName": "SparkSound",
-                    "Time": 4.152947902679443
-                },
                 {
                     "EventName": "DmgLSound",
                     "Time": 5.4269795417785645
@@ -148,6 +168,14 @@
                 {
                     "EventName": "DmgMSound",
                     "Time": 4.742301940917969
+                },
+                {
+                    "EventName": "SparkSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 20.0
                 },
                 {
                     "EventName": "WalkSound",
@@ -387,12 +415,20 @@
                     "Time": 3.2798869609832764
                 },
                 {
+                    "EventName": "SparkSound",
+                    "Time": 4.0
+                },
+                {
                     "EventName": "RustleSound",
                     "Time": 5.0
                 },
                 {
                     "EventName": "WalkSound",
                     "Time": 6.0
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 15.0
                 },
                 {
                     "EventName": "WalkSound",
@@ -407,6 +443,14 @@
             "ClipName": "AS_Fatal_NPC_Hit_Ing_1",
             "Duration": 180.0,
             "Events": [
+                {
+                    "EventName": "SparkSound",
+                    "Time": 2.9051294326782227
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 4.0
+                },
                 {
                     "EventName": "DmgLSound",
                     "Time": 5.0
@@ -428,12 +472,20 @@
             "Duration": 35.0,
             "Events": [
                 {
+                    "EventName": "GroggyEffect",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "RattleSound",
                     "Time": 2.0
                 },
                 {
                     "EventName": "DmgMSound",
                     "Time": 3.232527732849121
+                },
+                {
+                    "EventName": "SparkSound",
+                    "Time": 5.056473255157471
                 }
             ],
             "IsLoop": false,
@@ -501,6 +553,14 @@
                 {
                     "EventName": "DmgMSound",
                     "Time": 4.742301940917969
+                },
+                {
+                    "EventName": "SparkSound",
+                    "Time": 5.0
+                },
+                {
+                    "EventName": "GroggyEffect",
+                    "Time": 20.0
                 },
                 {
                     "EventName": "WalkSound",
@@ -1427,7 +1487,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 75.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_07_Start2",
@@ -1452,7 +1512,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 75.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_07_Start3",
@@ -1477,7 +1537,7 @@
             ],
             "IsLoop": false,
             "RootMotion": true,
-            "TickPerSecond": 65.0
+            "TickPerSecond": 75.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_08_Attack",
@@ -2036,6 +2096,10 @@
             "Duration": 36.0,
             "Events": [
                 {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "SlashSound",
                     "Time": 3.472728729248047
                 },
@@ -2106,10 +2170,6 @@
             "Duration": 90.0,
             "Events": [
                 {
-                    "EventName": "Turnning",
-                    "Time": 2.0
-                },
-                {
                     "EventName": "MovementSound",
                     "Time": 2.5984270572662354
                 },
@@ -2130,6 +2190,10 @@
             "ClipName": "AS_ATHBoss0_Skill_10_Attack",
             "Duration": 30.0,
             "Events": [
+                {
+                    "EventName": "Turnning",
+                    "Time": 1.0
+                },
                 {
                     "EventName": "SlashSound",
                     "Time": 3.315396308898926
@@ -2203,10 +2267,6 @@
                 {
                     "EventName": "AttackMSound",
                     "Time": 4.155618190765381
-                },
-                {
-                    "EventName": "Turnning",
-                    "Time": 41.0
                 },
                 {
                     "EventName": "WalkSound",

@@ -343,7 +343,11 @@ void CFuoco::Update_Collider()
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	if (m_eCurrentState == EEliteState::CUTSCENE)
+	if (m_eCurrentState == EEliteState::DEAD || m_bDead
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY ||
+		m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
@@ -1829,6 +1833,15 @@ void CFuoco::Ready_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_",8);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RockDebrisSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Rock_Debris_L_01");
+				m_pSoundCom->Play("SE_NPC_MT_Dust_M_01");
 			}
 		});
 

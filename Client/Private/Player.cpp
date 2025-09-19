@@ -2056,39 +2056,7 @@ void CPlayer::Register_SoundEvents()
 				m_pSoundCom->Play("SE_PC_MT_BodyFall_Cloth_M_01");
 		});
 
-	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
-		{
-			//if (m_pSoundCom)
-			//	m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
-		});
-	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
-				if (m_bUseGrinder == false)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", 0);
-					m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-					return;
-				}
-				if (!isPlaying)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
-					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
-				}
-			}*/
-		});
-	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}*/
-		});
-
+	
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
 		{
 			if (m_pSoundCom)
@@ -2150,8 +2118,9 @@ void CPlayer::Register_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
+				//m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Spear_v2");
 			}
 		});
 
@@ -2162,6 +2131,18 @@ void CPlayer::Register_SoundEvents()
 			{
 				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
 				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
+			}
+		});
+
+	//SE_PC_MT_Body_Motor_06
+
+	m_pAnimator->RegisterEventListener("FatalSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_Hit_RV_S_01");
+				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Cast");
 			}
 		});
 }

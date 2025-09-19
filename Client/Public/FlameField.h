@@ -63,6 +63,7 @@ private:
 	vector<_float> m_LastSpawnDist; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_MergeDist; // 72방향에서 레이를 쏴서 얻은 거리의 평균
 	CPlayer* m_pPlayer = nullptr;
+	CSoundController* m_pSoundCom = nullptr;
 public:
 	static CFlameField* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
