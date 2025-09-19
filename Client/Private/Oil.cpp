@@ -147,6 +147,7 @@ void COil::Explode_Oil()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Lightdesc));
 
+			m_pSoundCom->Play_Random("SE_NPC_SK_FX_FIre_Explo_Heavy_0", 1, 3);
 			Set_bDead();
 		}
 	}
