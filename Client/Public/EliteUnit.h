@@ -201,6 +201,9 @@ protected:
 
 	_float m_fMinimumTurnAngle = 35.f;
 
+	//트레일 이펙트
+	class CSwordTrailEffect* m_pTrailEffect = { nullptr };
+
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
 	virtual void Free() override;

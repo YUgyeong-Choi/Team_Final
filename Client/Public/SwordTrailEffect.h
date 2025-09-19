@@ -15,8 +15,8 @@ public:
 	typedef struct tagTrailEffectDesc : public CEffectBase::DESC
 	{
 		const _float4x4*	pParentCombinedMatrix = { nullptr }; // 부모 모델의 월드 매트릭스
-		_float4x4*	pInnerSocketMatrix = { nullptr };
-		_float4x4*	pOuterSocketMatrix = { nullptr };
+		const _float4x4*	pInnerSocketMatrix = { nullptr };
+		const _float4x4*	pOuterSocketMatrix = { nullptr };
 		_wstring	strEmitterTag;
 		_bool		bHasEmitter = { false };
 	}DESC;
@@ -46,8 +46,8 @@ public:
 protected:
 	CVIBuffer_SwordTrail*		m_pVIBufferCom = { nullptr };
 	const _float4x4*			m_pParentCombinedMatrix = { nullptr }; //(영웅) m_pTranform->Get_WorldMatrix_Ptr이 const라서 const 붙였음
-	_float4x4*					m_pInnerSocketMatrix	= { nullptr };
-	_float4x4*					m_pOuterSocketMatrix	= { nullptr };
+	const _float4x4*			m_pInnerSocketMatrix	= { nullptr };
+	const _float4x4*			m_pOuterSocketMatrix	= { nullptr };
 
 	_wstring					m_strEmitterTag;
 	_bool						m_bHasEmitter = { false };

@@ -173,6 +173,7 @@ private:
 	// 컴포넌트 관련
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
+    CBone* m_pRForearmBone{ nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
 	CBone* m_pLeftBone{ nullptr };

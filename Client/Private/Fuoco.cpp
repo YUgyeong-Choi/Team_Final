@@ -14,6 +14,7 @@
 #include "UI_MonsterHP_Bar.h"
 #include "Client_Calculation.h"
 #include "PhysX_IgnoreSelfCallback.h"
+#include "SwordTrailEffect.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -315,12 +316,22 @@ void CFuoco::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Forearm"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRForearmBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Fist01"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pFistBone = *it;
 	}
+
+
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Foot"); });
@@ -1656,6 +1667,21 @@ HRESULT CFuoco::Ready_Effect()
 		MSG_BOX("이펙트 생성 실패함");
 
 	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
+
+
+
+	/************************ 소드 트레일 이펙트 **************************/
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.iLevelID = m_iLevelID;
+
+	desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
+	desc.pOuterSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
+
+	m_pTrailEffect->Set_TrailActive(true);
 
 	return S_OK;
 }
