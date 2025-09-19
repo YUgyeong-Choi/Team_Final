@@ -21,6 +21,7 @@ CFlameField::CFlameField(const CFlameField& Prototype)
 
 HRESULT CFlameField::Initialize_Prototype()
 {
+	//SE_NPC_SK_FX_FIre_Field_Heavy_Loop
     return S_OK;
 }
 
@@ -48,6 +49,12 @@ HRESULT CFlameField::Initialize(void* pArg)
 	m_LastSpawnDist.resize(16, 0.f);
 	m_SpawnEffectDistanceList.reserve(72);
 	Check_SpawnEffectDistance();
+	
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 50.f);
+		m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Field_Heavy_Loop");
+	}
     return S_OK;
 }
 
@@ -113,6 +120,7 @@ void CFlameField::Update(_float fTimeDelta)
 		m_bEnterPlayer = false;
 		m_bIsExpanded = true;
 		m_fExpandElapsedTime = m_fExpandTime + m_fRemainTime; // 확장 완료
+		
 	}
 	
 	if (m_fExpandElapsedTime <= m_fExpandTime)
@@ -151,6 +159,9 @@ void CFlameField::Update(_float fTimeDelta)
 		PxTransform pose = pActor->getGlobalPose();
 		_vector vPos = XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f);
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+		_float3 pos = {};
+		XMStoreFloat3(&pos, vPos);
+		m_pSoundCom->Update3DPosition(pos);
 	}
 }
 
@@ -159,6 +170,7 @@ void CFlameField::Late_Update(_float fTimeDelta)
 	if (m_bIsExpanded)
 	{
 		Set_bDead();
+		m_pSoundCom->StopAllSpecific("SE_NPC_SK_FX_FIre_Field_Heavy_Loop");
 	}
 
 #ifdef _DEBUG
@@ -245,6 +257,10 @@ HRESULT CFlameField::Ready_Components()
 {
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
+		return E_FAIL;
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 	return S_OK;
 }
@@ -405,5 +421,6 @@ CGameObject* CFlameField::Clone(void* pArg)
 void CFlameField::Free()
 {
 	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pSoundCom);
 	__super::Free();
 }

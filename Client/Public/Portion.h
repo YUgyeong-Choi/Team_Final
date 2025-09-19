@@ -45,12 +45,17 @@ public:
 
 	void Heal();
 
+	void Set_MaxCount(_int iMaxCount) {
+		m_iMaxCount = iMaxCount; 
+		Reset();
+	}
+
 private:
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 private:
 	//
-	_int	m_iMaxCount = { 3 };
+	_int	m_iMaxCount = { 0 };
 	_float  m_fRatio = { 0.35f };
 	
 	

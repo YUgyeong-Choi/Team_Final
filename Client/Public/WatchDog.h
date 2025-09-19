@@ -75,6 +75,8 @@ private:
 
 	_bool  m_isInit = { false };
 
+	_bool  m_bHitSound = {true};
+
 	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
 	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);
 	//PxSphereGeometry m_DebugSphere = PxSphereGeometry(1.5f);

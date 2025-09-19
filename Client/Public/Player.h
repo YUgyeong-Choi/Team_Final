@@ -218,6 +218,7 @@ private: /* [ 이펙트 관리 함수 ]*/
 	void Create_GuardEffect(_bool isPerfect);
 public:
 	void Create_LeftArm_Lightning(const _wstring& strECTag);
+	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -322,6 +323,8 @@ private:
 
 private:
 	void Check_Dead_FestivalReader();
+
+	HRESULT Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;

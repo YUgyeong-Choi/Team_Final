@@ -143,6 +143,12 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			if (m_bTalkActive)
 			{
 				m_pSoundCom->StopAll();
+				if (m_pSoundCom->IsPlaying("AMB_OJ_PR_Stargazer_Active_Loop_DLC") == false)
+				{
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+					m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+				}
 				if (nullptr != m_pGuide)
 				{
 					m_bUseOtherUI = true;
@@ -694,6 +700,22 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 			vPos.y += 1.f;
 			vPos.x -= 2.5f;
 			m_pPlayer->SetTeleportPos(vPos);
+
+			switch (eTag)
+			{
+			case Client::STARGAZER_TAG::OUTER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER_IN:
+				m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+				break;
+			case Client::STARGAZER_TAG::FIRE_EATER:
+				m_pGameInstance->Change_BGM("AMB_SS_Factory_Basement_Loop_02");
+				break;
+			case Client::STARGAZER_TAG::END:
+				break;
+			default:
+				break;
+			}
 
 			break;
 		}

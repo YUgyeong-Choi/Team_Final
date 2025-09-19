@@ -172,6 +172,16 @@ void CFuoco::Update(_float fTimeDelta)
 
 	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
+
+	//if (KEY_DOWN(DIK_L))
+	//{
+	//	EnterCutScene();
+
+	//	/*Spawn_Decal(m_pFistBone,
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+	//		XMVectorSet(5.f, 0.5f, 5.f, 0));*/
+	//}
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -333,7 +343,11 @@ void CFuoco::Update_Collider()
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	if (m_eCurrentState == EEliteState::CUTSCENE)
+	if (m_eCurrentState == EEliteState::DEAD || m_bDead
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY ||
+		m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
@@ -1819,6 +1833,15 @@ void CFuoco::Ready_SoundEvents()
 			if (m_pSoundCom)
 			{
 				m_pSoundCom->Play_Random("VO_NPC_NHM_Boss_Fire_Eater_Attack_",8);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RockDebrisSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Rock_Debris_L_01");
+				m_pSoundCom->Play("SE_NPC_MT_Dust_M_01");
 			}
 		});
 

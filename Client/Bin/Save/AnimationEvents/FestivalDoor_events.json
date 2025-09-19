@@ -12,6 +12,10 @@
             "Duration": 300.0,
             "Events": [
                 {
+                    "EventName": "CrashDoorEffect",
+                    "Time": 84.0
+                },
+                {
                     "EventName": "ChangeDoorModel",
                     "Time": 90.0
                 }

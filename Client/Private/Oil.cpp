@@ -7,6 +7,8 @@
 #include <FlameField.h>
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "Static_Decal.h"
+
 COil::COil(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CProjectile(pDevice, pContext)
 {
@@ -96,6 +98,8 @@ void COil::Priority_Update(_float fTimeDelta)
 			m_pPlayer = pPlayer;
 		}
 	
+		//Spawn_Decal(XMVectorSet(5.f, 0.5f, 5.f, 0));
+
 	}
 }
 
@@ -138,18 +142,67 @@ void COil::Explode_Oil()
 
 			// 이펙트 생성
 
-			CEffectContainer::DESC Lightdesc = {};  
+			CEffectContainer::DESC Desc = {};  
 
 
 			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
+			XMStoreFloat4x4(&Desc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
 		
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Lightdesc));
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Desc));
 
+			m_pSoundCom->Play_Random("SE_NPC_SK_FX_FIre_Explo_Heavy_0", 1, 3);
 			Set_bDead();
 		}
 	}
+}
+
+HRESULT COil::Spawn_Decal(_fvector vDecalScale)
+{
+//	//푸오코 기름 데칼
+///* For.Prototype_Component_Texture_FireEater_Oil_ARMT*/
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_ARMT"),
+//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_BloodSpot_38_ARMT.dds")))))
+//		return E_FAIL;
+//
+//	/* For.Prototype_Component_Texture_FireEater_Oil_N*/
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_N"),
+//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_BloodClip_01_N_KMH.dds")))))
+//		return E_FAIL;
+//
+//	/* For.Prototype_Component_Texture_FireEater_Oil_BC*/
+//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_BC"),
+//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Dust_01_BC.dds")))))
+//		return E_FAIL;
+
+#pragma region 영웅 데칼 생성코드
+	CStatic_Decal::DECAL_DESC DecalDesc = {};
+	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::ARMT)] = TEXT("Prototype_Component_Texture_FireEater_Oil_ARMT");
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Oil_N");
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::BC)] = TEXT("Prototype_Component_Texture_FireEater_Oil_BC");
+
+	DecalDesc.bHasLifeTime = true;
+	DecalDesc.fLifeTime = 50.f;
+
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	_matrix ScaleMatrix = XMMatrixScaling(
+		XMVectorGetX(vDecalScale),
+		XMVectorGetY(vDecalScale),
+		XMVectorGetZ(vDecalScale));
+
+	// [스케일 * 기존 월드 행렬]
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	{
+		return E_FAIL;
+	}
+#pragma endregion
+
+	return S_OK;
 }
 
 void COil::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

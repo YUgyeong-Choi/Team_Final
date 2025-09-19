@@ -63,7 +63,7 @@ HRESULT CErgo::Initialize(void* pArg)
 	);
 
 	if (FAILED(Ready_Effect()))
-		return E_FAIL;
+		return E_FAIL;  
 
 	for (_uint i = 0; i < ENUM_CLASS(EFFECTS::END); ++i)
 	{

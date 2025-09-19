@@ -302,10 +302,10 @@
                 0.0
             ],
             [
-                118.38260650634766,
-                -1.1998012065887451,
-                -212.21112060546875,
-                1.0000001192092896
+                22.258052825927734,
+                -1.1781761646270752,
+                9.78721809387207,
+                1.0
             ]
         ]
     },
@@ -372,9 +372,9 @@
         ]
     },
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_Bloodstain_01_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Blood_01_N.dds",
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSplatter_02_ARMK.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Dust_01_BC.dds",
+        "N": "Prototype_Component_Texture_T_BloodClip_01_N_KMH.dds",
         "WorldMatrix": [
             [
                 5.350394248962402,
@@ -395,17 +395,17 @@
                 0.0
             ],
             [
-                8.028715133666992,
-                -1.147737741470337,
-                -97.94029998779297,
-                1.000000238418579
+                39.63827133178711,
+                -1.1704516410827637,
+                -19.311595916748047,
+                0.9999997615814209
             ]
         ]
     },
     {
-        "ARMT": "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds",
-        "BC": "Prototype_Component_Texture_T_Decal_Bloodstain_01_BC.dds",
-        "N": "Prototype_Component_Texture_T_Decal_Blood_01_N.dds",
+        "ARMT": "Prototype_Component_Texture_T_NewTown_Sign_01_ARMK.dds",
+        "BC": "Prototype_Component_Texture_T_NewTown_Sign_01_BC.dds",
+        "N": "Prototype_Component_Texture_T_NewTown_Sign_01_N.dds",
         "WorldMatrix": [
             [
                 5.350394248962402,
@@ -426,10 +426,10 @@
                 0.0
             ],
             [
-                7.473903656005859,
-                -1.157214641571045,
-                -127.91975402832031,
-                1.000000238418579
+                29.939176559448242,
+                -1.17783784866333,
+                -10.982260704040527,
+                0.9999998807907104
             ]
         ]
     },
@@ -678,6 +678,37 @@
                 -1.527086615562439,
                 1.4874253273010254,
                 1.0
+            ]
+        ]
+    },
+    {
+        "ARMT": "Prototype_Component_Texture_T_Decal_BloodSpot_38_ARMT.dds",
+        "BC": "Prototype_Component_Texture_T_Decal_Dust_01_BC.dds",
+        "N": "Prototype_Component_Texture_T_BloodClip_01_N_KMH.dds",
+        "WorldMatrix": [
+            [
+                5.350394248962402,
+                0.0,
+                8.448272705078125,
+                0.0
+            ],
+            [
+                0.0,
+                0.5,
+                0.0,
+                0.0
+            ],
+            [
+                -8.448272705078125,
+                0.0,
+                5.350394248962402,
+                0.0
+            ],
+            [
+                45.61212158203125,
+                -1.17538321018219,
+                -2.9605321884155273,
+                1.0000001192092896
             ]
         ]
     }

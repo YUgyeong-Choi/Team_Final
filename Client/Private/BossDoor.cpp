@@ -265,9 +265,18 @@ void CBossDoor::Register_Events()
 					m_bRenderSecond = false;
 				else
 					m_bRenderSecond = true;
+		
+			});
+
+		m_pAnimator->RegisterEventListener("CrashDoorEffect", [this]()
+			{
 				Create_CrashDoorEffect();
+
 			});
 	}
+
+
+
 }
 
 void CBossDoor::Play_Sound(_float fTimeDelta)
