@@ -629,10 +629,7 @@ void CButtler_Range::Register_SoundEvent()
 				m_pSoundCom->SetVolume(strTag, 1.5f);
 				m_pSoundCom->Play(strTag);
 
-				strTag = "SE_NPC_SK_PJ_Bullet_0" + to_string(iNum);\
-
-				m_pSoundCom->SetVolume(strTag, 1.5f);
-				m_pSoundCom->Play(strTag);
+				
 
 			}
 		});

@@ -41,6 +41,8 @@ private: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Collider();
 	HRESULT Ready_Trigger();
 
+	HRESULT Ready_Sound();
+
 	void LoadNpcTalkData(string filePath);
 
 	void LoadAnimDataFromJson();
