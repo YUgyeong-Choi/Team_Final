@@ -315,6 +315,13 @@ void CBossDoor::Create_CrashDoorEffect()
 
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Cutscene_DoorDistortion"), &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
+
+	vPos.m128_f32[0] -= 1.f;
+	vPos.m128_f32[1] -= 1.f;
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
+
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Circle"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)
