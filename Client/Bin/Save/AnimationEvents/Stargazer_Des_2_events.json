@@ -12,6 +12,14 @@
             "Duration": 220.0,
             "Events": [
                 {
+                    "EventName": "PreRestroeSound",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "RestroeWhisperSound",
+                    "Time": 3.0
+                },
+                {
                     "EventName": "ChangeModel",
                     "Time": 217.0
                 }
