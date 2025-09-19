@@ -1175,85 +1175,55 @@ void CCamera_CutScene::Event()
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
 		}
 
-		if (m_iCurrentFrame == 1190)
+		if (m_iCurrentFrame == 1180)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->BreakPanel();
 		}
 
-		if (m_iCurrentFrame == 1250)
+		if (m_iCurrentFrame == 1235)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
 		}
 
-		if (m_iCurrentFrame == 1270)
+		if (m_iCurrentFrame == 1255)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
 		}
 
-		if (m_iCurrentFrame == 1380)
+		if (m_iCurrentFrame == 1365)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
 		}
 
-		if (m_iCurrentFrame == 1380)
-		{
-			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 4.f, 4.f);
-		}
-
-		if (m_iCurrentFrame == 1400)
+		if (m_iCurrentFrame == 1385)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 4.f, 4.f);
 		}
 
-		if (m_iCurrentFrame == 1415)
+		if (m_iCurrentFrame == 1400)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
 		}
 
-		if (m_iCurrentFrame == 1425)
+		if (m_iCurrentFrame == 1410)
 		{
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 6.f, 6.f);
 		}
 
-		if (m_iCurrentFrame == 1400)
-		{
-			CEffectContainer::DESC Lightdesc = {};
-
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 407.f;
-			Lightdesc.PresetMatrix._42 = 15.7f;
-			Lightdesc.PresetMatrix._43 = -49.f;
-
-			CEffectContainer* pEffect = { nullptr };
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
-
-			if (pEffect == nullptr)
-				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐÇÔ");
-
-			//pEffect = { nullptr };
-			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Paper_Dust"), &Lightdesc));
-
-			//if (pEffect == nullptr)
-			//	MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐÇÔ");
-
-			//MSG_BOX("Æã");
-			//Æã
-		}
-
-		if (m_iCurrentFrame == 1440)
+		if (m_iCurrentFrame == 1425)
 		{
 			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
 			unit->EnterNextCutScene();
 		}
 
-		if (m_iCurrentFrame == 1490)
+		if (m_iCurrentFrame == 1430)
 		{
 			m_bSoundLerp = true;
 			m_fTargetVolume = 0.f;
 		}
 
-		if (m_iCurrentFrame == 1500)
+		if (m_iCurrentFrame == 1430)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 
@@ -1277,7 +1247,8 @@ void CCamera_CutScene::Event()
 			//MSG_BOX("Æã");
 			//Æã
 		}
-		
+
+
 		if (m_iCurrentFrame == 1510)
 		{
 			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle", true);
