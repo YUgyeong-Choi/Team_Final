@@ -2,32 +2,32 @@
     "Animation": false,
     "Billboard": false,
     "CenterColor": [
-        0.011923948302865028,
-        0.16058920323848724,
-        0.7591623067855835,
+        0.16753923892974854,
+        0.30700916051864624,
+        1.0,
         1.0
     ],
     "Color": [
-        0.16874541342258453,
-        0.4096730351448059,
-        0.565445065498352,
+        0.0,
+        0.387434720993042,
+        1.0,
         0.9476439952850342
     ],
-    "DistortionStrength": 10.0,
+    "DistortionStrength": 0.0,
     "Duration": 20,
     "EffectType": 3,
-    "EmissiveIntensity": 0.0,
+    "EmissiveIntensity": 1.850000023841858,
     "EndTrack": 20,
-    "FlipUV": false,
+    "FlipUV": true,
     "KeyFrames": [
         {
             "Color": [
-                0.16874541342258453,
-                0.4096730351448059,
-                0.565445065498352,
+                0.0,
+                0.387434720993042,
+                1.0,
                 0.9476439952850342
             ],
-            "Intensity": 4.170000076293945,
+            "Intensity": 2.859999895095825,
             "Interpolation": 0,
             "Rotation": [
                 0.0,
@@ -55,18 +55,18 @@
     "NodeInterval": 0.016599999740719795,
     "NumKeyFrames": 1,
     "RenderGroup": 8,
-    "ShaderPass": 0,
+    "ShaderPass": 3,
     "StartTrack": 0,
     "Subdivisions": 12,
     "TextureTags": [
-        "T_Tile_Noise_49_C_HJS",
-        "",
+        "T_Sphere_Cutout_Alpha_01_C_HJS",
+        "T_Trail_01_C_GDH",
         "T_Tile_Noise_42_C_KMH",
         "T_Tile_Noise_48_C_HJS"
     ],
     "TextureUsage": [
         true,
-        false,
+        true,
         true,
         true
     ],

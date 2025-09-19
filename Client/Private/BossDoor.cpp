@@ -4,6 +4,9 @@
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
 #include "UI_Manager.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
+
 CBossDoor::CBossDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDynamicMesh{ pDevice, pContext }
 {
@@ -256,6 +259,7 @@ void CBossDoor::Register_Events()
 					m_bRenderSecond = false;
 				else
 					m_bRenderSecond = true;
+				Create_CrashDoorEffect();
 			});
 	}
 }
@@ -291,6 +295,17 @@ void CBossDoor::Play_Sound(_float fTimeDelta)
 		break;
 	}
 
+}
+
+void CBossDoor::Create_CrashDoorEffect()
+{
+	CEffectContainer::DESC Lightdesc = {};
+	auto a = XMLoadFloat4x4(m_pSecondModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("joint17"))) * m_pTransformCom->Get_WorldMatrix();
+	_vector vPos = a.r[3];
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
+
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Cutscene_DoorDistortion"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)

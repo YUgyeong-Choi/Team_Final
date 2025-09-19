@@ -38,6 +38,8 @@ private:
 	_float4x4 m_VerticalMatrix = {};
 private:
 	_bool m_bAbsorbed = { false };
+	_bool m_bReadyDeath = { false };
+	_float m_fDeathInterval = {};
 
 private:
 	CShader* m_pShaderCom = { nullptr };

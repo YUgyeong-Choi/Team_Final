@@ -67,7 +67,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16481.072265625,
+            "LifeTime": 17186.939453125,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -76,7 +76,7 @@
             "Loop": true,
             "LoopInSet": true,
             "LoopInSet_Delay": 0.30000001192092896,
-            "MaxLifeTime": 4.0,
+            "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "help1",
@@ -99,9 +99,9 @@
                 0.0
             ],
             "Range": [
+                1.0,
                 0.30000001192092896,
-                0.30000001192092896,
-                0.30000001192092896
+                0.5
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -128,7 +128,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_Thunder_04_C_RSW",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -140,7 +140,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 35.0,
+            "TileTickPerSec": 17.0,
             "TileX": 3,
             "TileY": 1,
             "isTileLoop": false
@@ -212,7 +212,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16062.0048828125,
+            "LifeTime": 16578.66015625,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -221,7 +221,7 @@
             "Loop": true,
             "LoopInSet": true,
             "LoopInSet_Delay": 0.19999998807907104,
-            "MaxLifeTime": 4.0,
+            "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "help2",
@@ -244,9 +244,9 @@
                 0.0
             ],
             "Range": [
+                1.0,
                 0.30000001192092896,
-                0.30000001192092896,
-                0.30000001192092896
+                0.5
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -273,7 +273,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_01_4x1_SC_GDH",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -285,7 +285,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 32.0,
+            "TileTickPerSec": 17.0,
             "TileX": 8,
             "TileY": 5,
             "isTileLoop": false
@@ -357,7 +357,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16865.271484375,
+            "LifeTime": 17422.685546875,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.3499999940395355
@@ -366,7 +366,7 @@
             "Loop": true,
             "LoopInSet": true,
             "LoopInSet_Delay": 0.3499999940395355,
-            "MaxLifeTime": 4.0,
+            "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "help3",
@@ -389,9 +389,9 @@
                 0.0
             ],
             "Range": [
+                1.0,
                 0.30000001192092896,
-                0.30000001192092896,
-                0.30000001192092896
+                0.5
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -418,7 +418,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_08_4x1_SC_GDH",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -430,7 +430,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 45.0,
+            "TileTickPerSec": 24.0,
             "TileX": 4,
             "TileY": 3,
             "isTileLoop": false
@@ -450,7 +450,7 @@
                 1.0,
                 1.0
             ],
-            "DistortionStrength": 15.100000381469727,
+            "DistortionStrength": 39.5,
             "Duration": 100,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -467,15 +467,15 @@
                     "Intensity": 1.0,
                     "Interpolation": 0,
                     "Rotation": [
-                        -0.0,
                         0.0,
-                        -0.00024424170260317624,
+                        0.0,
+                        0.0,
                         1.0
                     ],
                     "Scale": [
-                        0.9999827742576599,
-                        0.9999827742576599,
-                        1.0
+                        2.0,
+                        2.0,
+                        2.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -485,7 +485,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1977.3619384765625,
+            "LifeTime": 2606.880859375,
             "Loop": true,
             "Name": "handdistortion",
             "NumKeyFrames": 1,
@@ -506,11 +506,11 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 78.0,
+            "TileTickPerSec": 83.0,
             "TileX": 8,
             "TileY": 8
         }
     ],
     "Loop": false,
-    "MaxFrame": 99
+    "MaxFrame": 80
 }
