@@ -232,7 +232,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			m_fTimeScale = 1.f;
 		}
-		if (KEY_DOWN(DIK_E))
+		if (KEY_PRESSING(DIK_E))
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));

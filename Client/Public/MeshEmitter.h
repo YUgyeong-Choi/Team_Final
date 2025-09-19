@@ -33,7 +33,7 @@ public:
 	virtual void Pause() { m_isActive = false; }
 
 protected:
-	CModel* m_pModelCom = { nullptr };
+	CModel*			m_pModelCom = { nullptr };
 	_wstring		m_strModelTag;
 
 protected:

@@ -51,7 +51,7 @@
     <EnableUnitySupport>true</EnableUnitySupport>
     <EnableASAN>false</EnableASAN>
     <EnableFuzzer>false</EnableFuzzer>
-    <EnableASAN>false</EnableASAN>
+    <EnableASAN>true</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>

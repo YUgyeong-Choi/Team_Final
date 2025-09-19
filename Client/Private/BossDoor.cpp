@@ -77,7 +77,7 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = false;
 	}
 
-	if (KEY_PRESSING(DIK_LALT) && KEY_DOWN(DIK_E))
+	if (KEY_PRESSING(DIK_LALT) && KEY_PRESSING(DIK_E))
 	{
 		if (m_eInteractType == FESTIVALDOOR)
 			Create_CrashDoorEffect();
