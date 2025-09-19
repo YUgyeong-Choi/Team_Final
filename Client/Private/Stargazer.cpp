@@ -695,6 +695,22 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 			vPos.x -= 2.5f;
 			m_pPlayer->SetTeleportPos(vPos);
 
+			switch (eTag)
+			{
+			case Client::STARGAZER_TAG::OUTER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER_IN:
+				m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+				break;
+			case Client::STARGAZER_TAG::FIRE_EATER:
+				m_pGameInstance->Change_BGM("AMB_SS_Factory_Basement_Loop_02");
+				break;
+			case Client::STARGAZER_TAG::END:
+				break;
+			default:
+				break;
+			}
+
 			break;
 		}
 	}
