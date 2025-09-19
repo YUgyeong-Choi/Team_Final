@@ -24,12 +24,9 @@ HRESULT CTriggerBGM::Initialize_Prototype()
 HRESULT CTriggerBGM::Initialize(void* pArg)
 {
 	CTriggerBGM::TRIGGERBGM_DESC* TriggerBGMDESC = static_cast<TRIGGERBGM_DESC*>(pArg);
-	m_pBGM = TriggerBGMDESC->pBGM;
 	m_strInBGM = TriggerBGMDESC->strInBGM;
 	m_strOutBGM = TriggerBGMDESC->strOutBGM;
 
-
-	Safe_AddRef(m_pBGM);
 
 	if (FAILED(__super::Initialize(TriggerBGMDESC)))
 		return E_FAIL;
@@ -40,7 +37,6 @@ HRESULT CTriggerBGM::Initialize(void* pArg)
 
 void CTriggerBGM::Priority_Update(_float fTimeDelta)
 {
-	Play_BGM(fTimeDelta);
 }
 
 void CTriggerBGM::Update(_float fTimeDelta)
@@ -77,78 +73,21 @@ void CTriggerBGM::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 
 void CTriggerBGM::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
- 	_int a = 10;
 }
 
 void CTriggerBGM::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	m_bInSound = !m_bInSound;
-	m_bBGMToZero = true;
-	m_bBGMToVolume = false;
-	m_fBGMVolume = 1.f;
+	if (m_bInSound)
+	{
+		m_pGameInstance->Change_BGM(m_strOutBGM);
+	}
+	else
+	{
+		m_pGameInstance->Change_BGM(m_strInBGM);
+	}
 }
 
-void CTriggerBGM::Play_BGM(_float fTimeDelta)
-{
-
-	// BGM
-	if (m_bBGMToZero)
-	{
-		if (m_bInSound)
-		{
-			//안에서 밖으로 나감
-			// m_fBGMVolume 이 1일텐데 0으로 lerp할거임
-			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
-			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-
-			if (m_fBGMVolume < 0.01f)
-			{
-				m_pBGM->Stop();
-				Safe_Release(m_pBGM);
-				m_pBGM = m_pGameInstance->Get_Single_Sound(m_strOutBGM);
-				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-				m_pBGM->Play();
-
-
-				m_bBGMToZero = false;
-				m_bBGMToVolume = true;
-			}
-		}
-		else
-		{
-			//안에서 밖으로 나감
-			m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 4.f);
-			m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-
-			if (m_fBGMVolume < 0.01f)
-			{
-				m_pBGM->Stop();
-				Safe_Release(m_pBGM);
-				m_pBGM = m_pGameInstance->Get_Single_Sound(m_strInBGM);
-				m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-				m_pBGM->Play();
-
-				m_bBGMToZero = false;
-				m_bBGMToVolume = true;
-			}
-		}
-	}
-
-
-
-	if (m_bBGMToVolume)
-	{
-		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
-		m_fBGMVolume = LerpFloat(m_fBGMVolume, 2.f, fTimeDelta * 3.f);
-		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-
-		// 만약에 m_fBGMVolume가 1이 되면
-		if (m_fBGMVolume > 0.99f)
-			m_bBGMToVolume = false;
-	}
-
-
-}
 
 HRESULT CTriggerBGM::Ready_Components()
 {	
@@ -187,6 +126,4 @@ CGameObject* CTriggerBGM::Clone(void* pArg)
 void CTriggerBGM::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pBGM);
 }

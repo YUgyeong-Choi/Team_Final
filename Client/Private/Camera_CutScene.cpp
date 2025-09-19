@@ -1018,7 +1018,14 @@ void CCamera_CutScene::Event()
 		}
 
 		if (m_iCurrentFrame == 450)
-			m_pGameInstance->Start_BGM("FireEaterCutScene", true);
+		{
+			m_strSoundName = "FireEaterCutScene";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 1.f;
+			m_bSoundLerp = true;
+			m_pGameInstance->Stop_BGM();
+		}
 
 		if (m_iCurrentFrame == 575)
 		{
@@ -1092,7 +1099,7 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02", true);
+			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH01_Intro", "MU_MS_Boss_FireEater_PH02");
 		}
 
 		if (m_iCurrentFrame == 1700)
@@ -1125,6 +1132,16 @@ void CCamera_CutScene::Event()
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
 		}
+
+		if (m_iCurrentFrame == 400)
+		{
+			m_strSoundName = "SE_CIN_Boss_F_Guide_Appearance_No_BGM";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 1.f;
+			m_bSoundLerp = true;
+		}
+
 		if (m_iCurrentFrame == 499)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
@@ -1134,10 +1151,6 @@ void CCamera_CutScene::Event()
 			m_pSoundCom->Play(m_strSoundName);
 			m_fTargetVolume = 1.f;
 			m_bSoundLerp = true;
-		}
-		if (m_iCurrentFrame == 400)
-		{
-			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
 		}
 
 		if (m_iCurrentFrame == 600)
@@ -1251,7 +1264,7 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1510)
 		{
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle", true);
+			m_pGameInstance->Change_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
 		}
 
 		if (m_iCurrentFrame == 1700)
