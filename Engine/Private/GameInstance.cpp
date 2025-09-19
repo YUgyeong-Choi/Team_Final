@@ -282,14 +282,19 @@ void CGameInstance::Reset_LevelUnits()
 {
 	m_pLevel_Manager->Get_CurrentLevel()->Reset();
 }
-void CGameInstance::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
+void CGameInstance::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM, _bool bLoop)
 {
-	m_pLevel_Manager->Get_CurrentLevel()->Start_BGM(soundName, bNowPlaying, bNotLoop, willMainBGM);
+	m_pLevel_Manager->Get_CurrentLevel()->Start_BGM(soundName, bNowPlaying, bNotLoop, willMainBGM, bLoop);
 }
 
 CSound_Core* CGameInstance::Get_CurrentBGM()
 {
 	return m_pLevel_Manager->Get_CurrentLevel()->Get_BGM();
+}
+
+void CGameInstance::Stop_BGM()
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Stop_BGM();
 }
 
 

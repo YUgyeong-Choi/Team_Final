@@ -8,6 +8,7 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CSoundController;
 NS_END
 
 
@@ -83,6 +84,8 @@ private:
 
 	/* [ 이벤트 ] */
 	void Event();
+
+	void Update_SoundLerp(_float fTimeDelta);
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -116,7 +119,12 @@ private:
 
 	_double m_Accumulate = 0.0;
 
-
+	// 추가 사운드 용
+	CSoundController* m_pSoundCom = { nullptr };
+	string m_strSoundName = {};
+	_float m_fSoundVolume = {};
+	_bool m_bSoundLerp = false;
+	_float m_fTargetVolume = 0.f;
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

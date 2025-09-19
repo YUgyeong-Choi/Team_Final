@@ -54,7 +54,7 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	m_CanFatal = false;
 
 	m_pSoundCom->Set3DState(0.f, 25.f);
-	m_pSoundCom->SetVolume(1.f);
+	m_pSoundCom->SetVolume(0.8f);
 
 	return S_OK;
 }

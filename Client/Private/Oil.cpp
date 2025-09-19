@@ -5,6 +5,8 @@
 #include "PhysXDynamicActor.h"
 #include "Client_Calculation.h"
 #include <FlameField.h>
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 COil::COil(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CProjectile(pDevice, pContext)
 {
@@ -133,6 +135,18 @@ void COil::Explode_Oil()
 				m_pPlayer->SetHitMotion(HITMOTION::UP);
 				m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 1.f);
 			}
+
+			// ÀÌÆåÆ® »ý¼º
+
+			CEffectContainer::DESC Lightdesc = {};  
+
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
+		
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Lightdesc));
+
 			Set_bDead();
 		}
 	}

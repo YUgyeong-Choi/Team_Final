@@ -60,6 +60,7 @@ private:
 	CAnimator* m_pAnimator = { nullptr };
 
 	CModel* m_pSecondModelCom = { nullptr };
+	CGameObject* m_pDummyObject = { nullptr };
 	CAnimator* m_pSecondAnimator = { nullptr };
 	CTransform* m_pSecondTransformCom = { nullptr };
 

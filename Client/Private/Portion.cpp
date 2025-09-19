@@ -109,7 +109,7 @@ HRESULT CPortion::Ready_Components()
 {
 	return S_OK;
 }
-
+ 
 void CPortion::Heal()
 {
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"AddHp"), &m_fRatio);

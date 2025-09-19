@@ -200,12 +200,12 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+	__super::Update(fTimeDelta);
 }
 
 void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 {
 	CLockOn_Manager::Get_Instance()->Late_Update(fTimeDelta);
-	__super::Late_Update(fTimeDelta);
 
 	Add_RenderGroup_OctoTree();
 
@@ -547,6 +547,9 @@ HRESULT CLevel_KratCentralStation::Add_RenderGroup_OctoTree()
 	for (_uint iIdx : VisitCell)
 	{
 		CGameObject* pObj = AllStaticMesh[iIdx];
+
+		if (nullptr == pObj || pObj->Get_isActive() == false)
+			continue;
 
 		if (vTypeTable[iIdx] == OCTOTREEOBJECTTYPE::MESH)
 		{
@@ -2135,7 +2138,13 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 
-
+	// 축제의 인도자 입구 (컷씬카메라에서 특정 프레임에 사운드 종료하려고 layer따로 씀)
+	eDesc.strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+	eDesc.vPosition = _float3(374.98f, 14.95f, -48.74f);
+	eDesc.fMinMax = { 1.f , 60.f };
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_FestivalEntranceSound"), &eDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -2164,18 +2173,18 @@ HRESULT CLevel_KratCentralStation::Ready_AnimatedProp()
 	Desc.szMeshID = TEXT("ClownPanel");
 	Desc.szSecondMeshID = TEXT("ClownStationPanel");
 	Desc.WorldMatrix = _float4x4(
-	 1.0f, 0.0f, 0.0f, 0.0f ,
-	 0.0f, 1.0f, 0.0f, 0.0f ,
-	 0.0f, 0.0f, 1.0f, 0.0f ,
-	 403.78f, 15.7f, -49.5f, 1.0f 
+		1.0f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		403.78f, 15.5f, -49.5f, 1.0f
 	);
 
 	//천막
 	Desc.vSecondWorldMatrix = _float4x4(
-		1.3f, 0.0f, 0.0f, 0.0f,
-		0.0f, 1.3f, 0.0f, 0.0f,
-		0.0f, 0.0f, 1.3f, 0.0f,
-		405.11f, 16.f, -44.5f, 1.0f
+		1.35f, 0.0f, 0.0f, 0.0f,
+		0.0f, 1.35f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.35f, 0.0f,
+		405.11f, 15.5f, -44.5f, 1.0f
 	);
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AnimPropPanel"), &Desc)))

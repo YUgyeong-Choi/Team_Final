@@ -1407,7 +1407,7 @@
             ],
             "IsLoop": false,
             "RootMotion": false,
-            "TickPerSecond": 55.0
+            "TickPerSecond": 60.0
         },
         {
             "ClipName": "AS_Turn_C_L",

@@ -61,6 +61,7 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors((m_pWeapon)->Get_PhysXActor()->Get_Actor());
 	
+	m_pSoundCom->Set3DState(0.f, 30.f);
 
 	return S_OK;
 }
@@ -470,7 +471,7 @@ void CButtler_Range::Register_Events()
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.6f - vPos;
 
 		// XZ 방향 추출 
 		_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
@@ -623,10 +624,13 @@ void CButtler_Range::Register_SoundEvent()
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
 
-				string strTag = "SE_NPC_SK_WS_Rifle_0" + to_string(iNum);
+				string strTag = "SE_NPC_WP_Gun_Load_MN_0" + to_string(iNum);
 
-				m_pSoundCom->SetVolume(strTag, 1.f);
+				m_pSoundCom->SetVolume(strTag, 1.5f);
 				m_pSoundCom->Play(strTag);
+
+				
+
 			}
 		});
 
@@ -638,8 +642,10 @@ void CButtler_Range::Register_SoundEvent()
 
 				string strTag = "SE_NPC_WP_Rifle_Reload_0" + to_string(iNum);
 
-				m_pSoundCom->SetVolume(strTag, 1.f);
+				m_pSoundCom->SetVolume(strTag, 1.5f);
 				m_pSoundCom->Play(strTag);
+
+
 			}
 		});
 }

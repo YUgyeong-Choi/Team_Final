@@ -246,6 +246,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
+
+
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
 		}
 		
 		if (KEY_DOWN(DIK_Z))
@@ -3794,7 +3797,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		
 		if (m_fHp > 0.f)
 		{
-			m_fHp -= 0.05f;
+			m_fHp -= 0.2f;
 		}
 		else
 		{

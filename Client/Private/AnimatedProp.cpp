@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "Player.h"
 #include "Animator.h"
+#include <StaticMesh.h>
 CAnimatedProp::CAnimatedProp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
@@ -55,6 +56,20 @@ HRESULT CAnimatedProp::Initialize(void* pArg)
 
 void CAnimatedProp::Priority_Update(_float fTimeDelta)
 {
+	if (m_bUseSecondMesh && m_pDummyObject == nullptr)
+	{
+		auto& layers = m_pGameInstance->Get_ObjectList(ENUM_CLASS(m_eMeshLevelID), TEXT("Layer_StaticMesh_OUTER"));
+
+		auto rit = find_if(layers.rbegin(), layers.rend(),
+			[&](CGameObject* pObj)
+			{
+				return static_cast<CStaticMesh*>(pObj)->Get_MeshName() ==
+					TEXT("Prototype_Component_Model_SM_Station_ClownPanel_01");
+			});
+
+		if (rit != layers.rend())
+			m_pDummyObject = *rit;
+	}
 	
 }
 
@@ -241,7 +256,18 @@ void CAnimatedProp::Register_Events()
 			{
 				if (m_pSecondAnimator)
 					m_pSecondAnimator->SetPlaying(true);
+
 			});
+
+
+		m_pSecondAnimator->RegisterEventListener("DeactivateDummyModel", [this]()
+			{
+				if (m_pDummyObject)
+				{
+					m_pDummyObject->Set_isActive(false);
+				}
+			});
+
 
 	}
 }
