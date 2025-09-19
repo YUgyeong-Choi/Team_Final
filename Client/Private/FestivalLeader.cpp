@@ -222,6 +222,13 @@ void CFestivalLeader::Update(_float fTimeDelta)
 		m_pHPBar->Set_RenderTime(0.f);
 	Update_Collider();
 
+	if (KEY_DOWN(DIK_L))
+	{
+		Spawn_Decal(m_pRightWeaponBone,
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(5.f, 0.5f, 5.f, 0));
+	}
 
 }
 
