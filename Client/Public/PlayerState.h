@@ -3012,6 +3012,10 @@ public:
 
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("Fatal");
+        if (m_pOwner->m_pSoundCom)
+        {
+            m_pOwner-> m_pSoundCom->Play("SE_PC_MT_Body_Motor_06");
+        }
         m_pOwner->m_bIsInvincible = true;
 
         _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.7f);;

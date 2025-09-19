@@ -31,8 +31,16 @@
             "Duration": 252.0,
             "Events": [
                 {
+                    "EventName": "FatalSound",
+                    "Time": 30.0
+                },
+                {
                     "EventName": "ReceiveDamageToFatalTarget",
                     "Time": 31.0
+                },
+                {
+                    "EventName": "FatalSound",
+                    "Time": 60.0
                 },
                 {
                     "EventName": "ReceiveDamageToFatalTarget",
@@ -56,10 +64,6 @@
             "Duration": 53.0,
             "Events": [
                 {
-                    "EventName": "GrinderEndSound",
-                    "Time": 1.0
-                },
-                {
                     "EventName": "OffGrinderEffect",
                     "Time": 18.0
                 }
@@ -82,10 +86,6 @@
                 {
                     "EventName": "OnGrinderEffect",
                     "Time": 1.0
-                },
-                {
-                    "EventName": "GrinderLoopSound",
-                    "Time": 1.0
                 }
             ],
             "IsLoop": true,
@@ -95,12 +95,6 @@
         {
             "ClipName": "AS_Pino_Grinder_Start",
             "Duration": 34.0,
-            "Events": [
-                {
-                    "EventName": "GrinderStartSound",
-                    "Time": 1.0
-                }
-            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
