@@ -187,6 +187,7 @@
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
+    <ClInclude Include="..\public\BossRetryDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\BreakableMesh.h" />
     <ClInclude Include="..\public\Bullet.h" />
@@ -256,6 +257,7 @@
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
+    <ClInclude Include="..\public\Trigger_Effect.h" />
     <ClInclude Include="..\public\UI_Button_Script.h" />
     <ClInclude Include="..\public\UI_Container_DeBuff.h" />
     <ClInclude Include="..\public\UI_Fatal_Icon.h" />
@@ -392,6 +394,7 @@
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
+    <ClCompile Include="..\private\BossRetryDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\BreakableMesh.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
@@ -513,6 +516,7 @@
     <ClCompile Include="..\Private\SwordTrailEffect.cpp" />
     <ClCompile Include="..\Private\TriggerTalk.cpp" />
     <ClCompile Include="..\Private\TriggerUI.cpp" />
+    <ClCompile Include="..\private\Trigger_Effect.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Button_Script.cpp" />

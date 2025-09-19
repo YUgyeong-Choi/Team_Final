@@ -1294,13 +1294,14 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_pLegionArm->Use_LegionEnergy(20.f);
 			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
+			Create_LeftArm_Lightning(TEXT("EC_Player_LeftarmBIGLIGHT"));
 
-			CEffectContainer::DESC Lightdesc = {};
-			Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_LeftarmBIGLIGHT"), &Lightdesc))
-				MSG_BOX("이펙트 생성 실패함");
+			//CEffectContainer::DESC Lightdesc = {};
+			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
+			//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_LeftarmBIGLIGHT"), &Lightdesc))
+			//	MSG_BOX("이펙트 생성 실패함");
 		}
 
 		RootMotionActive(fTimeDelta);
@@ -2056,39 +2057,7 @@ void CPlayer::Register_SoundEvents()
 				m_pSoundCom->Play("SE_PC_MT_BodyFall_Cloth_M_01");
 		});
 
-	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
-		{
-			//if (m_pSoundCom)
-			//	m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
-		});
-	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
-				if (m_bUseGrinder == false)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", 0);
-					m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-					return;
-				}
-				if (!isPlaying)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
-					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
-				}
-			}*/
-		});
-	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}*/
-		});
-
+	
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
 		{
 			if (m_pSoundCom)
@@ -2150,8 +2119,9 @@ void CPlayer::Register_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
+				//m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Spear_v2");
 			}
 		});
 
@@ -2162,6 +2132,18 @@ void CPlayer::Register_SoundEvents()
 			{
 				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
 				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
+			}
+		});
+
+	//SE_PC_MT_Body_Motor_06
+
+	m_pAnimator->RegisterEventListener("FatalSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_Hit_RV_S_01");
+				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Cast");
 			}
 		});
 }
@@ -2185,7 +2167,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 {
 	m_Input.bMove = false;
-	m_bWalk = false;
+	m_bWalk = true;
 	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
 	return bFinishRotate;
 }
@@ -4209,13 +4191,27 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 		MSG_BOX("이펙트 생성 실패함");
 }
 
-void CPlayer::Create_LeftArm_Lightning()
+void CPlayer::Create_LeftArm_Lightning(const _wstring& strECTag)
 {
 	CEffectContainer::DESC Lightdesc = {};
 	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
 	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
+
+	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_LeftArm_Lightning_Hand(const _wstring& strECTag)
+{
+	CEffectContainer::DESC Lightdesc = {};
+	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
 }
 

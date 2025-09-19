@@ -480,12 +480,26 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("HitSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_bHitSound)
 			{
-				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
-		
-				m_pSoundCom->Play("VO_NPC_Watchdog_DMG_0" + to_string(iNum));
+				if (m_pSoundCom)
+				{
+					_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+					m_pSoundCom->Play("VO_NPC_Watchdog_DMG_0" + to_string(iNum));
+				}
 			}
+			else
+			{
+				m_bHitSound = true;
+
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+
+			}
+
+			
 		});
 
 	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
@@ -559,6 +573,8 @@ void CWatchDog::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");
+
+	m_bHitSound = false;
 }
 
 void CWatchDog::Reset()

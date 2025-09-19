@@ -685,6 +685,6 @@
             "TileY": 1
         }
     ],
-    "Loop": true,
+    "Loop": false,
     "MaxFrame": 60
 }

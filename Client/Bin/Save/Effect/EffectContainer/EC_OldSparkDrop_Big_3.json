@@ -1,0 +1,441 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                1.0,
+                10.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.3027055263519287,
+                0.17277485132217407,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                0.18848168849945068,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 22,
+            "EffectType": 1,
+            "EmissiveIntensity": 3.0999999046325684,
+            "EndTrack": 22,
+            "FlipUV": false,
+            "Gravity": 2.450000047683716,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.18848168849945068,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 5.380000114440918,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 12048.189453125,
+            "LifeTime_Particle": [
+                0.019999999552965164,
+                2.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": true,
+            "LoopInSet_Delay": 7,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "OldParticleDrop_Big",
+            "NumInstance": 80,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.17000000178813934,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.009999999776482582,
+                0.019999999552965164
+            ],
+            "Speed": [
+                0.1599999964237213,
+                1.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -30.0,
+                -28.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.3019607961177826,
+                0.1725490242242813,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                0.1882352977991104,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 22,
+            "EffectType": 1,
+            "EmissiveIntensity": 3.0,
+            "EndTrack": 22,
+            "FlipUV": false,
+            "Gravity": 15.0,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.1882352977991104,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 5.400000095367432,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2698.13427734375,
+            "LifeTime_Particle": [
+                0.05000000074505806,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": true,
+            "LoopInSet_Delay": 7.0,
+            "MaxLifeTime": 0.2800000011920929,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 3.0,
+            "Name": "OldParticleDrop_Big_Explode2",
+            "NumInstance": 100,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.029999999329447746,
+                0.05000000074505806,
+                0.029999999329447746
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.05000000074505806
+            ],
+            "Speed": [
+                1.0,
+                2.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.009999999776482582,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -10.0,
+                10.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.3019607961177826,
+                0.1725490242242813,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                0.1882352977991104,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 22,
+            "EffectType": 1,
+            "EmissiveIntensity": 3.0,
+            "EndTrack": 22,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.1882352977991104,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 5.400000095367432,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1095.0194091796875,
+            "LifeTime_Particle": [
+                0.019999999552965164,
+                3.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": true,
+            "LoopInSet_Delay": 7,
+            "MaxLifeTime": 1.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Drop_Direction",
+            "NumInstance": 5,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 1,
+            "Pivot": [
+                0.0,
+                0.10000000149011612,
+                0.0
+            ],
+            "Range": [
+                0.05000000074505806,
+                0.10000000149011612,
+                0.05000000074505806
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.019999999552965164,
+                0.03999999910593033
+            ],
+            "Speed": [
+                0.1599999964237213,
+                1.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 20
+}

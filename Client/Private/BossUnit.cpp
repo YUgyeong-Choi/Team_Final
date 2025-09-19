@@ -44,6 +44,12 @@ void CBossUnit::Priority_Update(_float fTimeDelta)
 	{
 		Ready_AttackPatternWeightForPhase2();
 	}
+
+	//if (KEY_DOWN(DIK_I))
+	//{
+	//	m_fHp -= 500.f;
+	////	ReChallenge();
+	//}
 }
 
 void CBossUnit::Update(_float fTimeDelta)
@@ -56,7 +62,7 @@ void CBossUnit::Update(_float fTimeDelta)
 		m_fGroggyGauge = 0.f;
 		m_bGroggyActive = false;
 		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD&& m_eCurrentState != EEliteState::FATAL)
+		if (m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
 		{
 			m_eCurrentState = EEliteState::DEAD;
 			m_pAnimator->SetTrigger("SpecialDie");
@@ -65,8 +71,6 @@ void CBossUnit::Update(_float fTimeDelta)
 			SwitchEmissive(false, 1.f);
 			SwitchFury(false, 1.f);
 
-			// boss kill ui 추가
-			// 나오는 타이밍은 조절해야 될듯?
 			CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
 			eDesc.fDelay = 2.f;
@@ -89,8 +93,6 @@ void CBossUnit::Update(_float fTimeDelta)
 
 			CUI_Manager::Get_Instance()->Set_Volume("SE_UI_AlertKill_02", 2.f);
 			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
-
-
 		}
 		Safe_Release(m_pHPBar);
 	}
@@ -106,6 +108,15 @@ void CBossUnit::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->SetStateToEntry();
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+	SwitchEmissive(true, 0.9f);
+}
+
+void CBossUnit::ReChallenge()
+{
+	m_eCurrentState = EEliteState::IDLE;
+	m_ePrevState = EEliteState::IDLE;
+	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
+	m_pAnimator->SetPlaying(true);
 	SwitchEmissive(true, 0.9f);
 }
 

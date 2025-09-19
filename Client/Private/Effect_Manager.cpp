@@ -68,6 +68,7 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 HRESULT CEffect_Manager::Update(_float fTimeDelta)
 {
     //m_fAccTime += fTimeDelta;
+
     return S_OK;
 }
 
@@ -284,10 +285,10 @@ HRESULT CEffect_Manager::Ready_Effect(const _wstring strEffectPath)
         MSG_BOX("Effect Filepath Open Failed");
         return E_FAIL;
     }
-
     ifs >> jItem;
     ifs.close();
 
+	m_bContainer = false;
     EFFECT_TYPE eEffectType = {};
     if (jItem.contains("EffectType"))
         eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
@@ -335,6 +336,7 @@ HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
     //CEffectContainer* pInstance = CEffectContainer::Create();
     json j;
     ifstream ifs(strECPath);
+    m_bContainer = true;
     if (!ifs.is_open())
     {
         MSG_BOX("EC Filepath Open Failed");
@@ -473,7 +475,11 @@ HRESULT CEffect_Manager::Ready_Prototype_Textures(const json& j)
 HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 {
     CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
-    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_") + m_strECFilename + TEXT("_");
+    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+    if (m_bContainer)
+        strPrototypeTag += m_strECFilename + L"_";
+    else
+        int a = 0;
     /* 이 버퍼 어디 저장해둬야 할 것 같다 */
     //왜저장하려했더라;
 
@@ -590,7 +596,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 HRESULT CEffect_Manager::Ready_Prototype_Trail_VIBuffers(const json& j)
 {
     CVIBuffer_SwordTrail::DESC VIBufferDesc = {};
-    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_") + m_strECFilename + TEXT("_");
+    _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
 
     if (j.contains("Name"))
     {

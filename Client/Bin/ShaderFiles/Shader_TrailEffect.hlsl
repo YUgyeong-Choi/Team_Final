@@ -217,6 +217,39 @@ PS_Blood_Blend PS_MAIN_Blood(PS_IN In)
     return Out;
 }
 
+struct PS_OUT_NODISTORTION
+{
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
+};
+
+PS_OUT_NODISTORTION PS_MAIN_BASIC(PS_IN In)
+{
+    PS_OUT_NODISTORTION Out;
+    float fPremask = g_DiffuseTexture.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float fMask = g_MaskTexture1.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
+    float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+        
+    float4 vPreColor;
+    float lerpFactor = saturate((fPremask - g_fThreshold) / (1.f - g_fThreshold));
+
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    float4 vColor;
+    vColor.rgb = vPreColor.rgb * fPremask * g_fIntensity;
+    vColor.a = g_vColor.a * fMask * fade * fPremask;
+    
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+    
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass Default // 0
@@ -249,6 +282,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN_DROP();
         GeometryShader = compile gs_5_0 GS_MAIN();
         PixelShader = compile ps_5_0 PS_MAIN_Blood();
+    }
+    pass BasicTrail // 3
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_BASIC();
     }
 
 }

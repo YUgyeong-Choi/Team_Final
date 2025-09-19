@@ -355,20 +355,17 @@ void CUI_Video::Play_Sound()
 	{
 		if (m_iDrawnFrameIndex == 480)
 		{
-			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_01");
 		}
 
 		if (m_iDrawnFrameIndex == 700)
 		{
-			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("SE_CIN_Intro");
 		}
 
 
 		if (m_iDrawnFrameIndex == 1130)
 		{
-			m_pSoundCom->StopAll();
 			m_pSoundCom->Play("VO_CIN_Scene_Ch01_Sophia_Opening_02");
 		}
 
@@ -450,7 +447,12 @@ void CUI_Video::Free()
 	Safe_Release(m_pTexture);
 
 	if (m_pSoundCom)
-		m_pSoundCom->StopAll();
+	{
+		m_pSoundCom->StopAllSpecific("VO_CIN_Scene_Ch01_Sophia_Opening_01");
+		m_pSoundCom->StopAllSpecific("SE_CIN_Intro");
+		m_pSoundCom->StopAllSpecific("VO_CIN_Scene_Ch01_Sophia_Opening_02");
+	}
+
 	Safe_Release(m_pSoundCom);
 
 	Release_FFmpeg();

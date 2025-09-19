@@ -544,9 +544,6 @@
     <Filter Include="01.Levels\Loading\MapLoader">
       <UniqueIdentifier>{1e05d1e6-afec-4cd9-98f7-1cf833d70cd8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerRain">
-      <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Letter">
       <UniqueIdentifier>{b57e7055-a7b1-4934-b8eb-ab440bacf724}</UniqueIdentifier>
     </Filter>
@@ -561,6 +558,12 @@
     </Filter>
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerEffect">
+      <UniqueIdentifier>{3f04ccd2-97b6-4977-b417-859570a83e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain">
+      <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -818,9 +821,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\ToolMeshEffect.h">
       <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\EffectContainer.h">
-      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
@@ -1152,7 +1152,7 @@
       <Filter>01.Levels\Loading\MapLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerRain.h">
-      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
@@ -1171,6 +1171,15 @@
     </ClInclude>
     <ClInclude Include="..\public\AreaSoundBox.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossRetryDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectContainer.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trigger_Effect.h">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1736,7 +1745,7 @@
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerRain.cpp">
-      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
@@ -1755,6 +1764,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Ergo.cpp">
       <Filter>02.GameObjects\19.Ergo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trigger_Effect.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossRetryDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

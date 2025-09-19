@@ -124,6 +124,12 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 	{
 		EnterNextCutScene();
 	}
+
+	if (KEY_DOWN(DIK_I))
+	{
+		m_fHp -= 500.f;
+		//	ReChallenge();
+	}
 #ifdef _DEBUG
 
 
@@ -464,7 +470,10 @@ void CFestivalLeader::Update_Collider()
 void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
 	if (m_eCurrentState == EEliteState::DEAD || m_bDead
-		|| m_eCurrentState == EEliteState::CUTSCENE)
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY || 
+		 m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
@@ -560,7 +569,10 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::Groggy_Start):
 	case ENUM_CLASS(BossStateID::Groggy_Loop):
+		m_eCurrentState = EEliteState::GROGGY;
+		break;
 	case ENUM_CLASS(BossStateID::Groggy_End):
+		m_bHeadSpark = false;
 		m_eCurrentState = EEliteState::GROGGY;
 		break;
 	case ENUM_CLASS(BossStateID::Special_Die):
@@ -1123,6 +1135,12 @@ void CFestivalLeader::Register_Events()
 		{
 			EffectSpawn_Active(EF_HAMMER_SLAM_END, true);
 		});
+
+	m_pAnimator->RegisterEventListener("GroggyEffect", [this]()
+		{
+			m_bHeadSpark = true;
+			EffectSpawn_Active(EF_GROGGY, true);
+		});
 }
 
 void CFestivalLeader::Ready_AttackPatternWeightForPhase1()
@@ -1271,6 +1289,9 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_HAMMER_SLAM_END].emplace_back(TEXT("EC_Fes_HammerSmallSlam"));
 
 
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_LHand"));
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_RClavicle"));
 }
 
 
@@ -1383,7 +1404,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼 손 스파크
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼손 스파크
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
@@ -1395,19 +1416,19 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크 (그로기 때 머리 스팤크로도 사용)
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-
-		_matrix socket = XMLoadFloat4x4(m_BoneRefs[RightShoulder]->Get_CombinedTransformationMatrix());
+		EBossBones bone = m_bHeadSpark ? HeadJaw : RightShoulder;
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[bone]->Get_CombinedTransformationMatrix());
 		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
 
 		_matrix comb = socket * parent;
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크, 쬐만함
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
@@ -1421,7 +1442,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 
 	// P2
-	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5")) //
+	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5")) 
 	{
 		auto worldmat = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 		_vector rot, trans, scale;
@@ -1971,6 +1992,11 @@ void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 			pPlayer->SetfReceiveDamage(DAMAGE_HEAVY);
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			pPlayer->SetHitedAttackType(EAttackType::STAMP);
+			break;
+		case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_Loop):
+			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
+			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::Atk_Phase2Start):
 			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);
