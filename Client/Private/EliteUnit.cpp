@@ -821,7 +821,6 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             m_pHPBar->Add_Damage(fDamage);
             m_pHPBar->Set_RenderTime(3.f);
         }
-         
 
 		m_fHp = max(m_fHp, 0.f);
         cout << "몬스터 현재 체력 : " << m_fHp << endl;

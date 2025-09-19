@@ -55,8 +55,8 @@ public:
 
 	//펄스 전지인가?
 	_bool		m_bPulseCell = { false };
-	//_float3		m_vOriginPos = {};
-	//_float		m_fAccTime = { 0.f };
+	_float3		m_vOriginPos = {};
+	_float		m_fAccTime = { 0.f };
 
 private:
 	CShader* m_pShaderCom = { nullptr };

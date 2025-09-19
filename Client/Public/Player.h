@@ -323,6 +323,8 @@ private:
 private:
 	void Check_Dead_FestivalReader();
 
+	HRESULT Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
+
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
 

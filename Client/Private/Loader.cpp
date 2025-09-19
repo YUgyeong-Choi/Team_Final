@@ -488,6 +488,22 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	//푸오코 기름 데칼
+	/* For.Prototype_Component_Texture_FireEater_Oil_ARMT*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_ARMT"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_BloodSpot_38_ARMT.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FireEater_Oil_N*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_N"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_BloodClip_01_N_KMH.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FireEater_Oil_BC*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_BC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Dust_01_BC.dds")))))
+		return E_FAIL;
+
 	//땅찍기 데칼
 	/* For.Prototype_Component_Texture_FireEater_Slam_Mask*/
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),

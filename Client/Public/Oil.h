@@ -18,6 +18,7 @@ public:
 
 public:
 	void Explode_Oil();
+	HRESULT Spawn_Decal(_fvector vDecalScale);
 
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal) override;
