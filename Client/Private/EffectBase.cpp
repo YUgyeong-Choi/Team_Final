@@ -40,6 +40,7 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_bAnimation = pDesc->bAnimation;
 	m_isLoop = pDesc->isLoop;
 	m_strECName = pDesc->strECName;
+	m_bContainer = pDesc->m_bContainer;
 
 	for (_uint i = 0; i < TU_END; i++)
 	{

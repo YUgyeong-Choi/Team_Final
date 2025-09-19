@@ -222,6 +222,8 @@ HRESULT CErgo::Ready_Effect()
 	desc.pInnerSocketMatrix = &m_StartVerticalMatrix; // 0000 identyiu
 	desc.pOuterSocketMatrix = &m_VerticalMatrix; // 0101? 아무데나, 로컬 위치
 	m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)] = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_YW_ErgoTrail"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)])
+		return E_FAIL;
 
 	return S_OK;
 }
