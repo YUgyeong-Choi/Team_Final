@@ -1122,7 +1122,7 @@ void CCamera_CutScene::Event()
 	case Client::CUTSCENE_TYPE::FESTIVAL:
 		if (m_iCurrentFrame == 30)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_WhatIsLightning"));
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning_Hand(TEXT("EC_WhatIsLightning"));
 		}
 		if (m_iCurrentFrame == 125)
 		{

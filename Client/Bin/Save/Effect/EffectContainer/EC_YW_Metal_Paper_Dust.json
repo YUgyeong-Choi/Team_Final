@@ -1,3 +1,4 @@
+
 {
     "EffectObject": [
         {
@@ -423,7 +424,7 @@
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
