@@ -90,6 +90,12 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Guide"),
 					m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Player_UI_Guide"), &eDesc);
 
+				_int iCount = 3;
+				m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("MaxCount"), &iCount);
+
+				static_cast<CPlayer*>(m_pTarget)->Callback_UpBelt();
+				static_cast<CPlayer*>(m_pTarget)->Callback_DownBelt();
+
 			}
 			else if (m_eItemTag == ITEM_TAG::PASSENGER_NOTE)
 			{

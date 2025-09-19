@@ -67,20 +67,20 @@
                     ]
                 }
             ],
-            "LifeTime": 11852.1728515625,
+            "LifeTime": 11982.716796875,
             "LifeTime_Particle": [
-                0.03999999910593033,
-                0.6000000238418579
+                0.019999999552965164,
+                2.0
             ],
             "Local": true,
             "Loop": false,
             "LoopInSet": true,
-            "LoopInSet_Delay": 1.399999976158142,
+            "LoopInSet_Delay": 3.5,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "OldParticleDrop_Big",
-            "NumInstance": 60,
+            "NumInstance": 20,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -120,7 +120,7 @@
                 0.019999999552965164
             ],
             "Speed": [
-                0.30000001192092896,
+                0.1599999964237213,
                 1.0
             ],
             "Spin": false,
@@ -212,20 +212,20 @@
                     ]
                 }
             ],
-            "LifeTime": 2501.910400390625,
+            "LifeTime": 2632.562744140625,
             "LifeTime_Particle": [
                 0.05000000074505806,
-                0.6000000238418579
+                0.30000001192092896
             ],
             "Local": true,
             "Loop": false,
             "LoopInSet": true,
-            "LoopInSet_Delay": 1.399999976158142,
+            "LoopInSet_Delay": 5.0,
             "MaxLifeTime": 0.2800000011920929,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
             "Name": "OldParticleDrop_Big_Explode2",
-            "NumInstance": 50,
+            "NumInstance": 100,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -262,7 +262,7 @@
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.004999999888241291,
-                0.029999999329447746
+                0.05000000074505806
             ],
             "Speed": [
                 1.0,
@@ -357,20 +357,20 @@
                     ]
                 }
             ],
-            "LifeTime": 895.5113525390625,
+            "LifeTime": 1028.38232421875,
             "LifeTime_Particle": [
                 0.019999999552965164,
-                1.0
+                3.0
             ],
             "Local": true,
             "Loop": false,
             "LoopInSet": true,
-            "LoopInSet_Delay": 1.0,
+            "LoopInSet_Delay": 3.5,
             "MaxLifeTime": 1.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Drop_Direction",
-            "NumInstance": 15,
+            "NumInstance": 5,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -385,13 +385,13 @@
             "PType": 1,
             "Pivot": [
                 0.0,
-                0.20000000298023224,
+                0.10000000149011612,
                 0.0
             ],
             "Range": [
+                0.05000000074505806,
                 0.10000000149011612,
-                0.20000000298023224,
-                0.10000000149011612
+                0.05000000074505806
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -403,11 +403,11 @@
                 0.0,
                 0.0
             ],
-            "ShaderPass": 3,
+            "ShaderPass": 2,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.009999999776482582,
-                0.05000000074505806
+                0.019999999552965164,
+                0.03999999910593033
             ],
             "Speed": [
                 0.1599999964237213,
@@ -415,7 +415,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.07400000095367432,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
