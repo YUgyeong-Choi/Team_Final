@@ -2175,7 +2175,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 {
 	m_Input.bMove = false;
-	m_bWalk = false;
+	m_bWalk = true;
 	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
 	return bFinishRotate;
 }
