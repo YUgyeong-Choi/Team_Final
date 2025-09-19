@@ -64,8 +64,8 @@ HRESULT CBayonet::Initialize(void* pArg)
 
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
-	//if (FAILED(Ready_Effect()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
 
 	m_pGameInstance->Register_PullCallback(L"Weapon_Status", this, [this](const _wstring& eventName, void* data) {
 

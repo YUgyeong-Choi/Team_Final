@@ -477,11 +477,11 @@ HRESULT CRenderer::Draw()
 		return E_FAIL;
 	}
 
-	if (FAILED(Render_Lights()))
-	{
-		MSG_BOX("Render_Lights Failed");
-		return E_FAIL;
-	}
+	//if (FAILED(Render_Lights()))
+	//{
+	//	MSG_BOX("Render_Lights Failed");
+	//	return E_FAIL;
+	//}
 
 	if (FAILED(Render_PBRLights()))
 	{

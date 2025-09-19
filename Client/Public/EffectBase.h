@@ -28,6 +28,7 @@ public:
 		_bool				bTool = { false };
 
 		_wstring			strECName = TEXT("DEFAULT");
+		_bool				m_bContainer = { true };
 
 		/* PresetWorldMatrix */
 		_bool				bHasPresetMat = { false };
@@ -104,6 +105,7 @@ protected:
 	_float				m_fTimeAcc = {};
 	EFFECT_TYPE			m_eEffectType = { EFF_END };
 	_wstring			m_strECName;
+	_bool				m_bContainer = { true };
 
 	// Colors
 	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };

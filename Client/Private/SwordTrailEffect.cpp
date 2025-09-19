@@ -122,6 +122,7 @@ void CSwordTrailEffect::Late_Update(_float fTimeDelta)
 				CParticleEffect::DESC desc = {};
 				desc.iLevelID = m_iLevelID;
 				desc.bHasPresetMat = true;
+				desc.m_bContainer = false;
 				XMStoreFloat4x4(&desc.PresetMatrix,
 					XMMatrixRotationQuaternion(XMQuaternionRotationVectorToVector(_vector{0.f,0.f,1.f,0.f}, vDir)) *
 					XMMatrixTranslation(vPos.x, vPos.y, vPos.z) /** XMMatrixRotationAxis() 이거대체어케넣지*/
@@ -168,7 +169,7 @@ HRESULT CSwordTrailEffect::Ready_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_") + m_strECName + TEXT("_");
+	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
 	strPrototypeTag += m_strBufferTag;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,
