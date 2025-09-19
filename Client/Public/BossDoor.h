@@ -1,29 +1,17 @@
 #pragma once
 /* [ 야외 맵으로 갈 때 key 필요한 문들 ] */
 #include "Client_Defines.h"
-#include "DynamicMesh.h"
+#include "DefaultDoor.h"
 #include "Player.h"
 
-NS_BEGIN(Engine)
-class CShader;
-class CTexture;
-class CModel;
-class CPhysXStaticActor;
-class CSoundController;
-class CAnimController;
-NS_END
 
 NS_BEGIN(Client)
 
-class CBossDoor : public CDynamicMesh
+class CBossDoor : public CDefaultDoor
 {
 public:
-	typedef struct tagBossDoorMeshDesc : public CDynamicMesh::DYNAMICMESH_DESC
+	typedef struct tagBossDoorMeshDesc : public CDefaultDoor::DEFAULTDOOR_DESC
 	{
-		INTERACT_TYPE eInteractType;
-		_vector vTriggerOffset;
-		_vector vTriggerSize;
-
 		_bool		bNeedSecondDoor;
 		_tchar		szSecondModelPrototypeTag[MAX_PATH] = { 0 };
 	}BOSSDOORMESH_DESC;
@@ -43,53 +31,19 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	void Register_Events();
-
 public:
 	void Create_CrashDoorEffect();
 protected:
 	HRESULT Ready_Components(void* pArg);
-	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);
 protected:
 	HRESULT LoadFromJson();
-	HRESULT LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom);
-	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 
-	void Move_Player(_float fTimeDelta);
-	void Play_Sound(_float fTimeDelta);
+	virtual void Move_Player(_float fTimeDelta) override;
 private:
-	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
-
-	// 모델 생성은 상위에서
-	CAnimator* m_pAnimator = { nullptr };
-	CSoundController* m_pSoundCom = { nullptr };
-
 	// 바뀌는 문을 위한
+	_bool m_bRenderSecond = false;
 	CModel* m_pSecondModelCom = { nullptr };
 	CAnimator* m_pSecondAnimator = { nullptr };
-	
-	// 두번째꺼 렌더하려면
-	_bool m_bRenderSecond = false;
-
-	// 오프셋 
-	_float3 m_OffSetCollider;
-
-	// 트리거 관련
-	INTERACT_TYPE m_eInteractType;
-	_bool m_bCanActive = false;
-	_bool m_bFinish = false;
-
-	// 플레이어 이동 관련
-	_bool m_bMoveStart = false;
-	_bool m_bRotationStart = false;
-	_bool m_bStartCutScene = false;
-
-	// 사운드 관련
-	_bool m_bStartSound = false;
-	_float m_fSoundDelta = {};
-
-	CPlayer* m_pPlayer = { nullptr };
-
-	_vector m_vTargetPos;
 public:
 	static CBossDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

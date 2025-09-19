@@ -3,18 +3,17 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
-#include "UI_Manager.h"
 #include "Effect_Manager.h"
 #include "EffectContainer.h"
 
 CBossDoor::CBossDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CDynamicMesh{ pDevice, pContext }
+	: CDefaultDoor{ pDevice, pContext }
 {
 
 }
 
 CBossDoor::CBossDoor(const CBossDoor& Prototype)
-	: CDynamicMesh(Prototype)
+	: CDefaultDoor(Prototype)
 {
 
 }
@@ -28,28 +27,22 @@ HRESULT CBossDoor::Initialize_Prototype()
 
 HRESULT CBossDoor::Initialize(void* pArg)
 {
-	CBossDoor::BOSSDOORMESH_DESC* pDoorMeshDESC = static_cast<BOSSDOORMESH_DESC*>(pArg);
-
-	m_eInteractType = pDoorMeshDESC->eInteractType;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	Ready_Trigger(pDoorMeshDESC);
-
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
+
 	Register_Events();
+
 	return S_OK;
 }
 
 void CBossDoor::Priority_Update(_float fTimeDelta)
 {
-	if(!m_pPlayer)
-		m_pPlayer = dynamic_cast<CPlayer*>(GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex()));
 	__super::Priority_Update(fTimeDelta);
 
 	if (m_bCanActive && !m_bFinish)
@@ -77,9 +70,6 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = false;
 	}
 #endif // _DEBUG
-
-	if (m_bStartSound)
-		Play_Sound(fTimeDelta);
 }
 
 void CBossDoor::Update(_float fTimeDelta)
@@ -268,42 +258,6 @@ void CBossDoor::Register_Events()
 
 			});
 	}
-
-
-
-}
-
-void CBossDoor::Play_Sound(_float fTimeDelta)
-{
-	m_fSoundDelta += fTimeDelta;
-	switch (m_eInteractType)
-	{
-	case Client::FUOCO:
-	{
-		if (m_fSoundDelta > 1.8f)
-		{
-			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.7f * g_fInteractSoundVolume);
-			m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
-			m_fSoundDelta = 0.f;
-		}
-		break;
-	}
-	case Client::FESTIVALDOOR:
-	{
-		if (m_fSoundDelta > 2.9f)
-		{
-			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_Metal_Gate_Crash", 0.7f * g_fInteractSoundVolume);
-			m_pSoundCom->Play("AMB_OJ_DR_Metal_Gate_Crash");
-			m_fSoundDelta = 0.f;
-		}
-		break;
-	}
-	default:
-		break;
-	}
-
 }
 
 void CBossDoor::Create_CrashDoorEffect()
@@ -324,21 +278,6 @@ HRESULT CBossDoor::Ready_Components(void* pArg)
 	// 애니메이션 있는거 이걸로 해야 함
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
-	///* Com_Shader */
-	//if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Shader_VtxPBRMesh")),
-	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-	//	return E_FAIL;
-
-	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
-		return E_FAIL;
-
-	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"),
-		TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
@@ -364,35 +303,7 @@ HRESULT CBossDoor::Ready_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CBossDoor::Ready_Trigger(BOSSDOORMESH_DESC* pDesc)
-{
-	XMVECTOR S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
 
-	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
-
-	PxTransform pose(positionVec, rotationQuat);
-	PxMeshScale meshScale(scaleVec);
-
-	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
-	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
-	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
-
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; 
-	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
-	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
-	m_pPhysXTriggerCom->Set_Owner(this);
-	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
-
-	return S_OK;
-}
 
 HRESULT CBossDoor::LoadFromJson()
 {
@@ -401,6 +312,7 @@ HRESULT CBossDoor::LoadFromJson()
 		return E_FAIL;
 	if (FAILED(LoadAnimationStatesFromJson(modelName,m_pAnimator)))
 		return E_FAIL;
+
 	if (m_pSecondModelCom && m_pSecondAnimator)
 	{
 		string modelName2 = m_pSecondModelCom->Get_ModelName();
@@ -412,79 +324,27 @@ HRESULT CBossDoor::LoadFromJson()
 	return S_OK;
 }
 
-HRESULT CBossDoor::LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom)
-{
-	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
-	ifstream ifs(path);
-	if (ifs.is_open())
-	{
-		json root;
-		ifs >> root;
-		if (root.contains("animations"))
-		{
-			auto& animationsJson = root["animations"];
-			auto& clonedAnims = pModelCom->GetAnimations();
-
-			for (const auto& animData : animationsJson)
-			{
-				const string& clipName = animData["ClipName"];
-
-				for (auto& pAnim : clonedAnims)
-				{
-					if (pAnim->Get_Name() == clipName)
-					{
-						pAnim->Deserialize(animData);
-						break;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation events file.");
-		return E_FAIL;
-	}
-	return S_OK;
-}
-
-HRESULT CBossDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator)
-{
-	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
-	ifstream ifsStates(path);
-	if (ifsStates.is_open())
-	{
-		json rootStates;
-		ifsStates >> rootStates;
-		pAnimator->Deserialize(rootStates);
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation states file.");
-		return E_FAIL;
-	}
-	return S_OK;
-}
 
 void CBossDoor::Move_Player(_float fTimeDelta)
 {
 	if (m_bMoveStart)
 	{
 		m_bFinish = true;
+		_vector vTargetPos;
 		switch (m_eInteractType)
 		{
 		case Client::FESTIVALDOOR:
 			//X:375.136841, Y:14.995386, Z:-48.836079
-			m_vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
+			vTargetPos = _vector({ 375.13f, 14.9f, -48.83f, 1.f});
 			break;
 		case Client::FUOCO:
-			m_vTargetPos = _vector({ -3.2f, 0.3f, -235.87f, 1.f});
+			vTargetPos = _vector({ -3.2f, 0.3f, -235.87f, 1.f});
 			break;
 		default:
 			break;
 		}
 
-		if (m_pPlayer->MoveToDoor(fTimeDelta, m_vTargetPos))
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
 		{
 			m_bMoveStart = false;
 			m_bRotationStart = true;
@@ -523,10 +383,6 @@ void CBossDoor::Move_Player(_float fTimeDelta)
 			default:
 				break;
 			}
-
-			// 
-
-			//CUI_Manager::Get_Instance()->Off_Panel();
 		}
 	}
 
@@ -575,9 +431,6 @@ void CBossDoor::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pPhysXTriggerCom);
-	Safe_Release(m_pAnimator);
-	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pSecondModelCom);
 	Safe_Release(m_pSecondAnimator);
 }

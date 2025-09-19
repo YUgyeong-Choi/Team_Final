@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "DynamicMesh.h"
 
 NS_BEGIN(Engine)
 class CModel;

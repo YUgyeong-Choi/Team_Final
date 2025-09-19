@@ -1,6 +1,6 @@
 #pragma once
 #include "Client_Defines.h"
-#include "DynamicMesh.h"
+#include "DefaultDoor.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -15,10 +15,10 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CBossRetryDoor : public CDynamicMesh
+class CBossRetryDoor : public CDefaultDoor
 {
 public:
-	typedef struct tagRetryDoorDesc : public CDynamicMesh::DYNAMICMESH_DESC
+	typedef struct tagRetryDoorDesc : public CDefaultDoor::DEFAULTDOOR_DESC
 	{
 		INTERACT_TYPE eInteractType;
 		_vector vTriggerOffset;
@@ -51,11 +51,8 @@ public:
 
 protected:
 	HRESULT Ready_Components(void* pArg);
-	HRESULT Ready_Trigger(RETRYDOOR_DESC* pDesc);
 
 	HRESULT LoadFromJson();
-	HRESULT LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom);
-	HRESULT LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator);
 private:
 	class CPlayer* m_pPlayer = { nullptr };
 	class CAnimator* m_pAnimator = { nullptr };
