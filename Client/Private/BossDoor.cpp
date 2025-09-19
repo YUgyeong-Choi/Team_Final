@@ -43,6 +43,7 @@ HRESULT CBossDoor::Initialize(void* pArg)
 
 void CBossDoor::Priority_Update(_float fTimeDelta)
 {
+
 	__super::Priority_Update(fTimeDelta);
 
 	if (m_bCanActive && !m_bFinish)
@@ -56,6 +57,8 @@ void CBossDoor::Priority_Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
+
+			CCamera_Manager::Get_Instance()->GetCutScene()->Set_BossDoor(this);
 		}
 	}
 
@@ -269,6 +272,73 @@ void CBossDoor::Create_CrashDoorEffect()
 
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Cutscene_DoorDistortion"), &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
+}
+
+void CBossDoor::Create_RetryDoor()
+{
+	switch (m_eInteractType)
+	{
+	case Client::FESTIVALDOOR:
+	{
+		/* [ 축제의 인도자 문 ] */
+		CDefaultDoor::DEFAULTDOOR_DESC DefaultDoorDesc{};
+		DefaultDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+		DefaultDoorDesc.szMeshID = TEXT("FestivalDoor");
+		lstrcpy(DefaultDoorDesc.szName, TEXT("FestivalDoor"));
+
+		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalRetryDoor");
+		lstrcpy(DefaultDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+		_float3 vPosition = _float3(375.63f, 15.00f, -48.67f);
+		XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+		XMMATRIX world = trans;
+		_float4x4 matWorldFloat;
+		XMStoreFloat4x4(&matWorldFloat, world);
+		DefaultDoorDesc.WorldMatrix = matWorldFloat;
+		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+
+		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
+		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossRetryDoor"),
+			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
+			MSG_BOX("Retry Door Create Fail");
+	}
+		break;
+	case Client::FUOCO:
+	{
+		/* [ 푸쿠오 보스 문 ] */
+		CDefaultDoor::DEFAULTDOOR_DESC DefaultDoorDesc{};
+		DefaultDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+		DefaultDoorDesc.szMeshID = TEXT("PuocoRetryDoor");
+		lstrcpy(DefaultDoorDesc.szName, TEXT("PuocoRetryDoor"));
+
+		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_PuocoRetryDoor");
+		lstrcpy(DefaultDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+
+		_float3 vPosition = _float3(-1.4f, 0.31f, -235.f);
+		XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+		XMMATRIX rotY = XMMatrixRotationY(XM_PIDIV2); // = 90도
+		XMMATRIX world = rotY * trans;
+		_float4x4 matWorldFloat;
+		XMStoreFloat4x4(&matWorldFloat, world);
+		DefaultDoorDesc.WorldMatrix = matWorldFloat;
+		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
+
+		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
+		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossRetryDoor"),
+			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
+			MSG_BOX("Retry Door Create Fail");
+	}
+		break;
+	default:
+		break;
+	}
+	
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)

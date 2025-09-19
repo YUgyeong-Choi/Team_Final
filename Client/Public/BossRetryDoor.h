@@ -17,13 +17,6 @@ NS_BEGIN(Client)
 
 class CBossRetryDoor : public CDefaultDoor
 {
-public:
-	typedef struct tagRetryDoorDesc : public CDefaultDoor::DEFAULTDOOR_DESC
-	{
-		INTERACT_TYPE eInteractType;
-		_vector vTriggerOffset;
-		_vector vTriggerSize;
-	}RETRYDOOR_DESC;
 protected:
 	CBossRetryDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CBossRetryDoor(const CBossRetryDoor& Prototype);
@@ -39,38 +32,10 @@ public:
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
-
-
 public:
-	void Play_Sound(_float fTimeDelta);
-
-	void OpenDoor();
-
 	void Move_Player(_float fTimeDelta);
-
-
 protected:
 	HRESULT Ready_Components(void* pArg);
-
-	HRESULT LoadFromJson();
-private:
-	class CPlayer* m_pPlayer = { nullptr };
-	class CAnimator* m_pAnimator = { nullptr };
-	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
-	CSoundController* m_pSoundCom = { nullptr };
-	INTERACT_TYPE m_eInteractType;
-
-	_bool m_bCanActive = false;
-	_bool m_bFinish = false;
-
-	_bool m_bMoveStart = false;
-	_bool m_bStartCutScene = false;
-	_bool m_bRotationStart = false;
-
-
-	// 사운드 관련
-	_bool m_bStartSound = false;
-	_float m_fSoundDelta = {};
 public:
 	static CBossRetryDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

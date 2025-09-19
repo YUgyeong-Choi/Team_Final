@@ -148,7 +148,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 
 #endif
-
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
 }

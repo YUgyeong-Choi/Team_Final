@@ -33,6 +33,7 @@ public:
 	void Register_Events();
 public:
 	void Create_CrashDoorEffect();
+	void Create_RetryDoor();
 protected:
 	HRESULT Ready_Components(void* pArg);
 protected:

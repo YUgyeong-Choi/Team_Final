@@ -55,6 +55,8 @@ public:
 	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
 
 	HRESULT InitDatas();
+
+	void Set_BossDoor(class CBossDoor* pDoor);
 private:
 	/* [ 카메라 위치, 회전 보간 ] */
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -125,6 +127,8 @@ private:
 	_float m_fSoundVolume = {};
 	_bool m_bSoundLerp = false;
 	_float m_fTargetVolume = 0.f;
+
+	class CBossDoor* m_pBossDoor = { nullptr };
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
