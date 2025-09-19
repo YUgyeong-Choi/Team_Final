@@ -124,6 +124,12 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 	{
 		EnterNextCutScene();
 	}
+
+	if (KEY_DOWN(DIK_I))
+	{
+		m_fHp -= 500.f;
+		//	ReChallenge();
+	}
 #ifdef _DEBUG
 
 
@@ -464,7 +470,10 @@ void CFestivalLeader::Update_Collider()
 void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
 	if (m_eCurrentState == EEliteState::DEAD || m_bDead
-		|| m_eCurrentState == EEliteState::CUTSCENE)
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY || 
+		 m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{

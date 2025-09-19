@@ -2120,8 +2120,16 @@ public:
                     m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.4f);
                     m_pCamera_Manager->GetCurCam()->StartShake(0.15f, 0.35f);
 
-                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_", 3);
-
+                    if (m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_AIRBORNE
+                        || m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_STAMP
+                        || m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_KNOCKBACK)
+                    {
+                        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_Metal_Fury_0", 3,1);
+                    }
+                    else
+                    {
+                        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_", 3);
+                    }
                 }
                 else
                 {
