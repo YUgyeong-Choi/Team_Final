@@ -55,11 +55,11 @@ HRESULT CErgo::Initialize(void* pArg)
 
 	XMStoreFloat4x4(
 		&m_StartVerticalMatrix,
-		XMMatrixTranslation(0.f, -0.1f, 0.0f) // (x=0, y=1, z=0)
+		XMMatrixTranslation(0.f, -0.05f, 0.0f) // (x=0, y=1, z=0)
 	);
 	XMStoreFloat4x4(
 		&m_VerticalMatrix,
-		XMMatrixTranslation(0.f, 0.1f, 0.0f) // (x=0, y=1, z=0)
+		XMMatrixTranslation(0.f, 0.05f, 0.0f) // (x=0, y=1, z=0)
 	);
 
 	if (FAILED(Ready_Effect()))
@@ -87,18 +87,29 @@ void CErgo::Update(_float fTimeDelta)
 {
 	if (m_bAbsorbed)
 	{
-		_float3 vPos = { m_pLampMatrix->_41, m_pLampMatrix->_42, m_pLampMatrix->_43 };
-		m_pTransformCom->Go_Target(fTimeDelta, XMVectorSetW(XMLoadFloat3(&vPos), 1.f), 0.01f);
-
-		_vector vDiff = m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat3(&vPos);
-		_float fLength = XMVectorGetX(XMVector3Length(vDiff));
-		if (fLength < 0.1f)
+		if (m_bReadyDeath)
 		{
-			m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_TrailActive(false);
-			m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_bDead();
-			Set_bDead();
+			m_fDeathInterval += fTimeDelta;
+			if (m_fDeathInterval > 1.f)
+			{
+				m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_bDead();
+				Set_bDead();
+			}
+		}
+		else
+		{
+			_float3 vPos = { m_pLampMatrix->_41, m_pLampMatrix->_42, m_pLampMatrix->_43 };
+			m_pTransformCom->Go_Target(fTimeDelta, XMVectorSetW(XMLoadFloat3(&vPos), 1.f), 0.01f);
 
-			m_pLamp->Play_Absorbe_Effect();
+			_vector vDiff = m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat3(&vPos);
+			_float fLength = XMVectorGetX(XMVector3Length(vDiff));
+			if (fLength < 0.01f)
+			{
+				m_bReadyDeath = true;
+
+				m_pLamp->Play_Absorbe_Effect();
+				m_pTrailEffect[ENUM_CLASS(EFFECTS::VERTICAL)]->Set_TrailActive(false);
+			}
 		}
 	}
 }

@@ -1003,10 +1003,10 @@ void CCamera_CutScene::Event()
 	{
 		if (m_iCurrentFrame == 20)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"));
 		}
 	}
-		break;
+	break;
 	case Client::CUTSCENE_TYPE::OUTDOOOR:
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
@@ -1014,7 +1014,7 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 20)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"));
 		}
 
 		if (m_iCurrentFrame == 450)
@@ -1037,7 +1037,7 @@ void CCamera_CutScene::Event()
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
 
-			
+
 		}
 
 		if (m_iCurrentFrame == 1550)
@@ -1110,10 +1110,14 @@ void CCamera_CutScene::Event()
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
-			
+
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 30)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_WhatIsLightning"));
+		}
 		if (m_iCurrentFrame == 125)
 		{
 			CAreaSoundBox* pSound = static_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));

@@ -4,7 +4,8 @@
 #include "Effect_Manager.h"
 #include "SoundController.h"
 #include "PhysX_IgnoreSelfCallback.h"
-
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 #include "Player.h"
 
 CPlayerLamp::CPlayerLamp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -284,6 +285,10 @@ HRESULT CPlayerLamp::Ready_Light()
 HRESULT CPlayerLamp::Play_Absorbe_Effect()
 {
 	//¿©±â¼­ Èí¼ö ÀÌÆåÆ® Àç»ýÇÏ¸éµÊ
+	CEffectContainer::DESC desc = {};
+	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(m_CombinedWorldMatrix.m[4][0], m_CombinedWorldMatrix.m[4][1], m_CombinedWorldMatrix.m[4][2]));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_ConsumeErgo"), &desc))
+		return E_FAIL;
 
 	return S_OK;
 }
