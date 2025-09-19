@@ -70,10 +70,6 @@ private:
 	//HRESULT Add_Effect(class CEffectBase* pEffect);
 
 
-private:
-#ifdef _DEBUG
-	std::vector<uintptr_t> m_prevPtrs_Debug;
-#endif
 
 public:
 	static CEffectContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
