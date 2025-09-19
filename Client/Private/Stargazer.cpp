@@ -66,6 +66,11 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update(0.016f);
 	m_pModelCom[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update_Bones();
+
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 15.f);
+	}
 	return S_OK;
 }
 
@@ -180,11 +185,11 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				m_pEffectSet->Activate_Stargazer_Reassemble();
 
-				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
-				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
+				//m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
+				//m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
 
-				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
-				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
+				//m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
+				//m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
 
 				if (m_eStargazerTag == STARGAZER_TAG::FESTIVAL_LEADER_IN)
 				{
@@ -208,6 +213,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				if (m_bIsRotatingToStargazer == false)
 					m_bIsRotatingToStargazer = true;
 				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
+
+				if (m_pSoundCom->IsPlaying("AMB_OJ_PR_Stargazer_Active_Loop_DLC") == false)
+				{
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+					m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Interaction_01");
+				}
 				if (m_eScriptDatas.empty())
 				{
 					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
@@ -304,7 +317,9 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			m_bUseOtherUI = false;
 
 			Delete_Script();
-			m_pSoundCom->StopAll();
+			m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Interaction_01");
+			m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Interaction_01");
+			m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
 			return;
 		}
 
@@ -408,6 +423,13 @@ void CStargazer::Update(_float fTimeDelta)
 
 	if (nullptr != m_pGuide)
 		m_pGuide->Update(fTimeDelta);
+
+	if (m_pSoundCom)
+	{
+		_float3 vPos;
+		XMStoreFloat3(&vPos, Get_TransfomCom()->Get_State(STATE::POSITION));
+		m_pSoundCom->Update3DPosition(vPos); // 3D 사운드 위치 업데이트
+	}
 
 }
 
@@ -598,7 +620,7 @@ void CStargazer::Register_Events()
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
 			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_END);
 			m_pEffectSet->Activate_Stargazer_Spread();
-			
+
 			if (m_eStargazerTag != STARGAZER_TAG::FIRE_EATER)
 			{
 				CUI_Container::UI_CONTAINER_DESC eDesc{};
@@ -613,12 +635,40 @@ void CStargazer::Register_Events()
 
 				static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
 			}
+		});
 
-		
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("PreRestroeSound", [this]() // 철컥철컥
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_PreRestore_01");
+			}
+		});
 
-			
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("RestroeWhisperSound", [this]() // 목소리
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("AMB_OJ_PR_Stargazer_Restore_0",2,1);
+			}
+		});
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->RegisterEventListener("OpenSound", [this]() // 열릴 때 사운드
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("AMB_OJ_PR_Stargazer_Open_0", 2, 1);
+			}
+		});
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->RegisterEventListener("ActiveSound", [this]() // 열릴 때 사운드
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+				m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+			}
 		});
 }
 
