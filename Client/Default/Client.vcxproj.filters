@@ -1172,6 +1172,9 @@
     <ClInclude Include="..\public\AreaSoundBox.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\BossRetryDoor.h">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1755,6 +1758,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Ergo.cpp">
       <Filter>02.GameObjects\19.Ergo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossRetryDoor.cpp">
+      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

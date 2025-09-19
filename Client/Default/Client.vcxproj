@@ -187,6 +187,7 @@
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
+    <ClInclude Include="..\public\BossRetryDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\BreakableMesh.h" />
     <ClInclude Include="..\public\Bullet.h" />
@@ -392,6 +393,7 @@
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
+    <ClCompile Include="..\private\BossRetryDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\BreakableMesh.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
