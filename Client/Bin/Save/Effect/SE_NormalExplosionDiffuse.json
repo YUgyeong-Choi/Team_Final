@@ -1,0 +1,75 @@
+{
+    "Animation": true,
+    "Billboard": true,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 63,
+    "EffectType": 0,
+    "EmissiveIntensity": 1.2000000476837158,
+    "EndTrack": 63,
+    "FlipUV": false,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                0.0,
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Scale": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 121.472412109375,
+    "Loop": true,
+    "Name": "normalexplosiondiffuse",
+    "NumKeyFrames": 1,
+    "RenderGroup": 9,
+    "ShaderPass": 3,
+    "StartTrack": 0,
+    "TextureTags": [
+        "",
+        "T_SubUV_Explosion_01_10x10_SC_KMH",
+        "",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        false,
+        false
+    ],
+    "Threshold": 0.0,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 8,
+    "TileY": 8
+}

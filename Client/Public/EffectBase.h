@@ -27,6 +27,8 @@ public:
 		_bool				isLoop = { true };
 		_bool				bTool = { false };
 
+		_wstring			strECName = TEXT("DEFAULT");
+
 		/* PresetWorldMatrix */
 		_bool				bHasPresetMat = { false };
 		_float4x4			PresetMatrix = {};
@@ -101,6 +103,7 @@ protected:
 	_bool				m_isLoop = { false };
 	_float				m_fTimeAcc = {};
 	EFFECT_TYPE			m_eEffectType = { EFF_END };
+	_wstring			m_strECName;
 
 	// Colors
 	_float4				m_vColor = { 1.f, 1.f, 1.f, 1.f };

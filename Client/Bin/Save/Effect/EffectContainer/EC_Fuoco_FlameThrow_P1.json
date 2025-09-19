@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                0.0,
-                0.0
+                -41.5,
+                -36.869998931884766
             ],
             "Animation": true,
             "Billboard": false,
@@ -17,6 +17,11 @@
                 0.3390531539916992,
                 0.07853400707244873,
                 1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
             ],
             "Color": [
                 1.0,
@@ -62,16 +67,18 @@
                     ]
                 }
             ],
-            "LifeTime": 401.6266174316406,
+            "LifeTime": 588.8173828125,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 1.5
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 3.0,
             "Name": "Fuoco_FlameThrow_Particle1",
             "NumInstance": 130,
             "NumKeyFrames": 1,
