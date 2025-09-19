@@ -42,51 +42,6 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
-#ifdef _DEBUG
-	{
-
-		if (m_prevPtrs_Debug.size() != m_Effects.size())
-		{
-			// 처음 진입하거나 개수가 바뀌면 스냅샷 초기화
-			m_prevPtrs_Debug.resize(m_Effects.size());
-			for (size_t i = 0; i < m_Effects.size(); ++i)
-				m_prevPtrs_Debug[i] = reinterpret_cast<uintptr_t>(m_Effects[i]);
-		}
-
-		for (size_t i = 0; i < m_Effects.size(); ++i)
-		{
-			CEffectBase* p = m_Effects[i];
-
-			// ① 포인터가 nullptr이 되었는지 체크
-			if (p == nullptr)
-			{
-				OutputDebugString(L"[HeapCorruption?] m_Effects 원소가 nullptr로 바뀜!\n");
-				__debugbreak();
-			}
-
-			// ② 포인터 주소가 이전 프레임과 달라졌는지 체크
-			uintptr_t curAddr = reinterpret_cast<uintptr_t>(p);
-			if (curAddr != m_prevPtrs_Debug[i])
-			{
-				OutputDebugString(L"[HeapCorruption?] m_Effects 포인터 주소가 갑자기 바뀜!\n");
-				__debugbreak();
-			}
-
-			// ③ 유효한 메모리인지 접근 테스트 (댕글링 감지)
-			__try
-			{
-				volatile auto v = p->Get_EffectType();
-			}
-			__except (EXCEPTION_EXECUTE_HANDLER)
-			{
-				OutputDebugString(L"[HeapCorruption?] 무효 메모리 접근 (Use-After-Free?)!\n");
-				__debugbreak();
-			}
-
-			m_prevPtrs_Debug[i] = curAddr;
-		}
-	}
-#endif
 	if (m_isActive == false || m_bDead)
 		return;
 

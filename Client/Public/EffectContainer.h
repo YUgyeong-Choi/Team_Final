@@ -66,14 +66,10 @@ private:
 	HRESULT Load_JsonFiles(const json& j);
 	HRESULT Ready_Components();
 	HRESULT Bind_ShaderResources();
-
 	//HRESULT Add_Effect(class CEffectBase* pEffect);
 
 
 private:
-#ifdef _DEBUG
-	std::vector<uintptr_t> m_prevPtrs_Debug;
-#endif
 
 public:
 	static CEffectContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
