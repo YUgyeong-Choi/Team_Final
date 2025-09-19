@@ -55,11 +55,11 @@ HRESULT CErgo::Initialize(void* pArg)
 
 	XMStoreFloat4x4(
 		&m_StartVerticalMatrix,
-		XMMatrixTranslation(0.f, -0.5f, 0.0f) // (x=0, y=1, z=0)
+		XMMatrixTranslation(0.f, -0.1f, 0.0f) // (x=0, y=1, z=0)
 	);
 	XMStoreFloat4x4(
 		&m_VerticalMatrix,
-		XMMatrixTranslation(0.f, 0.5f, 0.0f) // (x=0, y=1, z=0)
+		XMMatrixTranslation(0.f, 0.1f, 0.0f) // (x=0, y=1, z=0)
 	);
 
 	if (FAILED(Ready_Effect()))
@@ -265,6 +265,4 @@ void CErgo::Free()
 	//{
 	//	Safe_Release(m_pTrailEffect[i]);
 	//}
-
-
 }

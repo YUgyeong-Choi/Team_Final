@@ -776,7 +776,7 @@ HRESULT CCYTool::Window_Trail()
 	{
 		m_iLastSelected = m_iSelected;
 	}
-	ImGui::Text("Select Pass\n0. Default\n1.Drop");
+	ImGui::Text("Select Pass\n0. Default\t1.Drop\t2. blooddrop\t3. basic");
 
 	for (_uint i = 0; i < TE_END; i++)
 	{
