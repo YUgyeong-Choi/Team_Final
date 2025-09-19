@@ -9,7 +9,7 @@
 //#include "StaticMesh.h"
 //#include "StaticMesh_Instance.h"
 //#include "Nav.h"
-//#include "Static_Decal.h"
+#include "Static_Decal.h"
 //#include "Stargazer.h"
 //#include "ErgoItem.h"
 //#include "BreakableMesh.h"
@@ -104,7 +104,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	
 	//if (FAILED(Ready_WaterPuddle()))
 	//	return E_FAIL;
-
 
 	Reset();
 	return S_OK;

@@ -172,6 +172,16 @@ void CFuoco::Update(_float fTimeDelta)
 
 	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
+
+	//if (KEY_DOWN(DIK_L))
+	//{
+	//	EnterCutScene();
+
+	//	/*Spawn_Decal(m_pFistBone,
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+	//		XMVectorSet(5.f, 0.5f, 5.f, 0));*/
+	//}
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
