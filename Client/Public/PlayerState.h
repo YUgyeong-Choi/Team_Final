@@ -3396,7 +3396,6 @@ public:
 
             m_pOwner->Reset();
             m_pOwner->WeaponReset();
-            m_pGameInstance->Stop_BGM();
 
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
@@ -3411,12 +3410,19 @@ public:
             PxVec3 pxPos(m_pOwner->m_vTeleportPos.x, m_pOwner->m_vTeleportPos.y, m_pOwner->m_vTeleportPos.z);
             PxTransform posTrans = PxTransform(pxPos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
+            m_pOwner->m_pTransformCom->Set_State(STATE::POSITION, Float3ToVec(m_pOwner->m_vTeleportPos, 1.f));
+
+            /* [ 플레이어가 속한 구역탐색 ] */
+            m_pGameInstance->SetPlayerPosition(m_pOwner->m_pTransformCom->Get_State(STATE::POSITION));
+            m_pGameInstance->FindAreaContainingPoint();
+
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
 
             XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
            
 
+            // 사운드 
             // 페이드 되도록
 
             CUI_Container::UI_CONTAINER_DESC eDesc = {};
@@ -3435,7 +3441,24 @@ public:
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             m_pOwner->Check_RainArea();
-         
+			AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
+            switch (areaMgr)
+            {
+            case Engine::AREAMGR::STATION:
+                m_pGameInstance->Change_BGM("AMB_SS_Train_Out_Rain");
+                break;
+            case Engine::AREAMGR::HOTEL:
+                m_pGameInstance->Change_BGM("AMB_SS_Cathedral_Hall");
+                break;
+            case Engine::AREAMGR::FUOCO:
+                break;
+            case Engine::AREAMGR::OUTER:
+            case Engine::AREAMGR::FESTIVAL:
+                m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+                break;
+            default:
+                break;
+            }
         }
 
 
@@ -3468,8 +3491,6 @@ public:
                     m_pOwner->m_isMakeGuide = true;
                 }
             }
-
-           
             
         }
 

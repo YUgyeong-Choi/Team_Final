@@ -67,9 +67,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_In_03");
-	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
-	m_pBGM->Play();
+	Start_BGM("AMB_SS_Train_In_03");
 
 	if (FAILED(Ready_Sound()))
 		return E_FAIL;
@@ -1736,7 +1734,6 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 			Desc.Rotation = VecToFloat3(rotDegArr);
 			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-			Desc.pBGM = m_pBGM;
 			Desc.strInBGM = strInBGM;
 			Desc.strOutBGM = strOutBGM;
 

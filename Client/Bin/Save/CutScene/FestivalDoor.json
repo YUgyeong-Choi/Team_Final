@@ -210,7 +210,7 @@
             ],
             "fFov": 17.200000762939453,
             "interpFov": 1,
-            "keyFrame": 1440
+            "keyFrame": 1425
         },
         {
             "curveType": 0,
@@ -567,7 +567,7 @@
                 1.0
             ],
             "interpMatrixPosition": 1,
-            "keyFrame": 1440,
+            "keyFrame": 1425,
             "worldMatrix": [
                 -0.015091584995388985,
                 -1.369562141917413e-06,
