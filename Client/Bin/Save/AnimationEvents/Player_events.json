@@ -671,6 +671,16 @@
         {
             "ClipName": "AS_Pino_Prop_Fog",
             "Duration": 370.0,
+            "Events": [
+                {
+                    "EventName": "SetRootStep",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 365.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
