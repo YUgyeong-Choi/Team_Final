@@ -43,6 +43,9 @@ public:
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	void Register_Events();
+
+public:
+	void Create_CrashDoorEffect();
 protected:
 	HRESULT Ready_Components(void* pArg);
 	HRESULT Ready_Trigger(BOSSDOORMESH_DESC* pDesc);

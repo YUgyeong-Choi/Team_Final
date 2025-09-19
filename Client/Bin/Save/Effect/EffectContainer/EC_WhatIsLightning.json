@@ -67,7 +67,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16697.3515625,
+            "LifeTime": 17186.939453125,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -128,7 +128,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_Thunder_04_C_RSW",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -140,7 +140,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 32.0,
+            "TileTickPerSec": 17.0,
             "TileX": 3,
             "TileY": 1,
             "isTileLoop": false
@@ -212,7 +212,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16253.03515625,
+            "LifeTime": 16578.66015625,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -273,7 +273,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_01_4x1_SC_GDH",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -285,7 +285,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 32.0,
+            "TileTickPerSec": 17.0,
             "TileX": 8,
             "TileY": 5,
             "isTileLoop": false
@@ -357,7 +357,7 @@
                     ]
                 }
             ],
-            "LifeTime": 17081.55078125,
+            "LifeTime": 17422.685546875,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.3499999940395355
@@ -418,7 +418,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_08_4x1_SC_GDH",
+                "T_SubUV_Thunder_06_2x2_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -430,7 +430,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 45.0,
+            "TileTickPerSec": 24.0,
             "TileX": 4,
             "TileY": 3,
             "isTileLoop": false
@@ -473,9 +473,9 @@
                         1.0
                     ],
                     "Scale": [
-                        1.0,
-                        1.0,
-                        1.0
+                        2.0,
+                        2.0,
+                        2.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
@@ -485,7 +485,7 @@
                     ]
                 }
             ],
-            "LifeTime": 2170.135498046875,
+            "LifeTime": 2606.880859375,
             "Loop": true,
             "Name": "handdistortion",
             "NumKeyFrames": 1,
