@@ -9,6 +9,7 @@
 #include "UI_Manager.h"
 #include "FestivalLeader.h"
 #include "AreaSoundBox.h"
+#include "BossDoor.h"
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -246,6 +247,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 				CUI_Manager::Get_Instance()->On_Panel();
+
+				if (m_pBossDoor)
+				{
+					m_pBossDoor->Create_RetryDoor();
+					m_pBossDoor = nullptr;
+				}
+					
 			}
 		}
 	}
@@ -805,6 +813,11 @@ HRESULT CCamera_CutScene::InitDatas()
 	return S_OK;
 }
 
+void CCamera_CutScene::Set_BossDoor(CBossDoor* pDoor)
+{
+	m_pBossDoor = pDoor;
+}
+
 CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 {
 	CAMERA_FRAMEDATA data;
@@ -1122,7 +1135,7 @@ void CCamera_CutScene::Event()
 	case Client::CUTSCENE_TYPE::FESTIVAL:
 		if (m_iCurrentFrame == 30)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_WhatIsLightning"));
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning_Hand(TEXT("EC_WhatIsLightning"));
 		}
 		if (m_iCurrentFrame == 125)
 		{

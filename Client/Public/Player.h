@@ -218,6 +218,7 @@ private: /* [ 이펙트 관리 함수 ]*/
 	void Create_GuardEffect(_bool isPerfect);
 public:
 	void Create_LeftArm_Lightning(const _wstring& strECTag);
+	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }

@@ -222,7 +222,7 @@
     <ClInclude Include="..\Public\ShortCutDoor.h" />
     <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
-    <ClInclude Include="..\Public\DynamicMesh.h" />
+    <ClInclude Include="..\Public\DefaultDoor.h" />
     <ClInclude Include="..\public\Dynamic_Text_UI.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\public\EditorObjectFactory.h" />
@@ -424,7 +424,7 @@
     <ClCompile Include="..\Private\ShortCutDoor.cpp" />
     <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
-    <ClCompile Include="..\Private\DynamicMesh.cpp" />
+    <ClCompile Include="..\Private\DefaultDoor.cpp" />
     <ClCompile Include="..\private\Dynamic_Text_UI.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\private\EditorObjectFactory.cpp" />
