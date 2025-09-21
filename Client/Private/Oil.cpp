@@ -98,7 +98,7 @@ void COil::Priority_Update(_float fTimeDelta)
 			m_pPlayer = pPlayer;
 		}
 	
-		//Spawn_Decal(XMVectorSet(5.f, 0.5f, 5.f, 0));
+		Spawn_Decal(XMVectorSet(2.f, 0.5f, 2.f, 0));
 
 	}
 }
@@ -183,17 +183,26 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::BC)] = TEXT("Prototype_Component_Texture_FireEater_Oil_BC");
 
 	DecalDesc.bHasLifeTime = true;
-	DecalDesc.fLifeTime = 50.f;
+	DecalDesc.fLifeTime = 10.f;
 
+	// 플레이어의 월드 행렬
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
+	// 위치만 추출
+	_vector vPosition = WorldMatrix.r[3]; // 행렬의 4번째 행(translation)
+
+	// 위치 행렬 생성
+	_matrix PosMatrix = XMMatrixTranslationFromVector(vPosition);
+
+	// 데칼 스케일 적용
 	_matrix ScaleMatrix = XMMatrixScaling(
 		XMVectorGetX(vDecalScale),
 		XMVectorGetY(vDecalScale),
 		XMVectorGetZ(vDecalScale));
 
-	// [스케일 * 기존 월드 행렬]
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
+	// 최종 월드 행렬 (스케일 + 위치)
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * PosMatrix);
+
 
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
@@ -274,12 +283,12 @@ HRESULT COil::Ready_Components()
 
 HRESULT COil::Ready_Effect()
 {
-	CEffectContainer::DESC desc = {};
-	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
-	m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc));
-	if (nullptr == m_pEffect)
-		MSG_BOX("이펙트 생성 실패함");
+	//CEffectContainer::DESC desc = {};
+	//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	//m_pEffect = dynamic_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &desc));
+	//if (nullptr == m_pEffect)
+	//	MSG_BOX("이펙트 생성 실패함");
 
 	return S_OK;
 }
