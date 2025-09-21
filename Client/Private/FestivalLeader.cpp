@@ -31,6 +31,8 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
 	m_bIsDissolve = true;
+	m_bSecondEmissiveLoad = true;
+
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -127,7 +129,9 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_I))
 	{
-		m_fHp -= 500.f;
+		SwitchSecondEmissive(true, 1.f);
+		SwitchSecondEmissive(false, 1.f);
+		//m_fHp -= 500.f;
 		//	ReChallenge();
 	}
 #ifdef _DEBUG
@@ -284,6 +288,7 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 HRESULT CFestivalLeader::Render()
 {
 	__super::Render();
+
 	return S_OK;
 }
 

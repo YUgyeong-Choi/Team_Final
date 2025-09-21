@@ -17834,7 +17834,7 @@
         "LevelType": 0,
         "LightCustom": 0,
         "LightType": 1,
-        "OuterCosAngle": 56.99995422363281,
+        "OuterCosAngle": 56.99995040893555,
         "Range": 12.300000190734863,
         "Volumetric": false,
         "WorldMatrix": [
@@ -18235,12 +18235,12 @@
         "FogCutOff": 4.300000190734863,
         "FogDensity": 2.4000000953674316,
         "InnerCosAngle": 90.0,
-        "Intensity": 1.4600000381469727,
+        "Intensity": 1.9600000381469727,
         "LevelType": 0,
         "LightCustom": 0,
         "LightType": 2,
         "OuterCosAngle": 90.0,
-        "Range": 1.2000000476837158,
+        "Range": 1.5,
         "Volumetric": false,
         "WorldMatrix": [
             [
@@ -18264,7 +18264,7 @@
             [
                 407.2912902832031,
                 17.205965042114258,
-                -48.10809326171875,
+                -47.77922439575195,
                 1.0
             ]
         ]
