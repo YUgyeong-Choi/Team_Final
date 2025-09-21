@@ -202,7 +202,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
-		if (KEY_DOWN(DIK_E))
+		if (KEY_PRESSING(DIK_E))
 		{
 			CEffectContainer::DESC desc = {};
 			desc.pSocketMatrix = nullptr;

@@ -18,6 +18,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 1.0,
@@ -31,6 +36,7 @@
             "EndTrack": 200,
             "FlipUV": false,
             "Gravity": 0.25,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -61,13 +67,15 @@
                     ]
                 }
             ],
-            "LifeTime": 9075.634765625,
+            "LifeTime": 9261.625,
             "LifeTime_Particle": [
                 0.5,
                 1.100000023841858
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.5,
@@ -147,12 +155,12 @@
                 1.0
             ],
             "Color": [
-                -0.02564549446105957,
-                -0.02564549446105957,
-                -0.02564549446105957,
-                1.0
+                1.0,
+                1.0,
+                1.0,
+                -0.007324814796447754
             ],
-            "DistortionStrength": 35.900001525878906,
+            "DistortionStrength": 202.0,
             "Duration": 55,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -188,10 +196,10 @@
                 },
                 {
                     "Color": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
                     ],
                     "Intensity": 1.0,
                     "Interpolation": 0,
@@ -202,9 +210,9 @@
                         0.0
                     ],
                     "Scale": [
-                        10.0,
-                        10.0,
-                        10.0
+                        18.0,
+                        18.0,
+                        18.0
                     ],
                     "TrackPosition": 48.0,
                     "Translation": [
@@ -214,7 +222,7 @@
                     ]
                 }
             ],
-            "LifeTime": 731.0345458984375,
+            "LifeTime": 903.1159057617188,
             "Loop": true,
             "Name": "Distortion",
             "NumKeyFrames": 2,
@@ -249,12 +257,12 @@
                 1.0
             ],
             "Color": [
-                -0.02564549446105957,
-                -0.02564549446105957,
-                -0.02564549446105957,
-                1.0
+                1.0,
+                1.0,
+                1.0,
+                -0.007324814796447754
             ],
-            "DistortionStrength": 10.0,
+            "DistortionStrength": 185.6999969482422,
             "Duration": 55,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -290,10 +298,10 @@
                 },
                 {
                     "Color": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
                     ],
                     "Intensity": 1.0,
                     "Interpolation": 0,
@@ -304,9 +312,9 @@
                         0.0
                     ],
                     "Scale": [
-                        10.0,
-                        10.0,
-                        10.0
+                        11.0,
+                        11.0,
+                        13.0
                     ],
                     "TrackPosition": 48.0,
                     "Translation": [
@@ -316,7 +324,7 @@
                     ]
                 }
             ],
-            "LifeTime": 706.4638061523438,
+            "LifeTime": 877.8115234375,
             "Loop": true,
             "Name": "Distortion",
             "NumKeyFrames": 2,
@@ -326,7 +334,7 @@
             "TextureTags": [
                 "",
                 "",
-                "T_Ring_03_C_GDH",
+                "T_Shere_06_C_HJS",
                 ""
             ],
             "TextureUsage": [
@@ -359,6 +367,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 1.0,
@@ -372,6 +385,7 @@
             "EndTrack": 228,
             "FlipUV": false,
             "Gravity": 0.25,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -402,13 +416,15 @@
                     ]
                 }
             ],
-            "LifeTime": 4754.208984375,
+            "LifeTime": 4768.95849609375,
             "LifeTime_Particle": [
                 0.5,
                 1.100000023841858
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.10000000149011612,
@@ -488,10 +504,10 @@
                 0.0
             ],
             "Color": [
-                0.09414476901292801,
-                0.5881458520889282,
+                0.09411769360303879,
+                0.5882351994514465,
                 1.0,
-                0.146375834941864
+                0.0002238154411315918
             ],
             "DistortionStrength": 10.0,
             "Duration": 55,
@@ -555,7 +571,7 @@
                     ]
                 }
             ],
-            "LifeTime": 170.51878356933594,
+            "LifeTime": 342.5104064941406,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,
