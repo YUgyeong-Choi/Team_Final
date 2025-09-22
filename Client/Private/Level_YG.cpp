@@ -1253,7 +1253,7 @@ HRESULT CLevel_YG::Ready_Interact()
 {
 	/*  [ 기차역 슬라이딩 문 ] */
 	CDefaultDoor::DEFAULTDOOR_DESC Desc{};
-	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
 
@@ -1271,14 +1271,14 @@ HRESULT CLevel_YG::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
 	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_SlideDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("TrainDoor"), &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_SlideDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
 
 
 	/* [ 푸쿠오 보스 문 ] */
 	CBossDoor::BOSSDOORMESH_DESC BossDoorDesc{};
-	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	BossDoorDesc.m_eMeshLevelID = LEVEL::YG;
 	BossDoorDesc.szMeshID = TEXT("FacotoryDoor");
 	lstrcpy(BossDoorDesc.szName, TEXT("FacotoryDoor"));
 
@@ -1298,13 +1298,13 @@ HRESULT CLevel_YG::Ready_Interact()
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
 	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
 	/* [ 축제의 인도자 문 ] */
 	BossDoorDesc = {};
-	BossDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	BossDoorDesc.m_eMeshLevelID = LEVEL::YG;
 	BossDoorDesc.szMeshID = TEXT("FestivalDoor");
 	lstrcpy(BossDoorDesc.szName, TEXT("FestivalDoor"));
 
@@ -1327,13 +1327,13 @@ HRESULT CLevel_YG::Ready_Interact()
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
 	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossDoor"), &BossDoorDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
 	/* [ 야외 나가는 문 ] */
 	Desc = {};
-	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("StationDoubleDoor");
 	lstrcpy(Desc.szName, TEXT("StationDoubleDoor"));
 
@@ -1351,35 +1351,13 @@ HRESULT CLevel_YG::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::OUTDOOR;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 	Desc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &Desc)))
-		return E_FAIL;
-
-	/* [ 기차 내부 문 ] */
-	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	Desc.szMeshID = TEXT("StationInnerDoor");
-	lstrcpy(Desc.szName, TEXT("StationInnerDoor"));
-
-	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationInnerDoor");
-	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
-
-	vPosition = _float3(34.4f, 0.0822f, 0.57f);
-	matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
-	XMStoreFloat4x4(&matWorldFloat, matWorld);
-	Desc.WorldMatrix = matWorldFloat;
-	Desc.vColliderOffSet = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	Desc.vColliderSize = _vector({ 0.2f, 1.f, 1.0f, 0.f });
-
-	Desc.eInteractType = INTERACT_TYPE::INNERDOOR;
-	Desc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	Desc.vTriggerSize = _vector({ 0.5f, 0.7f, 0.5f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_KeyDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("KeyDoor"), &Desc)))
 		return E_FAIL;
 
 	/* [ 숏컷 문 ] */
 	Desc = {};
-	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("ShortCutDoor");
 	lstrcpy(Desc.szName, TEXT("ShortCutDoor"));
 
@@ -1397,8 +1375,16 @@ HRESULT CLevel_YG::Ready_Interact()
 	Desc.eInteractType = INTERACT_TYPE::SHORTCUT;
 	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 	Desc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("ShortCutDoor"), &Desc)))
+		return E_FAIL;
+
+	/* [ 마지막 문 ] */
+	CGameObject::GAMEOBJECT_DESC ObjDesc = {};
+	ObjDesc.iLevelID = ENUM_CLASS(LEVEL::YG);
+	lstrcpy(Desc.szName, TEXT("FinalDoor"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FinalDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("FinalDoor"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

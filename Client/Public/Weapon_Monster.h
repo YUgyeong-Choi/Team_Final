@@ -56,6 +56,8 @@ public:
 	_float3 GetLocalRot3() { return _float3(m_vLocalRot.x, m_vLocalRot.y, m_vLocalRot.z); }
 	void    SetLocalRot(const _float3& vRot) { m_vLocalRot = _float4(vRot.x, vRot.y, vRot.z, 0.f); }
 
+	virtual void Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType = TRAIL_DEFAULT) override;
+
 protected: /* [ Setup ÇÔ¼ö ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();

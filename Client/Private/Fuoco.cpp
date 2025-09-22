@@ -149,8 +149,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 
 #endif
-	if (KEY_DOWN(DIK_M))
-		m_fHp -= 200;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
@@ -1691,9 +1689,7 @@ HRESULT CFuoco::Ready_Effect()
 	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_FireEater"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (!m_pTrailEffect)
 		return E_FAIL;
-
-	m_pTrailEffect->Set_TrailActive(true);
-
+	m_pTrailEffect->Set_TrailActive(false);
 	return S_OK;
 }
 
@@ -1934,6 +1930,26 @@ _bool CFuoco::CheckConditionFlameField()
 	return false;
 }
 
+
+void CFuoco::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("왕의 불꽃 푸오코");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+}
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {

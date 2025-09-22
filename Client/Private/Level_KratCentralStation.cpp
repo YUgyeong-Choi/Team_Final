@@ -1598,6 +1598,15 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &Desc)))
 		return E_FAIL;
 
+
+	/* [ 마지막 문 ] */
+	CGameObject::GAMEOBJECT_DESC ObjDesc = {};
+	ObjDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	lstrcpy(Desc.szName, TEXT("FinalDoor"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FinalDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("FinalDoor"), &Desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

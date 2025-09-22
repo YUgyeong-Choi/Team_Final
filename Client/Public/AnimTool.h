@@ -33,17 +33,22 @@ public:
 
 private:
 	HRESULT Render_OverrideAnimControllers();
-	HRESULT Render_TransitionConditions();
+	HRESULT Render_AnimationStateMachine();
 	HRESULT Render_AnimationSequence();
-	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_AnimControllers();
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_SpawnedObject();
 	HRESULT Render_Spawn_Object();
+	HRESULT Render_Transitions(class CAnimController* pCtrl,_bool bIsAnyLinkSelected, _bool bIsAnyNodeSelected);
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
 	HRESULT Render_Parameters();
 	HRESULT Bind_Shader();
+
+
+	HRESULT Handle_Links(CAnimController* pCtrl);
+
+	HRESULT Delete_AnimState(CAnimController* pCtrl);
 
 	void InitImNodesStyle();
 
@@ -53,14 +58,11 @@ private:
 	void Setting_Sequence();
 
 	void SelectAnimation();
-	void SelectAnimationForObject();
 	void Setting_AnimationProperties();
 	void ApplyCategoryLayout(class CAnimController* pCtrl);
 
-	void SaveLoadEvents(_bool isSave = true);
-	void SaveLoadAnimStates(_bool isSave = true);
-	void Test_AnimEvents();
-	void Add_OverrideAnimController(const string& name, const OverrideAnimController& overrideController);
+	void SaveOrLoadEvents(_bool isSave = true);
+	void SaveOrLoadAnimStates(_bool isSave = true);
 
 	string GetStateCategory(const string& stateName);
 
@@ -173,8 +175,9 @@ private:
 	_bool m_bShowAll = true;
 	_bool m_bShowAllLink = false;
 
-	const _int ANY_NODE_ID = 100001;
+	// 특수 노드 아이디들
 	const _int EXIT_NODE_ID = 100000;
+	const _int ANY_NODE_ID = 100001; 
 
 	unordered_set<_int> m_DrawnInPins;
 	unordered_set<_int> m_DrawnOutPins;

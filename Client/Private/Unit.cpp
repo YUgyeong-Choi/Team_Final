@@ -46,7 +46,7 @@ HRESULT CUnit::Initialize(void* pArg)
 
 	if (m_bSecondEmissiveLoad)
 	{
-		if (FAILED(Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		if (FAILED(Add_Component(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
 			TEXT("SecondEmissive_Com"), reinterpret_cast<CComponent**>(&m_pSecondEmissiveMap))))
 			return E_FAIL;
 	}

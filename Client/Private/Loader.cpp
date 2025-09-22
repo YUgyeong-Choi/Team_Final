@@ -61,6 +61,7 @@
 #include "BossDoor.h"
 #include "ShortCutDoor.h"
 #include "BossRetryDoor.h"
+#include "FinalDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
@@ -886,6 +887,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CBossRetryDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FinalDoor"),
+		CFinalDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		CAnimatedProp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -1394,7 +1399,9 @@ HRESULT CLoader::Loading_For_DH()
 HRESULT CLoader::Loading_For_JW()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -2431,6 +2438,10 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalLeader/FestivalLeader.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon_Buttler/SK_WP_MOB_ButtlerTrain_01.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -2694,6 +2705,10 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
 		CShortCutDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FinalDoor"),
+		CFinalDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

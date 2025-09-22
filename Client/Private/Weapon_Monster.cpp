@@ -235,6 +235,12 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 //	m_pPhysXActorCom->Set_Kinematic(false);
 //}
 
+void CWeapon_Monster::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
+{
+	if (m_pTrailEffect)
+		m_pTrailEffect->Set_TrailActive(bActive);
+}
+
 HRESULT CWeapon_Monster::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
@@ -319,7 +325,7 @@ HRESULT CWeapon_Monster::Ready_Effect()
 	if (!m_pTrailEffect)
 		return E_FAIL;
 
-	m_pTrailEffect->Set_TrailActive(true);
+	m_pTrailEffect->Set_TrailActive(false);
 
 	return S_OK;
 }

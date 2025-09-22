@@ -175,6 +175,7 @@ public:
 	void BreakPanel();
 	void EnterNextCutScene();
 	virtual void EnterCutScene() override;
+	virtual void ReChallenge() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -226,8 +227,6 @@ private:
 
 	array<CBone*, EBossBones::Total_Bones> m_BoneRefs{};
 	CBone* m_pRightWeaponBone{ nullptr };
-
-	class CWeapon_Monster* m_pHammer{ nullptr };
 
 	_bool m_bSwitchHeadSpace = false;
 	_int m_iOriginBoneIndex = -1;

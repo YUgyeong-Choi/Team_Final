@@ -1618,7 +1618,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 	if (!m_pTrailEffect)
 		return E_FAIL;
 
-	m_pTrailEffect->Set_TrailActive(true);
+	m_pTrailEffect->Set_TrailActive(false);
 
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
@@ -1871,6 +1871,27 @@ void CFestivalLeader::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+}
+
+void CFestivalLeader::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("축제 인도자");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
 }
 
 void CFestivalLeader::Calc_WeaponDir()
