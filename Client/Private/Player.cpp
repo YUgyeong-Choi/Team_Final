@@ -224,6 +224,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if(KEY_DOWN(DIK_M))
+		m_fHp = 10.f;
+
 	if (KEY_PRESSING(DIK_LALT))
 	{
 		if (KEY_DOWN(DIK_R))
@@ -1733,6 +1736,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		break;
 	}
+	case eAnimCategory::INTERACTIONFOG:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 
 
 	default:
@@ -1833,6 +1841,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::PULSE;
 	if (stateName.find("FatalAttack") == 0)
 		return eAnimCategory::FATAL;
+
+	if (stateName.find("Interaction_Fog") == 0)
+		return eAnimCategory::INTERACTIONFOG;
 	
 	return eAnimCategory::NONE;
 }
@@ -3686,6 +3697,10 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 		break;
 	case INNERDOOR:
 		stateName = "InnerDoor_Open";
+		break;
+	case RESTARTFESTIVAL:
+	case RESTARTFUOCO:
+		stateName = "Interaction_Fog";
 		break;
 	default:
 		break;

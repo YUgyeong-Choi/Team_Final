@@ -302,7 +302,7 @@ void CBossDoor::Create_RetryDoor()
 		wstring ModelPrototypeTag = TEXT("Prototype_Component_Model_FestivalRetryDoor");
 		lstrcpy(DefaultDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
-		_float3 vPosition = _float3(375.63f, 15.00f, -48.67f);
+		_float3 vPosition = _float3(376.f, 15.00f, -48.67f);
 		XMMATRIX trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
 		XMMATRIX world = trans;
 		_float4x4 matWorldFloat;
@@ -311,12 +311,13 @@ void CBossDoor::Create_RetryDoor()
 		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
 		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
 
-		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
+		DefaultDoorDesc.eInteractType = INTERACT_TYPE::RESTARTFESTIVAL;
 		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 
-		CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"), &DefaultDoorDesc));
-		m_pGameInstance->Add_PoolObject(TEXT("BossRetryDoor"), pObj);
+		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"),
+			m_pGameInstance->GetCurrentLevelIndex(), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
+			return;
 	}
 		break;
 	case Client::FUOCO:
@@ -340,19 +341,18 @@ void CBossDoor::Create_RetryDoor()
 		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
 		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
 
-		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
+		DefaultDoorDesc.eInteractType = INTERACT_TYPE::RESTARTFUOCO;
 		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
 		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
 
-		CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"), &DefaultDoorDesc));
-		m_pGameInstance->Add_PoolObject(TEXT("BossRetryDoor"), pObj);
+		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"),
+			m_pGameInstance->GetCurrentLevelIndex(), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
+			return;
 	}
 		break;
 	default:
 		break;
 	}
-
-	m_pGameInstance->UseAll_PoolObjects(L"BossRetryDoor");
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)
