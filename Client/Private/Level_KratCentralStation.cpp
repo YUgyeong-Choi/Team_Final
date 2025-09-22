@@ -221,19 +221,19 @@ HRESULT CLevel_KratCentralStation::Reset()
 {
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FestivalLeader");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj, false);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal", true);
 
 	//부서지는 메쉬 리셋
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_BreakableMesh");

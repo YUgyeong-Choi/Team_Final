@@ -73,9 +73,9 @@ HRESULT CLevel_DH::Initialize()
 
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::DH), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
 
 	return S_OK;
 }

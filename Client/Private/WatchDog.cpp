@@ -80,7 +80,7 @@ void CWatchDog::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			
 		}
 	}
