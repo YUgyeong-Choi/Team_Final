@@ -37,7 +37,7 @@ public:
 protected:
 	HRESULT Ready_Components(void* pArg);
 private:
-	_bool m_bWalkFront = false;
+	_bool m_bActiveBoss = false;
 	_bool m_bEnd = false;
 
 	_float m_fResetTime = 0.f;

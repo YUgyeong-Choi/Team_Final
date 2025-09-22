@@ -49,14 +49,11 @@ void CBossRetryDoor::Priority_Update(_float fTimeDelta)
 		if (KEY_DOWN(DIK_E))
 		{
 			m_bMoveStart = true;
+			m_bCanActive = false;
 			CUI_Manager::Get_Instance()->Activate_Popup(false);
 			CCamera_Manager::Get_Instance()->SetbMoveable(false);
 			m_pPhysXActorCom->Init_SimulationFilterData();
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
-			// [ 리트라이 도어에서 해야할 일 ] 
-			// 1. 보스 전투바로 (컷씬 x)
-			// 2. 플레이어 애니메이션 재생
-			// 3. 디졸브 변수 올리기 (m_vDissolveGlowColor, m_fDissolve)
 		}
 	}
 
@@ -256,12 +253,21 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		{
 			SwitchDissolve(false, 0.5f, _float3{ 0.f, 0.f, 0.f }, {});
 
-
 			m_bRotationStart = false;
-			m_bEnd = true;
+			m_bActiveBoss = true;
 			m_pPlayer->Interaction_Door(m_eInteractType, this);
 			m_fResetTime = 0.f;
+		}
+	}
 
+	if (m_bActiveBoss)
+	{
+		m_fResetTime += fTimeDelta;
+		if (m_fResetTime > 5.5f)
+		{
+			m_bActiveBoss = false;
+			m_bEnd = true;
+			m_fResetTime = 0.f;
 			switch (m_eInteractType)
 			{
 			case Client::RESTARTFESTIVAL:
@@ -284,43 +290,10 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		}
 	}
 
-	//if (m_bRotationStart)
-	//{
-	//	m_fResetTime += fTimeDelta;
-	//	if (m_fResetTime > 0.f)
-	//	{
-	//		m_bRotationStart = false;
-	//		m_bEnd = true;
-	//		m_pPlayer->Interaction_Door(m_eInteractType, this);
-	//		m_fResetTime = 0.f;
-
-	//		switch (m_eInteractType)
-	//		{
-	//		case Client::RESTARTFESTIVAL:
-	//		{
-	//			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-	//			unit->ReChallenge();
-	//			m_pGameInstance->Change_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Battle");
-	//		}
-	//		break;
-	//		case Client::RESTARTFUOCO:
-	//		{
-	//			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
-	//			unit->ReChallenge();
-	//			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH02");
-	//		}
-	//		break;
-	//		default:
-	//			break;
-	//		}
-	//	}
-
-	//}
-
 	if (m_bEnd)
 	{
 		m_fResetTime += fTimeDelta;
-		if (m_fResetTime > 5.f)
+		if (m_fResetTime > 1.f)
 		{
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			m_fResetTime = 0.f;

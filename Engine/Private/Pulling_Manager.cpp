@@ -50,8 +50,6 @@ void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName)
         queueObjs.pop();
 
         if (!pObj) continue; 
-
-        pObj->Reset();
         m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
     }
 }
@@ -63,7 +61,7 @@ void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObjec
     CGameObject* pReturnObj = m_pGameInstance->Recycle_GameObject(pObj, levelIdx, wsLayerName);
     if (!pObj)
         return;
-
+    pReturnObj->Reset();
     m_ObjectPools[wsLayerName].push(pReturnObj);
 }
 
