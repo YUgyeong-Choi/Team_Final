@@ -811,6 +811,16 @@ HRESULT CCamera_CutScene::InitDatas()
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FESTIVAL, LoadCameraFrameData(j)));
 	}
 
+	ifstream inFile6("../Bin/Save/CutScene/Final.json");
+	if (inFile6.is_open())
+	{
+		json j;
+		inFile6 >> j;
+		inFile6.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FINAL, LoadCameraFrameData(j)));
+	}
+
 	return S_OK;
 }
 
@@ -1288,6 +1298,23 @@ void CCamera_CutScene::Event()
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
 		}
 
+		break;
+	case CUTSCENE_TYPE::FINAL:
+		if (m_iCurrentFrame == 1)
+		{
+			CFinalDoor* pDoor = dynamic_cast<CFinalDoor*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("FinalDoor")));
+			pDoor->DoorOpen();
+		}
+
+		if (m_iCurrentFrame == 450)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
+		}
+
+		if(m_iCurrentFrame == 550)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+		}
 		break;
 	default:
 		break;

@@ -45,6 +45,25 @@ void CFinalDoor::Priority_Update(_float fTimeDelta)
 
 	__super::Priority_Update(fTimeDelta);
 
+	if (m_bOpen)
+	{
+		_vector pos = m_pTransformCom->Get_State(STATE::POSITION);
+
+		float y = XMVectorGetY(pos);
+
+		y += 0.015f;
+
+		if (y >= 5.0f)
+		{
+			y = 5.0f;
+			m_bOpen = false;
+		}
+
+		// pos의 Y값 갱신
+		pos = XMVectorSetY(pos, y);
+		m_pTransformCom->Set_State(STATE::POSITION, pos);
+	}
+
 }
 
 void CFinalDoor::Update(_float fTimeDelta)
@@ -138,6 +157,11 @@ HRESULT CFinalDoor::Ready_Components(void* pArg)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CFinalDoor::DoorOpen()
+{
+	m_bOpen = true;
 }
 
 CFinalDoor* CFinalDoor::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
