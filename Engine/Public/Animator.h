@@ -2,7 +2,6 @@
 #include "Component.h"
 #include "Animation.h"
 #include "AnimController.h"
-#include "AnimComputeShader.h"
 
 #include "Serializable.h"
 
@@ -44,7 +43,6 @@ private:
 public:
     virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
-    HRESULT Initialize_Test(void* pArg);
     void Update(_float fDeltaTime);
 
     void Reset();
@@ -242,33 +240,10 @@ public:
 		}
 	}
 
-
-
     _float3& GetRootMotionDelta()  { return m_RootMotionDelta; }
     _float4& GetRootRotationDelta()  { return m_RootRotationDelta; }
-    _float GetYAngleFromQuaternion(const _vector& quat);
-    ID3D11ShaderResourceView* GetFinalBoneMatricesSRV() const {
-        if (m_pAnimComputeShader == nullptr)
-            return nullptr;
-        return m_pAnimComputeShader->GetOutputBoneSRV();
-    }
-	ID3D11UnorderedAccessView* GetFinalBoneMatricesUAV() const {
-		if (m_pAnimComputeShader == nullptr)
-			return nullptr;
-		return m_pAnimComputeShader->GetOutputBoneUAV();
-	}
-#ifdef _DEBUG
-    void DebugComputeShader();
-	vector<_float4x4> DebugGetFinalBoneMatrices() const {
-		if (m_pAnimComputeShader == nullptr)
-			return {};
-		vector<_float4x4> matrices(m_Bones.size());
-        m_pAnimComputeShader->DownloadBoneMatrices(matrices.data(),static_cast<_uint>(m_Bones.size()));
-		return matrices;
-	}
-#endif
 
-
+    //플레이 속도 비율
     void SetPlayRate(_float fSpeed) { m_fPlaybackSpeed = fSpeed; }
 private:
     // 애니메이션 재생관련
@@ -336,11 +311,6 @@ private:
 
     array<CAnimation*, 4> m_pBlendAnimArray{nullptr,};
 	_int m_iBlendAnimCount = 0; // 현재 애니메이션 개수
-
-    // 컴퓨트 셰이더
-	CAnimComputeShader* m_pAnimComputeShader = nullptr; // 애니메이션 컴퓨트 셰이더
-    vector<_float4x4> m_vLocalBoneMatrices;
-	vector<_float4x4> m_vFinalBoneMatrices; // 최종 본 행렬들 (GPU에서 받아온 행렬)
 
 public:
 	static CAnimator* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
