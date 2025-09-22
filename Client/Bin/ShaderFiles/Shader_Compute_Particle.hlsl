@@ -125,7 +125,8 @@ float Random(uint iSeed, float fMin, float fMax)
 //}
 
 // 원하는 방향의 평면 위 원 둘레 랜덤 좌표                  (영웅)
-float4 RandomOnCircle(uint iSeed, float3 Center, float Radius/*, float3 Normal*/)
+// EllipseScale을 곱해서 타원처럼. range z에 넣어뒀으니까 기본값을 1로 주기...
+float4 RandomOnCircle(uint iSeed, float3 Center, float Radius, float EllipseScale /*, float3 Normal*/)
 {
     // --- 안전한 법선 ---
     float3 Normal = normalize(CircleNormal);
@@ -140,7 +141,7 @@ float4 RandomOnCircle(uint iSeed, float3 Center, float Radius/*, float3 Normal*/
     // --- 랜덤 각도 ---
     float angle = Random(iSeed, 0.0f, 6.2831853f);
     float c = cos(angle) * Radius;
-    float s = sin(angle) * Radius;
+    float s = sin(angle) * Radius * EllipseScale;
 
     // --- 평면 위 점 ---
     float3 pos = Center + tangent * c + bitangent * s;
@@ -280,7 +281,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             }
             else
             {
-                pp.Translation = RandomOnCircle(i * 3, Center.xyz, Range.x * 0.5f);
+                pp.Translation = RandomOnCircle(i * 3, Center.xyz, Range.x * 0.5f, Range.z);
             }
             
             if (ParticleType == 0) // spread
@@ -465,7 +466,7 @@ void CSMain(uint3 dispatchThreadId : SV_DispatchThreadID)
             }
             else
             {
-                pos = RandomOnCircle(i * 3, Center.xyz, Range.x * 0.5f).xyz;
+                pos = RandomOnCircle(i * 3, Center.xyz, Range.x * 0.5f, Range.z).xyz;
             }
             
 
