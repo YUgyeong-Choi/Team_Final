@@ -29,7 +29,6 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	virtual void Reset() override;
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
@@ -40,6 +39,8 @@ protected:
 private:
 	_bool m_bWalkFront = false;
 	_bool m_bEnd = false;
+
+	_float m_fResetTime = 0.f;
 public:
 	static CBossRetryDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

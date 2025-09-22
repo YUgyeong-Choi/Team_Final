@@ -10,7 +10,8 @@ class CStargazerEffect final : public CGameObject
 public:
 	typedef struct tagStargazerEffectDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		class CStargazer* pOwner = { nullptr };
+		class CGameObject* pOwner = { nullptr };
+		_bool bIsPlayer = { false };
 
 	}DESC;
 
@@ -31,6 +32,8 @@ public:
 
 	void Activate_Stargazer_Reassemble();
 	void Activate_Stargazer_Spread();
+	void Activate_Stargazer_PlayerButterfly();
+	void Delete_Stargazer_PlayerButterfly();
 	void Activate_Stargazer_Shrink();
 
 private:
@@ -39,11 +42,14 @@ private:
 	HRESULT Ready_Effect();
 
 private:
-	class CStargazer*		m_pOwner = { nullptr };
+	class CGameObject*		m_pOwner = { nullptr };
 
 	class CEffectContainer* m_pFloatingEffect = { nullptr };
 	class CEffectContainer* m_pButterflyEffect[3] = {nullptr};
 	CTransform*				m_pButterflyTrans[3] = { nullptr };
+
+	class CEffectContainer* m_pPlayerButterflyEffect = {nullptr};
+	CTransform*				m_pPlayerButterflyTrans = { nullptr };
 
 	STARGAZER_STATUS		m_eStatus = { STARGAZER_STATUS::DEACTIVATE };
 

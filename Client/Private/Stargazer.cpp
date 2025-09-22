@@ -71,13 +71,20 @@ HRESULT CStargazer::Initialize(void* pArg)
 	{
 		m_pSoundCom->Set3DState(0.f, 15.f);
 	}
+
+	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	return S_OK;
 }
 
 void CStargazer::Priority_Update(_float fTimeDelta)
 {
 	if(m_pPlayer == nullptr)
+	{
 		Find_Player();
+
+		if(m_pPlayer)
+			Ready_PlayerButterflyEffectSet();
+	}
 
 	
 	if (!m_bUseOtherUI)
@@ -759,6 +766,18 @@ void CStargazer::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		}
 			
 	}
+
+	if (!m_pCamera_Manager->GetbMoveable() && !m_bPlayerButterfly)
+	{
+		//범위안에있고 플레이어 움직임이 통제 당하면 상호작용중인걸로 간주한다.
+		m_pPlayerEffectSet->Activate_Stargazer_PlayerButterfly();
+		m_bPlayerButterfly = true;
+	}
+	else
+	{
+		m_pPlayerEffectSet->Delete_Stargazer_PlayerButterfly();
+	}
+
 }
 
 void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -769,6 +788,7 @@ void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bTalkActive = false;
 	m_bUseScript = false;
 	m_bUseOtherUI = false;
+	m_bPlayerButterfly = false;
 	
 }
 
@@ -1013,6 +1033,19 @@ HRESULT CStargazer::Ready_EffectSet()
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance,&desc)))
 		return E_FAIL;
 	m_pEffectSet = static_cast<CStargazerEffect*>(pInstance);
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_PlayerButterflyEffectSet()
+{
+	CGameObject* pInstance = nullptr;
+	CStargazerEffect::DESC desc = {};
+	desc.pOwner = m_pPlayer;
+	desc.iLevelID = m_iLevelID;
+	desc.bIsPlayer = true;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance, &desc)))
+		return E_FAIL;
+	m_pPlayerEffectSet = static_cast<CStargazerEffect*>(pInstance);
 	return S_OK;
 }
 
