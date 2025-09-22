@@ -11,7 +11,7 @@
             "Collision": true,
             "ModelName": "FloorA",
             "NoInstancing": false,
-            "ObjectCount": 4,
+            "ObjectCount": 5,
             "Objects": [
                 {
                     "ColliderType": 1,
@@ -136,6 +136,37 @@
                         [
                             290.4494934082031,
                             14.0,
+                            0.0,
+                            1.0
+                        ]
+                    ]
+                },
+                {
+                    "ColliderType": 1,
+                    "IsFloor": false,
+                    "LightShape": 0,
+                    "WorldMatrix": [
+                        [
+                            69.04376220703125,
+                            0.0,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.67027348279953,
+                            0.0,
+                            0.0
+                        ],
+                        [
+                            0.0,
+                            0.0,
+                            190.5684814453125,
+                            0.0
+                        ],
+                        [
+                            290.4494934082031,
+                            2.3174896240234375,
                             0.0,
                             1.0
                         ]

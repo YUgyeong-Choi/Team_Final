@@ -31,7 +31,7 @@ HRESULT CSoundController::Initialize(void* pArg)
 
 void CSoundController::Play(const string& strTag)
 {
-	auto pSoundCore = Find_Sound(strTag);
+ 	auto pSoundCore = Find_Sound(strTag);
 	if (pSoundCore)
 		pSoundCore->Play();
 }
@@ -44,6 +44,8 @@ void CSoundController::Play_Random(const string& strTag, _int randCount, _int iS
 	auto pSoundCore = Find_Sound(strSoundTag);
 	if (pSoundCore)
 		pSoundCore->Play();
+	else
+		MSG_BOX("사운드를 찾을 수 없음");
 }
 
 void CSoundController::Stop(const string& strTag)
