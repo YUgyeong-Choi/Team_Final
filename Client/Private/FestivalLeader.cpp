@@ -129,9 +129,9 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_I))
 	{
-		SwitchSecondEmissive(true, 1.f);
-		SwitchSecondEmissive(false, 1.f);
-		//m_fHp -= 500.f;
+	
+		m_fHp -= 500.f;
+	//	SwitchSecondEmissive(true, 1.f);
 		//	ReChallenge();
 	}
 #ifdef _DEBUG
@@ -974,6 +974,7 @@ void CFestivalLeader::Register_Events()
 					m_bSwitchHeadSpace = true;
 				}
 			}
+			SwitchSecondEmissive(true, 1.f);
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
 		});
 

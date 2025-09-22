@@ -45,6 +45,8 @@ private:
 	HRESULT Render_Parameters();
 	HRESULT Bind_Shader();
 
+	void InitImNodesStyle();
+
 	void UpdateCurrentModel(_float fTimeDelta);
 	void CreateModel(const string& fileName,const string& filePath);
 	
@@ -88,7 +90,7 @@ private:
 
 
 	// 레벨 렌더와 렌더러와의 렌더 구분용
-	_bool m_bRenerLevel = false;
+	_bool m_bRenderLevel = false;
 
 	_bool m_bIsObject{ false };
 
@@ -105,7 +107,7 @@ private:
 	class CEventMag* m_pEventMag = nullptr; // 이벤트 매니저
 
 	// 애니메이션 스테이트 머신 관리용
-	_int m_iSpeicificNodeId = 1;
+	_int m_iSpecificNodeId = 1;
 	_bool m_bShowParameters = false; // 파라미터 UI 표시 여부
 
 
@@ -127,7 +129,7 @@ private:
 	_int m_iControllerIndex = 0;	// 애니메이션 컨트롤러 인덱스
 	_int m_iSelectEntry = -1; // 시퀀스 선택 인덱스
 	_int m_iSelectedNodeID = -1; // 선택된 노드 ID
-	_int m_iDefualtSeletedAnimIndex = -1; // 선택된 State Default Anim 인덱스
+	_int m_iDefaultSelectedAnimIndex = -1; // 선택된 State Default Anim 인덱스
 	_int m_iSelectedUpperAnimIndex = -1; // 상체 애니메이션 인덱스
 	_int m_iSelectedLowerAnimIndex = -1; // 하체 애니메이션 인덱스
 	_int m_iSelectedModelIndex = -1; // 선택된 모델 인덱스
@@ -157,7 +159,7 @@ private:
 	OverrideAnimController m_NewOverrideAnimController; // 새 오버라이드 애니메이션 컨트롤러
 	vector<OverrideAnimController> m_vecOverrideAnimControllers; // 오버라이드 애니메이션 컨트롤러들
 	_bool m_bUseOverrideController = false; // 오버라이드 컨트롤러 사용 여부
-	_bool m_bIsUesMaskBoneState = false;
+	_bool m_bIsUseMaskBoneState = false;
 	_int  m_iOverrideMaskBoneIndex = -1; // 오버라이드 컨트롤러의 마스크 뼈대 인덱스
 	_int  m_iOverrideAnimIndex = -1; // 오버라이드 애니메이션 인덱스
 	_int  m_iOverrideUpperAnimIndex = -1; // 오버라이드 상체 애니메이션 인덱스
@@ -171,8 +173,8 @@ private:
 	_bool m_bShowAll = true;
 	_bool m_bShowAllLink = false;
 
-	static constexpr _int ANY_NODE_ID = 100001;
-	static constexpr _int EXIT_NODE_ID = 100000;
+	const _int ANY_NODE_ID = 100001;
+	const _int EXIT_NODE_ID = 100000;
 
 	unordered_set<_int> m_DrawnInPins;
 	unordered_set<_int> m_DrawnOutPins;
@@ -191,6 +193,7 @@ private:
 	unordered_map<string, void*> m_SpawnObjectDesc;
 
 
+	// 모든 애니메이션 속도 일괄 처리를 위한 변수
 	_float m_fAllAnimTickperSec = 55.f;
 
 

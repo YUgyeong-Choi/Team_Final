@@ -120,6 +120,7 @@ void CEliteUnit::Update(_float fTimeDelta)
         XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
         m_pSoundCom->Update3DPosition(vPos);
     }
+
 }
 
 void CEliteUnit::Late_Update(_float fTimeDelta)
@@ -637,6 +638,7 @@ void CEliteUnit::Reset()
     {
         m_pSoundCom->StopAll();
     }
+    SwitchSecondEmissive(false, 1.f);
 }
 
 void CEliteUnit::Register_Events()
