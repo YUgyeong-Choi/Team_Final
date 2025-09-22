@@ -13,9 +13,9 @@
                 0.0
             ],
             "CenterColor": [
-                0.13596117496490479,
-                0.17941901087760925,
-                0.32460731267929077,
+                0.0,
+                0.6073300838470459,
+                1.0,
                 1.0
             ],
             "CircleNormal": [
@@ -24,8 +24,8 @@
                 0.0
             ],
             "Color": [
-                0.0837697982788086,
-                0.0,
+                0.6125654578208923,
+                0.8356953263282776,
                 1.0,
                 1.0
             ],
@@ -41,12 +41,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        0.0837697982788086,
-                        0.0,
+                        0.6125654578208923,
+                        0.8356953263282776,
                         1.0,
                         1.0
                     ],
-                    "Intensity": 20.0,
+                    "Intensity": 3.950000047683716,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -67,7 +67,7 @@
                     ]
                 }
             ],
-            "LifeTime": 17197.23828125,
+            "LifeTime": 17401.416015625,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -99,9 +99,9 @@
                 0.0
             ],
             "Range": [
-                1.0,
-                0.30000001192092896,
-                0.5
+                0.5,
+                0.2,
+                0.3
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -158,8 +158,8 @@
                 0.0
             ],
             "CenterColor": [
-                0.22513091564178467,
-                0.4036351442337036,
+                0.3141361474990845,
+                0.7306818962097168,
                 1.0,
                 1.0
             ],
@@ -169,8 +169,8 @@
                 0.0
             ],
             "Color": [
-                0.2722511291503906,
-                0.0,
+                0.6117647290229797,
+                0.8352941274642944,
                 1.0,
                 1.0
             ],
@@ -186,12 +186,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        0.2722511291503906,
-                        0.0,
+                        0.6117647290229797,
+                        0.8352941274642944,
                         1.0,
                         1.0
                     ],
-                    "Intensity": 20.0,
+                    "Intensity": 7.380000114440918,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -212,7 +212,7 @@
                     ]
                 }
             ],
-            "LifeTime": 16588.958984375,
+            "LifeTime": 16754.302734375,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.30000001192092896
@@ -244,9 +244,9 @@
                 0.0
             ],
             "Range": [
-                1.0,
-                0.30000001192092896,
-                0.5
+                0.5,
+                0.2,
+                0.3
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -323,7 +323,7 @@
             "Duration": 100,
             "EffectType": 1,
             "EmissiveIntensity": 10.0,
-            "EndTrack": 100,
+            "EndTrack": 106,
             "FlipUV": true,
             "Gravity": 9.800000190734863,
             "IsCircleRange": false,
@@ -357,7 +357,7 @@
                     ]
                 }
             ],
-            "LifeTime": 17432.984375,
+            "LifeTime": 17444.568359375,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 0.3499999940395355
@@ -389,9 +389,9 @@
                 0.0
             ],
             "Range": [
-                1.0,
-                0.30000001192092896,
-                0.5
+                0.5,
+                0.2,
+                0.3
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -414,7 +414,7 @@
                 0.0
             ],
             "Spin": false,
-            "StartTrack": 0,
+            "StartTrack": 6,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
@@ -434,83 +434,8 @@
             "TileX": 4,
             "TileY": 3,
             "isTileLoop": false
-        },
-        {
-            "Animation": true,
-            "Billboard": true,
-            "CenterColor": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
-            ],
-            "DistortionStrength": 39.5,
-            "Duration": 100,
-            "EffectType": 0,
-            "EmissiveIntensity": 0.0,
-            "EndTrack": 100,
-            "FlipUV": true,
-            "KeyFrames": [
-                {
-                    "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "Intensity": 1.0,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "Scale": [
-                        2.0,
-                        2.0,
-                        2.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            ],
-            "LifeTime": 2616.072998046875,
-            "Loop": true,
-            "Name": "handdistortion",
-            "NumKeyFrames": 1,
-            "RenderGroup": 8,
-            "ShaderPass": 8,
-            "StartTrack": 0,
-            "TextureTags": [
-                "",
-                "",
-                "T_SubUV_LoopSmokeMV_01_8x8_SC_RSW",
-                ""
-            ],
-            "TextureUsage": [
-                false,
-                false,
-                true,
-                false
-            ],
-            "Threshold": 0.0,
-            "TickPerSecond": 60.0,
-            "TileTickPerSec": 83.0,
-            "TileX": 8,
-            "TileY": 8
         }
     ],
     "Loop": false,
-    "MaxFrame": 90
+    "MaxFrame": 50
 }
