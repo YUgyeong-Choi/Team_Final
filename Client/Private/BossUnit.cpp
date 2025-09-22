@@ -166,6 +166,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 
 HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
 {
+{
 #pragma region 康旷 单漠 积己内靛
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
 	DecalDesc.bNormalOnly = true;

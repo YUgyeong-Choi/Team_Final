@@ -1933,6 +1933,26 @@ _bool CFuoco::CheckConditionFlameField()
 }
 
 
+void CFuoco::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("왕의 불꽃 푸오코");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+}
+
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
