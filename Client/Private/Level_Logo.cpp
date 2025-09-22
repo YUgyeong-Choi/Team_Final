@@ -30,9 +30,9 @@ HRESULT CLevel_Logo::Initialize()
 		return E_FAIL;
 
 	/* [ »ç¿îµå ] */
-	//m_pBGM = m_pGameInstance->Get_Single_Sound("MU_MS_Title_Piano_03");
-	//m_pBGM->Set_Volume(0.5f * g_fBGMSoundVolume);
-	//m_pBGM->Play();
+	m_pBGM = m_pGameInstance->Get_Single_Sound("MU_MS_Title_Piano_03");
+	m_pBGM->Set_Volume(0.5f * g_fBGMSoundVolume);
+	m_pBGM->Play();
 	return S_OK;
 }
 
@@ -407,7 +407,7 @@ void CLevel_Logo::Check_Button()
 				Interation_Button(m_iButtonIndex);
 			}
 
-			//CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 			break;
 		}
 
