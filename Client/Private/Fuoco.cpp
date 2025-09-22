@@ -318,6 +318,15 @@ void CFuoco::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Middle-Finger01"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pMiddleFingierBone = *it;
+	}
+
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Forearm"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
@@ -1678,7 +1687,7 @@ HRESULT CFuoco::Ready_Effect()
 	desc.iLevelID = m_iLevelID;
 
 	desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
-	desc.pOuterSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
+	desc.pOuterSocketMatrix = m_pMiddleFingierBone->Get_CombinedTransformationMatrix();
 	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (!m_pTrailEffect)
 		return E_FAIL;
