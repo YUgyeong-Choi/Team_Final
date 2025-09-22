@@ -177,7 +177,15 @@ void CSoundController::Free()
 	__super::Free();
 
 	for (auto pair : m_Sounds)
-		Safe_Release(pair.second);
+	{
+		_int iRefCount = Safe_Release(pair.second);
+		if (iRefCount != 0)
+		{
+			MSG_BOX("사운드 릴리즈 실패");
+			printf_s("SoundCore Ref Count %d\n", iRefCount);
+		}
+	}
+
 	m_Sounds.clear();
 }
 //CSoundController::CSoundController()

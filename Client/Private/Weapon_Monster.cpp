@@ -280,18 +280,37 @@ HRESULT CWeapon_Monster::Ready_Effect()
 {
 	XMStoreFloat4x4(
 		&m_InnerMatrix,
-		XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
-	);
-	XMStoreFloat4x4(
-		&m_OuterMatrix,
-		XMMatrixTranslation(10.f, 10.f, 10.f) // (x=0, y=1, z=0)
+		XMMatrixTranslation(0.f, 0.f, 0.0f)
 	);
 
-	m_CombinedWorldMatrix;
+
+	if (m_szMeshID == TEXT("Elite_Police_Weapon"))	//엘리트 폴리스는 디스토션 길이 2배
+	{
+		XMStoreFloat4x4(
+			&m_OuterMatrix,
+			XMMatrixTranslation(0.0f, 2.f, 0.f)
+		);
+	}
+	else if (m_szMeshID == TEXT("Buttler_Range_Weapon")) //레인저는 트레일 없고
+	{
+		return S_OK;
+	}
+	else //나머지 근접무기 든 애들 트레일 크기
+	{
+		XMStoreFloat4x4(
+			&m_InnerMatrix,
+			XMMatrixTranslation(0.5f, 0.f, 0.0f)
+		);
+
+		XMStoreFloat4x4(
+			&m_OuterMatrix,
+			XMMatrixTranslation(1.0f, 0.f, 0.f)
+		);
+	}
 
 	/************************ 소드 트레일 이펙트 **************************/
 	CSwordTrailEffect::DESC desc = {};
-	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.pParentCombinedMatrix = Get_CombinedWorldMatrix();
 	desc.iLevelID = m_iLevelID;
 
 	desc.pInnerSocketMatrix = &m_InnerMatrix;

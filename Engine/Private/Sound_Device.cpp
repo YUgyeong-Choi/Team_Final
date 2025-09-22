@@ -125,10 +125,16 @@ HRESULT CSound_Device::LoadSound(const string& Path, _bool is3D, _bool loop, _bo
                 result = m_pCoreSystem->createSound(filePath.string().c_str(), FMOD_DEFAULT, nullptr, &pSound);
             else
                 result = m_pCoreSystem->createSound(filePath.string().c_str(), mode, nullptr, &pSound);
+
+
             if (result == FMOD_OK)
             {
                 auto pSoundCore = CSound_Core::Create(m_pCoreSystem, pSound);
                 pOut->emplace(key, pSoundCore);
+            }
+            else
+            {
+                return E_FAIL;
             }
         }
     }
@@ -208,7 +214,15 @@ void CSound_Device::Free()
     __super::Free();
 
     for (auto& [Key, Value] : m_SingleSounds)
-        Safe_Release(Value);
+    {
+        _int iRefCount = Safe_Release(Value);
+        if (iRefCount != 0)
+        {
+            MSG_BOX("사운드 릴리즈 실패");
+            printf_s("SoundCore Ref Count %d\n", iRefCount);
+        }
+    }
+
     m_SingleSounds.clear();
 
     if (m_pMasterLimiter)
