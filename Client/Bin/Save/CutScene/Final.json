@@ -14,6 +14,19 @@
                 0.75,
                 1.0
             ],
+            "fFov": 60.0,
+            "interpFov": 0,
+            "keyFrame": 0
+        },
+        {
+            "curveType": 0,
+            "curveY": [
+                0.0,
+                0.25,
+                0.5,
+                0.75,
+                1.0
+            ],
             "fFov": 21.0,
             "interpFov": 0,
             "keyFrame": 200
