@@ -299,7 +299,6 @@ void CFestivalLeader::Reset()
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
-	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_bSwitchHeadSpace = false;
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
