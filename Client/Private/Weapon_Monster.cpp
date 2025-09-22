@@ -298,6 +298,11 @@ HRESULT CWeapon_Monster::Ready_Effect()
 	else //나머지 근접무기 든 애들 트레일 크기
 	{
 		XMStoreFloat4x4(
+			&m_InnerMatrix,
+			XMMatrixTranslation(0.5f, 0.f, 0.0f)
+		);
+
+		XMStoreFloat4x4(
 			&m_OuterMatrix,
 			XMMatrixTranslation(1.0f, 0.f, 0.f)
 		);
