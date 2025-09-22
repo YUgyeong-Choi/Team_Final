@@ -300,8 +300,13 @@ public:/*[스탯 관련]*/
 	void Set_Player_Level(_int iLevel) { m_iLevel = iLevel; }
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
-	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
 
+public:
+	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
+	void StartEnding(_float fTimeDelta);
+
+
+public:
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
 
@@ -370,7 +375,9 @@ private: /* [ 텔레포트 ] */
 	_bool m_bCheckRain = {};
 
 private:
-	_bool m_bEnding = {};
+	_bool	m_bEnding = {};
+	_bool	m_bEndSetting = {};
+	_float	m_fEndingTime = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

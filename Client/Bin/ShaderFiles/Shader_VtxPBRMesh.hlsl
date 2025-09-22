@@ -33,6 +33,7 @@ float2 g_TileDensity = float2(1.0f, 1.0f);
 Texture2D g_MaskTexture;
 bool g_bDissolve = false;
 float g_fDissolveAmount = 0.5f;
+float2 g_fDissolveTexcoord = { 0.15f, 0.15f };
 float g_fDissolveRange = 0.03f;
 float3 g_vDissolveGlowColor = float3(1.0f, 0.8f, 0.2f);
 
@@ -50,7 +51,7 @@ static SDissolveResult DoDissolve_NoArgs(float2 vTexcoord)
 
     SDissolveResult t;
    
-    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord * 0.15f).r;
+    const float fMask = g_MaskTexture.Sample(DefaultSampler, vTexcoord * g_fDissolveTexcoord).r;
     
     const float fClipTerm = (g_fDissolveAmount + fSafeRange) - fMask;
     t.fClip = fClipTerm;

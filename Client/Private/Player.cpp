@@ -2845,6 +2845,36 @@ CWeapon* CPlayer::Get_Equip_Legion()
 	return m_pLegionArm;
 }
 
+void CPlayer::StartEnding(_float fTimeDelta)
+{
+	if (m_bEnding)
+	{
+		//1. 엔딩 스위치가 올라갔을 때 시간을 잰다.
+		m_fEndingTime += fTimeDelta;
+
+		if (m_fEndingTime > 5.f)
+		{
+			//2. 5초가 지나면 엔딩컷씬이 시작된다.
+
+			if (!m_bEndSetting)
+			{
+				// 플레이어 주도권 뺏기, 위치 셋팅
+				m_pCamera_Manager->SetbMoveable(false);
+				
+				PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
+				PxTransform posTrans = PxTransform(pos);
+				m_pControllerCom->Set_Transform(posTrans);
+
+				m_bEndSetting = true;
+			}
+
+			//1. 문이 열린다.
+
+			//2. 문이 다 열리면 플레이어가 그쪽으로 걸어간다.
+		}
+	}
+}
+
 void CPlayer::Apply_Stat()
 {
 

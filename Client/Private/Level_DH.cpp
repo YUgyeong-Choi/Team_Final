@@ -94,6 +94,12 @@ void CLevel_DH::Update(_float fTimeDelta)
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 	ShowCursor(true);
+
+	if (KEY_DOWN(DIK_F7))
+		m_pGameInstance->ToggleDebugOctoTree();
+	if (KEY_DOWN(DIK_F8))
+		m_pGameInstance->ToggleDebugArea();
+
 	//__super::Update(fTimeDelta);
 }
 
@@ -319,8 +325,8 @@ HRESULT CLevel_DH::Separate_Area()
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
 	// Area 19 
-	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
-	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19p0 = _float3{ 160.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -80.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 
