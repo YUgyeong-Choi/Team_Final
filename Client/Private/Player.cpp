@@ -245,11 +245,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
 
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 406.f;
-			Lightdesc.PresetMatrix._42 = 20.f;
-			Lightdesc.PresetMatrix._43 = -49.f;
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixScaling(1.f,1.f,4.f));
 
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc))
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
 
 
