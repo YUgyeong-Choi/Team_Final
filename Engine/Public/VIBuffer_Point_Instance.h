@@ -54,7 +54,7 @@ private:
 	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
+	virtual HRESULT Initialize_Prototype(const	DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
 	virtual void Update_Tool(_float fCurTrackPos);

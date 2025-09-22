@@ -9,15 +9,15 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CMeshEmitter : public CParticleEffect
+class CMeshEmitter final : public CParticleEffect
 {
 public:
 	typedef struct tagMeshEmitterDesc : public CParticleEffect::DESC
 	{
-
+		class CGameObject* pOwner = { nullptr };
 	}DESC;
 
-protected:
+private:
 	CMeshEmitter(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMeshEmitter(const CMeshEmitter& Prototype);
 	virtual ~CMeshEmitter() = default;
@@ -32,13 +32,21 @@ public:
 	virtual _float Ready_Death();
 	virtual void Pause() { m_isActive = false; }
 
-protected:
-	CModel*			m_pModelCom = { nullptr };
-	_wstring		m_strModelTag;
+public:
+	void Spawn_Particles();
+	//void 
 
-protected:
+private:
+	CModel*			m_pModelCom = { nullptr };
+
+
+private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
+
+private:
+	void Create_CDF();
+	_float CalcTriangleArea(const _float3& v0, const _float3& v1, const _float3& v2);
 
 public:
 	static CMeshEmitter* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

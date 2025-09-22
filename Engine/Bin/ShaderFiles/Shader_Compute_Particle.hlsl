@@ -27,7 +27,6 @@ struct ParticleParam
     float       RotationAngle;
 };
 
-
 /* [ Constant Buffer ] */
 cbuffer ParticleCB : register(b0)
 {
@@ -77,29 +76,66 @@ cbuffer ParticleCB : register(b0)
 StructuredBuffer<ParticleParam> gInitInst : register(t0); 
 RWStructuredBuffer<ParticleParam> gInst : register(u0);
 
-//static const float PI = 3.14159265f;
+struct AnimMeshVertex
+{
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float3 vTangent : TANGENT;
+    float2 vTexcoord : TEXCOORD0;
+    uint4 vBlendIndices : BLENDINDEX;
+    float4 vBlendWeights : BLENDWEIGHT;
+};
 
+cbuffer BoneTransforms : register(b1)
+{
+    matrix g_BoneMatrices[512];
+};
+// 모델의 월드 행렬 (모델 자체의 변환)
+cbuffer ModelTransforms : register(b2)
+{
+    matrix g_WorldMatrix;
+};
+
+/************************************************************************************************/
+
+// HLSL (Compute Shader)
+
+// 스키닝 계산 함수 - VtxAnimMesh VS_MAIN 참조
+float4 CalculateSkinnedPosition(AnimMeshVertex vertex)
+{
+    float fWeightW = 1.f - (vertex.vBlendWeights.x + vertex.vBlendWeights.y + vertex.vBlendWeights.z);
+    
+    matrix BoneMatrix = g_BoneMatrices[vertex.vBlendIndices.x] * vertex.vBlendWeights.x +
+        g_BoneMatrices[vertex.vBlendIndices.y] * vertex.vBlendWeights.y +
+        g_BoneMatrices[vertex.vBlendIndices.z] * vertex.vBlendWeights.z +
+        g_BoneMatrices[vertex.vBlendIndices.w] * fWeightW;
+
+    vector vPosition = mul(vector(vertex.vPosition, 1.f), BoneMatrix);
+    
+    return vPosition;
+}
+
+/************************************************************************************************/
+// 공전
 float3 rotateAroundAxis(float3 v, float3 axis, float angleRad)
 {
     float s = sin(angleRad), c = cos(angleRad);
     return v * c + cross(axis, v) * s + axis * dot(axis, v) * (1.0f - c);
 }
-
-
+// 벡터 * 쿼터니언
 float3 RotateByQuat(float3 v, float4 q)
 {
     // q * v * q^-1
     float3 t = 2.0f * cross(q.xyz, v);
     return v + q.w * t + cross(q.xyz, t);
 }
-
+// 랜덤용 해시 추출 함수
 float Hash(uint n)
 {
     n = (n << 13u) ^ n;
     return ((n * (n * n * 15731u + 789221u) + 1376312589u) & 0x7fffffffu)
            / 2147483648.0; // 2^31
 }
-
 // iSeed + EffectSeed + 시간(fAccTime)을 섞은 랜덤
 float Random(uint iSeed, float fMin, float fMax)
 {
@@ -113,17 +149,6 @@ float Random(uint iSeed, float fMin, float fMax)
 
     return lerp(fMin, fMax, rnd);
 }
-
-// 원 둘레 위 랜덤 좌표
-//float4 RandomOnCircle(uint iSeed, float3 Center, float Radius)
-//{
-//    float angle = Random(iSeed, 0.0f, 6.2831853f);
-//    float x = cos(angle) * Radius;
-//    float z = sin(angle) * Radius;
-
-//    return float4(Center + float3(x, 0.0f, z), 1.f);
-//}
-
 // 원하는 방향의 평면 위 원 둘레 랜덤 좌표                  (영웅)
 float4 RandomOnCircle(uint iSeed, float3 Center, float Radius/*, float3 Normal*/)
 {
@@ -147,8 +172,7 @@ float4 RandomOnCircle(uint iSeed, float3 Center, float Radius/*, float3 Normal*/
 
     return float4(pos, 1.f);
 }
-
-
+// 기존 Range 내 랜덤 좌표
 float4 RandomInRange(uint iSeed, float3 Center, float3 Range)
 {
     return float4(
