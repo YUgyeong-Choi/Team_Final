@@ -30,26 +30,6 @@ HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const DESC* pDesc)
 	m_iVertexStride = sizeof(VTXPOS_TRAIL);
 	m_ePrimitiveTopology = D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP;
 
-	D3D11_BUFFER_DESC			VBBufferDesc{};
-	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
-	VBBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	VBBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	VBBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	VBBufferDesc.StructureByteStride = m_iVertexStride;
-	VBBufferDesc.MiscFlags = 0;
-
-	D3D11_SUBRESOURCE_DATA		VBInitialData{};
-
-	VTXPOS_TRAIL* pVertices = new VTXPOS_TRAIL[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXPOS_TRAIL) * m_iNumVertices);
-
-	VBInitialData.pSysMem = pVertices;
-
-	if (FAILED(m_pDevice->CreateBuffer(&VBBufferDesc, &VBInitialData, &m_pVB)))
-		return E_FAIL;
-
-	Safe_Delete_Array(pVertices);
-
 	return S_OK;
 }
 
@@ -72,6 +52,28 @@ HRESULT CVIBuffer_SwordTrail::Initialize_Prototype(const _wstring& strJsonFilePa
 
 HRESULT CVIBuffer_SwordTrail::Initialize(void* pArg)
 {
+
+	D3D11_BUFFER_DESC			VBBufferDesc{};
+	VBBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
+	VBBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	VBBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	VBBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	VBBufferDesc.StructureByteStride = m_iVertexStride;
+	VBBufferDesc.MiscFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA		VBInitialData{};
+
+	VTXPOS_TRAIL* pVertices = new VTXPOS_TRAIL[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXPOS_TRAIL) * m_iNumVertices);
+
+	VBInitialData.pSysMem = pVertices;
+
+	if (FAILED(m_pDevice->CreateBuffer(&VBBufferDesc, &VBInitialData, &m_pVB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pVertices);
+
+
 	// 여기서 종류 정해야하나?
 	m_InterpolatedNewNodes.reserve(m_Subdivisions + 1);
 

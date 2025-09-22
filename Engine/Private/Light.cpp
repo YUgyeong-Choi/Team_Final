@@ -163,7 +163,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
 
-		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL)
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL && eArea != AREAMGR::FUOCO)
 			return S_OK;
 
 		/* 빛정보를 쉐이더에 던진다. */
@@ -191,7 +191,7 @@ HRESULT CLight::VolumetricRender(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 		if (!m_LightDesc.bIsUse)
 			return S_OK;
 		
-		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL)
+		if (m_LightDesc.bIsPlayerFar && eArea != AREAMGR::OUTER && eArea != AREAMGR::FESTIVAL && eArea != AREAMGR::FUOCO)
 			return S_OK;
 
 		if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof(_float4))))

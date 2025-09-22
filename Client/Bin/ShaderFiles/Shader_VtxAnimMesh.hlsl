@@ -21,6 +21,7 @@ Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
 Texture2D g_Emissive;
+Texture2D g_SecondEmissive;
 Texture2D g_NoiseMap;
 
 /* [ 조절용 파라미터 ] */
@@ -33,6 +34,7 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 1;
+float g_fSecondEmissiveIntensity = 1;
 float g_fLimLightIntensity = 0;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
@@ -416,7 +418,10 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     
     // 이미시브 텍스처
     vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
-   
+    vEmissive *= g_fEmissiveIntensity;
+    vector vSecondEmissive = g_SecondEmissive.Sample(DefaultSampler, In.vTexcoord);
+    vSecondEmissive *= g_fSecondEmissiveIntensity;
+    
     float fIsUnit = 0.f;
     Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
     if (g_bDissolve)
@@ -427,7 +432,7 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 0.f);
+    Out.vEmissive = float4((vEmissive.rgb + vSecondEmissive.rgb), 0.f);
     if (g_bDissolve)
         Out.vEmissive.rgb += tD.vAddColor;
     

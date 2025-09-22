@@ -120,6 +120,7 @@ void CEliteUnit::Update(_float fTimeDelta)
         XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
         m_pSoundCom->Update3DPosition(vPos);
     }
+
 }
 
 void CEliteUnit::Late_Update(_float fTimeDelta)
@@ -637,6 +638,7 @@ void CEliteUnit::Reset()
     {
         m_pSoundCom->StopAll();
     }
+    SwitchSecondEmissive(false, 1.f);
 }
 
 void CEliteUnit::Register_Events()
@@ -821,7 +823,6 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
             m_pHPBar->Add_Damage(fDamage);
             m_pHPBar->Set_RenderTime(3.f);
         }
-         
 
 		m_fHp = max(m_fHp, 0.f);
         cout << "몬스터 현재 체력 : " << m_fHp << endl;

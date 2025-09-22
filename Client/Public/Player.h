@@ -218,6 +218,7 @@ private: /* [ 이펙트 관리 함수 ]*/
 	void Create_GuardEffect(_bool isPerfect);
 public:
 	void Create_LeftArm_Lightning(const _wstring& strECTag);
+	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -300,6 +301,12 @@ public:/*[스탯 관련]*/
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
 
+public:
+	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
+	void StartEnding(_float fTimeDelta);
+
+
+public:
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
 
@@ -322,6 +329,8 @@ private:
 
 private:
 	void Check_Dead_FestivalReader();
+
+	HRESULT Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
 
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
@@ -364,6 +373,11 @@ private: /* [ 텔레포트 ] */
 	_float3 m_vTeleportPos = { 51.3f, 1.f, -5.1f };
 
 	_bool m_bCheckRain = {};
+
+private:
+	_bool	m_bEnding = {};
+	_bool	m_bEndSetting = {};
+	_float	m_fEndingTime = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };

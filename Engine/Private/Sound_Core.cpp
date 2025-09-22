@@ -242,6 +242,6 @@ CSound_Core* CSound_Core::Clone()
 
 void CSound_Core::Free()
 {
-    __super::Free();
     StopAll();
+    __super::Free();
 }

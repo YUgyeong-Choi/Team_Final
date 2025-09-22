@@ -1,4 +1,7 @@
 {
+    "Prototype_Component_Texture_T_BloodClip_01_N_KMH.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_BloodClip_01_N_KMH.dds",
+    "Prototype_Component_Texture_T_Decal_BloodSplatter_02_ARMK.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_BloodSplatter_02_ARMK.dds",
+    "Prototype_Component_Texture_T_Decal_BloodSpot_38_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_BloodSpot_38_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Blood_01_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_01_ARMT.dds",
     "Prototype_Component_Texture_T_Decal_Blood_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_01_N.dds",
     "Prototype_Component_Texture_T_Decal_Blood_02_ARMT.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Blood_02_ARMT.dds",
@@ -11,6 +14,10 @@
     "Prototype_Component_Texture_T_Decal_Crack_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_01_N.dds",
     "Prototype_Component_Texture_T_Decal_Crack_02_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_02_BC.dds",
     "Prototype_Component_Texture_T_Decal_Crack_04_ARMK.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Crack_04_ARMK.dds",
+    "Prototype_Component_Texture_T_Decal_Dust_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Decal_Dust_01_BC.dds",
+    "Prototype_Component_Texture_T_NewTown_Sign_01_ARMK.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_NewTown_Sign_01_ARMK.dds",
+    "Prototype_Component_Texture_T_NewTown_Sign_01_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_NewTown_Sign_01_BC.dds",
+    "Prototype_Component_Texture_T_NewTown_Sign_01_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_NewTown_Sign_01_N.dds",
     "Prototype_Component_Texture_T_Tile_MossyStone_02_ARH.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_ARH.dds",
     "Prototype_Component_Texture_T_Tile_MossyStone_02_BC.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_BC.dds",
     "Prototype_Component_Texture_T_Tile_MossyStone_02_N.dds": "..\\Bin\\Resources\\Textures\\Decal\\T_Tile_MossyStone_02_N.dds",

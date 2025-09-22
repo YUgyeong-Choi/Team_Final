@@ -44,6 +44,8 @@
 #include "SpringBoneSys.h"
 #include <ShortCutDoor.h>
 
+#include "Static_Decal.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -342,6 +344,14 @@ void CPlayer::Update(_float fTimeDelta)
 	if (m_eCurrentState == EPlayerState::DEAD)
 	{
 		Check_Dead_FestivalReader();
+	}
+
+	if (KEY_DOWN(DIK_L))
+	{
+		Spawn_Decal(
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(5.f, 0.5f, 5.f, 0));
 	}
 
 }
@@ -1300,7 +1310,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLA:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.4f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.35f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1321,22 +1345,25 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (!m_bSetSound)
-		{
-			//m_pSoundCom->Play_Random("SE_PC_SK_WS_Glaive_P_B_S_", 3);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_ClockworkBlunt_2H_FableArts_Whoosh_", 4);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_SwordLance_2H_FableArts_Whoosh_End_", 3);
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Motor_0");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Start_01");
-			m_bSetSound = true;
-		}
-
 		break; 
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.25f;
+		_float  m_fDistance = 2.f;
+
+		if (!m_bMove)
+		{
+			if (0.4f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1360,7 +1387,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.2f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.5f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -2047,39 +2088,7 @@ void CPlayer::Register_SoundEvents()
 				m_pSoundCom->Play("SE_PC_MT_BodyFall_Cloth_M_01");
 		});
 
-	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
-		{
-			//if (m_pSoundCom)
-			//	m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
-		});
-	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
-				if (m_bUseGrinder == false)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", 0);
-					m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-					return;
-				}
-				if (!isPlaying)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
-					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
-				}
-			}*/
-		});
-	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
-		{
-			/*if (m_pSoundCom)
-			{
-				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}*/
-		});
-
+	
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
 		{
 			if (m_pSoundCom)
@@ -2141,8 +2150,9 @@ void CPlayer::Register_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
+				//m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Spear_v2");
 			}
 		});
 
@@ -2153,6 +2163,18 @@ void CPlayer::Register_SoundEvents()
 			{
 				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
 				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
+			}
+		});
+
+	//SE_PC_MT_Body_Motor_06
+
+	m_pAnimator->RegisterEventListener("FatalSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_Hit_RV_S_01");
+				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Cast");
 			}
 		});
 }
@@ -2176,7 +2198,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 {
 	m_Input.bMove = false;
-	m_bWalk = false;
+	m_bWalk = true;
 	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
 	return bFinishRotate;
 }
@@ -2823,6 +2845,36 @@ CWeapon* CPlayer::Get_Equip_Legion()
 	return m_pLegionArm;
 }
 
+void CPlayer::StartEnding(_float fTimeDelta)
+{
+	if (m_bEnding)
+	{
+		//1. 엔딩 스위치가 올라갔을 때 시간을 잰다.
+		m_fEndingTime += fTimeDelta;
+
+		if (m_fEndingTime > 5.f)
+		{
+			//2. 5초가 지나면 엔딩컷씬이 시작된다.
+
+			if (!m_bEndSetting)
+			{
+				// 플레이어 주도권 뺏기, 위치 셋팅
+				m_pCamera_Manager->SetbMoveable(false);
+				
+				PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
+				PxTransform posTrans = PxTransform(pos);
+				m_pControllerCom->Set_Transform(posTrans);
+
+				m_bEndSetting = true;
+			}
+
+			//1. 문이 열린다.
+
+			//2. 문이 다 열리면 플레이어가 그쪽으로 걸어간다.
+		}
+	}
+}
+
 void CPlayer::Apply_Stat()
 {
 
@@ -3184,6 +3236,40 @@ void CPlayer::Check_Dead_FestivalReader()
 		
 	}
 }
+
+HRESULT CPlayer::Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
+{
+#pragma region 영웅 데칼 생성코드
+	CStatic_Decal::DECAL_DESC DecalDesc = {};
+	DecalDesc.bNormalOnly = true;
+	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
+	DecalDesc.bHasLifeTime = true;
+	DecalDesc.fLifeTime = 50.f;
+
+	// [기존 플레이어 월드 행렬]
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// [스케일 행렬 생성] (XMVector를 float3로 변환해서 사용)
+	_matrix ScaleMatrix = XMMatrixScaling(
+		XMVectorGetX(vDecalScale),
+		XMVectorGetY(vDecalScale),
+		XMVectorGetZ(vDecalScale));
+
+	// [스케일 * 기존 월드 행렬]
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	{
+		return E_FAIL;
+	}
+#pragma endregion
+
+	return S_OK;
+}
+
 
 HRESULT CPlayer::Ready_Weapon()
 {
@@ -4169,13 +4255,23 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 void CPlayer::Create_LeftArm_Lightning(const _wstring& strECTag)
 {
 	CEffectContainer::DESC Lightdesc = {};
-	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist1"));
+	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
 	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
+
+	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
 	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
 	//	MSG_BOX("이펙트 생성 실패함");
+}
 
+void CPlayer::Create_LeftArm_Lightning_Hand(const _wstring& strECTag)
+{
+	CEffectContainer::DESC Lightdesc = {};
 	Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
 }

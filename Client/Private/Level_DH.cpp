@@ -56,13 +56,15 @@ HRESULT CLevel_DH::Initialize()
 
 	/* [ 敲饭捞绢啊 加茄 备开沤祸 ] */
 	//6锅备开
-	m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
+	//m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
 	//1锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
 	//5锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
 	//3锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
+	//19锅备开
+	m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
 
 	m_pGameInstance->FindAreaContainingPoint();
 
@@ -92,6 +94,12 @@ void CLevel_DH::Update(_float fTimeDelta)
 	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::DONGHA)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 	ShowCursor(true);
+
+	if (KEY_DOWN(DIK_F7))
+		m_pGameInstance->ToggleDebugOctoTree();
+	if (KEY_DOWN(DIK_F8))
+		m_pGameInstance->ToggleDebugArea();
+
 	//__super::Update(fTimeDelta);
 }
 
@@ -317,8 +325,8 @@ HRESULT CLevel_DH::Separate_Area()
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
 	// Area 19 
-	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
-	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19p0 = _float3{ 160.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -80.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 

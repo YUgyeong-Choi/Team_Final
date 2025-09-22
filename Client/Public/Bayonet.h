@@ -48,7 +48,7 @@ public:
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
-	HRESULT Ready_Effect();
+	virtual HRESULT Ready_Effect() override;
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);

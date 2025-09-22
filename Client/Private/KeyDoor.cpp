@@ -5,13 +5,13 @@
 #include "Camera_Manager.h"
 
 CKeyDoor::CKeyDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CDynamicMesh{ pDevice, pContext }
+	: CDefaultDoor{ pDevice, pContext }
 {
 
 }
 
 CKeyDoor::CKeyDoor(const CKeyDoor& Prototype)
-	: CDynamicMesh(Prototype)
+	: CDefaultDoor(Prototype)
 {
 
 }
@@ -25,28 +25,22 @@ HRESULT CKeyDoor::Initialize_Prototype()
 
 HRESULT CKeyDoor::Initialize(void* pArg)
 {
-	CKeyDoor::KEYDOORMESH_DESC* pDoorMeshDESC = static_cast<KEYDOORMESH_DESC*>(pArg);
-
-	m_eInteractType = pDoorMeshDESC->eInteractType;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	Ready_Trigger(pDoorMeshDESC);
-	m_pPlayer = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
+
 	return S_OK;
 }
 
 void CKeyDoor::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-	if (m_pPlayer == nullptr)
-		return;
+
 	if (m_bCanActive && !m_bFinish)
 	{
 		if (KEY_DOWN(DIK_E))
@@ -77,12 +71,12 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 		}
 	}
 
+#ifdef _DEBUG
 	if (KEY_PRESSING(DIK_LCONTROL) && KEY_DOWN(DIK_Z))
 	{
 		m_pPlayer->Set_GetKey();
 	}
 
-#ifdef _DEBUG
 	if (KEY_DOWN(DIK_X))
 	{
 		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
@@ -90,9 +84,6 @@ void CKeyDoor::Priority_Update(_float fTimeDelta)
 		m_bCanActive = false;
 	}
 #endif // _DEBUG
-
-	if (m_bStartSound)
-		Play_Sound(fTimeDelta);
 }
 
 void CKeyDoor::Update(_float fTimeDelta)
@@ -202,41 +193,7 @@ void CKeyDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (!m_bFinish)
 		m_bCanActive = false;
-
-
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
-}
-
-void CKeyDoor::Play_Sound(_float fTimeDelta)
-{
-	m_fSoundDelta += fTimeDelta;
-	switch (m_eInteractType)
-	{
-	case Client::OUTDOOR:
-	{
-		if (m_fSoundDelta > 5.f)
-		{
-			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_Exhibition_Door", 0.7f * g_fInteractSoundVolume);
-			m_pSoundCom->Play("AMB_OJ_DR_Exhibition_Door");
-			m_fSoundDelta = 0.f;
-		}
-		break;
-	}
-	case Client::INNERDOOR:
-	{
-		if (m_fSoundDelta > 0.2f)
-		{
-			m_bStartSound = false;
-			m_pSoundCom->SetVolume("AMB_OJ_DR_Train_Slide_M", 0.9f* g_fInteractSoundVolume);
-			m_pSoundCom->Play("AMB_OJ_DR_Train_Slide_M");
-			m_fSoundDelta = 0.f;
-		}
-		break;
-	}
-	default:
-		break;
-	}
 }
 
 void CKeyDoor::OpenDoor()
@@ -328,54 +285,16 @@ HRESULT CKeyDoor::Ready_Components(void* pArg)
 		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
-		return E_FAIL;
-
-	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_CutSceneDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
-		return E_FAIL;
-
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pAnimator)
 		return E_FAIL;
+
 	if (FAILED(m_pAnimator->Initialize(m_pModelCom)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CKeyDoor::Ready_Trigger(KEYDOORMESH_DESC* pDesc)
-{
-	XMVECTOR S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
-	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
-
-	PxTransform pose(positionVec, rotationQuat);
-	PxMeshScale meshScale(scaleVec);
-
-	//PxVec3 halfExtents = { 1.f,0.2f,1.f };
-	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
-	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
-	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
-
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY; // 일단 보류
-	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
-	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
-	m_pPhysXTriggerCom->Set_Owner(this);
-	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
-
-	return S_OK;
-}
 
 HRESULT CKeyDoor::LoadFromJson()
 {
@@ -384,60 +303,6 @@ HRESULT CKeyDoor::LoadFromJson()
 		return E_FAIL;
 	if (FAILED(LoadAnimationStatesFromJson(modelName, m_pAnimator)))
 		return E_FAIL;
-	return S_OK;
-}
-
-HRESULT CKeyDoor::LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom)
-{
-	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
-	ifstream ifs(path);
-	if (ifs.is_open())
-	{
-		json root;
-		ifs >> root;
-		if (root.contains("animations"))
-		{
-			auto& animationsJson = root["animations"];
-			auto& clonedAnims = pModelCom->GetAnimations();
-
-			for (const auto& animData : animationsJson)
-			{
-				const string& clipName = animData["ClipName"];
-
-				for (auto& pAnim : clonedAnims)
-				{
-					if (pAnim->Get_Name() == clipName)
-					{
-						pAnim->Deserialize(animData);
-						break;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation events file.");
-		return E_FAIL;
-	}
-	return S_OK;
-}
-
-HRESULT CKeyDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator)
-{
-	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
-	ifstream ifsStates(path);
-	if (ifsStates.is_open())
-	{
-		json rootStates;
-		ifsStates >> rootStates;
-		pAnimator->Deserialize(rootStates);
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation states file.");
-		return E_FAIL;
-	}
 	return S_OK;
 }
 
@@ -472,8 +337,4 @@ CGameObject* CKeyDoor::Clone(void* pArg)
 void CKeyDoor::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pPhysXTriggerCom);
-	Safe_Release(m_pSoundCom);
-	Safe_Release(m_pAnimator);
 }

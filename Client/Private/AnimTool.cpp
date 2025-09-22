@@ -56,78 +56,53 @@ HRESULT CAnimTool::Initialize(void* pArg)
 	if (FAILED(Register_Objects()))
 		return E_FAIL;
 
+	InitImNodesStyle();
+
+	return S_OK;
+}
+
+void CAnimTool::InitImNodesStyle()
+{
 	ImNodesStyle& style = ImNodes::GetStyle();
 
-	style.Colors[ImNodesCol_NodeBackground] = IM_COL32(60, 60, 70, 255);
-	style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(75, 75, 85, 255);
-	style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(85, 85, 95, 255);
-	style.Colors[ImNodesCol_NodeOutline] = IM_COL32(100, 100, 110, 255);
-
-	style.NodeCornerRounding = 5.0f;
-	style.NodePadding = ImVec2(8.0f, 4.0f);
-
-	style.PinCircleRadius = 6.0f;
-	style.PinQuadSideLength = 8.0f;
+	style.NodeCornerRounding = 6.0f;
+	style.NodePadding = ImVec2(10.0f, 6.0f);
+	style.NodeBorderThickness = 2.0f;
+	style.PinCircleRadius = 7.0f;
+	style.PinQuadSideLength = 10.0f;
+	style.PinTriangleSideLength = 12.0f;
 	style.LinkThickness = 3.0f;
-	style.LinkLineSegmentsPerLength = 0.0f; // 직선
+	style.LinkLineSegmentsPerLength = 0.0f;
+	style.LinkHoverDistance = 10.0f;
+	style.GridSpacing = 32.0f;
+	style.MiniMapPadding = ImVec2(8.0f, 8.0f);
+	style.MiniMapOffset = ImVec2(4.0f, 4.0f);
 
 	style.Colors[ImNodesCol_NodeBackground] = IM_COL32(56, 56, 56, 255);
 	style.Colors[ImNodesCol_NodeBackgroundHovered] = IM_COL32(70, 70, 70, 255);
 	style.Colors[ImNodesCol_NodeBackgroundSelected] = IM_COL32(90, 90, 90, 255);
 	style.Colors[ImNodesCol_NodeOutline] = IM_COL32(128, 128, 128, 255);
-
 	style.Colors[ImNodesCol_TitleBar] = IM_COL32(58, 58, 58, 255);
 	style.Colors[ImNodesCol_TitleBarHovered] = IM_COL32(72, 72, 72, 255);
 	style.Colors[ImNodesCol_TitleBarSelected] = IM_COL32(86, 86, 86, 255);
-
-	// 입력/출력 핀 색상을 다르게 설정
-	style.Colors[ImNodesCol_Pin] = IM_COL32(200, 200, 200, 255);                   // 기본 핀
-	style.Colors[ImNodesCol_PinHovered] = IM_COL32(255, 255, 255, 255);            // 호버 시 핀
-
-	// 핀 크기 및 모양 설정
-	style.PinCircleRadius = 7.0f;        // 핀을 좀 더 크게
-	style.PinQuadSideLength = 10.0f;     // 사각형 핀 크기
-	style.PinTriangleSideLength = 12.0f; // 삼각형 핀 크기
-
-
-	style.LinkThickness = 3.0f;                    // 선 두께
-	style.LinkLineSegmentsPerLength = 0.0f;        // 0으로 설정하면 직선
-	style.LinkHoverDistance = 10.0f;               // 마우스 호버 감지 거리
-
-	style.Colors[ImNodesCol_Link] = IM_COL32(150, 150, 150, 255);                // 기본 링크 색상
-	style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);         // 호버 시 흰색
-	style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 165, 0, 255);          // 선택 시 주황색
-
-
-	style.NodeCornerRounding = 6.0f;       // 모서리 둥글기
-	style.NodePadding = ImVec2(10.0f, 6.0f); // 노드 내부 여백 증가
-	style.NodeBorderThickness = 2.0f;      // 테두리 두께
-
-
-	style.Colors[ImNodesCol_GridBackground] = IM_COL32(0, 0, 0, 255);    // 배경색
-	style.Colors[ImNodesCol_GridLine] = IM_COL32(60, 60, 60, 100);          // 그리드 라인
-	style.GridSpacing = 32.0f;                                               // 그리드 간격
-
-	// === 선택 영역 스타일 ===
-	style.Colors[ImNodesCol_BoxSelector] = IM_COL32(100, 149, 237, 80);     // 선택 박스
+	style.Colors[ImNodesCol_Pin] = IM_COL32(200, 200, 200, 255);
+	style.Colors[ImNodesCol_PinHovered] = IM_COL32(255, 255, 255, 255);
+	style.Colors[ImNodesCol_Link] = IM_COL32(150, 150, 150, 255);
+	style.Colors[ImNodesCol_LinkHovered] = IM_COL32(255, 255, 255, 255);
+	style.Colors[ImNodesCol_LinkSelected] = IM_COL32(255, 165, 0, 255);
+	style.Colors[ImNodesCol_GridBackground] = IM_COL32(0, 0, 0, 255);
+	style.Colors[ImNodesCol_GridLine] = IM_COL32(60, 60, 60, 100);
+	style.Colors[ImNodesCol_BoxSelector] = IM_COL32(100, 149, 237, 80);
 	style.Colors[ImNodesCol_BoxSelectorOutline] = IM_COL32(100, 149, 237, 255);
-
-
 	style.Colors[ImNodesCol_MiniMapBackground] = IM_COL32(25, 25, 25, 150);
 	style.Colors[ImNodesCol_MiniMapBackgroundHovered] = IM_COL32(25, 25, 25, 200);
 	style.Colors[ImNodesCol_MiniMapOutline] = IM_COL32(150, 150, 150, 100);
-	style.Colors[ImNodesCol_MiniMapOutlineHovered] = IM_COL32(150, 150, 150, 200);
 	style.Colors[ImNodesCol_MiniMapNodeBackground] = IM_COL32(200, 200, 200, 100);
 	style.Colors[ImNodesCol_MiniMapNodeBackgroundHovered] = IM_COL32(200, 200, 200, 255);
 	style.Colors[ImNodesCol_MiniMapNodeBackgroundSelected] = IM_COL32(255, 165, 0, 255);
 	style.Colors[ImNodesCol_MiniMapNodeOutline] = IM_COL32(200, 200, 200, 100);
 	style.Colors[ImNodesCol_MiniMapLink] = IM_COL32(200, 200, 200, 100);
 	style.Colors[ImNodesCol_MiniMapLinkSelected] = IM_COL32(255, 165, 0, 255);
-
-
-	style.MiniMapPadding = ImVec2(8.0f, 8.0f);
-	style.MiniMapOffset = ImVec2(4.0f, 4.0f);
-	return S_OK;
 }
 
 void CAnimTool::Priority_Update(_float fTimeDelta)
@@ -156,12 +131,12 @@ void CAnimTool::Late_Update(_float fTimeDelta)
 		m_pSelectedObject->Late_Update(fTimeDelta);
 	}
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_NONBLEND, this);
-	m_bRenerLevel = false;
+	m_bRenderLevel = false;
 }
 
 HRESULT CAnimTool::Render()
 {
-	if (m_bRenerLevel)
+	if (m_bRenderLevel)
 	{
 		if (ImGui::Checkbox("Load Object", &m_bIsObject))
 		{
@@ -199,7 +174,7 @@ HRESULT CAnimTool::Render()
 	}
 	else
 	{
-		m_bRenerLevel = true;
+		m_bRenderLevel = true;
 	}
 
 	if (m_bIsObject == false)
@@ -571,15 +546,15 @@ HRESULT CAnimTool::Render_AnimControllers()
 					auto& states = pCtrl->GetStates();
 					for (const auto& state : states)
 					{
-						m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
+						m_iSpecificNodeId = max(m_iSpecificNodeId, state.iNodeId);
 					}
 
 					for (const auto& trns : pCtrl->GetTransitions())
 					{
-						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iFromNodeId);
-						m_iSpeicificNodeId = max(m_iSpeicificNodeId, trns.iToNodeId);
+						m_iSpecificNodeId = max(m_iSpecificNodeId, trns.iFromNodeId);
+						m_iSpecificNodeId = max(m_iSpecificNodeId, trns.iToNodeId);
 					}
-					m_iSpeicificNodeId++;
+					m_iSpecificNodeId++;
 				}
 			}
 			if (selected) ImGui::SetItemDefaultFocus();
@@ -728,7 +703,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 					if (it != states.end())
 					{
 						// 마스크 본을 사용하는 스테이트인지 확인
-						m_bIsUesMaskBoneState = it->maskBoneName.empty() == false;
+						m_bIsUseMaskBoneState = it->maskBoneName.empty() == false;
 					}
 
 					// 저장된 오버라이드 상태에서 애니메이션 인덱스 찾기
@@ -805,7 +780,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 				ImGui::EndCombo();
 			}
 
-			if (m_bIsUesMaskBoneState)
+			if (m_bIsUseMaskBoneState)
 			{
 				if (ImGui::BeginCombo("Override Upper Animations", m_iOverrideUpperAnimIndex >= 0 && m_iOverrideUpperAnimIndex < animNames.size() ? animNames[m_iOverrideUpperAnimIndex].c_str() : "Override Select Upper"))
 				{
@@ -1118,14 +1093,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			ImVec2 editorPos = ImVec2(mouse.x - canvasPos.x, mouse.y - canvasPos.y);
 			CAnimation* selectedAnim = m_pCurAnimation;
 
-			//size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpeicificNodeId++);
-			_int iNodeId = m_iSpeicificNodeId++; // 고유한 노드 아이디 생성
+			//size_t newIdx = pCtrl->AddState(stateName, selectedAnim, m_iSpecificNodeId++);
+			_int iNodeId = m_iSpecificNodeId++; // 고유한 노드 아이디 생성
 			// ID 확인
 			for (auto& state : pCtrl->GetStates())
 			{
 				if (state.iNodeId == iNodeId)
 				{
-					iNodeId = m_iSpeicificNodeId++; // 중복되면 다음 ID로
+					iNodeId = m_iSpecificNodeId++; // 중복되면 다음 ID로
 					break;
 				}
 			}
@@ -1151,14 +1126,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 	_bool requestLayout = false;
 	if (ImGui::IsKeyPressed(ImGuiKey_L))
 		requestLayout = true;
-	//if (ImGui::IsKeyDown(ImGuiKey_L))
-	//{
-	//	//ApplyHierarchicalLayout(pCtrl);
-	//	ApplyCategoryLayout(pCtrl);
-	//	ImNodes::ClearLinkSelection();
-	//	ImNodes::ClearNodeSelection();
-	//	ImNodes::EndNodeEditor();
-	//}
 
 	m_DrawnInPins.clear();
 	m_DrawnOutPins.clear();
@@ -1209,11 +1176,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::SameLine();
 					ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
 				}
-				//if (state.iNodeId == pCtrl->GetExitNodeId())
-				//{
-				//	ImGui::SameLine();
-				//	ImGui::TextColored(ImVec4(0.8f, 0.0f, 0.0f, 1.0f), "[EXIT]"); // 빨간색으로 Exit 표시
-				//}
+		
 				ImNodes::EndNodeTitleBar();
 
 				ImGui::BeginGroup();
@@ -1238,28 +1201,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 					ImGui::Dummy(ImVec2(120, ImGui::GetFrameHeight())); // 진행바 크기만큼 
 				}
 
-				// Pin
-				//ImGui::Columns(2, nullptr, false);
-				//ImGui::SetColumnWidth(0, 60);
-				//ImGui::SetColumnWidth(1, 60);
-
-				//if (!isAny)
-				//{
-				//	const _int inPin = state.iNodeId * 10 + 1;
-				//	ImNodes::BeginInputAttribute(inPin);
-				//	ImGui::TextColored(ImVec4(0.3f, 0.8f, 0.3f, 1.f), "In");
-				//	ImNodes::EndInputAttribute();
-				//	m_DrawnInPins.insert(inPin);
-				//}
-
-				//ImGui::NextColumn();
-
-				//const _int outPin = state.iNodeId * 10 + 2;
-				//ImNodes::BeginOutputAttribute(outPin);
-				//ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.2f, 1.f), "Out");
-				//ImNodes::EndOutputAttribute();
-				//m_DrawnOutPins.insert(outPin);
-				//ImGui::Columns(1);
 				const ImVec4 kInColor = ImVec4(0.3f, 0.8f, 0.3f, 1.f);
 				const ImVec4 kOutColor = ImVec4(0.8f, 0.4f, 0.2f, 1.f);
 
@@ -1305,10 +1246,10 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 				if (isAny || isExit)
 				{
-					ImNodes::PopColorStyle(); // NodeOutline
-					ImNodes::PopColorStyle(); // TitleBarSelected
-					ImNodes::PopColorStyle(); // TitleBarHovered
-					ImNodes::PopColorStyle(); // TitleBar
+					ImNodes::PopColorStyle(); // 노드 아웃라인
+					ImNodes::PopColorStyle(); // 타이틀 바 선택
+					ImNodes::PopColorStyle(); // 타이틀 바 호버
+					ImNodes::PopColorStyle(); // 타이틀 바
 				}
 			}
 		}
@@ -1408,7 +1349,7 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 			if (validFromNode && validToNode && fromNodeID != toNodeID)
 			{
 				Engine::Link link;
-				link.iLinkId = m_iSpeicificNodeId++;
+				link.iLinkId = m_iSpecificNodeId++;
 				link.iLinkStartID = startPinID;
 				link.iLinkEndID = endPinID;
 
@@ -1445,8 +1386,6 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 		// 링크 선택시 트랜지션 상태 표시
 		// 선택된 링크의 Condition을 찾아서 표시
-
-		// CAnimController::Condition testCondition{ "Test", CAnimController::EOp::Finished, 0.f, 0.95f }; 컨디션 예시
 
 		if (bDeleteLink == false) // 삭제 안한 경우에만
 		{
@@ -1612,14 +1551,14 @@ HRESULT CAnimTool::Render_AnimStatesByNode()
 
 				if (state.maskBoneName.empty())
 				{
-					if (ImGui::BeginCombo("Clips", m_iDefualtSeletedAnimIndex >= 0 ? animNames[m_iDefualtSeletedAnimIndex].c_str() : "Select Clip"))
+					if (ImGui::BeginCombo("Clips", m_iDefaultSelectedAnimIndex >= 0 ? animNames[m_iDefaultSelectedAnimIndex].c_str() : "Select Clip"))
 					{
 						for (_int i = 0; i < animNames.size(); ++i)
 						{
-							_bool isSelected = (i == m_iDefualtSeletedAnimIndex);
+							_bool isSelected = (i == m_iDefaultSelectedAnimIndex);
 							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
 							{
-								m_iDefualtSeletedAnimIndex = i;
+								m_iDefaultSelectedAnimIndex = i;
 								if (i == 0) // "None"이 선택된 경우
 								{
 									state.clip = nullptr;
@@ -1852,7 +1791,6 @@ HRESULT CAnimTool::Render_Spawn_Object()
 				{
 				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 				}
-				//pObj->Get_TransfomCom()->Scaling(_float3(5.f, 5.f, 5.f));
 			}
 		}
 	}
@@ -2417,15 +2355,15 @@ void CAnimTool::SaveLoadAnimStates(_bool isSave)
 
 			for (const auto& state : states)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, state.iNodeId);
+				m_iSpecificNodeId = max(m_iSpecificNodeId, state.iNodeId);
 			}
 
 			for (const auto& transition : transitions)
 			{
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.link.iLinkId);
-				m_iSpeicificNodeId = max(m_iSpeicificNodeId, transition.iFromNodeId);
+				m_iSpecificNodeId = max(m_iSpecificNodeId, transition.link.iLinkId);
+				m_iSpecificNodeId = max(m_iSpecificNodeId, transition.iFromNodeId);
 			}
-			m_iSpeicificNodeId += 1;
+			m_iSpecificNodeId += 1;
 		}
 		else
 		{
@@ -2763,45 +2701,6 @@ HRESULT CAnimTool::Bind_Shader()
 		return E_FAIL;
 	if (FAILED(m_pAnimShader->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
 		return E_FAIL;
-
-
-	////m_pContext->Flush();
-	/*if (FAILED(m_pAnimShader->Bind_SRV("g_FinalBoneMatrices", m_pCurAnimator->GetFinalBoneMatricesSRV())))
-		return E_FAIL;*/
-
-
-	//if (KEY_PRESSING(DIK_I))
-	//{
-	//	auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
-	//	for (int i = 0;i<20;i++)
-	//	{
-	//		auto mat = tmp[i];
-	//		cout << "---------GPU 계산---------------" << endl;
-	//		cout << mat.m[0][0] << " " << mat.m[0][1] << " " << mat.m[0][2] << " " << mat.m[0][3] << endl;
-	//		cout << mat.m[1][0] << " " << mat.m[1][1] << " " << mat.m[1][2] << " " << mat.m[1][3] << endl;
-	//		cout << mat.m[2][0] << " " << mat.m[2][1] << " " << mat.m[2][2] << " " << mat.m[2][3] << endl;
-	//		cout << mat.m[3][0] << " " << mat.m[3][1] << " " << mat.m[3][2] << " " << mat.m[3][3] << endl;
-	//		cout << "------------------------" << endl;
-
-	//		auto mat2 = *m_pCurModel->Get_Bones()[i]->Get_CombinedTransformationMatrix();
-
-	//		cout << "---------CPU 계산---------------" << endl;
-	//		cout << mat2.m[0][0] << " " << mat2.m[0][1] << " " << mat2.m[0][2] << " " << mat2.m[0][3] << endl;
-	//		cout << mat2.m[1][0] << " " << mat2.m[1][1] << " " << mat2.m[1][2] << " " << mat2.m[1][3] << endl;
-	//		cout << mat2.m[2][0] << " " << mat2.m[2][1] << " " << mat2.m[2][2] << " " << mat2.m[2][3] << endl;
-	//		cout << mat2.m[3][0] << " " << mat2.m[3][1] << " " << mat2.m[3][2] << " " << mat2.m[3][3] << endl;
-	//		cout << "------------------------" << endl;
-
-	//	}
-	////	m_pCurAnimator->DebugComputeShader();
-	//}
-	//auto tmp = m_pCurAnimator->DebugGetFinalBoneMatrices();
-	//for (int i = 0;i<m_pCurModel->Get_Bones().size();i++)
-	//{
-	//	auto& bone = m_pCurModel->Get_Bones()[i];
-	//	// bone->Get_CombinedTransformationMatrix()는 CPU에서 계산된 본 행렬
-	//	bone->Set_CombinedTransformationMatrix(XMLoadFloat4x4(&tmp[i]));
-	//}
 
 	_uint		iNumMesh = m_pCurModel->Get_NumMeshes();
 

@@ -22,6 +22,7 @@ public:
 
 public:
 	virtual void EnterCutScene();
+	virtual void ReChallenge();
 	virtual void Reset() override;
 	EFuryState GetFuryState() const { return m_eFuryState; }
 	_bool HasCollided() const { return m_bPlayerCollided; }

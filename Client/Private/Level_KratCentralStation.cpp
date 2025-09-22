@@ -9,22 +9,21 @@
 //#include "StaticMesh.h"
 //#include "StaticMesh_Instance.h"
 //#include "Nav.h"
-//#include "Static_Decal.h"
+#include "Static_Decal.h"
 //#include "Stargazer.h"
 //#include "ErgoItem.h"
 //#include "BreakableMesh.h"
 #include "MapLoader.h"
 #pragma endregion
 
-#include "SlideDoor.h"
-#include "KeyDoor.h"
+#include "DefaultDoor.h"
 #include "BossDoor.h"
-#include "ShortCutDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
 #include "TriggerRain.h"
+#include "Trigger_Effect.h"
 
 #include "PBRMesh.h"
 #include "WaterPuddle.h"
@@ -67,9 +66,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	m_pGameInstance->Set_IsChangeLevel(false);
 
 	/* [ 사운드 ] */
-	m_pBGM = m_pGameInstance->Get_Single_Sound("AMB_SS_Train_In_03");
-	m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
-	m_pBGM->Play();
+	Start_BGM("AMB_SS_Train_In_03");
 
 	if (FAILED(Ready_Sound()))
 		return E_FAIL;
@@ -96,7 +93,7 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	if (FAILED(Ready_Trigger()))
 		return E_FAIL;	
 	
-	if (FAILED(Ready_RainTrigger()))
+	if (FAILED(Ready_TriggerEffect()))
 		return E_FAIL;
 
 	if (FAILED(Ready_TriggerBGM()))
@@ -104,7 +101,6 @@ HRESULT CLevel_KratCentralStation::Initialize()
 	
 	//if (FAILED(Ready_WaterPuddle()))
 	//	return E_FAIL;
-
 
 	Reset();
 	return S_OK;
@@ -200,6 +196,7 @@ void CLevel_KratCentralStation::Update(_float fTimeDelta)
 
 	m_pCamera_Manager->Update(fTimeDelta);
 	CLockOn_Manager::Get_Instance()->Update(fTimeDelta);
+	
 	__super::Update(fTimeDelta);
 }
 
@@ -694,8 +691,8 @@ HRESULT CLevel_KratCentralStation::Separate_Area()
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
 	// Area 19 
-	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
-	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19p0 = _float3{ 160.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -80.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 
@@ -1452,7 +1449,7 @@ HRESULT CLevel_KratCentralStation::Ready_OctoTree()
 HRESULT CLevel_KratCentralStation::Ready_Interact()
 {
 	/*  [ 기차역 슬라이딩 문 ] */
-	CSlideDoor::DOORMESH_DESC Desc{};
+	CDefaultDoor::DEFAULTDOOR_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
@@ -1532,76 +1529,73 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 		return E_FAIL;
 
 	/* [ 야외 나가는 문 ] */
-	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
-	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
-	lstrcpy(KeyDoorDesc.szName, TEXT("StationDoubleDoor"));
+	Desc = {};
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("StationDoubleDoor");
+	lstrcpy(Desc.szName, TEXT("StationDoubleDoor"));
 
 	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationDoubleDoor");
-	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 	vPosition = _float3(184.04f, 8.90f, -8.f);
 	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
 	world = trans;
 
 	XMStoreFloat4x4(&matWorldFloat, world);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
-	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::OUTDOOR;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	Desc.eInteractType = INTERACT_TYPE::OUTDOOR;
+	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	Desc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &Desc)))
 		return E_FAIL;
 
 	/* [ 기차 내부 문 ] */
-	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	KeyDoorDesc.szMeshID = TEXT("StationInnerDoor");
-	lstrcpy(KeyDoorDesc.szName, TEXT("StationInnerDoor"));
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("StationInnerDoor");
+	lstrcpy(Desc.szName, TEXT("StationInnerDoor"));
 
 	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationInnerDoor");
-	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 
 	vPosition = _float3(34.4f, 0.0822f, 0.57f);
 	matWorld = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
-	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 1.f, 1.0f, 0.f });
+	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = _vector({ 0.f, 0.5f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 0.2f, 1.f, 1.0f, 0.f });
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::INNERDOOR;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.7f, 0.5f, 0.f });
+	Desc.eInteractType = INTERACT_TYPE::INNERDOOR;
+	Desc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
+	Desc.vTriggerSize = _vector({ 0.5f, 0.7f, 0.5f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &KeyDoorDesc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("KeyDoor"), &Desc)))
 		return E_FAIL;
 
-
-
-
 	/* [ 숏컷 문 ] */
-	CShortCutDoor::SHORTCUTDOORMESH_DESC ShortCutDoorDesc{};
-	KeyDoorDesc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
-	KeyDoorDesc.szMeshID = TEXT("ShortCutDoor");
-	lstrcpy(KeyDoorDesc.szName, TEXT("ShortCutDoor"));
+	Desc = {};
+	Desc.m_eMeshLevelID = LEVEL::KRAT_CENTERAL_STATION;
+	Desc.szMeshID = TEXT("ShortCutDoor");
+	lstrcpy(Desc.szName, TEXT("ShortCutDoor"));
 
 	ModelPrototypeTag = TEXT("Prototype_Component_Model_ShortCutDoor");
-	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 	vPosition = _float3(147.46f, 2.66f, -25.17f);
 	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
 	world = trans;
 
 	XMStoreFloat4x4(&matWorldFloat, world);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
-	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-	KeyDoorDesc.vColliderSize = _vector({ 2.0f, 2.f, 0.2f, 0.f });
+	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
+	Desc.vColliderSize = _vector({ 2.0f, 2.f, 0.2f, 0.f });
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::SHORTCUT;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	Desc.eInteractType = INTERACT_TYPE::SHORTCUT;
+	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
+	Desc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &KeyDoorDesc)))
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -1737,7 +1731,6 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 			Desc.Rotation = VecToFloat3(rotDegArr);
 			Desc.vTriggerOffset = VecSetW(offsetArr, 0.f);
 			Desc.vTriggerSize = VecSetW(sizeArr, 0.f);
-			Desc.pBGM = m_pBGM;
 			Desc.strInBGM = strInBGM;
 			Desc.strOutBGM = strOutBGM;
 
@@ -1749,7 +1742,7 @@ HRESULT CLevel_KratCentralStation::Ready_TriggerBGM()
 	return S_OK;
 }
 
-HRESULT CLevel_KratCentralStation::Ready_RainTrigger()
+HRESULT CLevel_KratCentralStation::Ready_TriggerEffect()
 {
 	CTriggerRain::TRIGGERNOMESH_DESC Desc{};
 	Desc.vPos = _vector({ 191.78f, 8.5f, -8.3f});
@@ -1771,6 +1764,21 @@ HRESULT CLevel_KratCentralStation::Ready_RainTrigger()
 	BossdoorDesc.bBossDoor = true;
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerRain"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerRain"), &BossdoorDesc)))
+		return E_FAIL;
+
+	// 이펙트 트리거 미리 생성, 간판 스파크 용으로 일단 생성
+	CTrigger_Effect::TRIGGER_EFFECT_DESC sparkDesc = {};
+	_vector vPos = { 366.f, 13.5f, -49.f,1.f };
+	sparkDesc.vPos = vPos;
+	sparkDesc.Rotation = _float3(0.f, 0.f, 0.f);
+	sparkDesc.vTriggerOffset = _vector({});
+	sparkDesc.vTriggerSize = _vector({ 1.f, 0.2f, 8.f, 0.f });
+	sparkDesc.m_vecSoundData = {};
+	sparkDesc.strEffectTag = { TEXT("EC_OldSparkDrop_Big"),  TEXT("EC_OldSparkDrop_Big_1"),  TEXT("EC_OldSparkDrop_Big"), TEXT("EC_OldSparkDrop_Big_3"), TEXT("EC_OldSparkDrop_Big_2") };
+	sparkDesc.vMakePos = { _float4(400.f, 25.f, -48.25f,1.f), _float4(400.f, 25.5f, -44.5f,1.f), _float4(400.f, 25.f, -53.f,1.f), _float4(400.f, 24.5f, -46.f,1.f), _float4(400.f, 25.f, -52.f,1.f) };
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerEffect"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_TriggerSpark"), &sparkDesc)))
 		return E_FAIL;
 
 	return S_OK;

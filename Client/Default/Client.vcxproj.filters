@@ -226,12 +226,6 @@
     <Filter Include="02.GameObjects\12.Projectile\Fuoco">
       <UniqueIdentifier>{857ac3d0-7a88-456d-8659-01d2ab5485b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\13. DynamicMesh">
-      <UniqueIdentifier>{603fd7cb-9e42-4575-b9e8-b6874c9d9f10}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\13. DynamicMesh\00.Door">
-      <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Unit\00.Player\Arm">
       <UniqueIdentifier>{de9c87a9-7366-4fba-8867-e942279ecb45}</UniqueIdentifier>
     </Filter>
@@ -544,9 +538,6 @@
     <Filter Include="01.Levels\Loading\MapLoader">
       <UniqueIdentifier>{1e05d1e6-afec-4cd9-98f7-1cf833d70cd8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerRain">
-      <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.UI\Container\Letter">
       <UniqueIdentifier>{b57e7055-a7b1-4934-b8eb-ab440bacf724}</UniqueIdentifier>
     </Filter>
@@ -561,6 +552,18 @@
     </Filter>
     <Filter Include="02.GameObjects\07.Effect\Manager">
       <UniqueIdentifier>{83ec1aef-1cdb-4949-9c8d-665b1c7541ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerEffect">
+      <UniqueIdentifier>{3f04ccd2-97b6-4977-b417-859570a83e10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain">
+      <UniqueIdentifier>{1d783d0a-3c94-4784-80d3-28006f5ca9e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13. Door">
+      <UniqueIdentifier>{603fd7cb-9e42-4575-b9e8-b6874c9d9f10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13. Door\00.Door">
+      <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -819,9 +822,6 @@
     <ClInclude Include="..\Public\ToolMeshEffect.h">
       <Filter>01.Levels\LevelCY\Tool\ToolMeshEffect</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\EffectContainer.h">
-      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\UI_Text.h">
       <Filter>02.GameObjects\99.UI\Text</Filter>
     </ClInclude>
@@ -994,11 +994,11 @@
     <ClInclude Include="..\public\UI_Popup.h">
       <Filter>02.GameObjects\99.UI\Container\Popup</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\DynamicMesh.h">
-      <Filter>02.GameObjects\13. DynamicMesh</Filter>
+    <ClInclude Include="..\Public\DefaultDoor.h">
+      <Filter>02.GameObjects\13. Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SlideDoor.h">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LegionArm_Base.h">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
@@ -1088,7 +1088,7 @@
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\KeyDoor.h">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\PlayerState.h">
       <Filter>02.GameObjects\01.Unit\00.Player\PlayerBehavior</Filter>
@@ -1097,7 +1097,7 @@
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BossDoor.h">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\public\WaterPuddle.h">
       <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
@@ -1142,7 +1142,7 @@
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ShortCutDoor.h">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AnimatedProp.h">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
@@ -1152,7 +1152,7 @@
       <Filter>01.Levels\Loading\MapLoader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\TriggerRain.h">
-      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StargazerEffect.h">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
@@ -1171,6 +1171,15 @@
     </ClInclude>
     <ClInclude Include="..\public\AreaSoundBox.h">
       <Filter>02.GameObjects\15.StaticTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BossRetryDoor.h">
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EffectContainer.h">
+      <Filter>02.GameObjects\07.Effect\EffectContainer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Trigger_Effect.h">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1575,11 +1584,11 @@
     <ClCompile Include="..\private\UI_Popup.cpp">
       <Filter>02.GameObjects\99.UI\Container\Popup</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\DynamicMesh.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh</Filter>
+    <ClCompile Include="..\Private\DefaultDoor.cpp">
+      <Filter>02.GameObjects\13. Door</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\SlideDoor.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LegionArm_Base.cpp">
       <Filter>02.GameObjects\01.Unit\00.Player\Arm\Base</Filter>
@@ -1675,13 +1684,13 @@
       <Filter>02.GameObjects\99.UI\Dynamic\Feature\Color</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\KeyDoor.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Buttler_Range.cpp">
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Range</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BossDoor.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\private\WaterPuddle.cpp">
       <Filter>02.GameObjects\00.StaticMesh\Water_Puddle</Filter>
@@ -1723,7 +1732,7 @@
       <Filter>02.GameObjects\99.UI\Container\Levelup</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ShortCutDoor.cpp">
-      <Filter>02.GameObjects\13. DynamicMesh\00.Door</Filter>
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AnimatedProp.cpp">
       <Filter>02.GameObjects\18. AnimatedProp</Filter>
@@ -1736,7 +1745,7 @@
       <Filter>02.GameObjects\01.Unit\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\TriggerRain.cpp">
-      <Filter>02.GameObjects\15.StaticTrigger\TriggerRain</Filter>
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect\TriggerRain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StargazerEffect.cpp">
       <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
@@ -1755,6 +1764,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Ergo.cpp">
       <Filter>02.GameObjects\19.Ergo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Trigger_Effect.cpp">
+      <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BossRetryDoor.cpp">
+      <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

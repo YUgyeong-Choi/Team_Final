@@ -20,13 +20,17 @@ public:
 	virtual HRESULT Render();
 	virtual HRESULT Reset() { return S_OK; }
 
-	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="", _bool bLoop = false);
-	void Update_ChangeBGM(_float fTimeDelta);
+	void Start_BGM(string soundName);
+	void Change_BGM(string soundName);
+	void Change_BGM(string soundNoLoopName, string soundName);
+	
 	class CSound_Core* Get_BGM() { return m_pBGM; }
 	void Stop_BGM();
 protected:
 	void HoldMouse();
 
+	/* 현재 BGM은 1~0으로, 다음 BGM은 0~1로*/
+	void Update_ChangeBGM(_float fTimeDelta);
 protected:
 	ID3D11Device*			m_pDevice = { nullptr };
 	ID3D11DeviceContext*	m_pContext = { nullptr };
@@ -34,15 +38,16 @@ protected:
 
 	class CSound_Core* m_pBGM = { nullptr };
 	
+	string m_CurBGMName = "";
+	string m_BGMNext = "";
+	// NoLoop BGM일때 이게 끝나면 재생할 BGM
+	string m_BGMQueued = "";
+
+	_float m_fBGMVolume = 1.f;
+
+
 	_bool m_bBGMToZero = false;
 	_bool m_bBGMToVolume = false;
-	_float m_fBGMVolume = 1.f;
-	string m_strWillChangeBGM;
-
-	_bool m_bCheckBGMFinish = false;
-	string m_strWillMainBGM;
-
-	_bool m_bSoundLoop = false;
 public:	
 	virtual void Free() override;
 
