@@ -174,6 +174,7 @@ private:
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
     CBone* m_pRForearmBone{ nullptr };
+    CBone* m_pMiddleFingierBone{ nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
 	CBone* m_pLeftBone{ nullptr };
