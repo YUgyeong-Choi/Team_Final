@@ -150,7 +150,15 @@ void CLevel::Free()
     if (m_pBGM)
     {
         m_pBGM->Stop();
-        Safe_Release(m_pBGM);
+        //Safe_Release(m_pBGM);
+
+        _int iRefCount = Safe_Release(m_pBGM);
+        if (iRefCount != 0)
+        {
+            MSG_BOX("사운드 릴리즈 실패");
+            printf_s("SoundCore Ref Count %d\n", iRefCount);
+        }
+
     }
 
     Safe_Release(m_pDevice);
