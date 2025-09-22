@@ -168,6 +168,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 		m_pWeapon->Collider_FilterOff();
 		EnableColliders(false);
 		CLockOn_Manager::Get_Instance()->Set_Off(this);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 		m_bUseLockon = false;
 	}
 
@@ -416,6 +417,13 @@ void CElite_Police::HandleMovementDecision(_float fDistance, _float fTimeDelta)
 
 void CElite_Police::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
+	if (m_eCurrentState == EEliteState::DEAD || m_bDead
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY ||
+		m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
+		return;
+
 	if (m_bReturnToSpawn)
 		return;
 
