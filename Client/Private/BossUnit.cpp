@@ -28,7 +28,8 @@ HRESULT CBossUnit::Initialize(void* pArg)
 
 	m_fMaxHp = 1200.f;
 	m_fHp = m_fMaxHp;
-	// 컷씬 시작 전 대기
+
+
 	m_pAnimator->Update(0.f);
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
@@ -36,6 +37,8 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_fGroggyScale_Weak = 0.08f;
 	m_fGroggyScale_Strong = 0.1f;
 	m_fGroggyScale_Charge = 0.15f;
+	m_eCurrentState = EEliteState::CUTSCENE;
+	m_ePrevState = EEliteState::CUTSCENE;
 	return S_OK;
 }
 
@@ -137,8 +140,8 @@ void CBossUnit::ReChallenge()
 void CBossUnit::Reset()
 {
 	__super::Reset();
-	m_eCurrentState = EEliteState::CUTSCENE;
-	m_ePrevState = EEliteState::CUTSCENE;
+	// 재시작 때는 Idle 상태로 재도전이니까
+	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 	m_bIsPhase2 = false;
 	m_bStartPhase2 = false;
 	m_bPlayerCollided = false;
