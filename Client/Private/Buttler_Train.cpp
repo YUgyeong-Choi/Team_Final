@@ -82,7 +82,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			m_pWeapon->SetbIsActive(false);
 		}
 	}
