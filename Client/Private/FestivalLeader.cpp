@@ -32,6 +32,8 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
 	m_bIsDissolve = true;
+	m_bSecondEmissiveLoad = true;
+
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -128,7 +130,9 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_I))
 	{
-		m_fHp -= 500.f;
+		SwitchSecondEmissive(true, 1.f);
+		SwitchSecondEmissive(false, 1.f);
+		//m_fHp -= 500.f;
 		//	ReChallenge();
 	}
 #ifdef _DEBUG
@@ -203,7 +207,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 			if (pEC == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
 		}
-		if (KEY_DOWN(DIK_E))
+		if (KEY_PRESSING(DIK_E))
 		{
 			CEffectContainer::DESC desc = {};
 			desc.pSocketMatrix = nullptr;
@@ -285,6 +289,7 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 HRESULT CFestivalLeader::Render()
 {
 	__super::Render();
+
 	return S_OK;
 }
 

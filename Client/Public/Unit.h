@@ -93,10 +93,13 @@ public:
 public: /* [ 셰이더를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);
 	void OffEmissive(_float fTimeDelta);
+	void OnSecondEmissive(_float fTimeDelta);
+	void OffSecondEmissive(_float fTimeDelta);
 	void OnFury(_float fTimeDelta);
 	void OffFury(_float fTimeDelta);
 	void ToggleEmissive(_float fEmissiveSpeed);
 	void SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed);
+	void SwitchSecondEmissive(_bool bSecondEmissive, _float fSecondEmissiveSpeed);
 	void SwitchFury(_bool bFury, _float fFurySpeed);
 
 
@@ -146,6 +149,12 @@ protected:
 	_bool				m_bFurySwitch = {};
 	_float				m_fFurySwitch = {};
 	_float				m_fFurySpeed = {};
+
+	class CTexture*		m_pSecondEmissiveMap = { nullptr };
+	_float				m_fSecondEmissive = {};
+	_bool				m_bSecondEmissive = {};
+	_bool				m_bSecondEmissiveLoad = {};
+	_float				m_fSecondEmissiveSpeed = {};
 
 
 protected:              /* [ 컴포넌트 ] */

@@ -234,7 +234,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			m_fTimeScale = 1.f;
 		}
-		if (KEY_DOWN(DIK_E))
+		if (KEY_PRESSING(DIK_E))
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
@@ -1310,7 +1310,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLA:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.4f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.35f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1331,22 +1345,25 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (!m_bSetSound)
-		{
-			//m_pSoundCom->Play_Random("SE_PC_SK_WS_Glaive_P_B_S_", 3);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_ClockworkBlunt_2H_FableArts_Whoosh_", 4);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_SwordLance_2H_FableArts_Whoosh_End_", 3);
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Motor_0");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Start_01");
-			m_bSetSound = true;
-		}
-
 		break; 
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.25f;
+		_float  m_fDistance = 2.f;
+
+		if (!m_bMove)
+		{
+			if (0.4f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1370,7 +1387,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.2f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.5f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
