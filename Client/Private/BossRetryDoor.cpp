@@ -109,6 +109,9 @@ HRESULT CBossRetryDoor::Render()
 			return E_FAIL;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &m_fDissolve, sizeof(_float))))
 			return E_FAIL;
+		_float2 vDissolveParam = { 0.5f, 0.5f };
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveTexcoord", &vDissolveParam, sizeof(_float2))))
+			return E_FAIL;
 	}
 
 	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
@@ -149,6 +152,10 @@ HRESULT CBossRetryDoor::Render()
 			return E_FAIL;
 
 		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+
+		_float2 vDissolveParam = { 0.15f, 0.15f };
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveTexcoord", &vDissolveParam, sizeof(_float2))))
 			return E_FAIL;
 	}
 

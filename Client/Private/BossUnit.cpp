@@ -69,7 +69,14 @@ void CBossUnit::Update(_float fTimeDelta)
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_pAnimator->SetPlayRate(1.f);
 			SwitchEmissive(false, 1.f);
+			SwitchSecondEmissive(false, 1.f);
 			SwitchFury(false, 1.f);
+			m_ActiveEffect.clear();
+			EnableColliders(false);
+			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+			{
+				pPlayer->SetbEnding(true);
+			}
 
 			CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
@@ -169,6 +176,11 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 
 	// 새 스케일 설정
 	vScale = vDecalScale;
+
+	// z파이팅 없애기 위해 스케일 y값 랜덤 조정 
+	//_float fY = XMVectorGetY(vScale);
+	//fY = m_pGameInstance->Compute_Random(fY * .9f, fY);
+	//XMVectorSetY(vScale, fY);
 
 	if (m_pNaviCom == nullptr)
 		return E_FAIL;

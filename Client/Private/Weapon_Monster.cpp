@@ -8,6 +8,7 @@
 #include "Unit.h"
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "SwordTrailEffect.h"
 
 CWeapon_Monster::CWeapon_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon(pDevice, pContext)
@@ -64,6 +65,9 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -81,7 +85,17 @@ void CWeapon_Monster::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	
+	//XMStoreFloat4x4(
+	//	&m_InnerMatrix,
+	//	XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
+	//);
+	//XMStoreFloat4x4(
+	//	&m_OuterMatrix,
+	//	XMMatrixTranslation(0.f, 10.f, 0.0f) // (x=0, y=1, z=0)
+	//);
+
+	//XMStoreFloat4x4(&m_InnerMatrix, XMLoadFloat4x4(&m_InnerMatrix) * XMLoadFloat4x4(m_pParentWorldMatrix));
+	//XMStoreFloat4x4(&m_OuterMatrix, XMLoadFloat4x4(&m_OuterMatrix) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
 }
 
@@ -258,6 +272,35 @@ HRESULT CWeapon_Monster::Ready_Actor()
 	m_pPhysXActorCom->Set_ColliderType(COLLIDERTYPE::MONSTER_WEAPON);
 	m_pPhysXActorCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXActorCom->Get_Actor());
+
+	return S_OK;
+}
+
+HRESULT CWeapon_Monster::Ready_Effect()
+{
+	XMStoreFloat4x4(
+		&m_InnerMatrix,
+		XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
+	);
+	XMStoreFloat4x4(
+		&m_OuterMatrix,
+		XMMatrixTranslation(10.f, 10.f, 10.f) // (x=0, y=1, z=0)
+	);
+
+	m_CombinedWorldMatrix;
+
+	/************************ 소드 트레일 이펙트 **************************/
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.iLevelID = m_iLevelID;
+
+	desc.pInnerSocketMatrix = &m_InnerMatrix;
+	desc.pOuterSocketMatrix = &m_OuterMatrix;
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
+
+	m_pTrailEffect->Set_TrailActive(true);
 
 	return S_OK;
 }

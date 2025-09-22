@@ -48,6 +48,7 @@ protected:
 protected: /* [ Setup 함수 ] */
 	HRESULT Bind_Shader();
 	HRESULT Ready_Components();
+	virtual HRESULT Ready_Effect() { return S_OK; }
 
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
