@@ -35,6 +35,7 @@ protected:
 
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 protected:
+	_bool    m_bReChallenge = false;
 	_bool    m_bCutSceneOn = false;
 	_bool    m_bIsPhase2{ false };
 	_bool    m_bStartPhase2 = false;

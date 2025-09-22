@@ -152,7 +152,7 @@ void CBossUnit::Reset()
 	Ready_AttackPatternWeightForPhase1();
 	m_ActiveEffect.clear();
 	m_pAnimator->SetPlayRate(1.f);
-	m_fFirstChaseBeforeAttack = 3.f;
+	m_fFirstChaseBeforeAttack = 2.5f;
 	m_pAnimator->ResetTrigger("SpecialDie");
 }
 
