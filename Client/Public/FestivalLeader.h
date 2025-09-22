@@ -227,8 +227,6 @@ private:
 	array<CBone*, EBossBones::Total_Bones> m_BoneRefs{};
 	CBone* m_pRightWeaponBone{ nullptr };
 
-	class CWeapon_Monster* m_pHammer{ nullptr };
-
 	_bool m_bSwitchHeadSpace = false;
 	_int m_iOriginBoneIndex = -1;
 	_int m_iNewParentIndex = -1;

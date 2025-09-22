@@ -2100,6 +2100,10 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "SlashSound",
                     "Time": 3.472728729248047
                 },
@@ -2159,6 +2163,10 @@
                 {
                     "EventName": "HammerSlamEndEffect",
                     "Time": 112.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 113.0
                 }
             ],
             "IsLoop": false,
@@ -2192,6 +2200,10 @@
             "Events": [
                 {
                     "EventName": "Turnning",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "OnTrailEffect",
                     "Time": 1.0
                 },
                 {
@@ -2229,6 +2241,10 @@
                 {
                     "EventName": "ColliderHammerOff",
                     "Time": 28.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 29.0
                 }
             ],
             "IsLoop": false,
@@ -2329,6 +2345,10 @@
                 {
                     "EventName": "MovementSound",
                     "Time": 3.359576940536499
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 4.191551208496094
                 }
             ],
             "IsLoop": false,
@@ -2362,6 +2382,10 @@
                 {
                     "EventName": "WalkSound",
                     "Time": 60.0
+                },
+                {
+                    "EventName": "OnTrailEffect",
+                    "Time": 75.0
                 }
             ],
             "IsLoop": false,
@@ -2391,6 +2415,10 @@
                 {
                     "EventName": "MovementSound",
                     "Time": 59.0
+                },
+                {
+                    "EventName": "OnTrailEffect",
+                    "Time": 69.0
                 },
                 {
                     "EventName": "WalkSound",
@@ -2599,6 +2627,10 @@
                     "Time": 55.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 91.0
+                },
+                {
                     "EventName": "ColliderHammerOn",
                     "Time": 92.0
                 },
@@ -2644,6 +2676,10 @@
                 },
                 {
                     "EventName": "OffGroundScratchEffect",
+                    "Time": 140.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
                     "Time": 140.0
                 },
                 {

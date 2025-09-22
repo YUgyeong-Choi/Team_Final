@@ -20,6 +20,10 @@
                     "Time": 21.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 27.0
+                },
+                {
                     "EventName": "ResetAnimSpeed",
                     "Time": 31.0
                 },
@@ -46,6 +50,10 @@
                 {
                     "EventName": "RattleSound",
                     "Time": 43.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 50.0
                 },
                 {
                     "EventName": "ColliderArmOff",
@@ -126,6 +134,10 @@
                     "Time": 30.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 37.0
+                },
+                {
                     "EventName": "ColliderArmOn",
                     "Time": 45.0
                 },
@@ -148,6 +160,10 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 55.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 64.0
                 }
             ],
             "IsLoop": false,
@@ -197,6 +213,10 @@
                     "Time": 52.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 52.0
+                },
+                {
                     "EventName": "RockDebrisSound",
                     "Time": 53.0
                 },
@@ -215,6 +235,10 @@
                 {
                     "EventName": "SlowAnimSpeed",
                     "Time": 63.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 72.0
                 },
                 {
                     "EventName": "ResetAnimSpeed",
@@ -262,6 +286,10 @@
             "Duration": 120.0,
             "Events": [
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "AttackSound",
                     "Time": 4.0
                 },
@@ -296,6 +324,10 @@
                 {
                     "EventName": "ColliderArmOff",
                     "Time": 48.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 49.0
                 }
             ],
             "IsLoop": false,
@@ -371,6 +403,10 @@
                     "Time": 10.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 25.0
+                },
+                {
                     "EventName": "ColliderArmOn",
                     "Time": 33.0
                 },
@@ -393,6 +429,10 @@
                 {
                     "EventName": "OffGroundScratchEffect",
                     "Time": 50.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
+                    "Time": 54.0
                 },
                 {
                     "EventName": "ColliderArmOff",
@@ -473,6 +513,10 @@
                     "Time": 82.0
                 },
                 {
+                    "EventName": "OnTrailEffect",
+                    "Time": 85.0
+                },
+                {
                     "EventName": "ResetAnimSpeed",
                     "Time": 88.0
                 },
@@ -490,6 +534,10 @@
                 },
                 {
                     "EventName": "RockDebrisSound",
+                    "Time": 99.0
+                },
+                {
+                    "EventName": "OffTrailEffect",
                     "Time": 99.0
                 },
                 {

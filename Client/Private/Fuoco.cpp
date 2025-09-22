@@ -1691,9 +1691,7 @@ HRESULT CFuoco::Ready_Effect()
 	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (!m_pTrailEffect)
 		return E_FAIL;
-
-	m_pTrailEffect->Set_TrailActive(true);
-
+	m_pTrailEffect->Set_TrailActive(false);
 	return S_OK;
 }
 

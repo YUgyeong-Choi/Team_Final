@@ -1618,7 +1618,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 	if (!m_pTrailEffect)
 		return E_FAIL;
 
-	m_pTrailEffect->Set_TrailActive(true);
+	m_pTrailEffect->Set_TrailActive(false);
 
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;

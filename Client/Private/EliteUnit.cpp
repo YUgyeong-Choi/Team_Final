@@ -1,10 +1,12 @@
 #include "EliteUnit.h"
+
 #include "Bone.h"
-#include <Player.h>
+#include "Player.h"
 #include "Weapon.h"
 #include "GameInstance.h"
 #include "Camera_Manager.h"
 #include "LockOn_Manager.h"
+#include "SwordTrailEffect.h"
 #include "Client_Calculation.h"
 #include <PlayerFrontCollider.h>
 #include <PhysX_IgnoreSelfCallback.h>
@@ -77,7 +79,7 @@ HRESULT CEliteUnit::Initialize(void* pArg)
     _vector S, R, T;
     XMMatrixDecompose(&S, &R, &T, XMLoadFloat4x4(&worldMatrix));
 
-     XMStoreFloat3(&m_InitPos, T);
+    XMStoreFloat3(&m_InitPos, T);
      SwitchDissolve(true, 1.f, _float3{ 1.0f, 0.8f, 0.2f }, vector<_uint>{ 2, 3 });
 
      if (m_pSoundCom)
@@ -639,6 +641,11 @@ void CEliteUnit::Reset()
         m_pSoundCom->StopAll();
     }
     SwitchSecondEmissive(false, 1.f);
+
+    if (m_pTrailEffect)
+    {
+        m_pTrailEffect->Set_TrailActive(false);
+    }
 }
 
 void CEliteUnit::Register_Events()
@@ -676,6 +683,22 @@ void CEliteUnit::Register_Events()
         });
     m_pAnimator->RegisterEventListener("OffEmissive", [this]() {
         SwitchEmissive(false, 1.f);
+        });
+
+    m_pAnimator->RegisterEventListener("OnTrailEffect", [this]()
+        {
+            if (m_pTrailEffect)
+            {
+                m_pTrailEffect->Set_TrailActive(true);
+            }
+        });
+
+    m_pAnimator->RegisterEventListener("OffTrailEffect", [this]()
+        {
+            if (m_pTrailEffect)
+            {
+                m_pTrailEffect->Set_TrailActive(false);
+            }
         });
 }
 
@@ -758,9 +781,10 @@ void CEliteUnit::EnterFatalHit()
 		m_bGroggyActive = false;
 		m_fGroggyGauge = 0.f;
         SwitchFury(false, 1.f);
-#ifdef _DEBUG
-        cout << "Elite Fatal Attack" << endl;
-#endif
+        if (m_pTrailEffect)
+        {
+            m_pTrailEffect->Set_TrailActive(false);
+        }
     }
 }
 
@@ -772,9 +796,6 @@ void CEliteUnit::NotifyPerfectGuarded()
         m_bGroggyActive = true;                  // 화이트 게이지 시작
         m_fGroggyEndTimer = m_fGroggyTimer;
         m_fGroggyGauge = m_fGroggyThreshold;
-#ifdef _DEBUG
-        cout << "그로기 가능" << endl;
-#endif
         return;
     }
 }
@@ -825,14 +846,17 @@ void CEliteUnit::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
         }
 
 		m_fHp = max(m_fHp, 0.f);
+#ifdef _DEBUG
         cout << "몬스터 현재 체력 : " << m_fHp << endl;
+#endif // _DEBUG
+
 
 		_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
         auto pPlayer = GET_PLAYER(iLevelIndex);
 
         if (pPlayer == nullptr)
             return;
-        // cout << "플레이어 충돌" << endl;
+
         auto playerState = pPlayer->Get_PlayerState();
 
         switch (playerState)

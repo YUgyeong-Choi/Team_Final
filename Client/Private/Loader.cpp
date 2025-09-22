@@ -1392,7 +1392,9 @@ HRESULT CLoader::Loading_For_DH()
 HRESULT CLoader::Loading_For_JW()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 

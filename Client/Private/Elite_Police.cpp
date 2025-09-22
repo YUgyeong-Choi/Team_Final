@@ -343,7 +343,7 @@ HRESULT CElite_Police::Ready_Weapon()
 	Safe_AddRef(m_pWeapon);
 
 	m_pWeapon->SetisAttack(false);
-	m_pWeapon->Set_WeaponTrail_Active(true);
+	m_pWeapon->Set_WeaponTrail_Active(false);
 	return S_OK;
 }
 
@@ -802,29 +802,17 @@ void CElite_Police::Register_Events()
 		Set_ElbowHit(false);
 		});
 
-	m_pAnimator->RegisterEventListener("ChageLook", [this]() {
-
-		if (m_pTransformCom)
+	m_pAnimator->RegisterEventListener("WeaponTraillOn", [this]() {
+		if (m_pWeapon)
 		{
-			m_pTransformCom->RotateToDirectionImmediately(-m_pTransformCom->Get_State(STATE::LOOK));
-			//_vector vNewLook = m_pTransformCom->Get_State(STATE::LOOK) * -1.f;
-			//vNewLook = XMVector3Normalize(vNewLook);
+			m_pWeapon->Set_WeaponTrail_Active(true);
+		}
+		});
 
-			//_vector vUp = XMVectorSet(0, 1, 0, 0); // World Up
-			//_vector vRight = XMVector3Cross(vUp, vNewLook);
-			//vRight = XMVector3Normalize(vRight);
-
-
-			//vUp = XMVector3Cross(vNewLook, vRight);
-			//vUp = XMVector3Normalize(vUp);
-
-			//// 현재 위치는 유지
-			//_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-
-			//m_pTransformCom->Set_State(STATE::RIGHT, vRight);
-			//m_pTransformCom->Set_State(STATE::UP, vUp);
-			//m_pTransformCom->Set_State(STATE::LOOK, vNewLook);
-			//m_pTransformCom->Set_State(STATE::POSITION, vPos);
+	m_pAnimator->RegisterEventListener("WeaponTraillOff", [this]() {
+		if (m_pWeapon)
+		{
+			m_pWeapon->Set_WeaponTrail_Active(false);
 		}
 		});
 

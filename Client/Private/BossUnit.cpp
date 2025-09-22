@@ -1,11 +1,13 @@
 #include "BossUnit.h"
+
 #include "Player.h"
+#include "UI_Manager.h"
+#include "Static_Decal.h"
 #include "GameInstance.h"
+#include "UI_Container.h"
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
-#include "UI_Container.h"
-#include "Static_Decal.h"
-#include "UI_Manager.h"
+#include "SwordTrailEffect.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -73,6 +75,11 @@ void CBossUnit::Update(_float fTimeDelta)
 			SwitchFury(false, 1.f);
 			m_ActiveEffect.clear();
 			EnableColliders(false);
+			if (m_pTrailEffect)
+			{
+				m_pTrailEffect->Set_TrailActive(false);
+			}
+
 			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
 				pPlayer->SetbEnding(true);
