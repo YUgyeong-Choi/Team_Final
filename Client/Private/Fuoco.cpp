@@ -372,7 +372,8 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
-		m_fFirstChaseBeforeAttack -= fTimeDelta;
+		if (m_eCurrentState != EEliteState::IDLE) // Idle이면 감소 안 함
+			m_fFirstChaseBeforeAttack -= fTimeDelta;
 		return;
 	}
 	// 퓨리 돌진 9번
