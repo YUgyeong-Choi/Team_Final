@@ -87,7 +87,7 @@ void CAnimator::Reset()
 	m_PrevRootPosition = { 0.f, 0.f, 0.f };
 	m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 	m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
-
+	CancelOverrideAnimController();
 	// 블렌드 초기화
 	m_Blend = {};
 	m_eCurrentTransitionType = ET::FullbodyToFullbody;
