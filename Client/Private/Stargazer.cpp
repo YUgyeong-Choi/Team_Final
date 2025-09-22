@@ -698,6 +698,8 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 		{
 			// 플레이어가 텔레포트 자세를 잡는다
 			m_pPlayer->Start_Teleport();
+			if (!m_pPlayerEffectSet->GetbDelete())
+				m_pPlayerEffectSet->SetbDelete(true);
 
 			// 선택된 별바라기의 위치를 가져온다.
 			_float3 vPos;
