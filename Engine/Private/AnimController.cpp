@@ -462,7 +462,8 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 		outResult.fBlendWeight = toState->fBlendWeight;
 		outResult.bBlendFullbody = false;
 	}
-	else if (bFromMasked && !bToMasked) {
+	else if (bFromMasked && !bToMasked) 
+	{
 		// 상하체 분리 → 통짜
 		outResult.eType = ETransitionType::MaskedToFullbody;
 		outResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
