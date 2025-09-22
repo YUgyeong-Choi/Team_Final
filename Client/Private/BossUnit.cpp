@@ -170,6 +170,11 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 	// 새 스케일 설정
 	vScale = vDecalScale;
 
+	// z파이팅 없애기 위해 스케일 y값 랜덤 조정 
+	//_float fY = XMVectorGetY(vScale);
+	//fY = m_pGameInstance->Compute_Random(fY * .9f, fY);
+	//XMVectorSetY(vScale, fY);
+
 	if (m_pNaviCom == nullptr)
 		return E_FAIL;
 	//네브메쉬 높이 값으로 변경

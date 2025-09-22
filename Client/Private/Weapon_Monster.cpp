@@ -278,29 +278,29 @@ HRESULT CWeapon_Monster::Ready_Actor()
 
 HRESULT CWeapon_Monster::Ready_Effect()
 {
-	//XMStoreFloat4x4(
-	//	&m_InnerMatrix,
-	//	XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
-	//);
-	//XMStoreFloat4x4(
-	//	&m_OuterMatrix,
-	//	XMMatrixTranslation(0.f, 1.f, 0.0f) // (x=0, y=1, z=0)
-	//);
+	XMStoreFloat4x4(
+		&m_InnerMatrix,
+		XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
+	);
+	XMStoreFloat4x4(
+		&m_OuterMatrix,
+		XMMatrixTranslation(10.f, 10.f, 10.f) // (x=0, y=1, z=0)
+	);
 
-	//m_CombinedWorldMatrix;
+	m_CombinedWorldMatrix;
 
 	/************************ 소드 트레일 이펙트 **************************/
-	//CSwordTrailEffect::DESC desc = {};
-	//desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//desc.iLevelID = m_iLevelID;
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.iLevelID = m_iLevelID;
 
-	//desc.pInnerSocketMatrix = &m_InnerMatrix;
-	//desc.pOuterSocketMatrix = &m_OuterMatrix;
-	//m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	//if (!m_pTrailEffect)
-	//	return E_FAIL;
+	desc.pInnerSocketMatrix = &m_InnerMatrix;
+	desc.pOuterSocketMatrix = &m_OuterMatrix;
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
 
-	//m_pTrailEffect->Set_TrailActive(true);
+	m_pTrailEffect->Set_TrailActive(true);
 
 	return S_OK;
 }
