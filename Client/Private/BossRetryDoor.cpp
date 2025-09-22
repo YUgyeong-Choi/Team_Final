@@ -84,7 +84,16 @@ void CBossRetryDoor::Late_Update(_float fTimeDelta)
 
 HRESULT CBossRetryDoor::Render()
 {
-	if (FAILED(Bind_ShaderResources()))
+	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
+		return E_FAIL;
+
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	_bool bTile = false;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &bTile, sizeof(_bool))))
 		return E_FAIL;
 
 	if (FAILED(m_pDissolveMap->Bind_ShaderResource(m_pShaderCom, "g_MaskTexture", 0)))
