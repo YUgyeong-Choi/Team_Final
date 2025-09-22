@@ -149,8 +149,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 
 #endif
-	if (KEY_DOWN(DIK_M))
-		m_fHp -= 200;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
