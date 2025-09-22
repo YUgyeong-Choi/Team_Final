@@ -1054,8 +1054,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 860)
 		{
-			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
-			unit->EnterCutScene();
+			CBossUnit* unit = dynamic_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
 		if (m_iCurrentFrame == 1550)
@@ -1138,7 +1139,7 @@ void CCamera_CutScene::Event()
 		}
 		if (m_iCurrentFrame == 125)
 		{
-			CAreaSoundBox* pSound = static_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
+			CAreaSoundBox* pSound = dynamic_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
 			if(pSound)
 				pSound->SoundVolumeToZero();
 		}
@@ -1186,8 +1187,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1005)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterCutScene();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
 		if (m_iCurrentFrame == 1100)
@@ -1202,8 +1204,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1180)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->BreakPanel();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->BreakPanel();
 		}
 
 		if (m_iCurrentFrame == 1235)
@@ -1238,8 +1241,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1425)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterNextCutScene();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterNextCutScene();
 		}
 
 		if (m_iCurrentFrame == 1430)
