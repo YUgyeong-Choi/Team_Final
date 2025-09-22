@@ -1075,6 +1075,11 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
+			
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
+
 
 		}
 
@@ -1093,7 +1098,8 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1650)
@@ -1110,6 +1116,9 @@ void CCamera_CutScene::Event()
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH01_Intro", "MU_MS_Boss_FireEater_PH02");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1700)
@@ -1126,6 +1135,9 @@ void CCamera_CutScene::Event()
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		break;

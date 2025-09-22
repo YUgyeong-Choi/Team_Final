@@ -323,6 +323,7 @@ void CBreakableMesh::Break()
 			
 			
 			m_bMakeEffect = true;
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 	}
