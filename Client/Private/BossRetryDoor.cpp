@@ -24,6 +24,7 @@ HRESULT CBossRetryDoor::Initialize_Prototype()
 HRESULT CBossRetryDoor::Initialize(void* pArg)
 {
 	m_fDissolve = 1.f;
+	m_bIsLOD = false;
 	if (FAILED(Add_Component(0, TEXT("Prototype_Component_Texture_NoiseMap2"),
 		TEXT("Dissolve2_Com"), reinterpret_cast<CComponent**>(&m_pDissolveMap))))
 		return E_FAIL;
@@ -56,7 +57,6 @@ void CBossRetryDoor::Priority_Update(_float fTimeDelta)
 			// 1. 보스 전투바로 (컷씬 x)
 			// 2. 플레이어 애니메이션 재생
 			// 3. 디졸브 변수 올리기 (m_vDissolveGlowColor, m_fDissolve)
-			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.8f, 0.5f }, {});
 		}
 	}
 
@@ -172,6 +172,15 @@ HRESULT CBossRetryDoor::Render()
 	return S_OK;
 }
 
+void CBossRetryDoor::Reset()
+{
+	m_bEnd = false;
+	m_bFinish = false;
+	SwitchDissolve(true, 1.f, _float3{ 0.f, 0.8f, 0.5f }, {});
+	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
+}
+
 void CBossRetryDoor::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	if (!m_bFinish)
@@ -238,6 +247,57 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
 			m_bRotationStart = false;
+			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.8f, 0.5f }, {});
+		}
+	}
+
+	if (m_fDissolve < 0.1f && !m_bEnd)
+	{
+		m_bWalkFront = true;
+	}
+
+	if (m_bWalkFront)
+	{
+		_vector vTargetPos;
+		switch (m_eInteractType)
+		{
+		case Client::FESTIVALDOOR:
+			vTargetPos = _vector({ 374.99f, 14.95f, -48.61f, 1.f });
+			break;
+		case Client::FUOCO:
+			vTargetPos = _vector({ -1.836335f, 0.296629f, -231.623810f, 1.f });
+			break;
+		default:
+			break;
+		}
+
+		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
+		{
+			m_bWalkFront = false;
+			m_bEnd = true;
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			switch (m_eInteractType)
+			{
+			case Client::FESTIVALDOOR:
+			{
+				CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+				unit->EnterCutScene();
+			}
+				break;
+			case Client::FUOCO:
+			{
+				CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+				unit->EnterCutScene();
+			}
+				break;
+			default:
+				break;
+			}
+
+			list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"BossRetryDoor");
+			for (auto& obj : objList)
+				m_pGameInstance->Return_PoolObject(L"BossRetryDoor", obj);
+			m_pGameInstance->UseAll_PoolObjects(L"BossRetryDoor");
 		}
 	}
 }

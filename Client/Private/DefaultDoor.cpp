@@ -354,6 +354,11 @@ HRESULT CDefaultDoor::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	_bool bTile = false;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &bTile, sizeof(_bool))))
+		return E_FAIL;
+
 
 	return S_OK;
 }

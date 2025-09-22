@@ -314,9 +314,9 @@ void CBossDoor::Create_RetryDoor()
 		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
 		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
 		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossRetryDoor"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
-			MSG_BOX("Retry Door Create Fail");
+
+		CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"), &DefaultDoorDesc));
+		m_pGameInstance->Add_PoolObject(TEXT("BossRetryDoor"), pObj);
 	}
 		break;
 	case Client::FUOCO:
@@ -343,15 +343,16 @@ void CBossDoor::Create_RetryDoor()
 		DefaultDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
 		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
 		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossRetryDoor"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
-			MSG_BOX("Retry Door Create Fail");
+
+		CGameObject* pObj = static_cast<CGameObject*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"), &DefaultDoorDesc));
+		m_pGameInstance->Add_PoolObject(TEXT("BossRetryDoor"), pObj);
 	}
 		break;
 	default:
 		break;
 	}
-	
+
+	m_pGameInstance->UseAll_PoolObjects(L"BossRetryDoor");
 }
 
 HRESULT CBossDoor::Ready_Components(void* pArg)

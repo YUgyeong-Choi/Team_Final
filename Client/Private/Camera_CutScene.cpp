@@ -1055,8 +1055,6 @@ void CCamera_CutScene::Event()
 		{
 			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
 			unit->EnterCutScene();
-
-
 		}
 
 		if (m_iCurrentFrame == 1550)
