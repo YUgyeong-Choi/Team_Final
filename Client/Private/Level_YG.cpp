@@ -170,19 +170,19 @@ HRESULT CLevel_YG::Reset()
 {
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_FestivalLeader");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj, false);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal", true);
 	return S_OK;
 }
 
@@ -776,8 +776,8 @@ HRESULT CLevel_YG::Separate_Area()
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
 	// Area 19 
-	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
-	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19p0 = _float3{ 160.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -80.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 

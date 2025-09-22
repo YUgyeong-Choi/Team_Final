@@ -1040,21 +1040,21 @@ void CGameInstance::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pOb
 {
 	m_pPulling_Manager->Add_PoolObject(wsLayerName, pObj);
 }
-void CGameInstance::Use_PoolObject(const _wstring& wsLayerName)
+void CGameInstance::Use_PoolObject(const _wstring& wsLayerName, _bool bReset)
 {
-	m_pPulling_Manager->Use_PoolObject(wsLayerName);
+	m_pPulling_Manager->Use_PoolObject(wsLayerName, bReset);
 }
-void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName)
+void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset)
 {
-	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName);
+	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName, bReset);
 }
-void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 {
-	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
+	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj, bReset);
 }
-void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 { 	
-	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj);
+	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj, bReset);
 }
 HRESULT CGameInstance::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {

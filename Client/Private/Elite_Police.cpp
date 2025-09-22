@@ -134,7 +134,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			m_fEmissive = 0.f;
 			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 			{
-				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
 
@@ -149,7 +149,7 @@ void CElite_Police::Priority_Update(_float fTimeDelta)
 			if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 			{
 				m_eCurrentState = EEliteState::DEAD;
-				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+				m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 				m_pWeapon->SetbIsActive(false);
 				Safe_Release(m_pHPBar);
 

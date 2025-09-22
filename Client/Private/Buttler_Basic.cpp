@@ -80,10 +80,9 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			m_pWeapon->SetbIsActive(false);
-
-			//
+			
 		}
 	}
 
@@ -99,6 +98,7 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 		m_pPhysXActorCom->Init_SimulationFilterData();
 
 		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 	}
 }
 
@@ -610,6 +610,7 @@ void CButtler_Basic::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::Start_Fatal_Reaction()
@@ -620,6 +621,7 @@ void CButtler_Basic::Start_Fatal_Reaction()
 	m_isFatal = true;
 	m_pWeapon->SetisAttack(false);
 	m_pWeapon->Clear_CollisionObj();
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::Reset()
@@ -657,6 +659,7 @@ void CButtler_Basic::Reset()
 	}
 
 	m_pWeapon->SetDamage(50.f);
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::PlayDetectSound()

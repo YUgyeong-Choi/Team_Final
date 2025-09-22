@@ -11,6 +11,7 @@ private:
 	struct RemoveObject {
 		_wstring layerName;
 		CGameObject* pObj;
+		_bool bReset;
 	};
 private:
 	CPulling_Manager();
@@ -24,15 +25,15 @@ public:
 
 	/* [ 사용할 오브젝트를 오브젝트 매니저에서 돌 수 있도록 레이어에 추가한다 ] */
 	/* [ 이때 m_ObjectPools에서는 삭제된다 ] */
-	void Use_PoolObject(const _wstring& wsLayerName);
-	void UseAll_PoolObjects(const _wstring& wsLayerName);
+	void Use_PoolObject(const _wstring& wsLayerName, _bool bReset);
+	void UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset);
 
 	/* [ 사용이 다 되었다면 다시 m_ObjectPools에 추가한다 ] */
 	/* [ 이때 오브젝트 매니저에서 삭제해준다 ] */
-	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
 	
 	// PriorityUpdate다음에 지워줄 애들
-	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
 	void RemoveObjMagr_PushPullingMgr();
 	void Clear_Pools();
 public:

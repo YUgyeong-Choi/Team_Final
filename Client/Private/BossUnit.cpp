@@ -146,7 +146,7 @@ void CBossUnit::Reset()
 	m_bStartPhase2 = false;
 	m_bPlayerCollided = false;
 	m_bCutSceneOn = false;
-	m_pAnimator->Update(0.f);
+	m_pAnimator->Update(0.016f);
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
 	Ready_AttackPatternWeightForPhase1();

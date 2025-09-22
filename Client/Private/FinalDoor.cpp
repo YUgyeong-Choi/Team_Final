@@ -107,9 +107,6 @@ HRESULT CFinalDoor::Render()
 		{
 			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXActorCom)))
 				return E_FAIL;
-
-			if (FAILED(m_pGameInstance->Add_DebugComponent(m_pPhysXTriggerCom)))
-				return E_FAIL;
 		}
 	}
 #endif

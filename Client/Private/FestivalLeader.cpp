@@ -299,12 +299,11 @@ void CFestivalLeader::Reset()
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
-	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_bSwitchHeadSpace = false;
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
-
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
