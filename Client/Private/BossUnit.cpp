@@ -37,8 +37,8 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_fGroggyScale_Weak = 0.08f;
 	m_fGroggyScale_Strong = 0.1f;
 	m_fGroggyScale_Charge = 0.15f;
-	m_eCurrentState = EEliteState::CUTSCENE;
 	m_ePrevState = EEliteState::CUTSCENE;
+	m_eCurrentState = EEliteState::CUTSCENE;
 	return S_OK;
 }
 
@@ -152,7 +152,7 @@ void CBossUnit::Reset()
 	Ready_AttackPatternWeightForPhase1();
 	m_ActiveEffect.clear();
 	m_pAnimator->SetPlayRate(1.f);
-	m_fFirstChaseBeforeAttack = 2.f;
+	m_fFirstChaseBeforeAttack = 3.f;
 	m_pAnimator->ResetTrigger("SpecialDie");
 }
 
@@ -166,7 +166,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 
 HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
 {
-{
+
 #pragma region 康旷 单漠 积己内靛
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
 	DecalDesc.bNormalOnly = true;
