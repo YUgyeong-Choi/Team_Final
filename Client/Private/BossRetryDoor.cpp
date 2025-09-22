@@ -254,7 +254,7 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
 			m_bRotationStart = false;
-			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.8f, 0.5f }, {});
+			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.f, 0.f }, {});
 		}
 	}
 

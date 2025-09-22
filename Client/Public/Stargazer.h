@@ -86,10 +86,12 @@ private:
 	HRESULT Ready_Script();
 
 	HRESULT Ready_EffectSet();
+	HRESULT Ready_PlayerButterflyEffectSet();
 
 
 private:
 	class CStargazerEffect* m_pEffectSet = { nullptr };
+	class CStargazerEffect* m_pPlayerEffectSet = { nullptr };
 
 private:
 	STARGAZER_STATE m_eState = { STARGAZER_STATE::END };
@@ -99,6 +101,7 @@ private:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
+	_bool m_bPlayerButterfly = { false };
 
 private:
 	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };
@@ -111,7 +114,7 @@ private:    /* [ 컴포넌트 ] */
 
 	// 상호작용 용도
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };
-	
+	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 
 	// 대화가 있으면 따로 추가하기, npc처럼
 	vector<TALKDATA> m_eScriptDatas = { };
