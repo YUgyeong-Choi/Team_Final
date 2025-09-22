@@ -496,7 +496,7 @@
     <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\private\Stargazer.cpp" />
-    <ClCompile Include="..\private\StargazerEffect.cpp" />
+    <ClCompile Include="..\Private\StargazerEffect.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBGM.cpp" />

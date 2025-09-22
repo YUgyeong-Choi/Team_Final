@@ -51,6 +51,9 @@ void CStargazerEffect::Priority_Update(_float fTimeDelta)
 		if (pTransform)
 			pTransform->UpdateOrbit(fTimeDelta);
 	}
+	if (m_pPlayerButterflyTrans)
+		m_pPlayerButterflyTrans->UpdateOrbit(fTimeDelta);
+
 	if (m_eStatus == STARGAZER_STATUS::DEACTIVATE)
 	{
 		//m_fFlyingParticleTicker += fTimeDelta;
@@ -83,7 +86,13 @@ void CStargazerEffect::Priority_Update(_float fTimeDelta)
 
 void CStargazerEffect::Update(_float fTimeDelta)
 {
+	if (m_bDelete && m_pPlayerButterflyEffect)
+	{
+		m_pPlayerButterflyEffect->End_Effect();
+		m_pPlayerButterflyEffect = nullptr;
 
+		m_pPlayerButterflyTrans = nullptr;
+	}
 }
 
 void CStargazerEffect::Late_Update(_float fTimeDelta)
@@ -188,17 +197,20 @@ void CStargazerEffect::Activate_Stargazer_Spread()
 }
 void CStargazerEffect::Activate_Stargazer_PlayerButterfly()
 {
+	if (m_pPlayerButterflyEffect)
+		return;
+
 	//플레이어의 월드를 가져온다.
 	CEffectContainer::DESC desc = {};
 	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
 
-	// 생성 이후 나비3마리.
+	//나비 한마리를 소환한다.
 	XMStoreFloat4x4(&desc.PresetMatrix,
 		XMMatrixTranslation(
 			m_pGameInstance->Compute_Random(0.2f, 0.8f),
 			m_pGameInstance->Compute_Random(0.6f, 1.3f),
 			m_pGameInstance->Compute_Random(0.2f, 0.8f)));
-	m_pPlayerButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Stargazer_Butterfly_superfast"), &desc));
+	m_pPlayerButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
 	if (m_pPlayerButterflyEffect == nullptr)
 		return;
 
@@ -209,18 +221,7 @@ void CStargazerEffect::Activate_Stargazer_PlayerButterfly()
 		m_pPlayerButterflyTrans->Set_Orbit(XMVectorSet(0.f, m_pGameInstance->Compute_Random(1.f, 2.f), 0.f, 0.f),
 			XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
 			m_pGameInstance->Compute_Random(0.2f, 1.f),
-			m_pGameInstance->Compute_Random(0.2f, 0.6f));
-	}
-}
-
-void CStargazerEffect::Delete_Stargazer_PlayerButterfly()
-{
-	if (m_pPlayerButterflyEffect)
-	{
-		m_pPlayerButterflyEffect->End_Effect();
-		m_pPlayerButterflyEffect = nullptr;
-
-		m_pPlayerButterflyTrans = nullptr;
+			m_pGameInstance->Compute_Random(1.5f, 2.f));
 	}
 }
 

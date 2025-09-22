@@ -101,7 +101,6 @@ private:
 
 private:
 	class CPlayer* m_pPlayer = { nullptr };
-	_bool m_bPlayerButterfly = { false };
 
 private:
 	STARGAZER_TAG m_eStargazerTag = { STARGAZER_TAG::END };

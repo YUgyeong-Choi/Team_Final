@@ -1771,6 +1771,9 @@
     <ClCompile Include="..\private\BossRetryDoor.cpp">
       <Filter>02.GameObjects\13. Door\00.Door</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

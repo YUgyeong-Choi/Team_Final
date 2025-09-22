@@ -767,17 +767,16 @@ void CStargazer::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			
 	}
 
-	if (!m_pCamera_Manager->GetbMoveable() && !m_bPlayerButterfly)
+	if (KEY_DOWN(DIK_E) && m_eState == STARGAZER_STATE::FUNCTIONAL)
 	{
-		//범위안에있고 플레이어 움직임이 통제 당하면 상호작용중인걸로 간주한다.
+		m_pPlayerEffectSet->SetbDelete(false);
 		m_pPlayerEffectSet->Activate_Stargazer_PlayerButterfly();
-		m_bPlayerButterfly = true;
 	}
-	else
+	if (KEY_DOWN(DIK_ESCAPE))
 	{
-		m_pPlayerEffectSet->Delete_Stargazer_PlayerButterfly();
+		if (!m_pPlayerEffectSet->GetbDelete())
+			m_pPlayerEffectSet->SetbDelete(true);
 	}
-
 }
 
 void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -788,7 +787,7 @@ void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bTalkActive = false;
 	m_bUseScript = false;
 	m_bUseOtherUI = false;
-	m_bPlayerButterfly = false;
+	m_pPlayerEffectSet->SetbDelete(false);
 	
 }
 
