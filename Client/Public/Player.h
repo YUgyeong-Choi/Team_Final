@@ -300,6 +300,7 @@ public:/*[스탯 관련]*/
 	void Set_Player_Level(_int iLevel) { m_iLevel = iLevel; }
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
+	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
 
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
@@ -367,6 +368,9 @@ private: /* [ 텔레포트 ] */
 	_float3 m_vTeleportPos = { 51.3f, 1.f, -5.1f };
 
 	_bool m_bCheckRain = {};
+
+private:
+	_bool m_bEnding = {};
 
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
