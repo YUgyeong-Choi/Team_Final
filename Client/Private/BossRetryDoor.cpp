@@ -188,14 +188,6 @@ HRESULT CBossRetryDoor::Render()
 	return S_OK;
 }
 
-void CBossRetryDoor::Reset()
-{
-	m_bEnd = false;
-	m_bFinish = false;
-	SwitchDissolve(true, 1.f, _float3{ 0.f, 0.8f, 0.5f }, {});
-	m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
-	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
-}
 
 void CBossRetryDoor::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
@@ -225,11 +217,11 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		_vector vTargetPos;
 		switch (m_eInteractType)
 		{
-		case Client::FESTIVALDOOR:
+		case Client::RESTARTFESTIVAL:
 			//PlayerPos 374.990265f, 14.957887f, -48.613216f
-			vTargetPos = _vector({ 374.99f, 14.95f, -48.61f, 1.f });
+			vTargetPos = _vector({ 374.9f, 14.95f, -48.61f, 1.f });
 			break;
-		case Client::FUOCO:
+		case Client::RESTARTFUOCO:
 			//PlayerPos - 1.447618f, 0.412294f, -235.871674f
 			vTargetPos = _vector({ -1.44f, 0.41f, -235.87f, 1.f });
 			break;
@@ -250,10 +242,10 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 		_vector vTargetRotation;
 		switch (m_eInteractType)
 		{
-		case Client::FESTIVALDOOR:
+		case Client::RESTARTFESTIVAL:
 			vTargetRotation = _vector({ 1.f, 0.f, 0.f, 0.f });
 			break;
-		case Client::FUOCO:
+		case Client::RESTARTFUOCO:
 			vTargetRotation = _vector({ 0.f, 0.f, 1.f, 0.f });
 			break;
 		default:
@@ -262,58 +254,81 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 
 		if (m_pPlayer->RotateToDoor(fTimeDelta, vTargetRotation))
 		{
+			SwitchDissolve(false, 0.5f, _float3{ 0.f, 0.f, 0.f }, {});
+
+
 			m_bRotationStart = false;
-			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.8f, 0.5f }, {});
-		}
-	}
-
-	if (m_fDissolve < 0.1f && !m_bEnd)
-	{
-		m_bWalkFront = true;
-	}
-
-	if (m_bWalkFront)
-	{
-		_vector vTargetPos;
-		switch (m_eInteractType)
-		{
-		case Client::FESTIVALDOOR:
-			vTargetPos = _vector({ 374.99f, 14.95f, -48.61f, 1.f });
-			break;
-		case Client::FUOCO:
-			vTargetPos = _vector({ -1.836335f, 0.296629f, -231.623810f, 1.f });
-			break;
-		default:
-			break;
-		}
-
-		if (m_pPlayer->MoveToDoor(fTimeDelta, vTargetPos))
-		{
-			m_bWalkFront = false;
 			m_bEnd = true;
-			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_pPlayer->Interaction_Door(m_eInteractType, this);
+			m_fResetTime = 0.f;
+
 			switch (m_eInteractType)
 			{
-			case Client::FESTIVALDOOR:
+			case Client::RESTARTFESTIVAL:
 			{
 				CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-				unit->EnterCutScene();
+				unit->ReChallenge();
+				m_pGameInstance->Change_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Battle");
 			}
-				break;
-			case Client::FUOCO:
+			break;
+			case Client::RESTARTFUOCO:
 			{
 				CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
-				unit->EnterCutScene();
+				unit->ReChallenge();
+				m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH02");
 			}
-				break;
+			break;
 			default:
 				break;
 			}
+		}
+	}
 
-			list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"BossRetryDoor");
-			for (auto& obj : objList)
-				m_pGameInstance->Return_PoolObject(L"BossRetryDoor", obj);
-			m_pGameInstance->UseAll_PoolObjects(L"BossRetryDoor");
+	//if (m_bRotationStart)
+	//{
+	//	m_fResetTime += fTimeDelta;
+	//	if (m_fResetTime > 0.f)
+	//	{
+	//		m_bRotationStart = false;
+	//		m_bEnd = true;
+	//		m_pPlayer->Interaction_Door(m_eInteractType, this);
+	//		m_fResetTime = 0.f;
+
+	//		switch (m_eInteractType)
+	//		{
+	//		case Client::RESTARTFESTIVAL:
+	//		{
+	//			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+	//			unit->ReChallenge();
+	//			m_pGameInstance->Change_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+	//		}
+	//		break;
+	//		case Client::RESTARTFUOCO:
+	//		{
+	//			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+	//			unit->ReChallenge();
+	//			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH02");
+	//		}
+	//		break;
+	//		default:
+	//			break;
+	//		}
+	//	}
+
+	//}
+
+	if (m_bEnd)
+	{
+		m_fResetTime += fTimeDelta;
+		if (m_fResetTime > 5.f)
+		{
+			CCamera_Manager::Get_Instance()->SetbMoveable(true);
+			m_fResetTime = 0.f;
+			m_bEnd = false;
+			m_bFinish = false;
+			SwitchDissolve(true, 1.f, _float3{ 0.f, 0.8f, 0.5f }, {});
+			m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
+			m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 		}
 	}
 }

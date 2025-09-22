@@ -716,7 +716,7 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	_float fAngle = acosf(fDot); // 현재 각도 차이 (라디안)
 
 	// 거의 정면이면 회전하지 않음
-	if (fAngle < 0.01f)
+	if (fAngle < 0.05f)
 		return true;
 
 	// 회전 축 계산
