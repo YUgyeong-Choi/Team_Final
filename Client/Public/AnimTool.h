@@ -33,8 +33,8 @@ public:
 
 private:
 	HRESULT Render_OverrideAnimControllers();
+	HRESULT Render_AnimationStateMachine();
 	HRESULT Render_AnimationSequence();
-	HRESULT Render_AnimStatesByNode();
 	HRESULT Render_AnimControllers();
 	HRESULT Render_Loaded_Models();
 	HRESULT Render_SpawnedObject();

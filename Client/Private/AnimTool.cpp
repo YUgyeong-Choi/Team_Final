@@ -168,7 +168,7 @@ HRESULT CAnimTool::Render()
 			if (FAILED(Render_AnimEvents()))
 				return E_FAIL;
 		}
-		if (FAILED(Render_AnimStatesByNode()))
+		if (FAILED(Render_AnimationStateMachine()))
 			return E_FAIL;
 		if (FAILED(Render_OverrideAnimControllers()))
 			return E_FAIL;
@@ -978,7 +978,7 @@ HRESULT CAnimTool::Render_AnimationSequence()
 	return S_OK;
 }
 
-HRESULT CAnimTool::Render_AnimStatesByNode()
+HRESULT CAnimTool::Render_AnimationStateMachine()
 {
 	if (m_pCurAnimator == nullptr || m_pCurAnimator->Get_CurrentAnimController() == nullptr)
 	{
