@@ -1,33 +1,50 @@
 {
     "EffectObject": [
         {
+            "Accel": [
+                -40.0,
+                -36.0
+            ],
             "Animation": true,
-            "Billboard": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
             "CenterColor": [
                 1.0,
                 1.0,
                 1.0,
-                1.0
+                0.03
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
             ],
             "Color": [
-                0.46073299646377563,
-                0.4583207666873932,
-                0.4583207666873932,
-                1.0
+                1.0,
+                1.0,
+                1.0,
+                0.0
             ],
-            "DistortionStrength": 10.0,
-            "Duration": 20,
-            "EffectType": 0,
-            "EmissiveIntensity": 0.0,
-            "EndTrack": 20,
+            "DistortionStrength": 0.0,
+            "Duration": 310,
+            "EffectType": 1,
+            "EmissiveIntensity": 1.0,
+            "EndTrack": 310,
             "FlipUV": false,
+            "Gravity": 1.0,
+            "IsCircleRange": false,
+            "IsGravity": false,
             "KeyFrames": [
                 {
                     "Color": [
-                        0.46073299646377563,
-                        0.4583207666873932,
-                        0.4583207666873932,
-                        1.0
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
                     ],
                     "Intensity": 1.0,
                     "Interpolation": 0,
@@ -39,43 +56,96 @@
                     ],
                     "Scale": [
                         1.0,
-                        2.0,
+                        1.0,
                         1.0
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
                         0.0,
-                        1.0,
+                        0.0,
                         0.0
                     ]
                 }
             ],
-            "LifeTime": 122.97056579589844,
+            "LifeTime": 11931.720703125,
+            "LifeTime_Particle": [
+                0.30000001192092896,
+                1.0
+            ],
+            "Local": true,
             "Loop": true,
-            "Name": "Sprite",
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 3.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 4.0,
+            "Name": "Fuoco_Cutscene_SteamGL",
+            "NumInstance": 500,
             "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -90.0,
+                90.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.5,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.25
+            ],
             "RenderGroup": 8,
-            "ShaderPass": 5,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 2,
+            "ShrinkThreshold": 1.0,
+            "Size": [
+                0.4000000059604645,
+                1.2000000476837158
+            ],
+            "Speed": [
+                15.0,
+                18.0
+            ],
+            "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.05000000074505806,
             "TextureTags": [
                 "",
-                "T_SubUV_SmokeDown_01_8x4_SC_RSW",
+                "T_Smoke_04_C_LGS",
                 "",
                 ""
             ],
             "TextureUsage": [
-                true,
+                false,
                 true,
                 false,
                 false
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 60.0,
-            "TileX": 8,
-            "TileY": 4
+            "TileTickPerSec": 1.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
-    "Loop": true,
-    "MaxFrame": 200
+    "Loop": false,
+    "MaxFrame": 300
 }
