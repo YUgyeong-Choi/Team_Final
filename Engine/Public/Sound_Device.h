@@ -24,6 +24,11 @@ public:
     class CSound_Core* Get_Single_Sound(const string& strKey);
     void Release_Single_Sound(const string& strKey);
     void Set_Master_Volume(_float volume);
+
+//public:
+//    const unordered_map<string, class CSound_Core*>& Get_SingleSounds() const {
+//        return m_SingleSounds;
+//    }
 private:
     FMOD::DSP* m_pMasterLimiter = nullptr;
     FMOD::System* m_pCoreSystem = nullptr;

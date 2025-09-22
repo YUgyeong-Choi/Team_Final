@@ -261,7 +261,15 @@ void CUI_Manager::Free()
 
 	if (m_pSoundCom)
 		m_pSoundCom->StopAll();
-	Safe_Release(m_pSoundCom);
+
+	_int iRefCount = Safe_Release(m_pSoundCom);
+	if (iRefCount != 0)
+	{
+		MSG_BOX("사운드 릴리즈 실패");
+		printf_s("SoundCore Ref Count %d\n", iRefCount);
+	}
+
+	//Safe_Release(m_pSoundCom);
 
 	Safe_Release(m_pGameInstance);
 
