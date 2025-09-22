@@ -58,6 +58,8 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 
 	}
 
+	m_pWeapon->Set_WeaponTrail_Active(false);
+
 	return S_OK;
 }
 
@@ -505,12 +507,14 @@ void CButtler_Basic::Register_Events()
 
 		m_pWeapon->SetisAttack(true);
 		m_pWeapon->Clear_CollisionObj();
+		m_pWeapon->Set_WeaponTrail_Active(true);
 		});
 
 	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		m_pWeapon->Set_WeaponTrail_Active(false);
 		});
 
 	
