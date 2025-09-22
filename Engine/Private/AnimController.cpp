@@ -136,212 +136,302 @@ HRESULT CAnimController::Initialize(void* pArg)
 void CAnimController::Update(_float fTimeDelta)
 {
 	m_TransitionResult.bTransition = false;
-	if (!m_pAnimator->IsBlending())
+	//if (!m_pAnimator->IsBlending())
+	//{
+	//	for (auto& tr : m_Transitions)
+	//	{
+
+	//		if (tr.iFromNodeId == ANYSTATE_NODE_ID)
+	//		{
+	//			// AnyState에서 현재 상태로의 전환은 무시 (무한루프 방지)
+	//			//if (tr.iToNodeId == m_CurrentStateNodeId)
+	//			//	continue;
+
+	//			if (tr.iToNodeId == m_CurrentStateNodeId)
+	//			{
+	//				auto toState = FindStateByNodeId(tr.iToNodeId);
+	//				if (!toState || !toState->bCanSameAnimReset)
+	//					continue; // 원래대로 무시
+	//				// bCanSameAnimReset == true면 같은 상태로 다시 들어가도록 허용
+	//			}
+
+	//			if (!tr.Evaluates(this, m_pAnimator))
+	//				continue;
+	//			_int iResolvedTo = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
+	//			if (iResolvedTo < 0) 
+	//				continue;
+	//			// AnyState 전환 실행 - 현재 상태를 From으로 취급
+	//			AnimState* fromState = FindStateByNodeId(m_CurrentStateNodeId); // 현재 상태
+	//			AnimState* toState = FindStateByNodeId(iResolvedTo);
+
+	//			if (!fromState || !toState)
+	//				continue;
+
+	//			// 나머지 전환 로직은 기존과 동일
+	//			m_TransitionResult = TransitionResult{};
+
+	//			_bool bFromMasked = fromState->maskBoneName.empty() == false;
+	//			_bool bToMasked = toState->maskBoneName.empty() == false;
+
+	//			if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
+	//			{
+	//				m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
+	//				m_TransitionResult.pFromLowerAnim = fromState->clip;
+	//				m_TransitionResult.pToLowerAnim = toState->clip;
+	//				m_TransitionResult.pFromUpperAnim = fromState->clip;
+	//				m_TransitionResult.pToUpperAnim = toState->clip;
+	//				m_TransitionResult.bBlendFullbody = true;
+	//			}
+	//			else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
+	//			{
+	//				m_TransitionResult.eType = ETransitionType::FullbodyToMasked;
+	//				m_TransitionResult.pFromLowerAnim = fromState->clip;
+	//				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+	//				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+	//				m_TransitionResult.pFromUpperAnim = fromState->clip;
+	//				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+	//				m_TransitionResult.bBlendFullbody = false;
+	//			}
+	//			else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
+	//			{
+	//				m_TransitionResult.eType = ETransitionType::MaskedToFullbody;
+	//				m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+	//				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+	//				m_TransitionResult.pToLowerAnim = toState->clip;
+	//				m_TransitionResult.pToUpperAnim = toState->clip;
+	//				m_TransitionResult.fBlendWeight = fromState->fBlendWeight;
+	//				m_TransitionResult.bBlendFullbody = false;
+	//			}
+	//			else  // 상하체 분리 -> 상하체 분리
+	//			{
+	//				m_TransitionResult.eType = ETransitionType::MaskedToMasked;
+	//				m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+	//				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+	//				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+	//				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+	//				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+	//				m_TransitionResult.bBlendFullbody = false;
+	//			}
+
+
+	//				if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim)
+	//					continue;
+	//				if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
+	//					continue;
+	//				if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim)
+	//					continue;
+	//				if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim))
+	//					continue;
+	//	
+
+	//			m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
+	//			m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
+	//			m_TransitionResult.bTransition = true;
+	//			m_TransitionResult.fDuration = tr.duration;
+	//			m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
+	//			m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
+	//			ConsumeTrigger(tr);
+	//			return; // AnyState 전환이 실행되면 즉시 종료
+	//		}
+
+	//		if (tr.iFromNodeId != m_CurrentStateNodeId)
+	//			continue;
+	//		if (tr.hasExitTime)
+	//		{
+	//			AnimState* currentAnimState = FindStateByNodeId(m_CurrentStateNodeId);
+	//			if (currentAnimState && currentAnimState->maskBoneName.empty() == false) // 현재 상태가 상하체 분리 상태라면
+	//			{
+	//				CAnimation* upperAnim = m_pAnimator->GetUpperClip();
+	//				if (upperAnim && upperAnim->Get_isLoop())
+	//					continue; // 현재 상체 애니메이션이 루프면 뛰어넘게(보통은 그런 경우가 없을듯함.)
+	//				_float progress = m_pAnimator->GetCurrentUpperAnimProgress();
+	//				if (progress < 1.f)
+	//					continue; // 현재 상체 애니메이션이 끝나지 않았으면 뛰어넘게
+	//			}
+	//			else
+	//			{
+	//				CAnimation* currentAnim = m_pAnimator->GetCurrentAnim();
+	//				if (!currentAnim || currentAnim->Get_isLoop())
+	//					continue; // 현재 애니메이션이 없거나 루프면 뛰어넘게
+	//				_float progress = m_pAnimator->GetCurrentAnimProgress();
+	//				if (progress < 1.f)
+	//					continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
+	//			}
+	//		
+	//		}
+	//		if (!tr.Evaluates(this,m_pAnimator))
+	//			continue;
+	//		_int iResolvedTo = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
+	//		if (iResolvedTo < 0)
+	//			continue;
+	//		AnimState* fromState = FindStateByNodeId(ConvertAnyStateNodeIdToAnyState(tr.iFromNodeId));
+	//		AnimState* toState = FindStateByNodeId(iResolvedTo);
+
+	//		if (!fromState || !toState) // 애니메이션 상태가 없으면
+	//			continue;
+
+	//		m_TransitionResult = TransitionResult{}; // 초기화
+
+	//		_bool bFromMasked = fromState->maskBoneName.empty() == false; // 분리 상태인지
+	//		_bool bToMasked = toState->maskBoneName.empty() == false; // 분리 상태인지
+	//	
+	//	
+	//		// 통짜-> 분리
+	//		auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
+	//		auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
+
+	//		if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
+	//		{
+	//			m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
+	//			m_TransitionResult.pFromLowerAnim = fromState->clip;
+	//			m_TransitionResult.pToLowerAnim = toState->clip;
+	//			m_TransitionResult.pFromUpperAnim = fromState->clip; // 통짜 애니메이션은 상체도 동일
+	//			m_TransitionResult.pToUpperAnim = toState->clip; // 통짜 애니메이션은 상체도 동일
+	//			m_TransitionResult.bBlendFullbody = true;
+	//		}
+	//		else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
+	//		{
+	//			m_TransitionResult.eType = ETransitionType::FullbodyToMasked;
+	//			m_TransitionResult.pFromLowerAnim = fromState->clip; // 이전 통짜 애니메이션
+	//			m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName); // 목표 하체
+	//			m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName); // 목표 상체
+	//			m_TransitionResult.pFromUpperAnim = fromState->clip;
+	//			m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+	//			m_TransitionResult.bBlendFullbody = false;
+	//		}
+	//		else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
+	//		{
+	//			m_TransitionResult.eType = ETransitionType::MaskedToFullbody;
+	//			m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip(); // 현재 재생 중인 하체 클립
+	//			m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip(); // 현재 재생 중인 상체 클립
+	//			m_TransitionResult.pToLowerAnim = toState->clip; // 목표 통짜 애니메이션
+	//			m_TransitionResult.pToUpperAnim = toState->clip; // 목표 통짜 애니메이션
+	//			m_TransitionResult.fBlendWeight = fromState->fBlendWeight; // 이전 상태의 블렌드 가중치
+	//			m_TransitionResult.bBlendFullbody = false;
+	//		}
+	//		else  // 상하체 분리 -> 상하체 분리
+	//		{
+	//			m_TransitionResult.eType = ETransitionType::MaskedToMasked;
+	//			m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
+	//			m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
+	//			m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
+	//			m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
+	//			m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+
+	//			m_TransitionResult.bBlendFullbody = false;
+	//		}
+
+	//		if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim) 
+	//			continue; // 최소한 하체/통짜 클립은 있어야 함
+	//		if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
+	//			continue;
+	//		if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim) 
+	//			continue;
+	//		if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) 
+	//			continue;
+	//		
+	//
+	//		m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
+	//		m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
+	//		m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
+	//		m_TransitionResult.bTransition = true;
+	//		m_TransitionResult.fDuration = tr.duration;
+
+	//		m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId); // 다음 프레임부터 이 상태로 간주
+	//		ConsumeTrigger(tr);
+	//		break;
+	//	}
+	//}
+
+if (!m_pAnimator->IsBlending())
+{
+	for (auto& tr : m_Transitions)
 	{
-		for (auto& tr : m_Transitions)
+		// AnyState 처리
+
+		if (tr.iFromNodeId == ANYSTATE_NODE_ID)
 		{
-
-			if (tr.iFromNodeId == ANYSTATE_NODE_ID)
+			if (tr.iToNodeId == m_CurrentStateNodeId)
 			{
-				// AnyState에서 현재 상태로의 전환은 무시 (무한루프 방지)
-				//if (tr.iToNodeId == m_CurrentStateNodeId)
-				//	continue;
-
-				if (tr.iToNodeId == m_CurrentStateNodeId)
-				{
-					auto toState = FindStateByNodeId(tr.iToNodeId);
-					if (!toState || !toState->bCanSameAnimReset)
-						continue; // 원래대로 무시
-					// bCanSameAnimReset == true면 같은 상태로 다시 들어가도록 허용
-				}
-
-				if (!tr.Evaluates(this, m_pAnimator))
+				auto toState = FindStateByNodeId(tr.iToNodeId);
+				if (!toState || !toState->bCanSameAnimReset)
 					continue;
-				_int iResolvedTo = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
-				if (iResolvedTo < 0) 
-					continue;
-				// AnyState 전환 실행 - 현재 상태를 From으로 취급
-				AnimState* fromState = FindStateByNodeId(m_CurrentStateNodeId); // 현재 상태
-				AnimState* toState = FindStateByNodeId(iResolvedTo);
-
-				if (!fromState || !toState)
-					continue;
-
-				// 나머지 전환 로직은 기존과 동일
-				m_TransitionResult = TransitionResult{};
-
-				_bool bFromMasked = fromState->maskBoneName.empty() == false;
-				_bool bToMasked = toState->maskBoneName.empty() == false;
-
-				if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
-				{
-					m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
-					m_TransitionResult.pFromLowerAnim = fromState->clip;
-					m_TransitionResult.pToLowerAnim = toState->clip;
-					m_TransitionResult.pFromUpperAnim = fromState->clip;
-					m_TransitionResult.pToUpperAnim = toState->clip;
-					m_TransitionResult.bBlendFullbody = true;
-				}
-				else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
-				{
-					m_TransitionResult.eType = ETransitionType::FullbodyToMasked;
-					m_TransitionResult.pFromLowerAnim = fromState->clip;
-					m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
-					m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
-					m_TransitionResult.pFromUpperAnim = fromState->clip;
-					m_TransitionResult.fBlendWeight = toState->fBlendWeight;
-					m_TransitionResult.bBlendFullbody = false;
-				}
-				else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
-				{
-					m_TransitionResult.eType = ETransitionType::MaskedToFullbody;
-					m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
-					m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
-					m_TransitionResult.pToLowerAnim = toState->clip;
-					m_TransitionResult.pToUpperAnim = toState->clip;
-					m_TransitionResult.fBlendWeight = fromState->fBlendWeight;
-					m_TransitionResult.bBlendFullbody = false;
-				}
-				else  // 상하체 분리 -> 상하체 분리
-				{
-					m_TransitionResult.eType = ETransitionType::MaskedToMasked;
-					m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
-					m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
-					m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
-					m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
-					m_TransitionResult.fBlendWeight = toState->fBlendWeight;
-					m_TransitionResult.bBlendFullbody = false;
-				}
-
-
-					if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim)
-						continue;
-					if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
-						continue;
-					if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim)
-						continue;
-					if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim))
-						continue;
-		
-
-				m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
-				m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
-				m_TransitionResult.bTransition = true;
-				m_TransitionResult.fDuration = tr.duration;
-				m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
-				m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
-				ConsumeTrigger(tr);
-				return; // AnyState 전환이 실행되면 즉시 종료
 			}
 
-			if (tr.iFromNodeId != m_CurrentStateNodeId)
+			if (!tr.Evaluates(this, m_pAnimator))
 				continue;
-			if (tr.hasExitTime)
-			{
-				AnimState* currentAnimState = FindStateByNodeId(m_CurrentStateNodeId);
-				if (currentAnimState && currentAnimState->maskBoneName.empty() == false) // 현재 상태가 상하체 분리 상태라면
-				{
-					CAnimation* upperAnim = m_pAnimator->GetUpperClip();
-					if (upperAnim && upperAnim->Get_isLoop())
-						continue; // 현재 상체 애니메이션이 루프면 뛰어넘게(보통은 그런 경우가 없을듯함.)
-					_float progress = m_pAnimator->GetCurrentUpperAnimProgress();
-					if (progress < 1.f)
-						continue; // 현재 상체 애니메이션이 끝나지 않았으면 뛰어넘게
-				}
-				else
-				{
-					CAnimation* currentAnim = m_pAnimator->GetCurrentAnim();
-					if (!currentAnim || currentAnim->Get_isLoop())
-						continue; // 현재 애니메이션이 없거나 루프면 뛰어넘게
-					_float progress = m_pAnimator->GetCurrentAnimProgress();
-					if (progress < 1.f)
-						continue; // 현재 애니메이션이 끝나지 않았으면 뛰어넘게
-				}
-			
-			}
-			if (!tr.Evaluates(this,m_pAnimator))
-				continue;
+
 			_int iResolvedTo = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
 			if (iResolvedTo < 0)
 				continue;
-			AnimState* fromState = FindStateByNodeId(ConvertAnyStateNodeIdToAnyState(tr.iFromNodeId));
+
+			AnimState* fromState = FindStateByNodeId(m_CurrentStateNodeId);
 			AnimState* toState = FindStateByNodeId(iResolvedTo);
 
-			if (!fromState || !toState) // 애니메이션 상태가 없으면
-				continue;
-
-			m_TransitionResult = TransitionResult{}; // 초기화
-
-			_bool bFromMasked = fromState->maskBoneName.empty() == false; // 분리 상태인지
-			_bool bToMasked = toState->maskBoneName.empty() == false; // 분리 상태인지
-		
-		
-			// 통짜-> 분리
-			auto* fromClip = GetStateAnimationByNodeId(tr.iFromNodeId);
-			auto* toClip = GetStateAnimationByNodeId(tr.iToNodeId);
-
-			if (!bFromMasked && !bToMasked) //  통짜 -> 통짜
+			TransitionResult result{};
+			if (DetermineTransitionResult(fromState, toState, tr, result))
 			{
-				m_TransitionResult.eType = ETransitionType::FullbodyToFullbody;
-				m_TransitionResult.pFromLowerAnim = fromState->clip;
-				m_TransitionResult.pToLowerAnim = toState->clip;
-				m_TransitionResult.pFromUpperAnim = fromState->clip; // 통짜 애니메이션은 상체도 동일
-				m_TransitionResult.pToUpperAnim = toState->clip; // 통짜 애니메이션은 상체도 동일
-				m_TransitionResult.bBlendFullbody = true;
-			}
-			else if (!bFromMasked && bToMasked) //  통짜 -> 상하체 분리
-			{
-				m_TransitionResult.eType = ETransitionType::FullbodyToMasked;
-				m_TransitionResult.pFromLowerAnim = fromState->clip; // 이전 통짜 애니메이션
-				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName); // 목표 하체
-				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName); // 목표 상체
-				m_TransitionResult.pFromUpperAnim = fromState->clip;
-				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
-				m_TransitionResult.bBlendFullbody = false;
-			}
-			else if (bFromMasked && !bToMasked) //  상하체 분리 -> 통짜
-			{
-				m_TransitionResult.eType = ETransitionType::MaskedToFullbody;
-				m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip(); // 현재 재생 중인 하체 클립
-				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip(); // 현재 재생 중인 상체 클립
-				m_TransitionResult.pToLowerAnim = toState->clip; // 목표 통짜 애니메이션
-				m_TransitionResult.pToUpperAnim = toState->clip; // 목표 통짜 애니메이션
-				m_TransitionResult.fBlendWeight = fromState->fBlendWeight; // 이전 상태의 블렌드 가중치
-				m_TransitionResult.bBlendFullbody = false;
-			}
-			else  // 상하체 분리 -> 상하체 분리
-			{
-				m_TransitionResult.eType = ETransitionType::MaskedToMasked;
-				m_TransitionResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
-				m_TransitionResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
-				m_TransitionResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
-				m_TransitionResult.pToUpperAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->upperClipName);
-				m_TransitionResult.fBlendWeight = toState->fBlendWeight;
+				
+				m_TransitionResult = result;
+				m_CurrentStateNodeId = iResolvedTo;
+				ConsumeTrigger(tr);
 
-				m_TransitionResult.bBlendFullbody = false;
+				return; // AnyState는 즉시 
 			}
+		}
 
-			if (!m_TransitionResult.pFromLowerAnim || !m_TransitionResult.pToLowerAnim) 
-				continue; // 최소한 하체/통짜 클립은 있어야 함
-			if (m_TransitionResult.eType == ETransitionType::FullbodyToMasked && !m_TransitionResult.pToUpperAnim)
-				continue;
-			if (m_TransitionResult.eType == ETransitionType::MaskedToFullbody && !m_TransitionResult.pFromUpperAnim) 
-				continue;
-			if (m_TransitionResult.eType == ETransitionType::MaskedToMasked && (!m_TransitionResult.pFromUpperAnim || !m_TransitionResult.pToUpperAnim)) 
-				continue;
-			
-	
-			m_TransitionResult.fUpperStartTime = toState->fUpperStartTime;
-			m_TransitionResult.fLowerStartTime = toState->fLowerStartTime;
+		//  일반 전환 처리
 
-			m_TransitionResult.bTransition = true;
-			m_TransitionResult.fDuration = tr.duration;
-			m_CurrentStateNodeId = ConvertExitNodeToExitStateNodeId(tr.iToNodeId); // 다음 프레임부터 이 상태로 간주
+		if (tr.iFromNodeId != m_CurrentStateNodeId)
+			continue;
+
+
+		if (tr.hasExitTime)
+		{
+			AnimState* currentAnimState = FindStateByNodeId(m_CurrentStateNodeId);
+
+			if (currentAnimState && !currentAnimState->maskBoneName.empty())
+			{
+				// 상체 분리 상태 , 상체 애니가 끝나야만 전환
+				CAnimation* upperAnim = m_pAnimator->GetUpperClip();
+				if (upperAnim && upperAnim->Get_isLoop())
+					continue;
+				if (m_pAnimator->GetCurrentUpperAnimProgress() < 1.f) 
+					continue;
+			}
+			else
+			{
+				// 통짜 상태
+				CAnimation* currentAnim = m_pAnimator->GetCurrentAnim();
+				if (!currentAnim || currentAnim->Get_isLoop()) 
+					continue;
+				if (m_pAnimator->GetCurrentAnimProgress() < 1.f) 
+					continue;
+			}
+		}
+
+		if (!tr.Evaluates(this, m_pAnimator))
+			continue;
+
+		_int iResolvedTo = ConvertExitNodeToExitStateNodeId(tr.iToNodeId);
+		if (iResolvedTo < 0)
+			continue;
+
+		AnimState* fromState = FindStateByNodeId(ConvertAnyStateNodeIdToAnyState(tr.iFromNodeId));
+		AnimState* toState = FindStateByNodeId(iResolvedTo);
+
+		TransitionResult result{};
+		if (DetermineTransitionResult(fromState, toState, tr, result))
+		{
+			// 전환 성공 처리
+			m_TransitionResult = result;
+			m_CurrentStateNodeId = iResolvedTo;
 			ConsumeTrigger(tr);
-			m_TransitionResult.bCanSameAnimReset = toState->bCanSameAnimReset;
-			break;
+
+			break; // 일반 전환은 break
 		}
 	}
+}
 }
 
 _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState* toState, const Transition& tr, TransitionResult& outResult)
@@ -350,10 +440,11 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 
 	outResult = TransitionResult{};
 
-	bool bFromMasked = !fromState->maskBoneName.empty();
-	bool bToMasked = !toState->maskBoneName.empty();
+	_bool bFromMasked = !fromState->maskBoneName.empty();
+	_bool bToMasked = !toState->maskBoneName.empty();
 
-	if (!bFromMasked && !bToMasked) { // 통짜 → 통짜
+	if (!bFromMasked && !bToMasked)
+	{ // 통짜 → 통짜
 		outResult.eType = ETransitionType::FullbodyToFullbody;
 		outResult.pFromLowerAnim = fromState->clip;
 		outResult.pToLowerAnim = toState->clip;
@@ -361,7 +452,8 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 		outResult.pToUpperAnim = toState->clip;
 		outResult.bBlendFullbody = true;
 	}
-	else if (!bFromMasked && bToMasked) { // 통짜 → 상하체 분리
+	else if (!bFromMasked && bToMasked)
+	{ // 통짜 → 상하체 분리
 		outResult.eType = ETransitionType::FullbodyToMasked;
 		outResult.pFromLowerAnim = fromState->clip;
 		outResult.pToLowerAnim = m_pAnimator->GetModel()->GetAnimationClipByName(toState->lowerClipName);
@@ -370,7 +462,8 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 		outResult.fBlendWeight = toState->fBlendWeight;
 		outResult.bBlendFullbody = false;
 	}
-	else if (bFromMasked && !bToMasked) { // 상하체 분리 → 통짜
+	else if (bFromMasked && !bToMasked) {
+		// 상하체 분리 → 통짜
 		outResult.eType = ETransitionType::MaskedToFullbody;
 		outResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
 		outResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
@@ -379,7 +472,8 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 		outResult.fBlendWeight = fromState->fBlendWeight;
 		outResult.bBlendFullbody = false;
 	}
-	else { // 상하체 분리 → 상하체 분리
+	else 
+	{ // 상하체 분리 → 상하체 분리
 		outResult.eType = ETransitionType::MaskedToMasked;
 		outResult.pFromLowerAnim = m_pAnimator->GetLowerClip();
 		outResult.pFromUpperAnim = m_pAnimator->GetUpperClip();
@@ -399,7 +493,7 @@ _bool CAnimController::DetermineTransitionResult(AnimState* fromState, AnimState
 	outResult.fLowerStartTime = toState->fLowerStartTime;
 	outResult.fDuration = tr.duration;
 	outResult.bCanSameAnimReset = toState->bCanSameAnimReset;
-
+	outResult.bTransition = true;
 	return true;
 }
 
