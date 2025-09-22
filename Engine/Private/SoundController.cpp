@@ -40,12 +40,34 @@ void CSoundController::Play(const string& strTag)
 //네이밍이 1부터 인것 ex) Walk_1, Walk_2 ...
 void CSoundController::Play_Random(const string& strTag, _int randCount, _int iStartNum/* 기본 0, 네이밍이 몇 번 부터 시작하는지*/)
 {
+	//네이밍이 지금
+	//0 시작
+	//1 시작
+	//01 시작
+	//00 시작
+	//네이밍 규칙이 다달라서 해결해야함
+
+	//10의 자리 넘어가는 수의 사운드를 없애버리거나...(이게 편하긴함 ㅋ)
+	//모든 사운드 네이밍을 01..02...로 통일하거나
+
 	string strSoundTag = strTag + to_string(rand() % randCount + iStartNum);
+
+	//01 02 03 04 ... 09 10 11를 생각하지 못했다...
+	//_int iNum = rand() % randCount + iStartNum;
+	//string strSoundTag;
+	//if (iNum < 10)
+	//	strSoundTag = strTag + "0" + to_string(iNum);
+	//else
+	//	strSoundTag = strTag + to_string(iNum);
+
 	auto pSoundCore = Find_Sound(strSoundTag);
 	if (pSoundCore)
 		pSoundCore->Play();
 	else
-		MSG_BOX("사운드를 찾을 수 없음");
+	{
+		wstring msg = StringToWString(strSoundTag) + L": 사운드를 찾을 수 없음";
+		MessageBox(nullptr, msg.c_str(), L"error", MB_OK);
+	}
 }
 
 void CSoundController::Stop(const string& strTag)
