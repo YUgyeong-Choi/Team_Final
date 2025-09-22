@@ -10,6 +10,7 @@
 #include "FestivalLeader.h"
 #include "AreaSoundBox.h"
 #include "BossDoor.h"
+#include "FinalDoor.h"
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
