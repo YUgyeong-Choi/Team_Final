@@ -224,6 +224,12 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_9))
+	{
+		_vector pos = { -0.1171f, 0.296629f ,-172.0543f , 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
+
 	//if(KEY_DOWN(DIK_M))
 	//	m_fHp = 10.f;
 
@@ -2860,7 +2866,7 @@ CWeapon* CPlayer::Get_Equip_Legion()
 void CPlayer::Set_bEndingWalk(_bool bWalk)
 {
 	m_bEndingWalk = bWalk;
-	_vector pos = { -0.1171f, 0.296629f ,-172.0543f , 1.f };
+	_vector pos = { -0.1994f, 0.296629f ,-175.705841f , 1.f };
 	m_pTransformCom->Set_State(STATE::POSITION, pos);
 	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
 }
@@ -2892,7 +2898,7 @@ void CPlayer::StartEnding(_float fTimeDelta)
 
 		m_pAnimator->SetBool("Sprint", false);
 		m_pAnimator->SetBool("Run", false);
-		_vector pos = { -0.1171f, 0.296629f ,-160.5176f , 1.f };
+		_vector pos = { -0.1994f, 0.296629f ,-165.236450f , 1.f };
 		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
 	}
 }
