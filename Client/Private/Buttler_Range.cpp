@@ -673,35 +673,35 @@ void CButtler_Range::Reset()
 void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() - (m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
 
-	// XZ 방향 추출 
-	_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
-	dirXZ = XMVector3Normalize(dirXZ);
+	//// XZ 방향 추출 
+	//_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
+	//dirXZ = XMVector3Normalize(dirXZ);
 
-	// Look의 XZ
-	_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
-	lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
-	lookXZ = XMVector3Normalize(lookXZ);
+	//// Look의 XZ
+	//_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
+	//lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
+	//lookXZ = XMVector3Normalize(lookXZ);
 
-	// 각도 구하기
-	float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
-	dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
-	float angle = acosf(dot);
+	//// 각도 구하기
+	//float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
+	//dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
+	//float angle = acosf(dot);
 
-	// 회전 방향 결정 
-	float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
-	if (crossY < 0.f) angle = -angle;
+	//// 회전 방향 결정 
+	//float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
+	//if (crossY < 0.f) angle = -angle;
 
-	// Y축 회전 행렬
-	XMMATRIX rot = XMMatrixRotationY(angle);
+	//// Y축 회전 행렬
+	//XMMATRIX rot = XMMatrixRotationY(angle);
 
-	// vDir 전체를 회전
-	_vector vRotated = XMVector3TransformNormal(vDir, rot);
+	//// vDir 전체를 회전
+	//_vector vRotated = XMVector3TransformNormal(vDir, rot);
 
-	_vector vOffset = m_vRayOffset * 0.5f;
+	//_vector vOffset = m_vRayOffset * 0.5f;
 
-	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p +VectorToPxVec3(vOffset);
+	PxVec3 origin = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
 	XMFLOAT3 fLook;
 	XMStoreFloat3(&fLook, vDir);
 	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
@@ -743,35 +743,25 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 					m_bRayHit = true;
 					m_vRayHitPos = hitPos;
 				}
-				else
-				{
-					m_bRayHit = false;
-					m_vRayHitPos = {};
-				}
 			}
-
-		
-			
-			
-
-			
 		}
 	}
 
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		DEBUGRAY_DATA _data{};
-		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p + VectorToPxVec3(vOffset);
+		_data.vStartPos = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
 		XMFLOAT3 fLook;
 		XMStoreFloat3(&fLook, vDir);
 		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.vDirection.normalize();
 		_data.fRayLength = 10.f;
 		_data.bIsHit = m_bRayHit;
 		_data.vHitPos = m_vRayHitPos;
 		actor->Add_RenderRay(_data);
 
-		//m_bRayHit = false;
-		//m_vRayHitPos = {};
+		m_bRayHit = false;
+		m_vRayHitPos = {};
 	}
 #endif
 }

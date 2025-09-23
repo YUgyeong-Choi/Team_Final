@@ -60,6 +60,8 @@ HRESULT CLevel::Render()
 void CLevel::Start_BGM(string soundName)
 {	
     m_pBGM = m_pGameInstance->Get_Single_Sound(soundName);
+    if (!m_pBGM)
+        return;
     m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
     m_pBGM->Play();
     m_CurBGMName = soundName;
@@ -67,6 +69,11 @@ void CLevel::Start_BGM(string soundName)
 
 void CLevel::Change_BGM(string soundName)
 {
+    if (!m_pBGM)
+    {
+        Start_BGM(soundName);
+        return;
+    }
     /* [ »ç¿îµå ] */
     m_bBGMToZero = true;
     m_BGMNext = soundName;
