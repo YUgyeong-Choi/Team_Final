@@ -617,7 +617,7 @@ void CElite_Police::Ready_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Growl_0", 9, 1);
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Growl_0", 9, 1);//12개 안됨 ㅋㅋ 9개 이하로 통일
 			}
 		});
 
@@ -673,7 +673,7 @@ void CElite_Police::Ready_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Attack_0",9, 1);
+				m_pSoundCom->Play_Random("VO_NPC_NHM_Named_Police_Attack_0", 9, 1); //12개 안됨 ㅋㅋ 9개 이하로 통일
 			}
 		});
 

@@ -358,6 +358,10 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 	if (FAILED(m_pAnimatorBackKey->Initialize(m_pModelComBackKey)))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_ShortCutDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -579,7 +583,7 @@ void CShortCutDoor::Play_Sound(_float fTimeDelta)
 {
 	m_fSoundDelta += fTimeDelta;
 
-	if (m_bCanOpen) // ¹® ¿°
+	if (m_bCanOpen) // ¹® ¿°ÁÖ ·»°íÄí ÄìÁê·Î ¤»¤»
 	{
 		if (m_fSoundDelta > 2.f && !m_bSoundPlay[0])
 		{
