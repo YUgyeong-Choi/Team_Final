@@ -86,9 +86,10 @@ static _float LerpFloat(_float a, _float b, _float t)
 
 void CLevel::Update_ChangeBGM(_float fTimeDelta)
 {
-	if (m_bBGMToZero)
+	if (m_bBGMToZero && m_pBGM)
 	{
         m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 3.f);
+        
         m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
         if (m_fBGMVolume < 0.01f)

@@ -296,12 +296,12 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 
 
 	//고사양 모드
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 
 	//저사양 모드
-	if (FAILED(Ready_Lights_LowQuality()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights_LowQuality()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_OctoTree()))
 		return E_FAIL;
@@ -2147,11 +2147,11 @@ HRESULT CLevel_KratCentralStation::Ready_Sound()
 		return E_FAIL;
 
 	//56. 다리끝
-	eDesc.strSoundName = "AMB_SS_OnTheBrige";
-	eDesc.vPosition = _float3(328.757233f, 7.424715f, -36.812428f);
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
-		return E_FAIL;
+	//eDesc.strSoundName = "AMB_SS_OnTheBrige";
+	//eDesc.vPosition = _float3(328.757233f, 7.424715f, -36.812428f);
+	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AreaSoundBox"),
+	//	ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_AreaSound"), &eDesc)))
+	//	return E_FAIL;
 	eDesc.strSoundName = "AMB_SS_Rain_07_01";
 	eDesc.fMinMax = { 1.f , 30.f };
 	eDesc.vPosition = _float3(345.374847f, 7.424715f, -36.440987f);

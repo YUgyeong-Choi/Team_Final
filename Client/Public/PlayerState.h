@@ -3344,8 +3344,12 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
-        m_pOwner->m_pSoundCom->StopAllSpecific("SE_PC_FX_Debuff_Fire_Loop");
         m_pOwner->SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
+
+        /* [ 사운드가 안멈춰.. ㅜㅜ ] */
+        m_pOwner->m_pSoundCom->StopAllSpecific("SE_PC_FX_Debuff_Fire_Loop");
+        m_pOwner->m_pSoundCom->Stop("SE_PC_FX_Debuff_Fire_Loop");
+        m_pOwner->m_pSoundCom->StopAll();
     }
 
     virtual void Execute(_float fTimeDelta) override
