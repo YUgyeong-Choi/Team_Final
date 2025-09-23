@@ -1186,6 +1186,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1216,6 +1227,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1250,6 +1272,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
