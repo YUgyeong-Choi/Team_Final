@@ -129,6 +129,11 @@ private:
 	_float m_fTargetVolume = 0.f;
 
 	class CBossDoor* m_pBossDoor = { nullptr };
+
+
+	float m_fAccumulator = 0.f;        // 누적 시간
+	float m_fFrameRate = 60.f;       // 초당 프레임(키프레임 단위)
+	float m_fFramePeriod = 1.f / 60.f; // 한 프레임 시간
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
