@@ -26,7 +26,7 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 	m_eTriggerSoundType = AreaSoundBoxDESC->eTriggerBoxType;
 	m_szSoundID = AreaSoundBoxDESC->szSoundID;
 	m_strSoundName = AreaSoundBoxDESC->strSoundName;
-	m_fSoundVolume = AreaSoundBoxDESC->fVolume;
+	m_fSoundVolume = 0.f;
 
 	if (FAILED(CGameObject::Initialize(AreaSoundBoxDESC)))
 		return E_FAIL;
@@ -39,7 +39,7 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 
 	m_pSoundCom->Set3DState(AreaSoundBoxDESC->fMinMax.x, AreaSoundBoxDESC->fMinMax.y);
 	m_pSoundCom->Update3DPosition(vPosition);
-	m_pSoundCom->SetVolume(AreaSoundBoxDESC->strSoundName, AreaSoundBoxDESC->fVolume);
+	m_pSoundCom->SetVolume(m_strSoundName, 0.f);
 	m_pSoundCom->Play(m_strSoundName);
 
 
@@ -48,6 +48,15 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 
 void CAreaSoundBox::Priority_Update(_float fTimeDelta)
 {
+	if (m_fSoundVolume < 1.f)
+	{
+		m_fSoundVolume += fTimeDelta * 1.f;
+		m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+	}
+	else
+	{
+		m_fSoundVolume = 1.f;
+	}
 }
 
 void CAreaSoundBox::Update(_float fTimeDelta)
