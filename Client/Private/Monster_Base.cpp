@@ -155,6 +155,8 @@ void CMonster_Base::Update(_float fTimeDelta)
 		XMStoreFloat3(&f3Pos, vPos);
 
 		m_pSoundCom->Update3DPosition(f3Pos);
+
+		m_bSoundCheck = true;
 	}
 }
 

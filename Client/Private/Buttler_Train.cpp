@@ -63,6 +63,8 @@ HRESULT CButtler_Train::Initialize(void* pArg)
 	}
 
 	m_pWeapon->Set_WeaponTrail_Active(false);
+
+	m_pSoundCom->StopAll();
 	
 	return S_OK; 
 }
@@ -569,7 +571,7 @@ void CButtler_Train::Register_SoundEvent()
 {
 	m_pAnimator->RegisterEventListener("WalkSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Movement_04");
 				m_pSoundCom->Play("SE_NPC_Servant02_MT_Movement_04");
@@ -578,7 +580,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("HitSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
 				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
@@ -588,7 +590,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
 			}
@@ -596,7 +598,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("IdleSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
 				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
@@ -605,7 +607,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("GetupSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 3.9f)));
 
@@ -615,7 +617,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("DeadSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 8.9f)));
 
@@ -627,7 +629,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("AttackSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 17.9f)));
 
@@ -640,7 +642,7 @@ void CButtler_Train::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("FallSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
 
