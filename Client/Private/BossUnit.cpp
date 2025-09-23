@@ -201,7 +201,7 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 	_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
 
 	// Up은 기존 Up을 쓰고
-	_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f); // XMVector3Normalize(ParentWorld.r[1]);
 
 	// Right는 Look과 Up으로 다시 계산
 	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
