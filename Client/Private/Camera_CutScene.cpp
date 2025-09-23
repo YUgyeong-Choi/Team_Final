@@ -1316,6 +1316,65 @@ void CCamera_CutScene::Event()
 		{
 			CFinalDoor* pDoor = dynamic_cast<CFinalDoor*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("FinalDoor")));
 			pDoor->DoorOpen();
+
+			// 먼지 이펙트 생성
+
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke1"), pEffect);
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
+
+		}
+
+		// 먼지 이펙트 제거
+		if (m_iCurrentFrame == 75)
+		{
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke1"));
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke2"));
+		}
+
+
+		// 불 띄우기
+		if (m_iCurrentFrame == 250)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 0.25f;
+			Lightdesc.PresetMatrix._42 = 2.2f;
+			Lightdesc.PresetMatrix._43 = -150.4f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		}
+
+		if (m_iCurrentFrame == 270)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+			  
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = -0.7f;
+			Lightdesc.PresetMatrix._42 = 2.5f;
+			Lightdesc.PresetMatrix._43 = -150.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 430)
@@ -1323,7 +1382,7 @@ void CCamera_CutScene::Event()
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
 		}
 
-		if(m_iCurrentFrame == 630)
+		if(m_iCurrentFrame == 550)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.f);
 		}
