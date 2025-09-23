@@ -399,13 +399,6 @@
         "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_MoldingC_02.bin"
     },
     {
-        "Collision": false,
-        "ModelName": "SM_Station_TrainDoor_01",
-        "NoInstancing": false,
-        "ObjectCount": 1,
-        "Path": "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin"
-    },
-    {
         "Collision": true,
         "ModelName": "SM_Wall_BrickWall",
         "NoInstancing": false,

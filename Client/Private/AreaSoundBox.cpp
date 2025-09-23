@@ -39,7 +39,7 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 
 	m_pSoundCom->Set3DState(AreaSoundBoxDESC->fMinMax.x, AreaSoundBoxDESC->fMinMax.y);
 	m_pSoundCom->Update3DPosition(vPosition);
-	m_pSoundCom->SetVolume(AreaSoundBoxDESC->strSoundName, AreaSoundBoxDESC->fVolume);
+	m_pSoundCom->SetVolume(m_strSoundName, AreaSoundBoxDESC->fVolume);
 	m_pSoundCom->Play(m_strSoundName);
 
 
@@ -48,6 +48,7 @@ HRESULT CAreaSoundBox::Initialize(void* pArg)
 
 void CAreaSoundBox::Priority_Update(_float fTimeDelta)
 {
+	
 }
 
 void CAreaSoundBox::Update(_float fTimeDelta)

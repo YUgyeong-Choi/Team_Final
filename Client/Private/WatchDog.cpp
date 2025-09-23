@@ -56,6 +56,8 @@ HRESULT CWatchDog::Initialize(void* pArg)
 	m_pSoundCom->Set3DState(0.f, 25.f);
 	m_pSoundCom->SetVolume(0.8f);
 
+	m_pSoundCom->StopAll();
+
 	return S_OK;
 }
 
@@ -470,7 +472,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("WalkSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
 
@@ -482,7 +484,7 @@ void CWatchDog::Register_SoundEvent()
 		{
 			if (m_bHitSound)
 			{
-				if (m_pSoundCom)
+				if (m_pSoundCom && m_bSoundCheck)
 				{
 					_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
 
@@ -493,9 +495,14 @@ void CWatchDog::Register_SoundEvent()
 			{
 				m_bHitSound = true;
 
-				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
+				if (m_pSoundCom && m_bSoundCheck)
+				{
+					_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
 
-				m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+					m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+				}
+
+			
 
 			}
 
@@ -504,7 +511,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
 
@@ -518,7 +525,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("AttackSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
 
@@ -528,7 +535,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("JumpSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
 
@@ -544,7 +551,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("GetupSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
 
@@ -556,7 +563,7 @@ void CWatchDog::Register_SoundEvent()
 
 	m_pAnimator->RegisterEventListener("DieSound", [this]()
 		{
-			if (m_pSoundCom)
+			if (m_pSoundCom && m_bSoundCheck)
 			{
 				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
 

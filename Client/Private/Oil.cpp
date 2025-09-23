@@ -159,6 +159,8 @@ void COil::Explode_Oil()
 			m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Explo_Heavy_01");
 			m_bSoundPlaying = true;
 
+			//여기서 데칼 죽이기
+			m_pDecal->Set_bDead();
 		}
 	}
 }
@@ -191,30 +193,45 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	DecalDesc.bHasLifeTime = true;
 	DecalDesc.fLifeTime = 20.f;
 
-	// 플레이어의 월드 행렬
+	// 월드 행렬
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 	// 위치만 추출
-	_vector vPosition = WorldMatrix.r[3]; // 행렬의 4번째 행(translation)
+	_vector vPosition = WorldMatrix.r[3];
 
 	// 위치 행렬 생성
 	_matrix PosMatrix = XMMatrixTranslationFromVector(vPosition);
 
+
+
+	_float fScaleY = XMVectorGetY(vDecalScale);
+	fScaleY = m_pGameInstance->Compute_Random(fScaleY, fScaleY + fScaleY * 0.5f);
+
 	// 데칼 스케일 적용
 	_matrix ScaleMatrix = XMMatrixScaling(
 		XMVectorGetX(vDecalScale),
-		XMVectorGetY(vDecalScale),
+		fScaleY,
 		XMVectorGetZ(vDecalScale));
 
+	// Y축 랜덤 회전
+	_float fRandomYaw = m_pGameInstance->Compute_Random(0.0f, XM_2PI); // 0 ~ 360도(라디안)
+	_matrix RotMatrix = XMMatrixRotationY(fRandomYaw);
+
+	// 최종 월드 행렬 (스케일 → 회전 → 위치)
+	_matrix FinalMatrix = ScaleMatrix * RotMatrix * PosMatrix;
+
 	// 최종 월드 행렬 (스케일 + 위치)
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * PosMatrix);
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, FinalMatrix);
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &m_pDecal, &DecalDesc)))
 	{
 		return E_FAIL;
 	}
+
+	Safe_AddRef(m_pDecal);
+
 #pragma endregion
 
 	return S_OK;
@@ -323,5 +340,7 @@ CGameObject* COil::Clone(void* pArg)
 void COil::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDecal);
 
 }

@@ -93,8 +93,15 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"), m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_Lamp_Desc"), &eDesc);
 			//CUI_Manager::Get_Instance()->On_Panel();
 
-			CGameObject* pLampLight = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"))->back();
-			dynamic_cast<CDH_ToolMesh*>(pLampLight)->SetIntensity(0.f);
+			auto vecLampLights = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"));
+			if (vecLampLights->empty() == false)
+			{
+				auto pLamp = dynamic_cast<CDH_ToolMesh*>(vecLampLights->back());
+				if (pLamp)
+				{
+					pLamp->SetIntensity(0.f);
+				}
+			}
 		}
 			
 

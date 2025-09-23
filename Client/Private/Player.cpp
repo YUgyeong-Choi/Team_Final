@@ -543,7 +543,8 @@ void CPlayer::WetSystem()
 
 	if (m_eCurrentArea == AREAMGR::FESTIVAL || m_eCurrentArea == AREAMGR::OUTER)
 	{
-		SwitchWet(true, 0.3f);
+		if(m_pGameInstance->GetCurAreaIds() != 22)
+			SwitchWet(true, 0.3f);
 	}
 	else if (m_eCurrentArea == AREAMGR::STATION)
 	{
@@ -1331,7 +1332,22 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.35f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+
 
 		break;
 	}
@@ -1344,7 +1360,20 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.2f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		break;
 	}
@@ -1352,8 +1381,8 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
+			m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
 			m_pLegionArm->Use_LegionEnergy(20.f);
-			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
 			Create_LeftArm_Lightning(TEXT("EC_Player_LeftarmBIGLIGHT"));
 
@@ -1887,10 +1916,10 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
-	if (stateName.find("Arm_NormalAttack") == 0)
-		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_NormalAttack2") == 0)
 		return eAnimCategory::ARM_ATTACKB;
+	if (stateName.find("Arm_NormalAttack") == 0)
+		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_ChargeAttack") == 0)
 		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
@@ -2917,8 +2946,7 @@ CWeapon* CPlayer::Get_Equip_Legion()
 void CPlayer::Set_bEndingWalk(_bool bWalk)
 {
 	m_bEndingWalk = bWalk;
-	_vector pos = { -0.1994f, 0.296629f ,-175.705841f , 1.f };
-	m_pTransformCom->Set_State(STATE::POSITION, pos);
+	_vector pos = { -0.409f, 0.296629f, -175.085f, 1.f };
 	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
 }
 
@@ -2938,6 +2966,10 @@ void CPlayer::StartEnding(_float fTimeDelta)
 
 				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
 				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
+
+				m_pAnimator->CancelOverrideAnimController();
+				m_pWeapon->SetbIsActive(false);
+				m_bWeaponEquipped = false;
 			}
 		}
 	}
@@ -2949,7 +2981,7 @@ void CPlayer::StartEnding(_float fTimeDelta)
 
 		m_pAnimator->SetBool("Sprint", false);
 		m_pAnimator->SetBool("Run", false);
-		_vector pos = { -0.1994f, 0.296629f ,-165.236450f , 1.f };
+		_vector pos = { -0.229305f, 0.296629f, -165.758087f , 1.f };
 		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
 	}
 }

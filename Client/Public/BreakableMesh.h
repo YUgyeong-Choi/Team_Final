@@ -103,7 +103,7 @@ private:
 
 private:
 	//몇초뒤 렌더링과, 콜라이더도 빼주자
-	const _float m_fTime_Invisible = { 8.f };
+	const _float m_fTime_Invisible = { 5.f };
 	_float m_fTimeAcc = { 0.f };
 	_bool m_bInvisible = { false };
 

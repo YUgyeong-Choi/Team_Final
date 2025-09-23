@@ -104,6 +104,8 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 	m_strSoundTag = pDesc->strSoundTag;
 
+	m_fSoundDelay = pDesc->fSoundDelay;
+
 	if (m_strFilePath.empty())
 		return S_OK;
 
@@ -163,7 +165,12 @@ void CUI_Container::Priority_Update(_float fTimeDelta)
 		return;
 	}
 
-	if (!m_isSound || m_fDelay <= 0.f)
+	if (m_fSoundDelay > 0.f)
+	{
+		m_fSoundDelay -= fTimeDelta;
+	}
+
+	if (!m_isSound && m_fSoundDelay <= 0.f)
 	{
 		m_isSound = true;
 

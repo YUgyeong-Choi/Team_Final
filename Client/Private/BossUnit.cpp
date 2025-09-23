@@ -72,10 +72,7 @@ void CBossUnit::Update(_float fTimeDelta)
 		{
 			m_bDeathProcessed = true;
 			SetForDeath();
-			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			{
-				pPlayer->SetbEnding(true);
-			}
+	
 
 			if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
 			{
@@ -92,6 +89,7 @@ void CBossUnit::Update(_float fTimeDelta)
 			eDesc.fLifeTime = 8.f;
 			eDesc.useLifeTime = true;
 			eDesc.strSoundTag = "SE_UI_AlertKill_02";
+			eDesc.fSoundDelay = 0.015f;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
@@ -101,6 +99,7 @@ void CBossUnit::Update(_float fTimeDelta)
 			_wstring strFilePath = TEXT("../Bin/Save/UI/Popup/Boss_Drop_") + strName + TEXT(".json");
 			eDesc.strFilePath = strFilePath; 
 			eDesc.strSoundTag = {};
+			eDesc.fSoundDelay = 0.f;
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))

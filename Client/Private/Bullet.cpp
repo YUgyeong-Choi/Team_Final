@@ -106,10 +106,42 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 void CBullet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+    if (eColliderType == COLLIDERTYPE::PLAYER)
+    {
+        CPlayer* pPlayer = static_cast<CPlayer*>(pOther);
+        pPlayer->SetHitMotion(HITMOTION::NORMAL);
+        pPlayer->SetfReceiveDamage(m_fDamge);
+    }
+
+    CEffectContainer::DESC desc = {};
+    //_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+    _float3 vfloatpos = Get_WorldPosFromActor();
+    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
+    //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+    if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
+        MSG_BOX("이펙트 생성 실패함");
+
+    Set_bDead();
 }
 
 void CBullet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+    if (eColliderType == COLLIDERTYPE::PLAYER)
+    {
+        CPlayer* pPlayer = static_cast<CPlayer*>(pOther);
+        pPlayer->SetHitMotion(HITMOTION::NORMAL);
+        pPlayer->SetfReceiveDamage(m_fDamge);
+    }
+
+    CEffectContainer::DESC desc = {};
+    //_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+    _float3 vfloatpos = Get_WorldPosFromActor();
+    XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
+    //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+    if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
+        MSG_BOX("이펙트 생성 실패함");
+
+    Set_bDead();
 }
 
 void CBullet::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)

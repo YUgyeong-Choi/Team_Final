@@ -21,7 +21,7 @@
                 },
                 {
                     "EventName": "NotLookAt",
-                    "Time": 58.0
+                    "Time": 60.0
                 },
                 {
                     "EventName": "FireSound",
@@ -37,7 +37,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {

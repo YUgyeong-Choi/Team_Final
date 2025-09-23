@@ -357,7 +357,7 @@ HRESULT CMainApp::Ready_Sound()
 	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", false, false, false);
 
 	/* [ 숏컷 사운드 ] */ 
-	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
+	//ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
 
 	/* [ 일반 몬스터 사운드 ] */
 	ADD_SOUND_EX(Buttler, "../Bin/Resources/Sound/Unit/Buttler/", true, false, false);
