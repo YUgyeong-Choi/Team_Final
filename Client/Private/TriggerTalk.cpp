@@ -94,7 +94,7 @@ void CTriggerTalk::Priority_Update(_float fTimeDelta)
 			//CUI_Manager::Get_Instance()->On_Panel();
 
 			auto vecLampLights = m_pGameInstance->Find_CustomLight(TEXT("Lamp_Light"));
-			if (vecLampLights->empty() == false)
+			if (vecLampLights)
 			{
 				auto pLamp = dynamic_cast<CDH_ToolMesh*>(vecLampLights->back());
 				if (pLamp)

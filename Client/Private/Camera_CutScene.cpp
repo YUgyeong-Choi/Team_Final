@@ -192,19 +192,25 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
 		{
-			m_fElapsedTime += fTimeDelta;
+			// 1) 스파이크 클램프(옵션): 일시적인 렉으로 큰 점프 방지
+			fTimeDelta = std::min(fTimeDelta, 0.1f);
 
-			// 시간 누적 → 프레임 단위 변환
-			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
+			// 2) 시간 누적
+			m_fAccumulator += fTimeDelta;
 
-			if (iNewFrame != m_iCurrentFrame)
+			// 3) 한 번에 너무 많은 서브스텝 방지(무한 루프/스파이럴 오브 데스 방지)
+			const int kMaxSubsteps = 4;
+			int substeps = 0;
+
+			// 4) 누적 시간이 프레임 기간을 넘을 때마다 정확히 1프레임씩 진행
+			while (m_fAccumulator >= m_fFramePeriod &&
+				substeps < kMaxSubsteps &&
+				!m_bReadyCutSceneOrbital)
 			{
-				m_iCurrentFrame = iNewFrame;
+				m_fAccumulator -= m_fFramePeriod;
+				++m_iCurrentFrame;
 
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("%d CurrentFrame\n", m_iCurrentFrame);
-
+				// 기존 “프레임 증가 시에만 호출” 로직을 여기로 이동
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
 				Interp_OffsetRot(m_iCurrentFrame);
@@ -218,7 +224,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
+					break;
 				}
+
+				++substeps;
 			}
 		}
 

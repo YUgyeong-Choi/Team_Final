@@ -58,6 +58,10 @@ public:
 	_float3		m_vOriginPos = {};
 	_float		m_fAccTime = { 0.f };
 
+	// 사망 에르고일 때 같이 소환되는 나비 이펙트.
+	class CEffectContainer* m_pButterflyEffect = { nullptr };
+	class CTransform*		m_pButterflyTrans = { nullptr };
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };

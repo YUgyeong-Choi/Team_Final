@@ -354,7 +354,7 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ Breakable 부서지는 사운드 ] */ 
 	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
 
-	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", false, false, false);
+	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
 
 	/* [ 숏컷 사운드 ] */ 
 	//ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
