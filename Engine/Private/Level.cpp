@@ -102,10 +102,15 @@ void CLevel::Update_ChangeBGM(_float fTimeDelta)
                 m_pBGM->Play();
 				m_CurBGMName = m_BGMNext;
                 m_BGMNext = "";
+                m_bBGMToVolume = true;
+            }
+            else
+            {
+                m_CurBGMName = "";
+                m_BGMNext = "";
             }
 
             m_bBGMToZero = false;
-            m_bBGMToVolume = true;
         }
 	}
 

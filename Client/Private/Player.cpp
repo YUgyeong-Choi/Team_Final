@@ -2917,8 +2917,7 @@ CWeapon* CPlayer::Get_Equip_Legion()
 void CPlayer::Set_bEndingWalk(_bool bWalk)
 {
 	m_bEndingWalk = bWalk;
-	_vector pos = { -0.1994f, 0.296629f ,-175.705841f , 1.f };
-	m_pTransformCom->Set_State(STATE::POSITION, pos);
+	_vector pos = { -0.39f, 0.296629f, -175.085f, 1.f };
 	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
 }
 
@@ -2938,6 +2937,10 @@ void CPlayer::StartEnding(_float fTimeDelta)
 
 				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
 				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
+
+				m_pAnimator->CancelOverrideAnimController();
+				m_pWeapon->SetbIsActive(false);
+				m_bWeaponEquipped = false;
 			}
 		}
 	}
@@ -2949,7 +2952,7 @@ void CPlayer::StartEnding(_float fTimeDelta)
 
 		m_pAnimator->SetBool("Sprint", false);
 		m_pAnimator->SetBool("Run", false);
-		_vector pos = { -0.1994f, 0.296629f ,-165.236450f , 1.f };
+		_vector pos = { -0.229305f, 0.296629f, -165.758087f , 1.f };
 		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
 	}
 }

@@ -361,6 +361,7 @@ void CLevel_KratCentralStation::Apply_AreaBGM()
 		m_pGameInstance->Change_BGM("AMB_SS_Cathedral_Hall");
 		break;
 	case Engine::AREAMGR::FUOCO:
+		m_pGameInstance->Change_BGM("");
 		break;
 	case Engine::AREAMGR::OUTER:
 	case Engine::AREAMGR::FESTIVAL:
