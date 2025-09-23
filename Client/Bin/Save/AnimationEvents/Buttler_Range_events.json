@@ -37,7 +37,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
