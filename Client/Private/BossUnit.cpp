@@ -95,6 +95,7 @@ void CBossUnit::Update(_float fTimeDelta)
 
 			eDesc.fLifeTime = 8.f;
 			eDesc.useLifeTime = true;
+			eDesc.strSoundTag = "SE_UI_AlertKill_02";
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
@@ -103,13 +104,13 @@ void CBossUnit::Update(_float fTimeDelta)
 			_wstring strName = m_szMeshID;
 			_wstring strFilePath = TEXT("../Bin/Save/UI/Popup/Boss_Drop_") + strName + TEXT(".json");
 			eDesc.strFilePath = strFilePath; 
+			eDesc.strSoundTag = {};
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
 				return;
 
-			CUI_Manager::Get_Instance()->Set_Volume("SE_UI_AlertKill_02", 2.f);
-			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
+		
 		}
 		Safe_Release(m_pHPBar);
 	}

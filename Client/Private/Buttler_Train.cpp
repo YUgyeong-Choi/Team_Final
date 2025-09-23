@@ -345,6 +345,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_isDetect = true;
 
+		m_pWeapon->Set_WeaponTrail_Active(false);
+
 		if (m_fHp <= 0 && !m_isFatal)
 		{
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));

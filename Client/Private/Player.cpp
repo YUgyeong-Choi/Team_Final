@@ -4162,10 +4162,10 @@ void CPlayer::Callback_DownBelt()
 
 void CPlayer::Use_Item()
 {
-	if (nullptr == m_pSelectItem)
+	if (nullptr == m_pUseItem)
 		return;
 
-	m_pSelectItem->Use();
+	m_pUseItem->Use();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();
