@@ -673,7 +673,8 @@ void CButtler_Range::Reset()
 void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() - (m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
+	// offset 적당히 줘서 보정
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.7f - (m_pTransformCom->Get_State(STATE::POSITION) + m_vRayOffset * 1.2f);
 
 	//// XZ 방향 추출 
 	//_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);

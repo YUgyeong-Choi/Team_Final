@@ -760,6 +760,8 @@ public:
             }
         }
 
+        m_pOwner->m_pUseItem = m_pOwner->m_pSelectItem;
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -781,14 +783,14 @@ public:
 				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
-                m_pOwner->m_pSelectItem->Activate(true);
+                m_pOwner->m_pUseItem->Activate(true);
             }
 
             if (KEY_UP(DIK_R))
             {
                 m_bGrinderEnd = true;
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
-                m_pOwner->m_pSelectItem->Activate(false);
+                m_pOwner->m_pUseItem->Activate(false);
             }
 
             if (m_bGrinderEnd)
@@ -823,10 +825,9 @@ public:
         m_bDoOnce = false;
         m_pOwner->LimActive(false, 1.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
-        if (m_pOwner->m_isSelectUpBelt)
-            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
-        else
-            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pOwner-> m_pSelectItem);
+        m_pOwner->m_pUseItem->Activate(false);
+
+        m_pOwner->m_pUseItem = nullptr;
         
     }
 
@@ -893,6 +894,7 @@ public:
         _int iCount = m_pOwner->m_pSelectItem->Get_UseCount();
         if (iCount > 0)
             bUse = true;
+
 
         return bUse;
     }
