@@ -421,6 +421,14 @@ HRESULT CUnit::Bind_Shader()
 			if (FAILED(m_pSecondEmissiveMap->Bind_ShaderResource(m_pShaderCom, "g_SecondEmissive", 0)))
 				return E_FAIL;
 		}
+
+		if (m_bIsPlayer && i == 0)
+		{
+			if (FAILED(m_pWetTexture->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTextureWet", 0)))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fPlayerWetIntensity", &m_fWetIntensity, sizeof(_float))))
+				return E_FAIL;
+		}
 		
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -433,6 +441,8 @@ HRESULT CUnit::Bind_Shader()
 		// 렌더가 끝난 후 값 초기화
 		_float fSecondEmissive = 0.f;
 		m_pShaderCom->Bind_RawValue("g_fSecondEmissiveIntensity", &fSecondEmissive, sizeof(_float));
+		_float fWetIntensity = 0.f;
+		m_pShaderCom->Bind_RawValue("g_fPlayerWetIntensity", &fWetIntensity, sizeof(_float));
 	}
 
 	return S_OK;

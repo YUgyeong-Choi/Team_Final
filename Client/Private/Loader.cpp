@@ -556,6 +556,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_PlayerWet"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/Player/T_CH_PC_Pino_01A_Body_Upper_Wet_BC.dds")))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))

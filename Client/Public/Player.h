@@ -81,6 +81,9 @@ public:
 	virtual HRESULT Render_Burn() override;
 	virtual HRESULT Render_LimLight() override;
 
+	_bool IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius);
+	void WetSystem();
+
 	virtual void	Reset() override;
 	void			WeaponReset();
 
@@ -191,6 +194,14 @@ public: /* [ 림라이트 셰이딩 ] */
 	void LimActive(_bool bOnOff, _float fSpeed, _float4 vColor = { 0.f, 0.749f, 1.f, 1.f }); // 기본 스킬 색상
 	void OnLim(_float fTimeDelta);
 	void OffLim(_float fTimeDelta);
+
+
+public: /* [ 비가 와요 ] */
+	void OnWet(_float fTimeDelta);
+	void OffWet(_float fTimeDelta);
+	void SwitchWet(_bool bWet, _float fWetSpeed);
+
+
 
 
 public:
@@ -348,6 +359,7 @@ private: /* [ 상태 변수 ] */
 
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
+
 
 private: /* [ 불타버려~ ] */
 	CTexture* m_pBurn = { nullptr };

@@ -150,6 +150,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Stat()))
 		return E_FAIL;
 
+	if (FAILED(Add_Component(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Texture_PlayerWet"),
+		TEXT("PlayerWet_Com"), reinterpret_cast<CComponent**>(&m_pWetTexture))))
+		return E_FAIL;
+
 	m_iLevel = 5;
 
 	Add_Ergo(10000.f);
@@ -329,6 +333,12 @@ void CPlayer::Update(_float fTimeDelta)
 	else
 		OffLim(fTimeDelta);
 
+	/* [ 젖은 셰이더 ] */
+	if (m_bWet)
+		OnWet(fTimeDelta);
+	else
+		OffWet(fTimeDelta);
+
 	/* [ 가드시간(0.2f) ] */
 	IsPerfectGard(fTimeDelta);
 
@@ -363,6 +373,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIMLIGHT, this);
+
+	WetSystem();
 
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
@@ -506,6 +518,45 @@ HRESULT CPlayer::Render_LimLight()
 	return S_OK;
 }
 
+_bool CPlayer::IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius)
+{
+	const _float fDx = XMVectorGetX(vWorldPos) - vCenter.x;
+	const _float fDz = XMVectorGetZ(vWorldPos) - vCenter.z;
+
+	const _float fDistSq = fDx * fDx + fDz * fDz;
+	const _float fRadiusSq = fRadius * fRadius;
+	return fDistSq <= fRadiusSq;
+}
+
+void CPlayer::WetSystem()
+{
+	AREAMGR m_eCurrentArea = m_pGameInstance->GetCurrentAreaMgr();
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_eCurrentArea == AREAMGR::FESTIVAL || m_eCurrentArea == AREAMGR::OUTER)
+	{
+		SwitchWet(true, 0.3f);
+	}
+	else if (m_eCurrentArea == AREAMGR::STATION)
+	{
+		static const _float3 vRainPosA = { 62.f,  10.f, -7.2f };
+		static const _float3 vRainPosB = { 86.8f, 10.f, -7.3f };
+		static const _float  fRainRadius = 5.f;
+
+		if (IsNearOnXZ(vPos, vRainPosA, fRainRadius) || IsNearOnXZ(vPos, vRainPosB, fRainRadius))
+		{
+			SwitchWet(true, 0.3f);
+		}
+		else
+		{
+			SwitchWet(false, 0.3f);
+		}
+	}
+	else
+	{
+		SwitchWet(false, 0.3f);
+	}
+}
 
 void CPlayer::Reset()
 {	
@@ -3985,6 +4036,31 @@ void CPlayer::OffLim(_float fTimeDelta)
 		if (m_fLimPhase < 0.f)
 			m_fLimPhase = 0.f;
 	}
+}
+
+void CPlayer::OnWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity <= 1.f)
+	{
+		m_fWetIntensity += fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity > 1.f)
+			m_fWetIntensity = 1.f;
+	}
+}
+
+void CPlayer::OffWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity >= 0.f)
+	{
+		m_fWetIntensity -= fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity < 0.f)
+			m_fWetIntensity = 0.f;
+	}
+}
+void CPlayer::SwitchWet(_bool bWet, _float fWetSpeed)
+{
+	m_bWet = bWet;
+	m_fWetSpeed = fWetSpeed;
 }
 
 void CPlayer::LockOnState(_float fTimeDelta)
