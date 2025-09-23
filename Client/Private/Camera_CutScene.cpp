@@ -1352,7 +1352,7 @@ void CCamera_CutScene::Event()
 		}
 
 		// 먼지 이펙트 제거
-		if (m_iCurrentFrame == 75)
+		if (m_iCurrentFrame == 240)
 		{
 			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke1"));
 			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke2"));
@@ -1373,7 +1373,7 @@ void CCamera_CutScene::Event()
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
 		}
 
-		if (m_iCurrentFrame == 270)
+		if (m_iCurrentFrame == 280)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			  
