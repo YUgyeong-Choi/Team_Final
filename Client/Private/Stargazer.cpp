@@ -732,7 +732,13 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 
 	
 
-
+	if (m_pSoundCom)
+	{
+		//m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Interaction_01");
+		//m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Interaction_01");
+		m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+		m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Interaction_01");
+	}
 	Delete_Script();
 	m_bUseTeleport = true;
 	m_bUseOtherUI = false;
