@@ -1323,7 +1323,7 @@ void CCamera_CutScene::Event()
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
 		}
 
-		if(m_iCurrentFrame == 550)
+		if(m_iCurrentFrame == 630)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.f);
 		}

@@ -3,7 +3,7 @@
     "Yaw": 0.8592159748077393,
     "bEndBlend": false,
     "bStartBlend": true,
-    "iEndFrame": 700,
+    "iEndFrame": 800,
     "vecDOFData": [
         {
             "curveType": 1,
@@ -101,7 +101,7 @@
             ],
             "fFov": 70.0,
             "interpFov": 0,
-            "keyFrame": 699
+            "keyFrame": 750
         }
     ],
     "vecMatrixPosData": [
@@ -205,7 +205,7 @@
                 1.0
             ],
             "interpMatrixPosition": 0,
-            "keyFrame": 699,
+            "keyFrame": 750,
             "worldMatrix": [
                 0.9999678730964661,
                 1.8616127306358976e-08,
