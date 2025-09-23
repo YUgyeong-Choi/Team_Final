@@ -3349,14 +3349,14 @@ public:
         m_pOwner->SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
 
         /* [ 사운드가 안멈춰.. ㅜㅜ ] */
-        m_pOwner->m_pSoundCom->StopAllSpecific("SE_PC_FX_Debuff_Fire_Loop");
-        m_pOwner->m_pSoundCom->Stop("SE_PC_FX_Debuff_Fire_Loop");
+        m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+        m_pOwner->m_vecElements[0].fDuration = 0.f;
+
         m_pOwner->m_pSoundCom->StopAll();
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
-
         m_fStateTime += fTimeDelta;
 
         if (m_fStateTime > 1.f && !m_bDoOnce)
