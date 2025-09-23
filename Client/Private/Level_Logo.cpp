@@ -163,7 +163,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
-	SetWindowText(g_hWnd, TEXT("로고 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("Lies Of P"));
 
 	if(!m_isReady)
 	{

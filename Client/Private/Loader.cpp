@@ -491,7 +491,7 @@ HRESULT CLoader::Loading_For_Static()
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+	lstrcpy(m_szLoadingText, TEXT("Lies Of P .. Loading"));
 
 	//푸오코 기름 데칼
 	/* For.Prototype_Component_Texture_FireEater_Oil_ARMT*/
@@ -542,12 +542,8 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_N_LKM.dds")))))
 		return E_FAIL;
 
-	m_fRatio = 0.1f;
-
-	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 	m_fRatio = 0.2f;
 
-	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
 	/* [ 메인 플레이어 로딩 ] */
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
@@ -744,14 +740,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	m_fRatio = 0.4f;
 
-
-	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
-
-	m_fRatio = 0.6f;
-	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
-
 	m_fRatio = 0.7f;
-	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 	/* [ 메인 플레이어 로딩 ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Player"),
@@ -965,7 +954,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #pragma region 맵 로딩
 
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 시작!!..."));
+	lstrcpy(m_szLoadingText, TEXT("Lies Of P .. Loading_Map"));
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 

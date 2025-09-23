@@ -212,7 +212,7 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 
 HRESULT CLevel_KratCentralStation::Render()
 {
-	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("Lies Of P .. GamePlay"));
 
 	return S_OK;
 }
