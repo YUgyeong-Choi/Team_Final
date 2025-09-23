@@ -67,13 +67,16 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 			//자신의 aabb 만큼의 네브 인덱스를 가져온다.
 			Store_NavIndices();
 		}
+
+		//푸오코 기둥은 좀 크게
+		m_pSoundCom->SetVolume(1.0f);
 	}
 
 	m_pSoundCom->SetVolume(0.5f);
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
 	m_pSoundCom->Update3DPosition(vPos);
-	m_pSoundCom->Set3DState(0.f, 10.f);
+	m_pSoundCom->Set3DState(0.f, 30.f);
 
 	return S_OK;
 }
@@ -116,7 +119,7 @@ void CBreakableMesh::Update(_float fTimeDelta)
 
 	if (m_bIsBroken)
 	{
-		if (m_fTimeAcc > m_fTime_Invisible * 0.7f)
+		if (m_fTimeAcc > m_fTime_Invisible * 0.3f)
 		{
 			if (m_bIsDissolve == true)
 			{
