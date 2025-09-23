@@ -80,7 +80,7 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Particle",
-            "NumInstance": 5000,
+            "NumInstance": 2500,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [

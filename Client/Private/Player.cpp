@@ -599,6 +599,8 @@ void CPlayer::Reset()
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	Find_Slot(TEXT("Prototype_GameObject_Portion"));
+
 	SetbIsGroggyAttack(false);
 	SetIsFatalBoss(false);
 	SetFatalTargetNull();

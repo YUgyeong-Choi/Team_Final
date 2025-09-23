@@ -67,14 +67,14 @@
                     ]
                 }
             ],
-            "LifeTime": 1247.100341796875,
+            "LifeTime": 1278.1083984375,
             "LifeTime_Particle": [
                 0.2800000011920929,
-                1000000
+                1.0
             ],
             "Local": true,
             "Loop": true,
-            "LoopInSet": true,
+            "LoopInSet": false,
             "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
@@ -147,5 +147,5 @@
         }
     ],
     "Loop": true,
-    "MaxFrame": 200
+    "MaxFrame": 150
 }
