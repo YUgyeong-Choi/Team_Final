@@ -160,6 +160,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 void CFuoco::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+	if (m_bDeathProcessed)
+	{
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			pPlayer->SetbEnding(true);
+		}
+	}
 
 	if (m_fFireFlameDuration > 0.f)
 	{

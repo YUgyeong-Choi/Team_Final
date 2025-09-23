@@ -72,10 +72,7 @@ void CBossUnit::Update(_float fTimeDelta)
 		{
 			m_bDeathProcessed = true;
 			SetForDeath();
-			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
-			{
-				pPlayer->SetbEnding(true);
-			}
+	
 
 			if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
 			{
