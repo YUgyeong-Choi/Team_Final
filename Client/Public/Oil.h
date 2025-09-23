@@ -39,7 +39,8 @@ private:
 	_bool m_bSoundPlaying = false;
 	PxBoxGeometry m_SpreadOilShape = PxBoxGeometry(1.0f,0.8f, 1.0f);
 	class CPlayer* m_pPlayer{ nullptr };
-	class CGameObject* m_pFuoco{ nullptr };
+	CGameObject* m_pFuoco{ nullptr };
+	CGameObject* m_pDecal{ nullptr };
 public:
 	static COil* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

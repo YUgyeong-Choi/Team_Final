@@ -159,6 +159,8 @@ void COil::Explode_Oil()
 			m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Explo_Heavy_01");
 			m_bSoundPlaying = true;
 
+			//여기서 데칼 죽이기
+			m_pDecal->Set_bDead();
 		}
 	}
 }
@@ -191,11 +193,11 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	DecalDesc.bHasLifeTime = true;
 	DecalDesc.fLifeTime = 20.f;
 
-	// 플레이어의 월드 행렬
+	// 월드 행렬
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 	// 위치만 추출
-	_vector vPosition = WorldMatrix.r[3]; // 행렬의 4번째 행(translation)
+	_vector vPosition = WorldMatrix.r[3];
 
 	// 위치 행렬 생성
 	_matrix PosMatrix = XMMatrixTranslationFromVector(vPosition);
@@ -210,11 +212,14 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * PosMatrix);
 
 
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &m_pDecal, &DecalDesc)))
 	{
 		return E_FAIL;
 	}
+
+	Safe_AddRef(m_pDecal);
+
 #pragma endregion
 
 	return S_OK;
@@ -323,5 +328,7 @@ CGameObject* COil::Clone(void* pArg)
 void COil::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pDecal);
 
 }
