@@ -3,6 +3,7 @@
 #include "Dynamic_UI.h"
 #include "UI_Text.h"
 #include "GameInstance.h"
+#include "UI_Manager.h"
 
 CUI_Container::CUI_Container(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CUIObject{pDevice, pContext}
@@ -101,6 +102,8 @@ HRESULT CUI_Container::Initialize(void* pArg)
 	m_fLifeTime = pDesc->fLifeTime;
 	m_useLifeTime = pDesc->useLifeTime;
 
+	m_strSoundTag = pDesc->strSoundTag;
+
 	if (m_strFilePath.empty())
 		return S_OK;
 
@@ -154,10 +157,22 @@ HRESULT CUI_Container::Initialize(void* pArg)
 
 void CUI_Container::Priority_Update(_float fTimeDelta)
 {
-	if (m_fDelay > 0)
+	if (m_fDelay > 0.f)
 	{
 		m_fDelay -= fTimeDelta;
 		return;
+	}
+
+	if (!m_isSound || m_fDelay <= 0.f)
+	{
+		m_isSound = true;
+
+		if (!m_strSoundTag.empty())
+		{
+			CUI_Manager::Get_Instance()->Set_Volume(m_strSoundTag, 1.f);
+			CUI_Manager::Get_Instance()->Sound_Play(m_strSoundTag);
+		}
+		
 	}
 
 	if (m_useLifeTime)

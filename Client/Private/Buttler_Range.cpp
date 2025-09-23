@@ -467,11 +467,11 @@ void CButtler_Range::Register_Events()
 		const _float* vWeaponPos = m_pWeapon->Get_CombinedWorldMatrix()->m[3] ;
 
 		_vector vPos = { vWeaponPos[0], vWeaponPos[1], vWeaponPos[2], vWeaponPos[3] };
-		vPos -= m_vRayOffset * 0.5f;
+		vPos -= m_vRayOffset * 0.4f;
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.6f - vPos;
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.8f - vPos;
 
 		// XZ 방향 추출 
 		_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
