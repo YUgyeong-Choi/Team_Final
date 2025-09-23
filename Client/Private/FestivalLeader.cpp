@@ -303,6 +303,7 @@ void CFestivalLeader::Reset()
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
 	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 }
 
@@ -576,6 +577,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Special_Die):
 		m_eCurrentState = EEliteState::DEAD;
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 		break;
 	case ENUM_CLASS(BossStateID::Turn_L):
 	case ENUM_CLASS(BossStateID::Turn_R):
@@ -969,6 +971,7 @@ void CFestivalLeader::Register_Events()
 			}
 			SwitchSecondEmissive(true, 1.f);
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), true);
 		});
 
 	m_pAnimator->RegisterEventListener("DissolveOn", [this]()

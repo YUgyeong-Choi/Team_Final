@@ -221,11 +221,25 @@ HRESULT CLevel_KratCentralStation::Reset()
 {
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
+	{
+		if (auto pBoss = dynamic_cast<CEliteUnit*>(obj))
+		{
+			if (pBoss->GetCurrentState() != CEliteUnit::EEliteState::CUTSCENE
+				&& pBoss->GetCurrentState() != CEliteUnit::EEliteState::DEAD)
+				m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
+		}
+	}
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FestivalLeader");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
+	{
+		if (auto pBoss = dynamic_cast<CEliteUnit*>(obj))
+		{
+			if (pBoss->GetCurrentState() != CEliteUnit::EEliteState::CUTSCENE
+				&& pBoss->GetCurrentState() != CEliteUnit::EEliteState::DEAD)
+				m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
+		}
+	}
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
@@ -333,6 +347,28 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CLevel_KratCentralStation::Apply_AreaBGM()
+{
+	AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
+	switch (areaMgr)
+	{
+	case Engine::AREAMGR::STATION:
+		m_pGameInstance->Change_BGM("AMB_SS_Train_Out_Rain");
+		break;
+	case Engine::AREAMGR::HOTEL:
+		m_pGameInstance->Change_BGM("AMB_SS_Cathedral_Hall");
+		break;
+	case Engine::AREAMGR::FUOCO:
+		break;
+	case Engine::AREAMGR::OUTER:
+	case Engine::AREAMGR::FESTIVAL:
+		m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+		break;
+	default:
+		break;
+	}
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Player()

@@ -40,6 +40,7 @@ public:
 
 	HRESULT Ready_Level();
 
+	void Apply_AreaBGM();
 private:
 	HRESULT Ready_Player();
 	HRESULT Ready_Npc();
@@ -60,6 +61,7 @@ private:
 	HRESULT Ready_WaterPuddle();
 	HRESULT Ready_Thunder();
 	HRESULT Ready_Sound();
+
 
 
 	HRESULT Ready_AnimatedProp();
