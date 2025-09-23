@@ -202,14 +202,26 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	// 위치 행렬 생성
 	_matrix PosMatrix = XMMatrixTranslationFromVector(vPosition);
 
+
+
+	_float fScaleY = XMVectorGetY(vDecalScale);
+	fScaleY = m_pGameInstance->Compute_Random(fScaleY, fScaleY + fScaleY * 0.5f);
+
 	// 데칼 스케일 적용
 	_matrix ScaleMatrix = XMMatrixScaling(
 		XMVectorGetX(vDecalScale),
-		XMVectorGetY(vDecalScale),
+		fScaleY,
 		XMVectorGetZ(vDecalScale));
 
+	// Y축 랜덤 회전
+	_float fRandomYaw = m_pGameInstance->Compute_Random(0.0f, XM_2PI); // 0 ~ 360도(라디안)
+	_matrix RotMatrix = XMMatrixRotationY(fRandomYaw);
+
+	// 최종 월드 행렬 (스케일 → 회전 → 위치)
+	_matrix FinalMatrix = ScaleMatrix * RotMatrix * PosMatrix;
+
 	// 최종 월드 행렬 (스케일 + 위치)
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * PosMatrix);
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, FinalMatrix);
 
 
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
