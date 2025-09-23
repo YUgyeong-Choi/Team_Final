@@ -1404,13 +1404,10 @@ void CCamera_CutScene::Event()
 		if (m_iCurrentFrame == 720)
 		{
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(false);
-
-			
 		}
 
 		if (m_iCurrentFrame == 745)
 		{
-			
 			CUI_Video::VIDEO_UI_DESC eDesc = {};
 			eDesc.eType = CUI_Video::VIDEO_TYPE::FINAL;
 			eDesc.fOffset = 0.0f;

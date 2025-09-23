@@ -3016,9 +3016,8 @@ void CPlayer::StartEnding(_float fTimeDelta)
 				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
 				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
 
-				m_pAnimator->CancelOverrideAnimController();
-				m_pWeapon->SetbIsActive(false);
-				m_bWeaponEquipped = false;
+				m_pAnimator->ResetParameters();
+				WeaponReset();
 			}
 		}
 	}
