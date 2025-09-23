@@ -1,0 +1,158 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.800000011920929,
+                        0.800000011920929,
+                        0.800000011920929
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "ModelTag": "SM_Sphere_02_KMH",
+            "Name": "LostErgo_Mesh1",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Galaxy_01_C_RSW",
+                "T_Mask_14_C_HJS",
+                "T_Mask_09_C_GDH",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.6000000238418579
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 0.0,
+            "Loop": true,
+            "ModelTag": "SM_Sphere_02_KMH",
+            "Name": "LostErgo_Mesh2",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Galaxy_01_C_RSW",
+                "T_Mask_13_C_HJS",
+                "T_Mask_17_C_HJS",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 200
+}

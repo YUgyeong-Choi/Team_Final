@@ -498,17 +498,24 @@ HRESULT CCYTool::Window_Sprite()
 	{
 		m_iLastSelected = m_iSelected;
 	}
-	ImGui::SeparatorText("Select Pass");
-	ImGui::Text("3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
-
-	for (_uint i = SE_UVSPRITE_COLOR; i < SE_END; i++)
+	_int iSelected = *pSE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Sprite", &iSelected, m_Pass_Sprite, IM_ARRAYSIZE(m_Pass_Sprite)))
 	{
-		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
-			*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		*pSE->Get_ShaderPass_Ptr() = static_cast<SPRITEEFFECT_PASS_INDEX>(iSelected);
 	}
+
+	//ImGui::SeparatorText("Select Pass");
+	//ImGui::Text("3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
+
+	//for (_uint i = SE_UVSPRITE_COLOR; i < SE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
+	//		*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
+
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	return S_OK;
@@ -551,16 +558,21 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.fLoopInSet_LoopDelay = desc.fLoopInSet_LoopDelay - desc.vLifeTime.y;
 	}
 
-	ImGui::SeparatorText("Select Pass");
-	ImGui::Text("0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
-	for (_uint i = 0; i < PE_END; i++)
+	_int iSelected = *pPE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Particle", &iSelected, m_Pass_Particle, IM_ARRAYSIZE(m_Pass_Particle)))
 	{
-		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
-			*pPE->Get_ShaderPass_Ptr() = (PARTICLEEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		*pPE->Get_ShaderPass_Ptr() = static_cast<PARTICLEEFFECT_PASS_INDEX>(iSelected);
 	}
+	//ImGui::SeparatorText("Select Pass");
+	//ImGui::Text("0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
+	//for (_uint i = 0; i < PE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
+	//		*pPE->Get_ShaderPass_Ptr() = (PARTICLEEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	m_tPCB = pPE->Get_CBuffer();
 
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
@@ -719,15 +731,24 @@ HRESULT CCYTool::Window_Mesh()
 	{
 		m_iLastSelected = m_iSelected;
 	}
-	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave");
-	for (_uint i = 0; i < ME_END; i++)
+
+	_int iSelected = *pME->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Mesh", &iSelected, m_Pass_Mesh, IM_ARRAYSIZE(m_Pass_Mesh)))
 	{
-		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {
-			*pME->Get_ShaderPass_Ptr() = (MESHEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		*pME->Get_ShaderPass_Ptr() = static_cast<MESHEFFECT_PASS_INDEX>(iSelected);
 	}
+
+
+
+	//ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave\n7. LostErgo");
+	//for (_uint i = 0; i < ME_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {
+	//		*pME->Get_ShaderPass_Ptr() = (MESHEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	if (ImGui::Button("Load Models"))
@@ -776,16 +797,22 @@ HRESULT CCYTool::Window_Trail()
 	{
 		m_iLastSelected = m_iSelected;
 	}
-	ImGui::Text("Select Pass\n0. Default\t1.Drop\t2. blooddrop\t3. basic");
-
-	for (_uint i = 0; i < TE_END; i++)
+	_int iSelected = *pTE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Trail", &iSelected, m_Pass_Trail, IM_ARRAYSIZE(m_Pass_Trail)))
 	{
-		if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), *pTE->Get_ShaderPass_Ptr() == i)) {
-			*pTE->Get_ShaderPass_Ptr() = (TRAILEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		*pTE->Get_ShaderPass_Ptr() = static_cast<TRAILEFFECT_PASS_INDEX>(iSelected);
 	}
+
+	//ImGui::Text("Select Pass\n0. Default\t1.Drop\t2. blooddrop\t3. basic");
+
+	//for (_uint i = 0; i < TE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), *pTE->Get_ShaderPass_Ptr() == i)) {
+	//		*pTE->Get_ShaderPass_Ptr() = (TRAILEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 	if (ImGui::Button("Enable Trail"))
 	{

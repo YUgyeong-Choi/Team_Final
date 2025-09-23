@@ -1,0 +1,76 @@
+{
+    "Animation": true,
+    "Billboard": false,
+    "CenterColor": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "Color": [
+        1.0,
+        1.0,
+        1.0,
+        1.0
+    ],
+    "DistortionStrength": 10.0,
+    "Duration": 66,
+    "EffectType": 2,
+    "EmissiveIntensity": 0.0,
+    "EndTrack": 66,
+    "FlipUV": true,
+    "KeyFrames": [
+        {
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Intensity": 1.0,
+            "Interpolation": 0,
+            "Rotation": [
+                -0.0,
+                -0.7071062326431274,
+                -0.0,
+                0.7071073651313782
+            ],
+            "Scale": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "TrackPosition": 0.0,
+            "Translation": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ],
+    "LifeTime": 0.0,
+    "Loop": true,
+    "ModelTag": "SM_Sphere_02_KMH",
+    "Name": "LostErgo_Mesh1",
+    "NumKeyFrames": 1,
+    "RenderGroup": 8,
+    "ShaderPass": 7,
+    "StartTrack": 0,
+    "TextureTags": [
+        "T_Galaxy_01_C_RSW",
+        "T_Mask_14_C_HJS",
+        "T_Tile_Noise_76_C_HJS",
+        ""
+    ],
+    "TextureUsage": [
+        true,
+        true,
+        true,
+        false
+    ],
+    "Threshold": 0.8999999761581421,
+    "TickPerSecond": 60.0,
+    "TileTickPerSec": 60.0,
+    "TileX": 1,
+    "TileY": 1
+}
