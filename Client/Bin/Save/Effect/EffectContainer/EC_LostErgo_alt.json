@@ -587,7 +587,7 @@
             ],
             "LifeTime": 4458.5712890625,
             "Loop": true,
-            "ModelTag": "",
+            "ModelTag": "SM_Helix_03_GDH",
             "Name": "Mesh",
             "NumKeyFrames": 1,
             "RenderGroup": 8,
