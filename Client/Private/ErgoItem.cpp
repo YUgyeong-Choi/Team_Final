@@ -133,6 +133,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				static_cast<CPlayer*>(m_pTarget)->Recovery_Ergo();
 				
 				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertRecovery");
+
+				static_cast<CPlayer*>(m_pTarget)->Create_LostErgo_RimLight();
 			}
 			else
 			{
@@ -141,13 +143,9 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 
-
-
-			// 이펙트 삭제 로직 필요
 			if (m_pEffect)
 				m_pEffect->End_Effect();
 
-			
 		}
 	}
 	
