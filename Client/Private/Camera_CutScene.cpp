@@ -1318,14 +1318,14 @@ void CCamera_CutScene::Event()
 			pDoor->DoorOpen();
 		}
 
-		if (m_iCurrentFrame == 450)
+		if (m_iCurrentFrame == 430)
 		{
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
 		}
 
 		if(m_iCurrentFrame == 550)
 		{
-			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.f);
 		}
 		break;
 	default:
