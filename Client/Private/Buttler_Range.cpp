@@ -467,38 +467,18 @@ void CButtler_Range::Register_Events()
 		const _float* vWeaponPos = m_pWeapon->Get_CombinedWorldMatrix()->m[3] ;
 
 		_vector vPos = { vWeaponPos[0], vWeaponPos[1], vWeaponPos[2], vWeaponPos[3] };
-		vPos -= m_vRayOffset * 0.4f;
+
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.8f - vPos;
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - vPos;
 
-		// XZ 방향 추출 
-		_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
-		dirXZ = XMVector3Normalize(dirXZ);
+		// 플레이어가 더 높은 곳에 있으면 보정?
+		if (vDir.m128_f32[1] >= 0.f)
+			vDir.m128_f32[1] += 0.5f;
 
-		// Look의 XZ
-		_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
-		lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
-		lookXZ = XMVector3Normalize(lookXZ);
+		vDir = XMVector3Normalize(vDir);
 
-		// 각도 구하기
-		float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
-		dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
-		float angle = acosf(dot);
-
-		// 회전 방향 결정 
-		float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
-		if (crossY < 0.f) angle = -angle;
-
-		// Y축 회전 행렬
-		XMMATRIX rot = XMMatrixRotationY(angle);
-
-		// vDir 전체를 회전
-		_vector vRotated = XMVector3TransformNormal(vDir, rot);
-
-
-		vRotated = XMVector3Normalize(vRotated);
 
 		desc.bUseDistTrigger = false;
 		desc.bUseTimeTrigger = false;
@@ -509,7 +489,7 @@ void CButtler_Range::Register_Events()
 		desc.fSpeed = 10.f;
 		desc.iLevelID = iLevelIndex;
 		lstrcpy(desc.szName, TEXT("Bullet"));
-		desc.vDir = { vRotated.m128_f32[0], vRotated.m128_f32[1], vRotated.m128_f32[2] };
+		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
 		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
 
 		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Bullet"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
@@ -691,7 +671,7 @@ void CButtler_Range::Reset()
 void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.2f - m_pTransformCom->Get_State(STATE::POSITION);
 
 	// XZ 방향 추출 
 	_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);

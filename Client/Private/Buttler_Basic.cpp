@@ -120,6 +120,7 @@ void CButtler_Basic::Update(_float fTimeDelta)
 	if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{
 		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 	}
 
 	if (m_strStateName.find("Getup") != m_strStateName.npos)
@@ -310,6 +311,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		m_fGroggyThreshold -= pWeapon->Get_CurrentDamage() / 10.f;
 
 		static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
+
 
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);

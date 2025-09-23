@@ -122,6 +122,7 @@ void CButtler_Train::Update(_float fTimeDelta)
 	if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{
 		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 	}
 
 	if (m_strStateName.find("Getup") != m_strStateName.npos)
@@ -345,7 +346,6 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		m_isDetect = true;
 
-		m_pWeapon->Set_WeaponTrail_Active(false);
 
 		if (m_fHp <= 0 && !m_isFatal)
 		{

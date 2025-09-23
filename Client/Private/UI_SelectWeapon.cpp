@@ -123,6 +123,8 @@ void CUI_SelectWeapon::Update(_float fTimeDelta)
         Set_bDead();
 
         CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
+
+        CCamera_Manager::Get_Instance()->SetbMoveable(true);
     }
 
 
