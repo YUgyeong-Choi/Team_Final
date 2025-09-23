@@ -26,6 +26,7 @@
 #include "ErgoItem.h"
 
 #include "Client_Calculation.h"
+#include "Level_KratCentralStation.h"
 
 
 NS_BEGIN(Client)
@@ -3457,7 +3458,12 @@ public:
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             m_pOwner->Check_RainArea();
-			AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
+            if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
+            {
+                pLevel->Apply_AreaBGM();
+            }
+
+	/*		AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
             switch (areaMgr)
             {
             case Engine::AREAMGR::STATION:
@@ -3474,7 +3480,7 @@ public:
                 break;
             default:
                 break;
-            }
+            }*/
         }
 
 

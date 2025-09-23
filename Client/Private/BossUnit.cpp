@@ -8,6 +8,7 @@
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
 #include "SwordTrailEffect.h"
+#include "Level_KratCentralStation.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -67,26 +68,21 @@ void CBossUnit::Update(_float fTimeDelta)
 		m_fGroggyGauge = 0.f;
 		m_bGroggyActive = false;
 		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
+		if (!m_bDeathProcessed &&m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
 		{
-			m_eCurrentState = EEliteState::DEAD;
-			m_pAnimator->SetTrigger("SpecialDie");
-			CLockOn_Manager::Get_Instance()->Set_Off(this);
-			m_pAnimator->SetPlayRate(1.f);
-			SwitchEmissive(false, 1.f);
-			SwitchSecondEmissive(false, 1.f);
-			SwitchFury(false, 1.f);
-			m_ActiveEffect.clear();
-			EnableColliders(false);
-			if (m_pTrailEffect)
-			{
-				m_pTrailEffect->Set_TrailActive(false);
-			}
-
+			m_bDeathProcessed = true;
+			SetForDeath();
 			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
 				pPlayer->SetbEnding(true);
 			}
+
+			if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
+			{
+				pLevel->Apply_AreaBGM();
+			}
+
+		
 
 			CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
@@ -241,6 +237,23 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
+}
+
+void CBossUnit::SetForDeath()
+{
+	m_eCurrentState = EEliteState::DEAD;
+	m_pAnimator->SetTrigger("SpecialDie");
+	CLockOn_Manager::Get_Instance()->Set_Off(this);
+	m_pAnimator->SetPlayRate(1.f);
+	SwitchEmissive(false, 1.f);
+	SwitchSecondEmissive(false, 1.f);
+	SwitchFury(false, 1.f);
+	m_ActiveEffect.clear();
+	EnableColliders(false);
+	if (m_pTrailEffect)
+	{
+		m_pTrailEffect->Set_TrailActive(false);
+	}
 }
 
 CBossUnit* CBossUnit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

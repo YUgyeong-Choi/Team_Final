@@ -34,7 +34,10 @@ protected:
 	HRESULT Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
 
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
+
+	void SetForDeath();
 protected:
+	_bool	 m_bDeathProcessed = false; // 상태 방어용
 	_bool    m_bReChallenge = false;
 	_bool    m_bCutSceneOn = false;
 	_bool    m_bIsPhase2{ false };
