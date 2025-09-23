@@ -212,7 +212,7 @@ void CLevel_KratCentralStation::Late_Update(_float fTimeDelta)
 
 HRESULT CLevel_KratCentralStation::Render()
 {
-	SetWindowText(g_hWnd, TEXT("게임플레이 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("Lies Of P .. GamePlay"));
 
 	return S_OK;
 }
@@ -221,19 +221,33 @@ HRESULT CLevel_KratCentralStation::Reset()
 {
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+	{
+		if (auto pBoss = dynamic_cast<CEliteUnit*>(obj))
+		{
+			if (pBoss->GetCurrentState() != CEliteUnit::EEliteState::CUTSCENE
+				&& pBoss->GetCurrentState() != CEliteUnit::EEliteState::DEAD)
+				m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
+		}
+	}
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_FestivalLeader");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj);
+	{
+		if (auto pBoss = dynamic_cast<CEliteUnit*>(obj))
+		{
+			if (pBoss->GetCurrentState() != CEliteUnit::EEliteState::CUTSCENE
+				&& pBoss->GetCurrentState() != CEliteUnit::EEliteState::DEAD)
+				m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
+		}
+	}
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj, false);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal", true);
 
 	//부서지는 메쉬 리셋
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), L"Layer_BreakableMesh");
@@ -333,6 +347,28 @@ HRESULT CLevel_KratCentralStation::Ready_Level()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CLevel_KratCentralStation::Apply_AreaBGM()
+{
+	AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
+	switch (areaMgr)
+	{
+	case Engine::AREAMGR::STATION:
+		m_pGameInstance->Change_BGM("AMB_SS_Train_Out_Rain");
+		break;
+	case Engine::AREAMGR::HOTEL:
+		m_pGameInstance->Change_BGM("AMB_SS_Cathedral_Hall");
+		break;
+	case Engine::AREAMGR::FUOCO:
+		break;
+	case Engine::AREAMGR::OUTER:
+	case Engine::AREAMGR::FESTIVAL:
+		m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+		break;
+	default:
+		break;
+	}
 }
 
 HRESULT CLevel_KratCentralStation::Ready_Player()
@@ -1596,6 +1632,15 @@ HRESULT CLevel_KratCentralStation::Ready_Interact()
 	Desc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_ShortCutDoor"),
 		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("ShortCutDoor"), &Desc)))
+		return E_FAIL;
+
+
+	/* [ 마지막 문 ] */
+	CGameObject::GAMEOBJECT_DESC ObjDesc = {};
+	ObjDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	lstrcpy(Desc.szName, TEXT("FinalDoor"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FinalDoor"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("FinalDoor"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -163,7 +163,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 
 HRESULT CLevel_Logo::Render()
 {
-	SetWindowText(g_hWnd, TEXT("로고 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("Lies Of P"));
 
 	if(!m_isReady)
 	{
@@ -407,7 +407,7 @@ void CLevel_Logo::Check_Button()
 				Interation_Button(m_iButtonIndex);
 			}
 
-			//CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
 			break;
 		}
 

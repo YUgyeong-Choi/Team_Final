@@ -3,6 +3,8 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 CShortCutDoor::CShortCutDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CDefaultDoor{ pDevice, pContext }
@@ -54,7 +56,7 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 			// ÇÃ·¹ÀÌ¾î¶û ¹® À§Ä¡¶û ºñ±³ÇØ¼­
 			_float fPlayerZ = XMVectorGetZ(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 			_float fDoorZ = XMVectorGetZ(m_pTransformCom->Get_State(STATE::POSITION));
-			if (fPlayerZ < fDoorZ)
+			if (fPlayerZ < fDoorZ) // ÇÃ·¹ÀÌ¾îz°¡ ¹®º¸´Ù ÀÛÀ¸¸é.. ¿ÞÂÊÀÌ¸é?
 			{
 				m_bCanOpen = true;
 				m_bFinish = true;
@@ -216,7 +218,6 @@ void CShortCutDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
-
 void CShortCutDoor::OpenDoor()
 {
 	if (m_pAnimator)
@@ -355,6 +356,10 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 	if (nullptr == m_pAnimatorBackKey)
 		return E_FAIL;
 	if (FAILED(m_pAnimatorBackKey->Initialize(m_pModelComBackKey)))
+		return E_FAIL;
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_ShortCutDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -548,12 +553,17 @@ void CShortCutDoor::Start_Effect(_float fTimeDelta)
 {
 	m_fEffectTime += fTimeDelta;
 
+	CEffectContainer::DESC ECDesc = {};
+	ECDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	if (m_bCanOpen) // ¹® ¿°
 	{
-		if (m_fEffectTime > 1.3f)
+		if (m_fEffectTime > 1.15f)
 		{
 			m_bEffectActive = false;
+			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.6f, -0.42f));
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_UnLocked_Door"), &ECDesc))
+				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
 		}
 	}
 	else 	
@@ -561,6 +571,10 @@ void CShortCutDoor::Start_Effect(_float fTimeDelta)
 		if (m_fEffectTime > 1.4f)
 		{
 			m_bEffectActive = false;
+			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.5f, 0.2f));
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_Locked_LightningDoor_alt_real"), &ECDesc))
+				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
+			m_pPlayer->Create_LeftArm_Lightning_Hand(TEXT("EC_Shortcut_Locked_LightningHand"));
 		}
 	}
 }
@@ -569,7 +583,7 @@ void CShortCutDoor::Play_Sound(_float fTimeDelta)
 {
 	m_fSoundDelta += fTimeDelta;
 
-	if (m_bCanOpen) // ¹® ¿°
+	if (m_bCanOpen) // ¹® ¿°ÁÖ ·»°íÄí ÄìÁê·Î ¤»¤»
 	{
 		if (m_fSoundDelta > 2.f && !m_bSoundPlay[0])
 		{

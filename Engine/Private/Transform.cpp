@@ -716,7 +716,7 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	_float fAngle = acosf(fDot); // 현재 각도 차이 (라디안)
 
 	// 거의 정면이면 회전하지 않음
-	if (fAngle < 0.01f)
+	if (fAngle < 0.05f)
 		return true;
 
 	// 회전 축 계산
@@ -926,7 +926,7 @@ void CTransform::UpdateOrbit(_float fTimeDelta)
 	_vector vCenter = XMLoadFloat4(&m_vOrbitCenter);
 	_vector vAxis = XMLoadFloat4(&m_vOrbitAxis);
 
-	// 축과 수직인 시작 벡터 ㅈ됏다
+	// 축과 수직인 시작 벡터
 	_vector vUpRef = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 	_vector vStart = XMVector3Cross(vAxis, vUpRef);
 	if (XMVector3Equal(vStart, XMVectorZero()))

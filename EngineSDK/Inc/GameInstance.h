@@ -288,10 +288,10 @@ public:
 
 #pragma region PULLING_MANAGER
 	void Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
-	void Use_PoolObject(const _wstring& wsLayerName);
-	void UseAll_PoolObjects(const _wstring& wsLayerName);
-	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
-	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
+	void Use_PoolObject(const _wstring& wsLayerName, _bool bReset);
+	void UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
 #pragma endregion
 
 

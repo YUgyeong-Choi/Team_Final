@@ -1,11 +1,14 @@
 #include "BossUnit.h"
+
 #include "Player.h"
+#include "UI_Manager.h"
+#include "Static_Decal.h"
 #include "GameInstance.h"
+#include "UI_Container.h"
 #include "SpringBoneSys.h"
 #include "LockOn_Manager.h"
-#include "UI_Container.h"
-#include "Static_Decal.h"
-#include "UI_Manager.h"
+#include "SwordTrailEffect.h"
+#include "Level_KratCentralStation.h"
 
 CBossUnit::CBossUnit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CEliteUnit(pDevice, pContext)
@@ -26,7 +29,8 @@ HRESULT CBossUnit::Initialize(void* pArg)
 
 	m_fMaxHp = 1200.f;
 	m_fHp = m_fMaxHp;
-	// 컷씬 시작 전 대기
+
+
 	m_pAnimator->Update(0.f);
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
@@ -34,6 +38,8 @@ HRESULT CBossUnit::Initialize(void* pArg)
 	m_fGroggyScale_Weak = 0.08f;
 	m_fGroggyScale_Strong = 0.1f;
 	m_fGroggyScale_Charge = 0.15f;
+	m_ePrevState = EEliteState::CUTSCENE;
+	m_eCurrentState = EEliteState::CUTSCENE;
 	return S_OK;
 }
 
@@ -62,21 +68,21 @@ void CBossUnit::Update(_float fTimeDelta)
 		m_fGroggyGauge = 0.f;
 		m_bGroggyActive = false;
 		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
+		if (!m_bDeathProcessed &&m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
 		{
-			m_eCurrentState = EEliteState::DEAD;
-			m_pAnimator->SetTrigger("SpecialDie");
-			CLockOn_Manager::Get_Instance()->Set_Off(this);
-			m_pAnimator->SetPlayRate(1.f);
-			SwitchEmissive(false, 1.f);
-			SwitchSecondEmissive(false, 1.f);
-			SwitchFury(false, 1.f);
-			m_ActiveEffect.clear();
-			EnableColliders(false);
+			m_bDeathProcessed = true;
+			SetForDeath();
 			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
 				pPlayer->SetbEnding(true);
 			}
+
+			if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
+			{
+				pLevel->Apply_AreaBGM();
+			}
+
+		
 
 			CUI_Container::UI_CONTAINER_DESC eDesc = {};
 
@@ -85,6 +91,7 @@ void CBossUnit::Update(_float fTimeDelta)
 
 			eDesc.fLifeTime = 8.f;
 			eDesc.useLifeTime = true;
+			eDesc.strSoundTag = "SE_UI_AlertKill_02";
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
@@ -93,13 +100,13 @@ void CBossUnit::Update(_float fTimeDelta)
 			_wstring strName = m_szMeshID;
 			_wstring strFilePath = TEXT("../Bin/Save/UI/Popup/Boss_Drop_") + strName + TEXT(".json");
 			eDesc.strFilePath = strFilePath; 
+			eDesc.strSoundTag = {};
 
 			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Container"),
 				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_UI_Death"), &eDesc)))
 				return;
 
-			CUI_Manager::Get_Instance()->Set_Volume("SE_UI_AlertKill_02", 2.f);
-			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
+		
 		}
 		Safe_Release(m_pHPBar);
 	}
@@ -130,19 +137,19 @@ void CBossUnit::ReChallenge()
 void CBossUnit::Reset()
 {
 	__super::Reset();
-	m_eCurrentState = EEliteState::CUTSCENE;
-	m_ePrevState = EEliteState::CUTSCENE;
+	// 재시작 때는 Idle 상태로 재도전이니까
+	m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
 	m_bIsPhase2 = false;
 	m_bStartPhase2 = false;
 	m_bPlayerCollided = false;
 	m_bCutSceneOn = false;
-	m_pAnimator->Update(0.f);
+	m_pAnimator->Update(0.016f);
 	m_pModelCom->Update_Bones();
 	m_pAnimator->SetPlaying(false);
 	Ready_AttackPatternWeightForPhase1();
 	m_ActiveEffect.clear();
 	m_pAnimator->SetPlayRate(1.f);
-	m_fFirstChaseBeforeAttack = 2.f;
+	m_fFirstChaseBeforeAttack = 2.5f;
 	m_pAnimator->ResetTrigger("SpecialDie");
 }
 
@@ -156,6 +163,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 
 HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
 {
+
 #pragma region 영웅 데칼 생성코드
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
 	DecalDesc.bNormalOnly = true;
@@ -229,6 +237,23 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 void CBossUnit::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
+}
+
+void CBossUnit::SetForDeath()
+{
+	m_eCurrentState = EEliteState::DEAD;
+	m_pAnimator->SetTrigger("SpecialDie");
+	CLockOn_Manager::Get_Instance()->Set_Off(this);
+	m_pAnimator->SetPlayRate(1.f);
+	SwitchEmissive(false, 1.f);
+	SwitchSecondEmissive(false, 1.f);
+	SwitchFury(false, 1.f);
+	m_ActiveEffect.clear();
+	EnableColliders(false);
+	if (m_pTrailEffect)
+	{
+		m_pTrailEffect->Set_TrailActive(false);
+	}
 }
 
 CBossUnit* CBossUnit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

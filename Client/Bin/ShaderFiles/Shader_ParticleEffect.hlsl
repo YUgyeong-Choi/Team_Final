@@ -25,7 +25,7 @@ struct ParticleParam
     float   fAccel; // 가속도 (+면 가속, -면 감속)
     float   fMaxSpeed; // 최대 속도 (옵션)
     float   fMinSpeed; // 최소 속도 (옵션, 감속 시 멈춤 방지)
-    
+
     float2  vTileOffset;
     float   RotationSpeed; // degrees/sec
     float   RotationAngle;

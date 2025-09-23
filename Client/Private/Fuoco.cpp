@@ -149,6 +149,7 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 
 #endif
+
 	if (KEY_DOWN(DIK_M))
 		m_fHp -= 200;
 
@@ -176,16 +177,6 @@ void CFuoco::Update(_float fTimeDelta)
 	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 
-	if (KEY_DOWN(DIK_L))
-	{
-		EnterCutScene();
-
-		m_fHp = m_fHp * 0.5f;
-		/*Spawn_Decal(m_pFistBone,
-			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-			XMVectorSet(5.f, 0.5f, 5.f, 0));*/
-	}
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -318,6 +309,15 @@ void CFuoco::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Middle-Finger01"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pMiddleFingierBone = *it;
+	}
+
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Forearm"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
@@ -365,7 +365,8 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
-		m_fFirstChaseBeforeAttack -= fTimeDelta;
+		if (m_eCurrentState != EEliteState::IDLE) // Idle이면 감소 안 함
+			m_fFirstChaseBeforeAttack -= fTimeDelta;
 		return;
 	}
 	// 퓨리 돌진 9번
@@ -1678,13 +1679,11 @@ HRESULT CFuoco::Ready_Effect()
 	desc.iLevelID = m_iLevelID;
 
 	desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
-	desc.pOuterSocketMatrix = m_pFistBone->Get_CombinedTransformationMatrix();
-	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	desc.pOuterSocketMatrix = m_pMiddleFingierBone->Get_CombinedTransformationMatrix();
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_FireEater"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
 	if (!m_pTrailEffect)
 		return E_FAIL;
-
-	m_pTrailEffect->Set_TrailActive(true);
-
+	m_pTrailEffect->Set_TrailActive(false);
 	return S_OK;
 }
 
@@ -1925,6 +1924,26 @@ _bool CFuoco::CheckConditionFlameField()
 	return false;
 }
 
+
+void CFuoco::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("왕의 불꽃 푸오코");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+}
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {

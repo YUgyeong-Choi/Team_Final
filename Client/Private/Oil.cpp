@@ -106,6 +106,11 @@ void COil::Priority_Update(_float fTimeDelta)
 void COil::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+	if (m_bSoundPlaying&& m_pSoundCom && !m_pSoundCom->IsPlaying("SE_NPC_SK_FX_FIre_Explo_Heavy_01"))
+		
+	{
+		Set_bDead();
+	}
 }
 
 void COil::Late_Update(_float fTimeDelta)
@@ -151,8 +156,9 @@ void COil::Explode_Oil()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Desc));
 
-			m_pSoundCom->Play_Random("SE_NPC_SK_FX_FIre_Explo_Heavy_0", 1, 3);
-			Set_bDead();
+			m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Explo_Heavy_01");
+			m_bSoundPlaying = true;
+
 		}
 	}
 }
@@ -183,7 +189,7 @@ HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::BC)] = TEXT("Prototype_Component_Texture_FireEater_Oil_BC");
 
 	DecalDesc.bHasLifeTime = true;
-	DecalDesc.fLifeTime = 10.f;
+	DecalDesc.fLifeTime = 20.f;
 
 	// 플레이어의 월드 행렬
 	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();

@@ -344,6 +344,11 @@ namespace Engine
 			(p.y >= b.vMin.y - eps && p.y <= b.vMax.y + eps) &&
 			(p.z >= b.vMin.z - eps && p.z <= b.vMax.z + eps);
 	}
+	inline _bool AABB_ContainsPointWithOutY(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
+	{
+		return (p.x >= b.vMin.x - eps && p.x <= b.vMax.x + eps) &&
+			(p.z >= b.vMin.z - eps && p.z <= b.vMax.z + eps);
+	}
 
 	// a가 b를 완전히 포함?
 	inline _bool AABB_ContainsAABB(const AABBBOX& a, const AABBBOX& b, float eps = 0.0f)

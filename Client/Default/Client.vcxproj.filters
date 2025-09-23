@@ -565,6 +565,9 @@
     <Filter Include="02.GameObjects\13. Door\00.Door">
       <UniqueIdentifier>{e2e2c08e-7e92-4270-8e1c-0aa1c48aaee1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\13. Door\CutSceneDoor">
+      <UniqueIdentifier>{7b517a7f-3094-4928-9c6d-40264130dc65}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -1181,6 +1184,9 @@
     <ClInclude Include="..\public\Trigger_Effect.h">
       <Filter>02.GameObjects\15.StaticTrigger\TriggerEffect</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FinalDoor.h">
+      <Filter>02.GameObjects\13. Door\CutSceneDoor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1770,6 +1776,12 @@
     </ClCompile>
     <ClCompile Include="..\private\BossRetryDoor.cpp">
       <Filter>02.GameObjects\13. Door\00.Door</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StargazerEffect.cpp">
+      <Filter>02.GameObjects\16.Stargazer\StargazerEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FinalDoor.cpp">
+      <Filter>02.GameObjects\13. Door\CutSceneDoor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

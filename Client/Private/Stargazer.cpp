@@ -71,13 +71,20 @@ HRESULT CStargazer::Initialize(void* pArg)
 	{
 		m_pSoundCom->Set3DState(0.f, 15.f);
 	}
+
+	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	return S_OK;
 }
 
 void CStargazer::Priority_Update(_float fTimeDelta)
 {
 	if(m_pPlayer == nullptr)
+	{
 		Find_Player();
+
+		if(m_pPlayer)
+			Ready_PlayerButterflyEffectSet();
+	}
 
 	
 	if (!m_bUseOtherUI)
@@ -691,6 +698,8 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 		{
 			// 플레이어가 텔레포트 자세를 잡는다
 			m_pPlayer->Start_Teleport();
+			if (!m_pPlayerEffectSet->GetbDelete())
+				m_pPlayerEffectSet->SetbDelete(true);
 
 			// 선택된 별바라기의 위치를 가져온다.
 			_float3 vPos;
@@ -759,6 +768,17 @@ void CStargazer::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		}
 			
 	}
+
+	if (KEY_DOWN(DIK_E) && m_eState == STARGAZER_STATE::FUNCTIONAL)
+	{
+		m_pPlayerEffectSet->SetbDelete(false);
+		m_pPlayerEffectSet->Activate_Stargazer_PlayerButterfly();
+	}
+	if (KEY_DOWN(DIK_ESCAPE))
+	{
+		if (!m_pPlayerEffectSet->GetbDelete())
+			m_pPlayerEffectSet->SetbDelete(true);
+	}
 }
 
 void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -769,6 +789,7 @@ void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bTalkActive = false;
 	m_bUseScript = false;
 	m_bUseOtherUI = false;
+	m_pPlayerEffectSet->SetbDelete(false);
 	
 }
 
@@ -1013,6 +1034,19 @@ HRESULT CStargazer::Ready_EffectSet()
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance,&desc)))
 		return E_FAIL;
 	m_pEffectSet = static_cast<CStargazerEffect*>(pInstance);
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_PlayerButterflyEffectSet()
+{
+	CGameObject* pInstance = nullptr;
+	CStargazerEffect::DESC desc = {};
+	desc.pOwner = m_pPlayer;
+	desc.iLevelID = m_iLevelID;
+	desc.bIsPlayer = true;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance, &desc)))
+		return E_FAIL;
+	m_pPlayerEffectSet = static_cast<CStargazerEffect*>(pInstance);
 	return S_OK;
 }
 

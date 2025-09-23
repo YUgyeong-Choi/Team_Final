@@ -103,7 +103,7 @@ void CErgo::Update(_float fTimeDelta)
 
 			_vector vDiff = m_pTransformCom->Get_State(STATE::POSITION) - XMLoadFloat3(&vPos);
 			_float fLength = XMVectorGetX(XMVector3Length(vDiff));
-			if (fLength < 0.01f)
+			if (fLength < 0.1f)
 			{
 				m_bReadyDeath = true;
 

@@ -299,12 +299,12 @@ void CFestivalLeader::Reset()
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
-	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_bSwitchHeadSpace = false;
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
-
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -475,7 +475,8 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
-		m_fFirstChaseBeforeAttack -= fTimeDelta;
+		if (m_eCurrentState != EEliteState::IDLE) // Idle이면 감소 안 함
+			m_fFirstChaseBeforeAttack -= fTimeDelta;
 		return;
 	}
 	// 퓨리 몸빵
@@ -576,6 +577,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 	case ENUM_CLASS(BossStateID::Special_Die):
 		m_eCurrentState = EEliteState::DEAD;
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 		break;
 	case ENUM_CLASS(BossStateID::Turn_L):
 	case ENUM_CLASS(BossStateID::Turn_R):
@@ -969,6 +971,7 @@ void CFestivalLeader::Register_Events()
 			}
 			SwitchSecondEmissive(true, 1.f);
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), true);
 		});
 
 	m_pAnimator->RegisterEventListener("DissolveOn", [this]()
@@ -1618,7 +1621,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 	if (!m_pTrailEffect)
 		return E_FAIL;
 
-	m_pTrailEffect->Set_TrailActive(true);
+	m_pTrailEffect->Set_TrailActive(false);
 
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
@@ -1871,6 +1874,27 @@ void CFestivalLeader::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+}
+
+void CFestivalLeader::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("축제 인도자");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
 }
 
 void CFestivalLeader::Calc_WeaponDir()

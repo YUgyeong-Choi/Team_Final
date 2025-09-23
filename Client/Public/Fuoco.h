@@ -120,6 +120,9 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual void Reset() override;
+
+public:
+        virtual void ReChallenge() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -174,6 +177,7 @@ private:
 	CPhysXDynamicActor* m_pPhysXActorComForArm = { nullptr };
 	CPhysXDynamicActor* m_pPhysXActorComForFoot = { nullptr };
     CBone* m_pRForearmBone{ nullptr };
+    CBone* m_pMiddleFingierBone{ nullptr };
 	CBone* m_pFistBone{ nullptr };
 	CBone* m_pFootBone{ nullptr };
 	CBone* m_pLeftBone{ nullptr };

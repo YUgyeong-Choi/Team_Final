@@ -95,7 +95,11 @@ private:
 #pragma region BaseEffect
 	// 공통 이펙트 용 변수들
 	//_int						m_iSelectedInterpolationType = { 0 };
-	const _char*				m_InterpolationTypes[5] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
+	const _char*				m_InterpolationTypes[INTERPOLATION_END] = { "Lerp(Default)", "EaseOutBack", "EaseOutCubic", "EaseInQuad", "EaseOutQuad" };
+	const _char*				m_Pass_Sprite[SE_END] = { "Default","SoftEffect", "UVSprite", "UVSprite_Color", "WB_UVSprite_Color", "WB_MaskOnly", "WB_MaskNoise", "WB_Distortion_Mask", "WB_Distortion_NoMask" };
+	const _char*				m_Pass_Particle[PE_END] = { "Default", "MaskOnly", "WB_MaskOnly", "WB_Mask_VStretch", "Nonlight", "Rain", "WB_Diffuse", "WB_Mask_Dissolve"};
+	const _char*				m_Pass_Mesh[ME_END] = { "Default", "MaskOnly", "Mask_Noise", "UVMask", "WB_Mask_Scroll", "WB_MaskOnly", "Shockwave", "LostErgo"};
+	const _char*				m_Pass_Trail[TE_END] = { "Default","Drop","BloodDrop","NoDistortion" };
 	//_bool						m_bAnimateSprite = { false };
 
 #pragma endregion

@@ -1,0 +1,1311 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -15.0,
+                -12.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.0,
+                0.19895291328430176,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.17277485132217407,
+                0.6470510959625244,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 22,
+            "EffectType": 1,
+            "EmissiveIntensity": 10.0,
+            "EndTrack": 22,
+            "FlipUV": false,
+            "Gravity": 3.0,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.17277485132217407,
+                        0.6470510959625244,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 8.430000305175781,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 7709.29443359375,
+            "LifeTime_Particle": [
+                0.009999999776482582,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.30000001192092896,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 1.0,
+            "Name": "Shortcut_Locked_Sparkp1",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.0,
+                0.7071067690849304
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.019999999552965164,
+                0.019999999552965164,
+                0.019999999552965164
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.014999999664723873
+            ],
+            "Speed": [
+                2.0,
+                4.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.02800000086426735,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                -0.5,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 9,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1509.737060546875,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P1",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                -1.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_0_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                -0.5,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.0,
+                0.41964292526245117,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7068063020706177,
+                0.875661313533783,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 10.0,
+            "EndTrack": 9,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7068063020706177,
+                        0.875661313533783,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1509.737060546875,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P2",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.75,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_1_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 19,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1001.5909423828125,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P3",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 10,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_2_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 19,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1001.5909423828125,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P4",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 10,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_3_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 29,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 927.242919921875,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P5",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 20,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_3_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 29,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 13.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 927.242919921875,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P6",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 20,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_2_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                0.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.12156862765550613,
+                0.4901960790157318,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.7058823704719543,
+                0.8745098114013672,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 9,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.5,
+            "EndTrack": 29,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.7058823704719543,
+                        0.8745098114013672,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 20.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.5,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 927.242919921875,
+            "LifeTime_Particle": [
+                0.20000000298023224,
+                0.30000001192092896
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.0,
+            "Name": "Shortcut_Locked_DoorL_P7",
+            "NumInstance": 1,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.25,
+                0.0,
+                0.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                2.5,
+                2.5
+            ],
+            "Speed": [
+                0.0,
+                0.0
+            ],
+            "Spin": false,
+            "StartTrack": 20,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_SubUV_Thunder_07_1_SC_PCY",
+                "T_Waterfall_Foam_01_SC_RSW",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 13.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -15.0,
+                -10.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.2565445303916931,
+                0.614648699760437,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.4973822236061096,
+                0.7855498194694519,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 22,
+            "EffectType": 1,
+            "EmissiveIntensity": 6.449999809265137,
+            "EndTrack": 31,
+            "FlipUV": false,
+            "Gravity": 3.0,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.4973822236061096,
+                        0.7855498194694519,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 5.380000114440918,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 7459.03466796875,
+            "LifeTime_Particle": [
+                0.009999999776482582,
+                0.5400000214576721
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.06000000238418579,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 2.0,
+            "Name": "Shortcut_Locked_Sparkp1",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.7071067690849304,
+                0.0,
+                0.7071067690849304
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.019999999552965164,
+                0.019999999552965164,
+                0.019999999552965164
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.014999999664723873
+            ],
+            "Speed": [
+                5.0,
+                6.0
+            ],
+            "Spin": false,
+            "StartTrack": 9,
+            "StretchFactor": 0.017999999225139618,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 63
+}

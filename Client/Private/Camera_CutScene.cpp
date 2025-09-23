@@ -10,6 +10,7 @@
 #include "FestivalLeader.h"
 #include "AreaSoundBox.h"
 #include "BossDoor.h"
+#include "FinalDoor.h"
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -810,6 +811,16 @@ HRESULT CCamera_CutScene::InitDatas()
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FESTIVAL, LoadCameraFrameData(j)));
 	}
 
+	ifstream inFile6("../Bin/Save/CutScene/Final.json");
+	if (inFile6.is_open())
+	{
+		json j;
+		inFile6 >> j;
+		inFile6.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FINAL, LoadCameraFrameData(j)));
+	}
+
 	return S_OK;
 }
 
@@ -1053,8 +1064,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 860)
 		{
-			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
-			unit->EnterCutScene();
+			CBossUnit* unit = dynamic_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
 		if (m_iCurrentFrame == 1550)
@@ -1075,6 +1087,11 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
+			
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
+
 
 		}
 
@@ -1093,7 +1110,8 @@ void CCamera_CutScene::Event()
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1650)
@@ -1110,6 +1128,9 @@ void CCamera_CutScene::Event()
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH01_Intro", "MU_MS_Boss_FireEater_PH02");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1700)
@@ -1126,6 +1147,9 @@ void CCamera_CutScene::Event()
 
 			if (pEffect == nullptr)
 				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		break;
@@ -1137,7 +1161,7 @@ void CCamera_CutScene::Event()
 		}
 		if (m_iCurrentFrame == 125)
 		{
-			CAreaSoundBox* pSound = static_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
+			CAreaSoundBox* pSound = dynamic_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
 			if(pSound)
 				pSound->SoundVolumeToZero();
 		}
@@ -1185,8 +1209,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1005)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterCutScene();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
 		if (m_iCurrentFrame == 1100)
@@ -1201,8 +1226,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1180)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->BreakPanel();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->BreakPanel();
 		}
 
 		if (m_iCurrentFrame == 1235)
@@ -1237,8 +1263,9 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1425)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterNextCutScene();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterNextCutScene();
 		}
 
 		if (m_iCurrentFrame == 1430)
@@ -1283,6 +1310,23 @@ void CCamera_CutScene::Event()
 			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
 		}
 
+		break;
+	case CUTSCENE_TYPE::FINAL:
+		if (m_iCurrentFrame == 1)
+		{
+			CFinalDoor* pDoor = dynamic_cast<CFinalDoor*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("FinalDoor")));
+			pDoor->DoorOpen();
+		}
+
+		if (m_iCurrentFrame == 450)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
+		}
+
+		if(m_iCurrentFrame == 550)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
+		}
 		break;
 	default:
 		break;

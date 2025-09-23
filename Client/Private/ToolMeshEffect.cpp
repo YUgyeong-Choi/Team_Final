@@ -102,9 +102,9 @@ HRESULT CToolMeshEffect::Change_Model(_wstring strModelName)
 	if (strModelName.size() > 0)
 	{
 		_wstring strModelTag = L"Prototype_Component_Model_" + strModelName;
+		m_strModelTag = strModelName;
 		return Replace_Component(ENUM_CLASS(LEVEL::CY), strModelTag.c_str(),
 			TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom));
-		m_strModelTag = strModelName;
 	}
 	else
 	{

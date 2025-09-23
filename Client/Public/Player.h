@@ -53,7 +53,7 @@ public:
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT, GUARD_BREAK,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,FESTIVALDOOR,
 		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDERSTART, GRINDERLOOP, GRINDEREND, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, 
-		ITEMFAIL, STATIONDOOR, END
+		ITEMFAIL, STATIONDOOR, INTERACTIONFOG, END
 	};
 
 	enum class eHitedTarget
@@ -80,6 +80,9 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Burn() override;
 	virtual HRESULT Render_LimLight() override;
+
+	_bool IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius);
+	void WetSystem();
 
 	virtual void	Reset() override;
 	void			WeaponReset();
@@ -193,6 +196,14 @@ public: /* [ 림라이트 셰이딩 ] */
 	void OffLim(_float fTimeDelta);
 
 
+public: /* [ 비가 와요 ] */
+	void OnWet(_float fTimeDelta);
+	void OffWet(_float fTimeDelta);
+	void SwitchWet(_bool bWet, _float fWetSpeed);
+
+
+
+
 public:
 	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
 
@@ -303,8 +314,9 @@ public:/*[스탯 관련]*/
 
 public:
 	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
+	void Set_bEndingWalk(_bool bWalk);
 	void StartEnding(_float fTimeDelta);
-
+	
 
 public:
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
@@ -349,6 +361,7 @@ private: /* [ 상태 변수 ] */
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
 
+
 private: /* [ 불타버려~ ] */
 	CTexture* m_pBurn = { nullptr };
 	CTexture* m_pBurnMask = { nullptr };
@@ -376,6 +389,7 @@ private: /* [ 텔레포트 ] */
 
 private:
 	_bool	m_bEnding = {};
+	_bool	m_bEndingWalk = {};
 	_bool	m_bEndSetting = {};
 	_float	m_fEndingTime = {};
 

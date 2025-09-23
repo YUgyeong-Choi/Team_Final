@@ -150,6 +150,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Stat()))
 		return E_FAIL;
 
+	if (FAILED(Add_Component(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Texture_PlayerWet"),
+		TEXT("PlayerWet_Com"), reinterpret_cast<CComponent**>(&m_pWetTexture))))
+		return E_FAIL;
+
 	m_iLevel = 5;
 
 	Add_Ergo(10000.f);
@@ -224,6 +228,15 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_9))
+	{
+		_vector pos = { -0.1171f, 0.296629f ,-172.0543f , 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
+
+	//if(KEY_DOWN(DIK_M))
+	//	m_fHp = 10.f;
+
 	if (KEY_PRESSING(DIK_LALT))
 	{
 		if (KEY_DOWN(DIK_R))
@@ -242,11 +255,10 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
 
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 406.f;
-			Lightdesc.PresetMatrix._42 = 20.f;
-			Lightdesc.PresetMatrix._43 = -49.f;
+			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixScaling(1.f,1.f,4.f));
 
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc))
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc))
 				MSG_BOX("이펙트 생성 실패함");
 
 
@@ -302,6 +314,8 @@ void CPlayer::Update(_float fTimeDelta)
 	/* [ 문열기 관련 ] */
 	SlidDoorMove(fTimeDelta);
 
+	StartEnding(fTimeDelta);
+
 	/* [ 상태 관련 ] */
 	UpdateCurrentState(fTimeDelta);
 
@@ -326,6 +340,12 @@ void CPlayer::Update(_float fTimeDelta)
 		OnLim(fTimeDelta);
 	else
 		OffLim(fTimeDelta);
+
+	/* [ 젖은 셰이더 ] */
+	if (m_bWet)
+		OnWet(fTimeDelta);
+	else
+		OffWet(fTimeDelta);
 
 	/* [ 가드시간(0.2f) ] */
 	IsPerfectGard(fTimeDelta);
@@ -361,6 +381,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIMLIGHT, this);
+
+	WetSystem();
 
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
@@ -504,6 +526,45 @@ HRESULT CPlayer::Render_LimLight()
 	return S_OK;
 }
 
+_bool CPlayer::IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius)
+{
+	const _float fDx = XMVectorGetX(vWorldPos) - vCenter.x;
+	const _float fDz = XMVectorGetZ(vWorldPos) - vCenter.z;
+
+	const _float fDistSq = fDx * fDx + fDz * fDz;
+	const _float fRadiusSq = fRadius * fRadius;
+	return fDistSq <= fRadiusSq;
+}
+
+void CPlayer::WetSystem()
+{
+	AREAMGR m_eCurrentArea = m_pGameInstance->GetCurrentAreaMgr();
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_eCurrentArea == AREAMGR::FESTIVAL || m_eCurrentArea == AREAMGR::OUTER)
+	{
+		SwitchWet(true, 0.3f);
+	}
+	else if (m_eCurrentArea == AREAMGR::STATION)
+	{
+		static const _float3 vRainPosA = { 62.f,  10.f, -7.2f };
+		static const _float3 vRainPosB = { 86.8f, 10.f, -7.3f };
+		static const _float  fRainRadius = 5.f;
+
+		if (IsNearOnXZ(vPos, vRainPosA, fRainRadius) || IsNearOnXZ(vPos, vRainPosB, fRainRadius))
+		{
+			SwitchWet(true, 0.3f);
+		}
+		else
+		{
+			SwitchWet(false, 0.3f);
+		}
+	}
+	else
+	{
+		SwitchWet(false, 0.3f);
+	}
+}
 
 void CPlayer::Reset()
 {	
@@ -1733,6 +1794,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		break;
 	}
+	case eAnimCategory::INTERACTIONFOG:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 
 
 	default:
@@ -1833,6 +1899,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::PULSE;
 	if (stateName.find("FatalAttack") == 0)
 		return eAnimCategory::FATAL;
+
+	if (stateName.find("Interaction_Fog") == 0)
+		return eAnimCategory::INTERACTIONFOG;
 	
 	return eAnimCategory::NONE;
 }
@@ -2845,33 +2914,43 @@ CWeapon* CPlayer::Get_Equip_Legion()
 	return m_pLegionArm;
 }
 
+void CPlayer::Set_bEndingWalk(_bool bWalk)
+{
+	m_bEndingWalk = bWalk;
+	_vector pos = { -0.1994f, 0.296629f ,-175.705841f , 1.f };
+	m_pTransformCom->Set_State(STATE::POSITION, pos);
+	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+}
+
 void CPlayer::StartEnding(_float fTimeDelta)
 {
 	if (m_bEnding)
 	{
-		//1. 엔딩 스위치가 올라갔을 때 시간을 잰다.
 		m_fEndingTime += fTimeDelta;
 
-		if (m_fEndingTime > 5.f)
+		if (m_fEndingTime > 8.f)
 		{
-			//2. 5초가 지나면 엔딩컷씬이 시작된다.
-
 			if (!m_bEndSetting)
 			{
-				// 플레이어 주도권 뺏기, 위치 셋팅
 				m_pCamera_Manager->SetbMoveable(false);
-				
-				PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
-				PxTransform posTrans = PxTransform(pos);
-				m_pControllerCom->Set_Transform(posTrans);
 
 				m_bEndSetting = true;
+
+				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
+				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
 			}
-
-			//1. 문이 열린다.
-
-			//2. 문이 다 열리면 플레이어가 그쪽으로 걸어간다.
 		}
+	}
+
+	if (m_bEndingWalk)
+	{
+		m_Input.bMove = true;
+		m_bWalk = true;
+
+		m_pAnimator->SetBool("Sprint", false);
+		m_pAnimator->SetBool("Run", false);
+		_vector pos = { -0.1994f, 0.296629f ,-165.236450f , 1.f };
+		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
 	}
 }
 
@@ -3687,6 +3766,10 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 	case INNERDOOR:
 		stateName = "InnerDoor_Open";
 		break;
+	case RESTARTFESTIVAL:
+	case RESTARTFUOCO:
+		stateName = "Interaction_Fog";
+		break;
 	default:
 		break;
 	}
@@ -3973,6 +4056,31 @@ void CPlayer::OffLim(_float fTimeDelta)
 	}
 }
 
+void CPlayer::OnWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity <= 1.f)
+	{
+		m_fWetIntensity += fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity > 1.f)
+			m_fWetIntensity = 1.f;
+	}
+}
+
+void CPlayer::OffWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity >= 0.f)
+	{
+		m_fWetIntensity -= fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity < 0.f)
+			m_fWetIntensity = 0.f;
+	}
+}
+void CPlayer::SwitchWet(_bool bWet, _float fWetSpeed)
+{
+	m_bWet = bWet;
+	m_fWetSpeed = fWetSpeed;
+}
+
 void CPlayer::LockOnState(_float fTimeDelta)
 {
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
@@ -4054,10 +4162,10 @@ void CPlayer::Callback_DownBelt()
 
 void CPlayer::Use_Item()
 {
-	if (nullptr == m_pSelectItem)
+	if (nullptr == m_pUseItem)
 		return;
 
-	m_pSelectItem->Use();
+	m_pUseItem->Use();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();

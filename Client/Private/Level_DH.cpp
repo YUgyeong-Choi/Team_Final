@@ -60,11 +60,11 @@ HRESULT CLevel_DH::Initialize()
 	//1锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
 	//5锅备开
-	//m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
+	m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
 	//3锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
 	//19锅备开
-	m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
+	//m_pGameInstance->SetPlayerPosition(_fvector{ -1.4f, 1.f, -237.f, 1.f });
 
 	m_pGameInstance->FindAreaContainingPoint();
 
@@ -73,9 +73,9 @@ HRESULT CLevel_DH::Initialize()
 
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::DH), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
 
 	return S_OK;
 }
