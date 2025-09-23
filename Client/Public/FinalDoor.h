@@ -19,10 +19,11 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+
+	void DoorOpen();
 	HRESULT Bind_ShaderResources();
 protected:
 	HRESULT Ready_Components(void* pArg);
-
 protected: /* [ 초기화 변수 ] */
 	const _tchar* m_szMeshID = { nullptr };
 	LEVEL			m_eMeshLevelID = { LEVEL::END };
@@ -35,6 +36,8 @@ protected:
 	CTexture* m_pEmissiveCom = { nullptr };
 
 	class CPlayer* m_pPlayer = { nullptr };
+
+	_bool m_bOpen = false;
 public:
 	static CFinalDoor* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

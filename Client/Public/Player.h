@@ -314,8 +314,9 @@ public:/*[스탯 관련]*/
 
 public:
 	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
+	void Set_bEndingWalk(_bool bWalk);
 	void StartEnding(_float fTimeDelta);
-
+	
 
 public:
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
@@ -388,6 +389,7 @@ private: /* [ 텔레포트 ] */
 
 private:
 	_bool	m_bEnding = {};
+	_bool	m_bEndingWalk = {};
 	_bool	m_bEndSetting = {};
 	_float	m_fEndingTime = {};
 

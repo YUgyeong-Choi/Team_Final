@@ -228,8 +228,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
-	if(KEY_DOWN(DIK_M))
-		m_fHp = 10.f;
+	if (KEY_DOWN(DIK_9))
+	{
+		_vector pos = { -0.1171f, 0.296629f ,-172.0543f , 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
+
+	//if(KEY_DOWN(DIK_M))
+	//	m_fHp = 10.f;
 
 	if (KEY_PRESSING(DIK_LALT))
 	{
@@ -307,6 +313,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 문열기 관련 ] */
 	SlidDoorMove(fTimeDelta);
+
+	StartEnding(fTimeDelta);
 
 	/* [ 상태 관련 ] */
 	UpdateCurrentState(fTimeDelta);
@@ -2906,33 +2914,43 @@ CWeapon* CPlayer::Get_Equip_Legion()
 	return m_pLegionArm;
 }
 
+void CPlayer::Set_bEndingWalk(_bool bWalk)
+{
+	m_bEndingWalk = bWalk;
+	_vector pos = { -0.1994f, 0.296629f ,-175.705841f , 1.f };
+	m_pTransformCom->Set_State(STATE::POSITION, pos);
+	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+}
+
 void CPlayer::StartEnding(_float fTimeDelta)
 {
 	if (m_bEnding)
 	{
-		//1. 엔딩 스위치가 올라갔을 때 시간을 잰다.
 		m_fEndingTime += fTimeDelta;
 
-		if (m_fEndingTime > 5.f)
+		if (m_fEndingTime > 8.f)
 		{
-			//2. 5초가 지나면 엔딩컷씬이 시작된다.
-
 			if (!m_bEndSetting)
 			{
-				// 플레이어 주도권 뺏기, 위치 셋팅
 				m_pCamera_Manager->SetbMoveable(false);
-				
-				PxVec3 pos = PxVec3(-1.4f, 1.f, -237.f);
-				PxTransform posTrans = PxTransform(pos);
-				m_pControllerCom->Set_Transform(posTrans);
 
 				m_bEndSetting = true;
+
+				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
+				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
 			}
-
-			//1. 문이 열린다.
-
-			//2. 문이 다 열리면 플레이어가 그쪽으로 걸어간다.
 		}
+	}
+
+	if (m_bEndingWalk)
+	{
+		m_Input.bMove = true;
+		m_bWalk = true;
+
+		m_pAnimator->SetBool("Sprint", false);
+		m_pAnimator->SetBool("Run", false);
+		_vector pos = { -0.1994f, 0.296629f ,-165.236450f , 1.f };
+		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
 	}
 }
 
