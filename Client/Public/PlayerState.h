@@ -704,9 +704,6 @@ public:
     {
         m_fStateTime = 0.f;
 
-        // 아이템 사용 중에 선택한 아이템이 바뀌어도, 상태 시작할때 아이템으로 행동하도록 할 수 있게 
-        m_pOwner->m_pUseItem = m_pOwner->m_pSelectItem;
-
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_fItemTime = 0.f;
 
@@ -715,7 +712,7 @@ public:
 		m_pOwner->m_bWalk = true;
 
         /* [ 아이템 스위치들 ] */
-        if (m_pOwner->m_pUseItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
+        if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Lamp") != _wstring::npos)
         {
             m_pOwner->m_pWeapon->SetbIsActive(false);
             m_pOwner->m_pAnimator->SetBool("HasLamp", true);
@@ -726,7 +723,7 @@ public:
             m_pOwner->m_bLampSwitch = true;
             m_pOwner->m_bResetSoundTime = false;
         }
-        else if (m_pOwner->m_pUseItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
+        else if (m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Grinder") != _wstring::npos)
         {
             m_pOwner->m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 
@@ -740,7 +737,7 @@ public:
                 m_bGrinderFail = true;
             }
         }
-        else if (m_pOwner->m_bPulseReservation || m_pOwner->m_pUseItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
+        else if (m_pOwner->m_bPulseReservation || m_pOwner->m_pSelectItem->Get_ProtoTag().find(L"Portion") != _wstring::npos)
         {
             m_pOwner->m_bPulseReservation = false;
 
@@ -784,14 +781,14 @@ public:
 				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
-                m_pOwner->m_pUseItem->Activate(true);
+                m_pOwner->m_pSelectItem->Activate(true);
             }
 
             if (KEY_UP(DIK_R))
             {
                 m_bGrinderEnd = true;
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
-                m_pOwner->m_pUseItem->Activate(false);
+                m_pOwner->m_pSelectItem->Activate(false);
             }
 
             if (m_bGrinderEnd)
@@ -826,9 +823,10 @@ public:
         m_bDoOnce = false;
         m_pOwner->LimActive(false, 1.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
-        // 상태 끝나면 사용한 아이템을 초기화해준다
-        m_pOwner->m_pUseItem->Activate(false);
-        m_pOwner->m_pUseItem = nullptr;
+        if (m_pOwner->m_isSelectUpBelt)
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
+        else
+            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pOwner-> m_pSelectItem);
         
     }
 
@@ -915,8 +913,6 @@ private:
     _bool m_bGrinderFail = {};
     _float m_fPulseTime = {};
     _float m_fGrinderTime = {};
-
-  
 };
 
 /* [ 이 클래스는 백스탭 상태입니다. ] */
@@ -3348,7 +3344,7 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
-
+        m_pOwner->m_pSoundCom->StopAllSpecific("SE_PC_FX_Debuff_Fire_Loop");
         m_pOwner->SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
     }
 

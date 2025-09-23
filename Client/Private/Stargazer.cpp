@@ -69,7 +69,7 @@ HRESULT CStargazer::Initialize(void* pArg)
 
 	if (m_pSoundCom)
 	{
-		m_pSoundCom->Set3DState(0.f, 15.f);
+		m_pSoundCom->Set3DState(0.f, 5.f);
 	}
 
 	m_pCamera_Manager = CCamera_Manager::Get_Instance();

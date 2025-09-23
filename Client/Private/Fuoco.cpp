@@ -1115,6 +1115,7 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
 	if (m_eCurrentState == EEliteState::FATAL)
 		return;
+	EffectSpawn_Active(EF_SWING_ATK, false);
 	m_pAnimator->SetTrigger("Paralyzation");
 	m_pAnimator->SetPlayRate(1.f);
 	m_bGroggyActive = false;
@@ -1913,6 +1914,7 @@ _bool CFuoco::CheckConditionFlameField()
 			m_bUsedFlameFiledOnLowHp = true;
 			m_pAnimator->SetTrigger("Attack");
 			m_pAnimator->SetPlayRate(1.f);
+
 		}
 		else
 		{
@@ -1926,6 +1928,7 @@ _bool CFuoco::CheckConditionFlameField()
 		}
 		m_pAnimator->SetBool("Move", false);
 		m_eCurrentState = EEliteState::ATTACK;
+		EffectSpawn_Active(EF_SWING_ATK, false);
 		return true;
 	}
 	return false;
