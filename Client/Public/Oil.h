@@ -36,7 +36,7 @@ private:
 	_float m_fDamge = 10.f;
 	_bool m_bCanSpread = false; // 기름이 퍼질 수 있는지 여부
 	_bool m_bIsSpreaded = false; // 기름이 퍼졌는지 여부
-
+	_bool m_bSoundPlaying = false;
 	PxBoxGeometry m_SpreadOilShape = PxBoxGeometry(1.0f,0.8f, 1.0f);
 	class CPlayer* m_pPlayer{ nullptr };
 	class CGameObject* m_pFuoco{ nullptr };

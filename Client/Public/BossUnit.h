@@ -37,6 +37,7 @@ protected:
 
 	void SetForDeath();
 protected:
+	_bool	 m_bDeathProcessed = false; // 상태 방어용
 	_bool    m_bReChallenge = false;
 	_bool    m_bCutSceneOn = false;
 	_bool    m_bIsPhase2{ false };

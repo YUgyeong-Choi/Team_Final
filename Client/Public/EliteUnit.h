@@ -142,7 +142,6 @@ protected:
 	EEliteState m_ePrevState = EEliteState::NONE;
 	_bool    m_bIsFirstAttack{ true };
 	_float4x4 	m_InitWorldMatrix{};
-
 	
 
 	 _bool   m_bGroggyActive = false;

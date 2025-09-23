@@ -68,9 +68,9 @@ void CBossUnit::Update(_float fTimeDelta)
 		m_fGroggyGauge = 0.f;
 		m_bGroggyActive = false;
 		m_bUseLockon = false;
-		if (m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
+		if (!m_bDeathProcessed &&m_eCurrentState != EEliteState::DEAD && m_eCurrentState != EEliteState::FATAL)
 		{
-	
+			m_bDeathProcessed = true;
 			SetForDeath();
 			if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
 			{
