@@ -155,6 +155,8 @@ protected:
 
 	_bool m_isPatrol = {};
 	_float m_fPatrolTime = {};
+
+	_bool m_bSoundCheck = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */

@@ -390,6 +390,8 @@ void CLevel_Logo::Check_Button()
 			
 	}
 
+	_bool isPlayMouseHoverSound = false;
+
 	for (int i = 0; i < m_pButtons.size(); ++i)
 	{
 		_bool isHover = m_pButtons[i]->Check_MouseHover();
@@ -407,7 +409,7 @@ void CLevel_Logo::Check_Button()
 				Interation_Button(m_iButtonIndex);
 			}
 
-			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Hovered_Default_02");
+	
 			break;
 		}
 
