@@ -20,7 +20,8 @@ public:
 	enum class VIDEO_TYPE
 	{
 		LOGO,
-		INTRO
+		INTRO,
+		FINAL
 	};
 public:
 	typedef struct tagVideoUIDesc : public CUIObject::UIOBJECT_DESC
