@@ -11,8 +11,8 @@
             ],
             "Color": [
                 0.0,
-                0.4586498439311981,
-                0.46596860885620117,
+                0.4588235318660736,
+                0.46666666865348816,
                 1.0
             ],
             "DistortionStrength": 10.0,
@@ -104,7 +104,7 @@
                     ]
                 }
             ],
-            "LifeTime": 6927.09375,
+            "LifeTime": 8094.5048828125,
             "Loop": true,
             "ModelTag": "SM_Sphere_02_KMH",
             "Name": "LostErgo_Spheremesh1",
@@ -234,7 +234,7 @@
                     ]
                 }
             ],
-            "LifeTime": 6926.60205078125,
+            "LifeTime": 8094.01318359375,
             "Loop": true,
             "ModelTag": "SM_Sphere_02_KMH",
             "Name": "LostErgo_Spheremesh2",
@@ -270,10 +270,10 @@
                 1.0
             ],
             "Color": [
-                0.41583290696144104,
-                0.6647171974182129,
-                0.9685863852500916,
-                0.0
+                0.4156862795352936,
+                0.6666666865348816,
+                0.9686274528503418,
+                0.9883489012718201
             ],
             "DistortionStrength": 10.0,
             "Duration": 200,
@@ -364,7 +364,7 @@
                     ]
                 }
             ],
-            "LifeTime": 6925.38134765625,
+            "LifeTime": 8092.79248046875,
             "Loop": true,
             "ModelTag": "SM_Helix_03_GDH",
             "Name": "LostErgo_Helixmesh1",
@@ -457,7 +457,7 @@
                     ]
                 }
             ],
-            "LifeTime": 10935.5146484375,
+            "LifeTime": 12099.748046875,
             "LifeTime_Particle": [
                 1.0,
                 2.0
@@ -469,7 +469,7 @@
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.20000000298023224,
-            "Name": "ergostype_Particle",
+            "Name": "LostErgo_RaisingParticle1",
             "NumInstance": 40,
             "NumKeyFrames": 1,
             "Orbit": true,
@@ -585,7 +585,7 @@
                     ]
                 }
             ],
-            "LifeTime": 4792.91455078125,
+            "LifeTime": 5960.32568359375,
             "Loop": true,
             "ModelTag": "SM_CrossPlane_01_HJS",
             "Name": "LostErgo_pillarmesh1",
@@ -621,27 +621,27 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                0.34354668855667114,
+                0.5850525498390198,
+                0.7034695744514465,
+                0.48109257221221924
             ],
             "DistortionStrength": 10.0,
             "Duration": 200,
             "EffectType": 2,
-            "EmissiveIntensity": 0.0,
+            "EmissiveIntensity": 1.7000000476837158,
             "EndTrack": 200,
-            "FlipUV": false,
+            "FlipUV": true,
             "KeyFrames": [
                 {
                     "Color": [
-                        1.0,
-                        1.0,
-                        1.0,
-                        1.0
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
                     ],
                     "Intensity": 1.0,
-                    "Interpolation": 0,
+                    "Interpolation": 3,
                     "Rotation": [
                         0.7071069478988647,
                         0.0,
@@ -649,29 +649,294 @@
                         0.7071065902709961
                     ],
                     "Scale": [
-                        1.0,
-                        0.9999718070030212,
-                        0.9999718070030212
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
                     ],
                     "TrackPosition": 0.0,
                     "Translation": [
                         0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.3663002848625183,
+                        0.6857186555862427,
+                        0.8429319262504578,
+                        0.686274528503418
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
                         0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 29.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 81.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.364705890417099,
+                        0.686274528503418,
+                        0.843137264251709,
+                        0.686274528503418
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 163.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
                         0.0
                     ]
                 }
             ],
-            "LifeTime": 0.0,
+            "LifeTime": 1179.053466796875,
             "Loop": true,
             "ModelTag": "SM_CrossPlane_01_HJS",
-            "Name": "Mesh",
-            "NumKeyFrames": 1,
+            "Name": "LostErgo_Pillarmesh2",
+            "NumKeyFrames": 5,
             "RenderGroup": 8,
-            "ShaderPass": 5,
+            "ShaderPass": 7,
             "StartTrack": 0,
             "TextureTags": [
-                "T_Rain_Ripples_01_C_RSW",
-                "T_Rain_Drops_01_C_RSW",
+                "T_Shere_01_C_LGS",
+                "T_Shere_02_C_LGS",
+                "T_Shere_02_C_LGS",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.4156862497329712,
+                0.6191747188568115,
+                0.9686274528503418,
+                0.2702844738960266
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 2.4000000953674316,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.41583290696144104,
+                        0.6647171974182129,
+                        0.9685863852500916,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        2.6877999305725098,
+                        0.7283552885055542,
+                        2.6877999305725098
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.041675105690956116,
+                        -0.10000000149011612,
+                        0.0182257741689682
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        2.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 45.0,
+                    "Translation": [
+                        -0.041999999433755875,
+                        0.0,
+                        0.017999999225139618
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862199306488,
+                        0.490955650806427,
+                        0.9686274528503418,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        4.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 91.0,
+                    "Translation": [
+                        -0.041999999433755875,
+                        0.5,
+                        0.017999999225139618
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        4.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 8109.41162109375,
+            "Loop": true,
+            "ModelTag": "SM_Helix_04_LGS",
+            "Name": "LostErgo_Helixmesh2",
+            "NumKeyFrames": 4,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Line_05_C_GDH",
+                "T_Line_02_C_GDH",
                 "",
                 ""
             ],
@@ -686,6 +951,151 @@
             "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
+        },
+        {
+            "Accel": [
+                -2.0199999809265137,
+                -0.6700000166893005
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "Gravity": 0.30000001192092896,
+            "IsCircleRange": true,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 4615.7275390625,
+            "LifeTime_Particle": [
+                0.30000001192092896,
+                1.5
+            ],
+            "Local": true,
+            "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -0.5,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.05000000074505806,
+            "Name": "LostErgo_CircleParticle1",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                200.0,
+                300.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.44999998807907104,
+                0.30000001192092896,
+                1.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.019999999552965164
+            ],
+            "Speed": [
+                0.10000000149011612,
+                0.5
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": true,

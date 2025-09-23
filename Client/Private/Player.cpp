@@ -237,6 +237,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	//if(KEY_DOWN(DIK_M))
 	//	m_fHp = 10.f;
 
+	/* 채영 */
 	if (KEY_PRESSING(DIK_LALT))
 	{
 		if (KEY_DOWN(DIK_R))
@@ -274,6 +275,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
 		}
 	}
+	if (m_bLostErgoRimlight)
+	{
+		m_fLostErgoRimlightAccTime += fTimeDelta;
+		if (m_fLostErgoRimlightAccTime > 2.f)
+		{
+			m_fLostErgoRimlightAccTime = 0.f;
+			LimActive(false, 1.5f);
+		}
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -4414,6 +4425,13 @@ void CPlayer::Create_LeftArm_Lightning_Hand(const _wstring& strECTag)
 	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_LostErgo_RimLight()
+{
+	LimActive(true, 1.5f, { 0.34f ,0.58f, 0.8f, 1.f });
+	m_bLostErgoRimlight = true;
+	m_fLostErgoRimlightAccTime = 0.f;
 }
 
 void CPlayer::Movement(_float fTimeDelta)

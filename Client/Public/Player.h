@@ -230,6 +230,7 @@ private: /* [ 이펙트 관리 함수 ]*/
 public:
 	void Create_LeftArm_Lightning(const _wstring& strECTag);
 	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
+	void Create_LostErgo_RimLight();
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -553,6 +554,9 @@ private: /* [ 벨트 슬롯 ] */
 
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
+	_float		m_fLostErgoRimlightAccTime = {};
+	_bool		m_bLostErgoRimlight = { false };
+
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
 

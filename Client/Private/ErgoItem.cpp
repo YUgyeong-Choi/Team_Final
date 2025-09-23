@@ -37,6 +37,8 @@ HRESULT CErgoItem::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
+	m_eItemTag = pDesc->eItemTag;
+
 	if (FAILED(Ready_Effect(pArg)))
 		return E_FAIL;
 
@@ -44,7 +46,6 @@ HRESULT CErgoItem::Initialize(void* pArg)
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->WorldMatrix);
 
-	m_eItemTag = pDesc->eItemTag;
 
 	if (FAILED(Ready_Collider()))
 		return E_FAIL;
@@ -132,6 +133,8 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				static_cast<CPlayer*>(m_pTarget)->Recovery_Ergo();
 				
 				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertRecovery");
+
+				static_cast<CPlayer*>(m_pTarget)->Create_LostErgo_RimLight();
 			}
 			else
 			{
@@ -140,18 +143,16 @@ void CErgoItem::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_UI(TEXT("Pickup_Item"), true);
 			}
 
-
-
-			// 이펙트 삭제 로직 필요
 			if (m_pEffect)
 				m_pEffect->End_Effect();
-			// 없어지는 이펙트 추가할 것 - 채영
 
-			
 		}
 	}
 	
-
+	if (m_eItemTag == ITEM_TAG::LOST_ERGO && m_pButterflyTrans)
+	{
+		m_pButterflyTrans->UpdateOrbit(fTimeDelta);
+	}
 
 }
 
@@ -327,14 +328,35 @@ HRESULT CErgoItem::Ready_Effect(void* pArg)
 
 	wstring wsEffectName = {};
 
-	if (m_bPulseCell)
+	if (m_eItemTag == ITEM_TAG::PULSE_CELL)
 		wsEffectName = TEXT("EC_YW_PulseCell_Effect_Edit");
+	else if (m_eItemTag == ITEM_TAG::LOST_ERGO)
+	{
+		wsEffectName = TEXT("EC_LostErgo_alt");
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 0.3f, 0.f));
+
+		/* 주변을 도는 나비 생성 및 공전 설정 */
+		m_pButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
+		if (m_pButterflyEffect == nullptr)
+			return E_FAIL;
+		m_pButterflyTrans = m_pButterflyEffect->Get_TransfomCom();
+		if (m_pButterflyTrans == nullptr)
+			return E_FAIL;
+		m_pButterflyTrans->Set_Orbit(
+			/* Center */XMVectorSet(0.f, 0.3f, 0.f, 1.f),
+			/* Axis */XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
+			/* range */0.4f,
+			/* speed */0.8f);
+	}
 	else
 		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
 
 	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
 	if (m_pEffect == nullptr)
 		return E_FAIL;
+
+
+
 
 	return S_OK;
 }
@@ -416,6 +438,10 @@ void CErgoItem::Free()
 	
 	if (m_pEffect)
 		m_pEffect->Set_bDead();
+	if (m_pButterflyEffect)
+		m_pButterflyEffect->Set_bDead();
+
+	m_pButterflyTrans = nullptr;
 
 	if (m_bPulseCell)
 	{
