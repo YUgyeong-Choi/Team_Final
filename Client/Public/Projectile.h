@@ -46,7 +46,7 @@ protected:
 	_float3 Get_WorldPosFromActor() const;
 	virtual HRESULT Ready_Components();
 	HRESULT Ready_Actor();
-	HRESULT Bind_Shader();
+	virtual HRESULT Bind_Shader();
 	virtual HRESULT Ready_Effect() { return S_OK; };
 
 protected:
