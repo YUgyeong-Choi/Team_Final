@@ -2957,7 +2957,7 @@ CWeapon* CPlayer::Get_Equip_Legion()
 void CPlayer::Set_bEndingWalk(_bool bWalk)
 {
 	m_bEndingWalk = bWalk;
-	_vector pos = { -0.39f, 0.296629f, -175.085f, 1.f };
+	_vector pos = { -0.409f, 0.296629f, -175.085f, 1.f };
 	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
 }
 

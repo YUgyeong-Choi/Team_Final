@@ -156,10 +156,10 @@ protected:
 	_bool				m_bSecondEmissiveLoad = {};
 	_float				m_fSecondEmissiveSpeed = {};
 
-	class CTexture* m_pWetTexture = { nullptr };
-	_float	m_fWetIntensity = {};
-	_bool	m_bWet = {};
-	_float	m_fWetSpeed = { 1.f };
+	class CTexture*		m_pWetTexture = { nullptr };
+	_float				m_fWetIntensity = {};
+	_bool				m_bWet = {};
+	_float				m_fWetSpeed = { 1.f };
 
 
 protected:              /* [ 컴포넌트 ] */

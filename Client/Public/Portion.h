@@ -45,10 +45,7 @@ public:
 
 	void Heal();
 
-	void Set_MaxCount(_int iMaxCount) {
-		m_iMaxCount = iMaxCount; 
-		Reset();
-	}
+
 
 private:
 	CModel* m_pModelCom = { nullptr };

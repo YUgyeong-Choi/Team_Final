@@ -716,5 +716,6 @@ void CUnit::Free()
 	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pNoiseMap);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pWetTexture);
 	Safe_Release(m_pSecondEmissiveMap);
 }

@@ -76,7 +76,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		return E_FAIL;
 
 
-	m_fMaxHp = 1000.f;
+	m_fMaxHp = 800.f;
 	m_fHp = m_fMaxHp;
 	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
 
