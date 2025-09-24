@@ -1163,7 +1163,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
@@ -2077,7 +2077,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
