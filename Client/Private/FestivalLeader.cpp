@@ -992,7 +992,7 @@ void CFestivalLeader::Register_Events()
 				Spawn_Decal(m_BoneRefs[LeftHand],
 					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
 					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-					XMVectorSet(5.f, 0.5f, 5.f, 0));
+					XMVectorSet(5.f, 0.5f, 5.f, 0), 1.f);
 			}
 		});
 
@@ -1002,7 +1002,7 @@ void CFestivalLeader::Register_Events()
 			Spawn_Decal(m_pRightWeaponBone,
 				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
 				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-				XMVectorSet(5.f, 0.5f, 5.f, 0));
+				XMVectorSet(5.f, 0.5f, 5.f, 0), 1.f);
 		});
 
 	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
@@ -1100,7 +1100,7 @@ void CFestivalLeader::Register_Events()
 			Spawn_Decal(m_BoneRefs[EBossBones::Basket],
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
-				XMVectorSet(5.f, 0.5f, 5.f, 0));
+				XMVectorSet(10.f, 0.5f, 10.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("HammerSlamEndEffect", [this]()
