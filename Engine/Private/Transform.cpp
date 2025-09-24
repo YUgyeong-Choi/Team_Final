@@ -367,11 +367,11 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _fvector& vMoveDi
 
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f; // 이징 In-Out
 
-	XMVECTOR vStart = XMLoadFloat4(&m_fSpecialMoveStartPos);
-	XMVECTOR vOffset = XMLoadFloat4(&m_vSpecialMoveOffset);
+	_vector vStart = XMLoadFloat4(&m_fSpecialMoveStartPos);
+	_vector vOffset = XMLoadFloat4(&m_vSpecialMoveOffset);
 
-	XMVECTOR vScaled = XMVectorScale(vOffset, smoothT);
-	XMVECTOR vNewPos = XMVectorAdd(vStart, vScaled);
+	_vector vScaled = XMVectorScale(vOffset, smoothT);
+	_vector vNewPos = XMVectorAdd(vStart, vScaled);
 
 	// 중력 적용
 	constexpr _float fGravity = -9.81f;
@@ -564,7 +564,7 @@ bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _fvector vAxis,
 		m_fSpecialRotateAngle = XMConvertToRadians(fAngleDegree); // degree → radian
 		XMStoreFloat4(&m_vSpecialRotateAxis, XMVector3Normalize(vAxis));
 
-		m_matSpecialRotateStart = XMLoadFloat4x4(&m_WorldMatrix);
+		m_matSpecialRotateStart = m_WorldMatrix;
 	}
 
 	// 진행 시간 누적
@@ -817,7 +817,7 @@ bool CTransform::ChaseWithOutY(_fvector& vTargetPos, _float fTimeDelta, _float f
 	_vector		vTargetPosition = vTargetPos;
 	vTargetPosition = XMVectorSetY(vTargetPos, XMVectorGetY(vPosition));
 
-	_vector		vMoveDir = vTargetPos - vPosition;
+	_vector		vMoveDir = vTargetPosition - vPosition;
 	_float fDist = XMVectorGetX(XMVector3Length(vMoveDir));
 	//최소거리보다 길때는 포지션 갱신
 	if (fDist >= fMinDistance)
