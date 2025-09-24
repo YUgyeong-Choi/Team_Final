@@ -50,16 +50,6 @@ HRESULT CBone::Initialize( ifstream& ifs)
 
 void CBone::Update_CombinedTransformationMatrix(const vector<CBone*>& Bones, _fmatrix PreTransformMatrix)
 {
-	
-	//if (m_iParentBoneIndex == 1&& m_bApplyRootMotion) // 1번이 트랜스레이션 
- //	{
-	//	m_iParentBoneIndex = -1;
-	//}
-	//else
-	//{
-	//	m_iParentBoneIndex = m_iPrevParentBoneIndex; // 이전 부모 뼈 인덱스 사용
-	//}
-
 	_int iOriginalParentBoneIndex = m_iParentBoneIndex; // 원래 부모 뼈 인덱스 저장
 	_int iUseParentBoneIndex = (m_bApplyRootMotion && m_iParentBoneIndex == 1) ? -1 : iOriginalParentBoneIndex; // 트랜스레이션 뼈가 부모면 -1로 설정
 	m_iUseParentIndex = iUseParentBoneIndex; // 사용될 부모 뼈 인덱스 저장

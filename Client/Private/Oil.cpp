@@ -23,7 +23,7 @@ COil::COil(const COil& Prototype)
 HRESULT COil::Initialize_Prototype()
 {
 	m_fDamge = 20.f; // 터졌을 때를 위해서
-    return S_OK;
+	return S_OK;
 }
 
 HRESULT COil::Initialize(void* pArg)
@@ -53,7 +53,7 @@ void COil::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_bCanSpread&&!m_bIsSpreaded)
+	if (m_bCanSpread && !m_bIsSpreaded)
 	{
 		m_pPhysXActorCom->ReCreate_Shape(m_pPhysXActorCom->Get_Actor(), m_SpreadOilShape);
 		m_pPhysXActorCom->Set_Kinematic(true);
@@ -94,10 +94,10 @@ void COil::Priority_Update(_float fTimeDelta)
 		auto pPlayer = GET_PLAYER(iLevelIndex);
 		if (pPlayer)
 		{
-			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());	
+			pPlayer->Get_Controller()->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 			m_pPlayer = pPlayer;
 		}
-	
+
 		Spawn_Decal(XMVectorSet(2.f, 0.5f, 2.f, 0));
 
 	}
@@ -106,8 +106,8 @@ void COil::Priority_Update(_float fTimeDelta)
 void COil::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-	if (m_bSoundPlaying&& m_pSoundCom && !m_pSoundCom->IsPlaying("SE_NPC_SK_FX_FIre_Explo_Heavy_01"))
-		
+	if (m_bSoundPlaying && m_pSoundCom && !m_pSoundCom->IsPlaying("SE_NPC_SK_FX_FIre_Explo_Heavy_01"))
+
 	{
 		Set_bDead();
 	}
@@ -116,13 +116,13 @@ void COil::Update(_float fTimeDelta)
 void COil::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	if(m_bIsSpreaded == false)
+	if (m_bIsSpreaded == false)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
 HRESULT COil::Render()
 {
-	if(FAILED(__super::Render()))
+	if (FAILED(__super::Render()))
 		return E_FAIL;
 	_bool vDissolve = false;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
@@ -165,20 +165,19 @@ void COil::Explode_Oil()
 			if (fDist <= fColliderWidth)
 			{
 				_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-			
+
 				// 살짝만 날라가게 나중에 처리하기
 				m_pPlayer->SetHitMotion(HITMOTION::UP);
+				m_pPlayer->SetfReceiveDamage(m_fDamge);
 				m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 1.f);
 			}
 
 			// 이펙트 생성
 
-			CEffectContainer::DESC Desc = {};  
-
-
+			CEffectContainer::DESC Desc = {};
 			CEffectContainer* pEffect = { nullptr };
 			XMStoreFloat4x4(&Desc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
-		
+
 
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Desc));
 
@@ -193,21 +192,6 @@ void COil::Explode_Oil()
 
 HRESULT COil::Spawn_Decal(_fvector vDecalScale)
 {
-//	//푸오코 기름 데칼
-///* For.Prototype_Component_Texture_FireEater_Oil_ARMT*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_ARMT"),
-//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_BloodSpot_38_ARMT.dds")))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_Component_Texture_FireEater_Oil_N*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_N"),
-//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_BloodClip_01_N_KMH.dds")))))
-//		return E_FAIL;
-//
-//	/* For.Prototype_Component_Texture_FireEater_Oil_BC*/
-//	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_BC"),
-//		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Dust_01_BC.dds")))))
-//		return E_FAIL;
 
 #pragma region 영웅 데칼 생성코드
 	CStatic_Decal::DECAL_DESC DecalDesc = {};
@@ -278,45 +262,20 @@ void COil::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _ve
 			m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Oil_Hit_", 3);
 		}
 	}
+
+	if (eColliderType == COLLIDERTYPE::BOSS_WEAPON)
+	{
+		if (auto pOtherOil = dynamic_cast<COil*>(pOther))
+		{
+			if (m_bIsSpreaded == false)
+			{
+				m_bCanSpread = true;
+				m_pSoundCom->Play_Random("SE_NPC_Boss_Fire_Eater_SK_PJ_Oil_Hit_", 3);
+			}
+		}
+	}
 }
 
-void COil::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
-void COil::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
-void COil::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-	//if (m_bIsSpreaded)
-	//{
-	//	if (m_pPlayer && eColliderType == COLLIDERTYPE::BOSS_WEAPON && dynamic_cast<CFlameField*>(pOther))
-	//	{
-	//		// 화염 처리만 히트 주고
-	//		// 사각형 충돌 계산
-	//		_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-	//		_vector vOilPos = m_pTransformCom->Get_State(STATE::POSITION);
-	//		_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(vPlayerPos, vOilPos)));
-	//		_float fColliderWidth = 2.f;
-	//		if (fDist <= fColliderWidth)
-	//		{
-	//			_int iLevelIndex = m_pGameInstance->GetCurrentLevelIndex();
-	//			auto pPlayer = GET_PLAYER(iLevelIndex);
-	//			if (pPlayer)
-	//			{
-	//				pPlayer->SetHitMotion(HITMOTION::NORMAL);
-	//			}
-	//			Set_bDead();
-	//		}
-	//	}
-	//}
-}
-
-void COil::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
 
 HRESULT COil::Bind_Shader()
 {/* [ 월드 스페이스 넘기기 ] */
@@ -365,7 +324,7 @@ HRESULT COil::Ready_Components()
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
 		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-    return S_OK;
+	return S_OK;
 }
 
 

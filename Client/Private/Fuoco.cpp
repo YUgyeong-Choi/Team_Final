@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "FlameField.h"
-//#include "Static_Decal.h"
 #include "GameInstance.h"
 #include "SpringBoneSys.h"
 #include "Effect_Manager.h"
@@ -76,11 +75,14 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pHPBar->Set_bDead();
 
 #ifdef _DEBUG
-	static _int i = 0;
+	static _int i = -1;
 	static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
 	if (KEY_DOWN(DIK_X))
 	{
+		i++;
+		if (i >= 13)
+			i = 0;
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
 		switch (m_eCurAttackPattern)
 		{
@@ -127,13 +129,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			cout << "Unknown" << endl;;
 			break;
 		}
-		i++;
-		if (i >= 13)
-			i = 0;
+
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
+		if (i == -1)
+			return;
 		m_pAnimator->SetInt("SkillType", testArray[i]);
 		m_pAnimator->SetTrigger("Attack");
 	}
@@ -515,9 +517,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EEliteState::ATTACK;
 		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 		{
-
 			EffectSpawn_Active(EF_LASTSPIN, true);
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
@@ -533,37 +533,20 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R)
-			&& m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM1))
-		{
-		//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM2))
-		{
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM2))
-		{
-		//	m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM1))
-		{
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
@@ -1113,7 +1096,8 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-	if (m_eCurrentState == EEliteState::FATAL)
+	if (m_eCurrentState == EEliteState::FATAL
+		 || m_eCurrentState == EEliteState::PARALYZATION)
 		return;
 	EffectSpawn_Active(EF_SWING_ATK, false);
 	m_pAnimator->SetTrigger("Paralyzation");
@@ -1132,16 +1116,20 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	{
 		if (pattern == P2_FireOil)
 		{
-			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 3.f;;
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 4.f;;
 		}
-		else if (pattern == P2_FireBall ||
-			pattern == P2_FireFlame || pattern == P2_FireBall_B)
+		else if (pattern == P2_FireBall || pattern == P2_FireBall_B)
 		{
 			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
 		}
+		else if (pattern == P2_FireFlame)
+		{
+
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.8f;
+		}
 		else
 		{
-			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.3f;
 		}
 
 		m_PatternCountMap[pattern] = 0;
@@ -1216,19 +1204,6 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 			}
 		}
 	}
-
-	//// 2페이즈 패턴 많이 보여주려고 가중치 올림
-	//if (m_bIsPhase2)
-	//{
-	//	for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
-	//	{
-	//		if (pattern == P2_FireOil || pattern == P2_FireBall ||
-	//			pattern == P2_FireFlame || pattern == P2_FireBall_B)
-	//		{
-	//			weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
-	//		}
-	//	}
-	//}
 }
 
 void CFuoco::FireProjectile(ProjectileType type, _float fSpeed)
@@ -1419,11 +1394,14 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 							pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.4f);
 							pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 						}
-						cout << "플레이어 화염방사 맞음" << endl;
 					}
-
-					// 데미지 계산 나중에 생각해보기
-					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
+					else if (pHitActor->Get_Owner()->Get_Name() == TEXT("Oil"))
+					{
+						if (auto pOil = dynamic_cast<COil*>(pHitActor->Get_Owner()))
+						{
+							pOil->Explode_Oil();
+						}
+					}
 				}
 
 				m_bRayHit = true;
@@ -1467,23 +1445,16 @@ void CFuoco::Ready_EffectNames()
 {
 	m_EffectMap[EF_CUTSCENE].emplace_back(TEXT("EC_Fuoco_Cutscene_Slam"));
 	// Phase 1
-	//m_EffectMap[Uppercut] = TEXT("EC_Fuoco_Uppercut_01");
+
 	m_EffectMap[EF_SWING_ATK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 	m_EffectMap[EF_SWING_ATK].emplace_back(TEXT("EC_Fuoco_Spin3_HandSpark_P1"));
 	m_EffectMap[EF_SLAM].emplace_back(TEXT("EC_Fuoco_Slam_Imsi_P2"));
 	m_EffectMap[EF_SWING_ATK_SEQ].emplace_back(TEXT("EC_Fuoco_SpinReady_HandSpark_P2"));
 	m_EffectMap[EF_LASTSPIN].emplace_back(TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"));
-	//m_EffectMap[SlamFury] = TEXT("EC_Fuoco_SlamFury_01");
-	//m_EffectMap[FootAtk] = TEXT("EC_Fuoco_FootAtk_01");
-	//m_EffectMap[SlamAtk] = TEXT("EC_Fuoco_SlamAtk_01");
-	//m_EffectMap[StrikeFury] = TEXT("EC_Fuoco_StrikeFury_01");
 	// Phase 2
 	m_EffectMap[EF_FIRE_FLAME].emplace_back(TEXT("EC_Fuoco_FlameThrow_P1"));
 	m_EffectMap[EF_FIRE_BALL].emplace_back(TEXT("EC_Fuoco_Spawn_Fireball"));
 
-	//m_EffectMap[P2_FireOil] = TEXT("EC_Fuoco_P2_FireOil_01");
-	//m_EffectMap[P2_FireBall_B] = TEXT("EC_Fuoco_P2_FireBall_B_01");
-	//m_EffectMap[P2_FireFlame] = TEXT("EC_Fuoco_P2_FireFlame_01");
 }
 
 

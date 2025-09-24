@@ -72,93 +72,8 @@ HRESULT CChannel::Initialize(ifstream& ifs, const vector<class CBone*>& Bones, _
 	return S_OK;
 }
 
-void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse,
-	CAnimator* pAnimator)
-{
-	if (0.0f == fCurrentTrackPosition)
-		currentKeyFrameIndex = 0;
 
-	_matrix			TransformationMatrix{};
-
-	KEYFRAME		LastKeyFrame = m_KeyFrames.back();
-
-	_vector			vScale, vRotation, vPosition;
-
-	if (fCurrentTrackPosition >= LastKeyFrame.fTrackPosition)
-	{
-		vScale = XMLoadFloat3(&LastKeyFrame.vScale);
-		vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
-		//vRotation = XMVector3Normalize(vRotation);
-		vPosition = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vTranslation), 1.f);
-	}
-	else
-	{
-		//// 현재 트랙포지션이 현재 키프레임의 트랙포지션보다 크거나 같으면 다음 키프레임으로 이동
-		//if (fCurrentTrackPosition >= m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition)
-		//	++currentKeyFrameIndex;
-
-		if (bIsReverse)
-		{
-			// 역방향
-			while (currentKeyFrameIndex > 0 &&
-				m_KeyFrames[currentKeyFrameIndex].fTrackPosition > fCurrentTrackPosition)
-			{
-				--currentKeyFrameIndex;
-			}
-		}
-		else
-		{
-			// 정방향
-			while (currentKeyFrameIndex < m_KeyFrames.size() - 2 &&
-				fCurrentTrackPosition >= m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition)
-			{
-				++currentKeyFrameIndex;
-			}
-		}
-
-		_float			fRatio = (fCurrentTrackPosition - m_KeyFrames[currentKeyFrameIndex].fTrackPosition) /
-			(m_KeyFrames[currentKeyFrameIndex + 1].fTrackPosition - m_KeyFrames[currentKeyFrameIndex].fTrackPosition);
-
-		_vector			vSourScale, vDestScale;
-		_vector			vSourRotation, vDestRotation;
-		_vector			vSourTranslation, vDestTranslation;
-
-		vSourScale = XMLoadFloat3(&m_KeyFrames[currentKeyFrameIndex].vScale);
-		vDestScale = XMLoadFloat3(&m_KeyFrames[currentKeyFrameIndex + 1].vScale);
-
-		vSourRotation = XMLoadFloat4(&m_KeyFrames[currentKeyFrameIndex].vRotation);
-		vDestRotation = XMLoadFloat4(&m_KeyFrames[currentKeyFrameIndex + 1].vRotation);
-
-		vSourTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[currentKeyFrameIndex].vTranslation), 1.f);
-		vDestTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[currentKeyFrameIndex + 1].vTranslation), 1.f);
-
-		vScale = XMVectorLerp(vSourScale, vDestScale, fRatio);
-		vRotation = XMQuaternionSlerp(vSourRotation, vDestRotation, fRatio);
-		vPosition = XMVectorLerp(vSourTranslation, vDestTranslation, fRatio);
-	}
-
-	// TransformationMatrix = XMMatrixScaling() * XMMatrixRotationQuaternion() * XMMatrixTranslation();
-	TransformationMatrix = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
-
-	if (m_iBoneIndex >= Bones.size())
-	{
-		return;
-	}
-
-	// 나머지 뼈들은 기존 로컬 트랜스폼 그대로
-	XMMATRIX full =
-		XMMatrixAffineTransformation(vScale,
-			XMVectorZero(),
-			vRotation,
-			vPosition);
-	Bones[m_iBoneIndex]->Set_TransformationMatrix(full);
-	XMStoreFloat4x4(&m_LocalTransformationMatrix, full);
-
-	/*Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
-	XMStoreFloat4x4(&m_LocalTransformationMatrix, TransformationMatrix);*/
-}
-
-void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse, vector<_float4x4>* outLocalMatrices)
+void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float fCurrentTrackPosition, const vector<class CBone*>& Bones, _bool bIsReverse)
 {
 	if (0.0f == fCurrentTrackPosition)
 		currentKeyFrameIndex = 0;
@@ -237,10 +152,7 @@ void CChannel::Update_TransformationMatrix(_uint& currentKeyFrameIndex, _float f
 			XMVectorZero(),
 			vRotation,
 			vPosition);
-	//if (outLocalMatrices && m_iBoneIndex < outLocalMatrices->size())
-	//{
-	//	XMStoreFloat4x4(&(*outLocalMatrices)[m_iBoneIndex] , localMatrix);
-	//}
+
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(localMatrix);
 	XMStoreFloat4x4(&m_LocalTransformationMatrix, localMatrix);
 }

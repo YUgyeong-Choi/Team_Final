@@ -100,8 +100,8 @@ private:
 	//mutex m_mtx = {};
 
 private: /* [ 절두체 변수들 ] */
-	XMFLOAT4 planes[6];
-	XMFLOAT4 m_DebugPlane;
+	_float4 planes[6];
+	_float4 m_DebugPlane;
 
 
 private: /* [ 쿼드트리 변수들 ] */

@@ -21,10 +21,10 @@ public:
 public:
 	typedef struct tagTriggerBoxDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_vector vPos;
+		_float4 vPos;
 		_float3 Rotation;
-		_vector vTriggerOffset;
-		_vector vTriggerSize;
+		_float4 vTriggerOffset;
+		_float4 vTriggerSize;
 		vector<SOUNDDATA> m_vecSoundData;
 	}TRIGGERBOX_DESC;
 

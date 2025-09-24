@@ -308,12 +308,12 @@ void CBossDoor::Create_RetryDoor()
 		_float4x4 matWorldFloat;
 		XMStoreFloat4x4(&matWorldFloat, world);
 		DefaultDoorDesc.WorldMatrix = matWorldFloat;
-		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+		DefaultDoorDesc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+		DefaultDoorDesc.vColliderSize = { 0.2f, 2.f, 2.f, 0.f };
 
 		DefaultDoorDesc.eInteractType = INTERACT_TYPE::RESTARTFESTIVAL;
-		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
-		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+		DefaultDoorDesc.vTriggerOffset = { 0.f, 0.f, 0.f, 0.f };
+		DefaultDoorDesc.vTriggerSize = { 0.5f, 0.2f, 1.0f, 0.f };
 
 		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"),
 			m_pGameInstance->GetCurrentLevelIndex(), TEXT("BossRetryDoor"), &DefaultDoorDesc)))
@@ -338,12 +338,12 @@ void CBossDoor::Create_RetryDoor()
 		_float4x4 matWorldFloat;
 		XMStoreFloat4x4(&matWorldFloat, world);
 		DefaultDoorDesc.WorldMatrix = matWorldFloat;
-		DefaultDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-		DefaultDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
+		DefaultDoorDesc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+		DefaultDoorDesc.vColliderSize = { 0.2f, 2.f, 1.5f, 0.f };
 
 		DefaultDoorDesc.eInteractType = INTERACT_TYPE::RESTARTFUOCO;
-		DefaultDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
-		DefaultDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+		DefaultDoorDesc.vTriggerOffset = { 0.f, 0.5f, 0.f, 0.f };
+		DefaultDoorDesc.vTriggerSize = { 0.5f, 0.2f, 1.5f, 0.f };
 
 		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_GameObject_BossRetryDoor"),
 			m_pGameInstance->GetCurrentLevelIndex(), TEXT("BossRetryDoor"), &DefaultDoorDesc)))

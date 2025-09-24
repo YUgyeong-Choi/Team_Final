@@ -161,7 +161,8 @@ void CWatchDog::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		++m_iCollisionCount;
-		m_vPushDir -= HitNormal;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), HitNormal));
+		m_vPushDir.w = 0.f;
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
@@ -176,7 +177,8 @@ void CWatchDog::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
 		_vector vCorrection = HitNormal * 0.01f;
-		m_vPushDir -= vCorrection;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vCorrection));
+		m_vPushDir.w = 0.f;
 	}
 
 
@@ -334,9 +336,8 @@ void CWatchDog::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
 
-			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
 
-			XMVector3Normalize(m_vKnockBackDir);
+			XMStoreFloat4(&m_vKnockBackDir, XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
 
 			return;
 		}
@@ -385,11 +386,11 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		m_vPushDir = XMVector3Normalize(m_vPushDir);
+		XMStoreFloat4(&m_vPushDir, XMVector3Normalize(XMLoadFloat4(&m_vPushDir)));
 
-		m_vPushDir.m128_f32[3] = 0.f;
+		m_vPushDir.z = 0.f;
 
-		_vector vDir = XMVector3Normalize(vLook) + m_vPushDir;
+		_vector vDir = XMVector3Normalize(vLook) + XMLoadFloat4(&m_vPushDir);
 
 
 		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
@@ -405,7 +406,7 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
+		m_pTransformCom->Go_Dir(XMLoadFloat4(&m_vKnockBackDir), fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Jump") != m_strStateName.npos)
 	{

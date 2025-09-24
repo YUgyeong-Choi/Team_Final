@@ -41,14 +41,14 @@ public: /* [ µð¹ö±ë ÇÔ¼ö ]*/
 	XMFLOAT4 GetAreaDebugColor(const AREA& tArea, _int iCurrentAreaId,_bool bOverlapped);
 
 public:
-	void SetPlayerPosition(const _vector& vPos) { m_vPlayerPos = vPos; }
-	_vector GetPlayerPosition() const { return m_vPlayerPos; }
+	void SetPlayerPosition(const _vector& vPos) { XMStoreFloat4(&m_vPlayerPos,vPos); }
+	_float4 GetPlayerPosition() const { return m_vPlayerPos; }
 
 private:
 	AREAMGR m_eAreaMgr = { AREAMGR::END };
 
 private:
-	_vector m_vPlayerPos = {};
+	_float4 m_vPlayerPos = {};
 
 	_int m_iWarmNeighbors = {};
 	_float m_fEnterGrace = {};

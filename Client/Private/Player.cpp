@@ -636,7 +636,7 @@ CPlayer::EHitDir CPlayer::ComputeHitDir()
 	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
 	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
 
-	_vector vIncoming = XMVector3Normalize(ProjectToXZ(m_vHitNormal));
+	_vector vIncoming = XMVector3Normalize(ProjectToXZ(XMLoadFloat4(&m_vHitNormal)));
 	_vector vLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
 	_vector vRightFlat = XMVector3Normalize(ProjectToXZ(vPlayerRight));
 
@@ -1264,11 +1264,12 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		{
 			if (!m_bMoveReset)
 			{
-				m_vMoveDir = ComputeLatchedMoveDir(m_bSwitchFront, m_bSwitchBack, m_bSwitchLeft, m_bSwitchRight);
+				_vector vPos = ComputeLatchedMoveDir(m_bSwitchFront, m_bSwitchBack, m_bSwitchLeft, m_bSwitchRight);
+				XMStoreFloat4(&m_vMoveDir, vPos);
 				m_bMoveReset = true;
 			}
 
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, m_vMoveDir, m_fDistance, m_pControllerCom);
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, XMLoadFloat4(&m_vMoveDir), m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
 
@@ -2382,7 +2383,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		if (fDeltaMag < 1e-6f)
 		{
-			m_PrevWorldDelta = XMVectorZero();
+			m_PrevWorldDelta = {};
 			return;
 		}
 
@@ -2392,10 +2393,10 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		if (fDeltaMag > fSmoothThreshold)
 		{
 			_float alpha = clamp(fTimeDelta * fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, finalDelta, alpha);
+			finalDelta = XMVectorLerp(XMLoadFloat4(&m_PrevWorldDelta), finalDelta, alpha);
 		}
 
-		m_PrevWorldDelta = finalDelta;
+		XMStoreFloat4(&m_PrevWorldDelta , finalDelta);
 
 		PxVec3 pos{
 			XMVectorGetX(finalDelta),
@@ -2469,7 +2470,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal , vHitNormal);
 		}
 
 
@@ -2511,7 +2513,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 			m_pHitedTarget = pUnit;
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 
 		//가드 중이라면?
@@ -2580,7 +2583,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal,vHitNormal);
 		}
 		else
 		{
@@ -2593,7 +2597,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal , vHitNormal);
 		}
 
 		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
@@ -2704,7 +2709,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 		m_pHitedTarget = pUnit;
-		m_vHitNormal = vOtherPos - vPlayerPos;
+		_vector vHitNormal = vOtherPos - vPlayerPos;
+		XMStoreFloat4(&m_vHitNormal , vHitNormal);
 
 		//가드 중이라면?
 		if (m_bIsGuarding)
@@ -2779,7 +2785,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 		else
 		{
@@ -2792,7 +2799,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 
 		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
@@ -3016,9 +3024,8 @@ void CPlayer::StartEnding(_float fTimeDelta)
 				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
 				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
 
-				m_pAnimator->CancelOverrideAnimController();
-				m_pWeapon->SetbIsActive(false);
-				m_bWeaponEquipped = false;
+				m_pAnimator->ResetParameters();
+				WeaponReset();
 			}
 		}
 	}
@@ -4393,7 +4400,7 @@ void CPlayer::Create_HitEffect()
 	m_vHitPos = m_vHitPos;
 	int a = 0;
 		
-	vPos += XMVector3Normalize(m_vHitNormal) * 0.3f;
+	vPos += XMVector3Normalize(XMLoadFloat4(&m_vHitNormal)) * 0.3f;
 	_float3 vEffPos = {};
 	XMStoreFloat3(&vEffPos, vPos);
 	vEffPos.y += 1.7f;
@@ -4407,7 +4414,7 @@ void CPlayer::Create_HitEffect()
 		MSG_BOX("이펙트 생성 실패함");
 
 	_vector vFrom = XMVectorSet(0.f, 1.f, 0.f, 0.f); // 기준: +Y
-	_vector vTo = XMVector3Normalize(-m_vHitNormal);         // 원하는 방향
+	_vector vTo = XMVector3Normalize(XMLoadFloat4(&m_vHitNormal) * -1.f);         // 원하는 방향
 
 	_vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
 	rand() % 4 == 0 ? qRot = XMQuaternionIdentity() : qRot; // 위로 피 나오는 것도 넣어야하는데 당장 조건이 뭔지 모르겠어서 일단 랜덤으로 함
@@ -4500,11 +4507,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	_vector vTargetEye = vPlayerPos + XMVectorSet(-10.f, 30.f, 10.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 
@@ -4515,11 +4522,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 40.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(80.0f);
@@ -4529,11 +4536,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 60.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(120.0f);

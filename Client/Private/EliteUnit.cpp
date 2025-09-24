@@ -500,7 +500,7 @@ void CEliteUnit::ApplyRootMotionDelta(_float fTimeDelta)
         _float fDistToPlayer = Get_DistanceToPlayer();
 
         _float fFactor = clamp(fDistToPlayer / m_fRootMotionClampDist, 0.f, 1.f);
-        vWorldDelta *= fFactor;
+        vWorldDelta = XMVectorLerp(XMVectorZero(), vWorldDelta, fFactor);
     }
 
     _float fDeltaMag = XMVectorGetX(XMVector3Length(vWorldDelta));
