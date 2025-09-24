@@ -78,6 +78,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 	if (pCurState && pCurState->stateName.find("Dead") != pCurState->stateName.npos)
 	{
 		m_fEmissive = 0.f;
+		m_pWeapon->SetbIsActive(false);
 
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
@@ -85,7 +86,7 @@ void CButtler_Train::Priority_Update(_float fTimeDelta)
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
 			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
-			m_pWeapon->SetbIsActive(false);
+			
 
 		}
 	}
