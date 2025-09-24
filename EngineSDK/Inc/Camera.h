@@ -59,16 +59,16 @@ public:
 	void Update_Camera_MoreRot(_float fTimedelta);
 
 public:
-	_vector GetPureCamPos() const { return m_vPureCamPos; }
+	_float4 GetPureCamPos() const { return m_vPureCamPos; }
 	_bool GetIsShake() const { return m_bShake; }
 
 public:
-	const _matrix& GetViewMatrix() const { return m_ViewMatrix; }
-	const _matrix& GetProjMatrix() const { return m_ProjMatrix; }
+	const _float4x4& GetViewMatrix() const { return m_ViewMatrix; }
+	const _float4x4& GetProjMatrix() const { return m_ProjMatrix; }
 
 protected:
-	_matrix m_ViewMatrix = XMMatrixIdentity();
-	_matrix m_ProjMatrix = XMMatrixIdentity();
+	_float4x4 m_ViewMatrix = {};
+	_float4x4 m_ProjMatrix = {};
 
 protected:
 	_bool				m_bShake = {};
@@ -88,11 +88,11 @@ protected:
 	_bool				m_bMoreRot = {};
 	_float				m_fMoreRotTime = {};
 	_float				m_fMoreRotDuration = {};
-	_vector				m_vMoreRotFreq = {};
+	_float4				m_vMoreRotFreq = {};
 
-	_vector				m_vCurrentShakePos = {};
-	_vector				m_vCurrentShakeRot = {};
-	_vector				m_vPureCamPos = {};
+	_float4				m_vCurrentShakePos = {};
+	_float4				m_vCurrentShakeRot = {};
+	_float4				m_vPureCamPos = {};
 
 
 	DOF_DESC				m_DOFDesc{};

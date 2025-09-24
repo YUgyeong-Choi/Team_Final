@@ -78,11 +78,11 @@ public:
 	void Rotation(_float fX, _float fY, _float fZ);
 public:
 	/* [ 방향으로 이동 ] */
-	void Move(const _vector& vDirectionVector,class CPhysXController* pController = nullptr);
+	void Move(const _fvector& vDirectionVector,class CPhysXController* pController = nullptr);
 	/* [ 앞으로 (네비) ] */
 	void Go_Front(_float fTimeDelta, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 지정된 위치로 앞으로 회전 후 이동 ] */
-	bool Go_FrontByPosition(_float fTimeDelta, _vector vPosition, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
+	bool Go_FrontByPosition(_float fTimeDelta, _fvector vPosition, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 
 public:
 	/* [ 위로 (고점 도달시 정지) ] */
@@ -92,20 +92,20 @@ public:
 
 public:
 	/* [ 방향으로 이동 (네비) ] */
-	void Go_Dir(const _vector& vMoveDir, _float fTimeDelta, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
+	void Go_Dir(const _fvector& vMoveDir, _float fTimeDelta, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 
 public:
 	/* [ 몇초동안 어느방향으로 몇만큼 이동할거니? ] */
-	bool Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+	bool Move_Special(_float fTimeDelta, _float fTime, _fvector& vMoveDir, _float fDistance,
 		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
-	bool Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance,
+	bool Move_SpecialB(_float fTimeDelta, _float fTime, _fvector& vMoveDir, _float fDistance,
 		CPhysXController* pPhysXController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 몇초동안 타겟 스케일만큼 스케일된다. ] */
-	bool Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale);
+	bool Scale_Special(_float fTimeDelta, _float fTime, _fvector vTargetScale);
 	/* [ 몇초동안 어느방향으로 어느축을 기준으로 몇만큼 회전할거니? ] */
-	bool Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree);
+	bool Rotate_Special(_float fTimeDelta, _float fTime, _fvector vAxis, _float fAngleDegree);
 	/* [ 목표지점까지 얼마만큼 높이로 점프해서 도착한다. ] */
-	bool JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime, class CPhysXController* pController = nullptr);
+	bool JumpToTarget(_float fTimeDelta, _fvector vTargetPos, _float fJumpHeight, _float fJumpTime, class CPhysXController* pController = nullptr);
 
 public:
 	/* [ 천천히 회전한다 ] */
@@ -120,7 +120,7 @@ public:
 	/* [ Y축을 제외하고 바라본다 ] */
 	void LookAtWithOutY(_fvector vAt);
 	/* [ Y축을 제외하고 쫓아간다 (네비) ] */
-	bool ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
+	bool ChaseWithOutY(_fvector& vTargetPos, _float fTimeDelta, _float fMinDistance, class CPhysXController* pController = nullptr, CNavigation* pNavigation = nullptr);
 	/* [ 쫓아간다 ] */
 	bool ChaseCustom(const _fvector vTargetPos, _float fTimeDelta, _float fMinDistance, _float fSpeed, class CPhysXController* pController = nullptr);
 
@@ -136,7 +136,7 @@ public:
 	/* [ 스케일을 적용한다 ] */
 	void SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
 	/* [ 스케일을 가져온다 ] */
-	_vector Get_Scale() const;
+	_fvector Get_Scale() const;
 
 public:
 	// 공전 초기 상태 설정
@@ -151,7 +151,7 @@ public:
 public:
 	void LookAt(_fvector vAt);
 	void QuaternionRotate(_matrix matWorld);
-	void Set_Quaternion(_vector vQuaternion);
+	void Set_Quaternion(_fvector vQuaternion);
 	void Update_WorldMatrix();
 
 public:
@@ -166,8 +166,8 @@ private:
 	// 이동 전용 멤버변수들
 	_float  m_fSpecialMoveElapsed = 0.f;
 	_float  m_fSpecialMoveDuration = 0.f;
-	_vector m_vSpecialMoveOffset = {};
-	_vector m_fSpecialMoveStartPos = {};
+	_float4 m_vSpecialMoveOffset = {};
+	_float4 m_fSpecialMoveStartPos = {};
 	_bool	m_bSpecialMoving = {};
 
 	// 회전용 멤버 변수들
@@ -175,13 +175,13 @@ private:
 	_float m_fSpecialRotateElapsed = 0.f;
 	_float m_fSpecialRotateDuration = 0.f;
 	_float m_fSpecialRotateAngle = 0.f;
-	_vector m_vSpecialRotateAxis = {};
+	_float4 m_vSpecialRotateAxis = {};
 	_matrix m_matSpecialRotateStart = {};
 
-	_vector m_vOriginalRight = { 1.f, 0.f, 0.f };
-	_vector m_vOriginalUp = { 0.f, 1.f, 0.f };
-	_vector m_vOriginalLook = { 0.f, 0.f, 1.f };
-	_vector m_vQuaternionRotation = XMQuaternionIdentity();
+	_float4 m_vOriginalRight = { 1.f, 0.f, 0.f, 0.f };
+	_float4 m_vOriginalUp = { 0.f, 1.f, 0.f, 0.f };
+	_float4 m_vOriginalLook = { 0.f, 0.f, 1.f, 0.f };
+	_float4 m_vQuaternionRotation = {};
 
 	// 공전 전용
 	_float  m_fOrbitAngle = 0.f;
@@ -190,15 +190,15 @@ private:
 	_float4 m_vOrbitCenter = { 0.f, 0.f, 0.f, 0.f };
 
 	//점프 전용
-	_vector m_vSpecialMoveStartPos = {};
-	_vector m_vSpecialMoveTargetPos = {};
+	_float4 m_vSpecialMoveStartPos = {};
+	_float4 m_vSpecialMoveTargetPos = {};
 
 	//스케일 전용
 	_bool m_bScaling = false;
 	_float m_fScaleElapsed = 0.f;
 	_float m_fScaleDuration = 0.f;
-	_vector m_vStartScale = {};
-	_vector m_vTargetScale = {};
+	_float4 m_vStartScale = {};
+	_float4 m_vTargetScale = {};
 
 	// 중력 전용
 	_bool   m_bOnGround = {};
