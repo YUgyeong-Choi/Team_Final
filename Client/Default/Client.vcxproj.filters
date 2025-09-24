@@ -565,7 +565,7 @@
     <Filter Include="01.Levels\LevelCY\Tool\ToolTrail">
       <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\MeshEmitter%3f">
+    <Filter Include="02.GameObjects\07.Effect\MeshEmitter">
       <UniqueIdentifier>{27f0ce26-06a0-4848-ac27-0f3a1159fcb9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1124,7 +1124,7 @@
       <Filter>02.GameObjects\16.Stargazer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MeshEmitter.h">
-      <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
+      <Filter>02.GameObjects\07.Effect\MeshEmitter</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Script_StarGazer.h">
       <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
@@ -1717,7 +1717,7 @@
       <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
-      <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
+      <Filter>02.GameObjects\07.Effect\MeshEmitter</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Script_StarGazer.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>

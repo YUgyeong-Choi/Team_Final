@@ -179,6 +179,12 @@ void CParticleComputeShader::Bind_InstanceSRV()
 	m_pContext->VSSetShaderResources(0, 1, srvs);
 }
 
+HRESULT CParticleComputeShader::Bind_VtxMesh(ID3D11ShaderResourceView* pVtxAnimMesh)
+{
+
+	return S_OK;
+}
+
 CParticleComputeShader* CParticleComputeShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _wstring& wstrFilePath, DESC* pDesc)
 {
 	CParticleComputeShader* pInstance = new CParticleComputeShader(pDevice, pContext);

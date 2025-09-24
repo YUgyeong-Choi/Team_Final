@@ -24,6 +24,7 @@ public:
 public:
 	HRESULT Bind_Bone_Matrices(class CShader* pShader, const _char* pConstantName, const vector<class CBone*>& Bones);
 	HRESULT Bind_SkinningSRVs(class CShader* pShader);
+	HRESULT Bind_EmitterSRVs(class CParticleComputeShader* pParticleCS);
 	ID3D11Buffer* GetLocalToGlobalBuffer() const { return m_pLocalToGlobalBuffer; }
 	ID3D11Buffer* GetOffsetsBuffer()      const { return m_pOffsetsBuffer; }
 	UINT          GetNumBones()           const { return m_iNumBones; }

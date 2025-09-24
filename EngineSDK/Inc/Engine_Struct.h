@@ -512,7 +512,6 @@ namespace Engine
 		vector<VTXANIMMESH> vecVertices;
 	}FBX_ANIMMESHDATA;
 
-
 	typedef struct tagMeshData
 	{
 		string strMeshName;
@@ -611,5 +610,10 @@ namespace Engine
 		_float4x4	g_CombinedMatrix;
 	}PARTICLECBUFFER;
 	/* [ 이 구조체를 수정하면 CS hlsl 내부 구조체도 반드시 수정하시오 !! ] */
+
+	//typedef struct tagMeshEmitterCBuffer {
+	//	VTXANIMMESH VtxAnimMesh = {};
+
+	//};
 
 } 

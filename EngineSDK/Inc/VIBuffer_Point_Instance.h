@@ -54,7 +54,7 @@ private:
 	virtual ~CVIBuffer_Point_Instance() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(const DESC* pDesc);
+	virtual HRESULT Initialize_Prototype(const	DESC* pDesc);
 	virtual HRESULT Initialize(void* pArg);
 	virtual void Update(_float fTimeDelta);
 	virtual void Update_Tool(_float fCurTrackPos);
@@ -71,6 +71,9 @@ public:
 	void Set_InitRotation(_fmatrix matRot);
 
 	_float3 Get_InitLocalCenter() { return m_vLocalCenter; }
+
+	//void Bind_MeshEmitterDesc()
+
 #ifdef USE_IMGUI
 	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_tCBuffer = tCBuffer; }
 	const PARTICLECBUFFER& Get_CBuffer() { return m_tCBuffer; }

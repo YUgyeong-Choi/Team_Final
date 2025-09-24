@@ -3,6 +3,8 @@
 #include "Bone.h"
 #include "Shader.h"
 
+#include "ParticleComputeShader.h"
+
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer{ pDevice, pContext }
 {
@@ -470,6 +472,13 @@ HRESULT CMesh::Bind_SkinningSRVs(CShader* pShader)
 		return E_FAIL; // VS:t1
 	if (FAILED(pShader->Bind_SRV("g_Offsets", m_pOffsetsSRV)))       
 		return E_FAIL; // VS:t2
+	return S_OK;
+}
+
+HRESULT CMesh::Bind_EmitterSRVs(CParticleComputeShader* pParticleCS)
+{
+	pParticleCS->
+
 	return S_OK;
 }
 

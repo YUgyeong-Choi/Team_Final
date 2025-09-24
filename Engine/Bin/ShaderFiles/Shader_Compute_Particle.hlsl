@@ -150,55 +150,55 @@ uint BinarySearch(StructuredBuffer<float> cdf, uint offset, uint count, float va
 
 // --- 3. 메쉬에서 위치를 샘플링하는 메인 함수 ---
 
-float3 SpawnOnMesh(uint particleID)
-{
-    // --- 1단계: 메쉬 선택 ---
-    float r_mesh = Random(particleID, 0.f, 1.f);
-    uint selectedMeshIndex = BinarySearch(g_MeshAreaCDF, 0, g_NumMeshes, r_mesh);
-    MeshInfo meshInfo = g_MeshInfo[selectedMeshIndex];
+//float3 SpawnOnMesh(uint particleID)
+//{
+//    // --- 1단계: 메쉬 선택 ---
+//    float r_mesh = Random(particleID, 0.f, 1.f);
+//    uint selectedMeshIndex = BinarySearch(g_MeshAreaCDF, 0, g_NumMeshes, r_mesh);
+//    MeshInfo meshInfo = g_MeshInfo[selectedMeshIndex];
 
-    // --- 2단계: 삼각형 선택 ---
-    float r_tri = Random(particleID + 1, 0.f, 1.f);
-    uint selectedTriIndex = BinarySearch(g_AllCDFs, meshInfo.cdfOffset, meshInfo.triangleCount, r_tri);
+//    // --- 2단계: 삼각형 선택 ---
+//    float r_tri = Random(particleID + 1, 0.f, 1.f);
+//    uint selectedTriIndex = BinarySearch(g_AllCDFs, meshInfo.cdfOffset, meshInfo.triangleCount, r_tri);
 
-    // --- 3단계: 삼각형 내 위치 샘플링 (바리센트릭) ---
-    uint i0 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 0];
-    uint i1 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 1];
-    uint i2 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 2];
+//    // --- 3단계: 삼각형 내 위치 샘플링 (바리센트릭) ---
+//    uint i0 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 0];
+//    uint i1 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 1];
+//    uint i2 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 2];
 
-    AnimMeshVertex v0 = g_AllVertices[meshInfo.vertexOffset + i0];
-    AnimMeshVertex v1 = g_AllVertices[meshInfo.vertexOffset + i1];
-    AnimMeshVertex v2 = g_AllVertices[meshInfo.vertexOffset + i2];
+//    AnimMeshVertex v0 = g_AllVertices[meshInfo.vertexOffset + i0];
+//    AnimMeshVertex v1 = g_AllVertices[meshInfo.vertexOffset + i1];
+//    AnimMeshVertex v2 = g_AllVertices[meshInfo.vertexOffset + i2];
     
-    float r1 = Random(particleID + 2, 0.f, 1.f);
-    float r2 = Random(particleID + 3, 0.f, 1.f);
-    if (r1 + r2 > 1.0f)
-    {
-        r1 = 1.0f - r1;
-        r2 = 1.0f - r2;
-    }
-    float r0 = 1.0f - r1 - r2;
+//    float r1 = Random(particleID + 2, 0.f, 1.f);
+//    float r2 = Random(particleID + 3, 0.f, 1.f);
+//    if (r1 + r2 > 1.0f)
+//    {
+//        r1 = 1.0f - r1;
+//        r2 = 1.0f - r2;
+//    }
+//    float r0 = 1.0f - r1 - r2;
 
-    // 위치, 가중치 등 보간
-    float3 localPos = v0.Pos * r0 + v1.Pos * r1 + v2.Pos * r2;
-    float4 weights = v0.Weights * r0 + v1.Weights * r1 + v2.Weights * r2;
-    // 뼈 ID는 가장 가중치가 높은 버텍스의 것을 따르는 것이 간단함
-    uint4 boneIDs = v0.BoneIDs;
+//    // 위치, 가중치 등 보간
+//    float3 localPos = v0.Pos * r0 + v1.Pos * r1 + v2.Pos * r2;
+//    float4 weights = v0.Weights * r0 + v1.Weights * r1 + v2.Weights * r2;
+//    // 뼈 ID는 가장 가중치가 높은 버텍스의 것을 따르는 것이 간단함
+//    uint4 boneIDs = v0.BoneIDs;
 
-    // --- 4단계: 스키닝 ---
-    float fWeightW = 1.f - (vertex.vBlendWeights.x + vertex.vBlendWeights.y + vertex.vBlendWeights.z);
+//    // --- 4단계: 스키닝 ---
+//    float fWeightW = 1.f - (vertex.vBlendWeights.x + vertex.vBlendWeights.y + vertex.vBlendWeights.z);
     
-    matrix BoneMatrix = g_BoneMatrices[vertex.vBlendIndices.x] * vertex.vBlendWeights.x +
-        g_BoneMatrices[vertex.vBlendIndices.y] * vertex.vBlendWeights.y +
-        g_BoneMatrices[vertex.vBlendIndices.z] * vertex.vBlendWeights.z +
-        g_BoneMatrices[vertex.vBlendIndices.w] * fWeightW;
+//    matrix BoneMatrix = g_BoneMatrices[vertex.vBlendIndices.x] * vertex.vBlendWeights.x +
+//        g_BoneMatrices[vertex.vBlendIndices.y] * vertex.vBlendWeights.y +
+//        g_BoneMatrices[vertex.vBlendIndices.z] * vertex.vBlendWeights.z +
+//        g_BoneMatrices[vertex.vBlendIndices.w] * fWeightW;
 
-    vector vPosition = mul(vector(vertex.vPosition, 1.f), BoneMatrix);
+//    vector vPosition = mul(vector(vertex.vPosition, 1.f), BoneMatrix);
 
 
-    // --- 5단계: 월드 변환 ---
-    return mul(vPosition, g_CombinedMatrix).xyz;
-}
+//    // --- 5단계: 월드 변환 ---
+//    return mul(vPosition, g_CombinedMatrix).xyz;
+//}
 
 
 

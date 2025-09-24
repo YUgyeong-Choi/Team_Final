@@ -22,6 +22,7 @@ public:
 	virtual void Bind() override;
 	virtual void Unbind() override;
 	void Bind_InstanceSRV();
+	HRESULT Bind_VtxMesh(ID3D11ShaderResourceView* pVtxAnimMesh);
 
 private:
 	// ParticleParameter
