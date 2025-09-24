@@ -362,6 +362,8 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			m_strStateName = "Dead";
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
+
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			m_bUseLockon = false;
 
 			if (nullptr != m_pHPBar)
@@ -372,7 +374,7 @@ void CButtler_Train::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 		{
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;
-
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			
 			return;
 		}

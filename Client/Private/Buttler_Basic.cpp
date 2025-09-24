@@ -331,7 +331,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
-
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			if (nullptr != m_pHPBar)
 				m_pHPBar->Set_RenderTime(0.f);
 			return;
@@ -341,6 +341,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;	
 			m_isLookAt = false;
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			
 			return;
 		}

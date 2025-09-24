@@ -156,8 +156,6 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	m_iLevel = 5;
 
-	Add_Ergo(10000.f);
-
 	return S_OK;
 }
 
