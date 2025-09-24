@@ -1097,7 +1097,7 @@
             "Events": [
                 {
                     "EventName": "SetRootStep",
-                    "Time": 1.0
+                    "Time": 2.0
                 },
                 {
                     "EventName": "MovementSound",

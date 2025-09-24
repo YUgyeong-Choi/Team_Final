@@ -16,10 +16,7 @@ public:
 	HRESULT Initialize(const aiAnimation* pAIAnimation, const vector<class CBone*>& Bones);
 	HRESULT InitializeByBinary(ifstream& ifs, const vector<class CBone*>& Bones);
 
-	//	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop);
 	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents = nullptr);
-	_bool Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents = nullptr, vector<_float4x4>* outLocalMatrices = nullptr);
-	void ExportBinary(ofstream& ofs);
 
 	/* 애니메이션의 이름을 반환. */
 	const string& Get_Name() { return m_AnimationName; }
