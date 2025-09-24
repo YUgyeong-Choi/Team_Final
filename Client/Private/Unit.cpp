@@ -107,13 +107,12 @@ void CUnit::Update(_float fTimeDelta)
 
 void CUnit::Late_Update(_float fTimeDelta)
 {
-#ifdef _DEBUG
+
 	if (m_pGameInstance->GetCurrentLevelIndex() == ENUM_CLASS(LEVEL::JW))
 	{
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
-#endif // _DEBUG
 
 	if (m_pPhysXActorCom)
 	{
