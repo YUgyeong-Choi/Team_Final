@@ -16,8 +16,8 @@ public:
 	{
 		TRIGGERSOUND_TYPE eTriggerBoxType;
 		string gameObjectTag;
-		_vector vOffSetObj;
-		_vector vScaleObj;
+		_float4 vOffSetObj;
+		_float4 vScaleObj;
 		_bool bCanCancel;
 		
 		// 끝날때 아이템을 생성하는 대화면 여기에 생성할 아이템 이름을 넣어주기
@@ -57,7 +57,7 @@ private:
 	class CPlayer* m_pPlayer = { nullptr };
 
 	CGameObject* m_pTriggerObject = { nullptr };
-	_vector m_vObjOffSet = {};
+	_float4 m_vObjOffSet = {};
 
 	_bool m_bTalkActive = false;
 
