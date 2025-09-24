@@ -599,6 +599,8 @@ void CPlayer::Reset()
 	Callback_DownBelt();
 	Callback_UpBelt();
 
+	Find_Slot(TEXT("Prototype_GameObject_Portion"));
+
 	SetbIsGroggyAttack(false);
 	SetIsFatalBoss(false);
 	SetFatalTargetNull();
@@ -1186,6 +1188,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1216,6 +1229,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1250,6 +1274,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -2957,8 +2992,11 @@ CWeapon* CPlayer::Get_Equip_Legion()
 void CPlayer::Set_bEndingWalk(_bool bWalk)
 {
 	m_bEndingWalk = bWalk;
-	_vector pos = { -0.409f, 0.296629f, -175.085f, 1.f };
-	m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	if (bWalk)
+	{
+		_vector pos = { -0.409f, 0.296629f, -175.085f, 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
 }
 
 void CPlayer::StartEnding(_float fTimeDelta)
@@ -2978,9 +3016,8 @@ void CPlayer::StartEnding(_float fTimeDelta)
 				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
 				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
 
-				m_pAnimator->CancelOverrideAnimController();
-				m_pWeapon->SetbIsActive(false);
-				m_bWeaponEquipped = false;
+				m_pAnimator->ResetParameters();
+				WeaponReset();
 			}
 		}
 	}

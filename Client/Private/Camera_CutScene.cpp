@@ -11,6 +11,8 @@
 #include "AreaSoundBox.h"
 #include "BossDoor.h"
 #include "FinalDoor.h"
+#include "UI_Video.h"
+
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -1325,6 +1327,68 @@ void CCamera_CutScene::Event()
 		{
 			CFinalDoor* pDoor = dynamic_cast<CFinalDoor*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("FinalDoor")));
 			pDoor->DoorOpen();
+
+			// 먼지 이펙트 생성
+
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke1"), pEffect);
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
+
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Effect");
+
+		}
+
+		// 먼지 이펙트 제거
+		if (m_iCurrentFrame == 200)
+		{
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke1"));
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke2"));
+		}
+
+
+		// 불 띄우기
+		if (m_iCurrentFrame == 260)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 0.25f;
+			Lightdesc.PresetMatrix._42 = 2.2f;
+			Lightdesc.PresetMatrix._43 = -150.4f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		}
+
+		if (m_iCurrentFrame == 290)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+			  
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = -0.7f;
+			Lightdesc.PresetMatrix._42 = 2.5f;
+			Lightdesc.PresetMatrix._43 = -150.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 430)
@@ -1332,10 +1396,47 @@ void CCamera_CutScene::Event()
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
 		}
 
-		if(m_iCurrentFrame == 630)
+		if(m_iCurrentFrame == 650)
 		{
-			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.f);
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.5f);
 		}
+
+		if (m_iCurrentFrame == 720)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(false);
+		}
+
+		if (m_iCurrentFrame == 745)
+		{
+			CUI_Video::VIDEO_UI_DESC eDesc = {};
+			eDesc.eType = CUI_Video::VIDEO_TYPE::FINAL;
+			eDesc.fOffset = 0.0f;
+			eDesc.fInterval = 0.032f;
+			eDesc.fSpeedPerSec = 1.f;
+			eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Ending.mp4");
+			eDesc.fX = g_iWinSizeX * 0.5f;
+			eDesc.fY = g_iWinSizeY * 0.5f;
+			eDesc.fSizeX = g_iWinSizeX;
+			eDesc.fSizeY = g_iWinSizeY;
+			eDesc.fAlpha = 1.f;
+			eDesc.isLoop = false;
+			
+
+
+			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+				static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"), &eDesc)))
+				return;
+
+			//CUI_Video* pVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base")));
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Song");
+
+		}
+
+
+		
+
+
 		break;
 	default:
 		break;

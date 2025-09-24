@@ -28,7 +28,7 @@ private:
 	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
-
+	virtual HRESULT Bind_Shader() override;
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_Effect() override;
 

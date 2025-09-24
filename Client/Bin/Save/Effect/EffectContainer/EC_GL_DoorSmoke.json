@@ -2,7 +2,7 @@
     "EffectObject": [
         {
             "Accel": [
-                0.0,
+                -5.0,
                 5.0
             ],
             "Animation": true,
@@ -27,7 +27,7 @@
                 1.0,
                 1.0,
                 1.0,
-                0.1256544589996338
+                0.005
             ],
             "DistortionStrength": 10.0,
             "Duration": 108,
@@ -35,8 +35,8 @@
             "EmissiveIntensity": 0.0,
             "EndTrack": 108,
             "FlipUV": false,
-            "Gravity": -3.0,
-            "IsCircleRange": true,
+            "Gravity": 4.900000095367432,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -44,7 +44,7 @@
                         1.0,
                         1.0,
                         1.0,
-                        0.1256544589996338
+                        0.0075
                     ],
                     "Intensity": 1.0,
                     "Interpolation": 2,
@@ -67,9 +67,9 @@
                     ]
                 }
             ],
-            "LifeTime": 3568.84912109375,
+            "LifeTime": 4051.555419921875,
             "LifeTime_Particle": [
-                0.20000000298023224,
+                0.2,
                 0.75
             ],
             "Local": true,
@@ -80,9 +80,9 @@
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
             "Name": "Particle",
-            "NumInstance": 1000,
+            "NumInstance": 2500,
             "NumKeyFrames": 1,
-            "Orbit": true,
+            "Orbit": false,
             "OrbitAxis": [
                 0.0,
                 1.0,
@@ -95,12 +95,12 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                -0.019999999552965164,
+                -1.5,
                 0.0
             ],
             "Range": [
-                0.75,
-                1.0,
+                8.0,
+                0.0,
                 8.0
             ],
             "RenderGroup": 8,
@@ -116,12 +116,12 @@
             "ShaderPass": 2,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.25,
-                0.5
+                0.4000000059604645,
+                2.0
             ],
             "Speed": [
-                0.10000000149011612,
-                0.30000001192092896
+                1.0,
+                10.0
             ],
             "Spin": false,
             "StartTrack": 0,

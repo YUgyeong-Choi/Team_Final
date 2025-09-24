@@ -116,11 +116,37 @@ void COil::Update(_float fTimeDelta)
 void COil::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
+	if(m_bIsSpreaded == false)
+		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 }
 
 HRESULT COil::Render()
 {
-    return __super::Render();
+	if(FAILED(__super::Render()))
+		return E_FAIL;
+	_bool vDissolve = false;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+		return E_FAIL;
+
+	_uint		iNumMesh = m_pModelCom->Get_NumMeshes();
+	for (_uint i = 0; i < iNumMesh; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS, 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ARMTexture", i, aiTextureType_SPECULAR, 0)))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Begin(0)))
+			return E_FAIL;
+
+		if (FAILED(m_pModelCom->Render(i)))
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 void COil::Explode_Oil()
@@ -292,6 +318,38 @@ void COil::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 }
 
+HRESULT COil::Bind_Shader()
+{/* [ 월드 스페이스 넘기기 ] */
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldMatrix_Ptr())))
+		return E_FAIL;
+
+	/* [ 뷰 , 투영 스페이스 넘기기 ] */
+	_float4x4 ViewMatrix, ProjViewMatrix;
+	XMStoreFloat4x4(&ViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::VIEW));
+	XMStoreFloat4x4(&ProjViewMatrix, m_pGameInstance->Get_Transform_Matrix(D3DTS::PROJ));
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjViewMatrix)))
+		return E_FAIL;
+
+	_bool bUseTiling = false;
+	//타일링을 사용 하는가? 인스턴스된 애들은 타일링 하기 번거롭겠다.
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bTile", &bUseTiling, sizeof(_bool))))
+		return E_FAIL;
+
+	//이미시브 끄기
+	_float fEmissive = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
+		return E_FAIL;
+
+	//글래스 끄기
+	_float fGlass = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fGlass", &fGlass, sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT COil::Ready_Components()
 {
 	if (FAILED(__super::Ready_Components()))
@@ -299,6 +357,13 @@ HRESULT COil::Ready_Components()
 
 	/* For.Com_Sound */
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Oil"), TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxPBRMesh"),
+		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
     return S_OK;
 }
