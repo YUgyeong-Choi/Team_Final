@@ -1223,7 +1223,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
@@ -1240,17 +1240,13 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
             "ClipName": "AS_ATHBoss0_Skill_06_Start",
             "Duration": 90.0,
             "Events": [
-                {
-                    "EventName": "ResetRootStep",
-                    "Time": 1.0
-                },
                 {
                     "EventName": "RattleSound",
                     "Time": 3.0
@@ -1266,6 +1262,10 @@
                 {
                     "EventName": "MovementSound",
                     "Time": 10.0
+                },
+                {
+                    "EventName": "ResetRootStep",
+                    "Time": 15.0
                 },
                 {
                     "EventName": "Turnning",
@@ -1305,7 +1305,7 @@
                 }
             ],
             "IsLoop": false,
-            "RootMotion": false,
+            "RootMotion": true,
             "TickPerSecond": 65.0
         },
         {
