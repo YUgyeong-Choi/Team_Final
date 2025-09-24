@@ -44,7 +44,7 @@
 #include "SpringBoneSys.h"
 #include <ShortCutDoor.h>
 
-#include "Static_Decal.h"
+//#include "Static_Decal.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
@@ -377,13 +377,13 @@ void CPlayer::Update(_float fTimeDelta)
 		Check_Dead_FestivalReader();
 	}
 
-	if (KEY_DOWN(DIK_L))
-	{
-		Spawn_Decal(
-			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-			XMVectorSet(5.f, 0.5f, 5.f, 0));
-	}
+	//if (KEY_DOWN(DIK_L))
+	//{
+	//	Spawn_Decal(
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+	//		TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+	//		XMVectorSet(5.f, 0.5f, 5.f, 0));
+	//}
 
 }
 
@@ -3394,33 +3394,33 @@ void CPlayer::Check_Dead_FestivalReader()
 
 HRESULT CPlayer::Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
 {
-#pragma region 영웅 데칼 생성코드
-	CStatic_Decal::DECAL_DESC DecalDesc = {};
-	DecalDesc.bNormalOnly = true;
-	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
-	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
-	DecalDesc.bHasLifeTime = true;
-	DecalDesc.fLifeTime = 50.f;
-
-	// [기존 플레이어 월드 행렬]
-	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-
-	// [스케일 행렬 생성] (XMVector를 float3로 변환해서 사용)
-	_matrix ScaleMatrix = XMMatrixScaling(
-		XMVectorGetX(vDecalScale),
-		XMVectorGetY(vDecalScale),
-		XMVectorGetZ(vDecalScale));
-
-	// [스케일 * 기존 월드 행렬]
-	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-	{
-		return E_FAIL;
-	}
-#pragma endregion
+//#pragma region 영웅 데칼 생성코드
+//	CStatic_Decal::DECAL_DESC DecalDesc = {};
+//	DecalDesc.bNormalOnly = true;
+//	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+//	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
+//	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
+//	DecalDesc.bHasLifeTime = true;
+//	DecalDesc.fLifeTime = 50.f;
+//
+//	// [기존 플레이어 월드 행렬]
+//	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+//
+//	// [스케일 행렬 생성] (XMVector를 float3로 변환해서 사용)
+//	_matrix ScaleMatrix = XMMatrixScaling(
+//		XMVectorGetX(vDecalScale),
+//		XMVectorGetY(vDecalScale),
+//		XMVectorGetZ(vDecalScale));
+//
+//	// [스케일 * 기존 월드 행렬]
+//	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
+//
+//	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+//		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+//	{
+//		return E_FAIL;
+//	}
+//#pragma endregion
 
 	return S_OK;
 }

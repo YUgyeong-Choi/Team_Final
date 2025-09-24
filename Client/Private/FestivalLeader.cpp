@@ -1015,19 +1015,15 @@ void CFestivalLeader::Register_Events()
 
 			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
 
-			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop) || m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)/*|| GetFuryState() == CBossUnit::EFuryState::Fury*/)
+			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop))
 			{
-				//이거 키면 절할 때 두손에서 이펙트 생겨버려서 z파이팅나버림,
-				//그렇다고 꺼버리면 한손 씩 땅찍는 공격 때 오른손 데칼이 안나옴
-				//절할 때는 하나만 나오게 하고 싶은데 어케할까요 장원햄(이걸로 해결한듯)
-
-				//이제는 퓨리큰절 할때만 두손에서 나와버림
-
-				Spawn_Decal(m_BoneRefs[EBossBones::Neck],
-					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
-					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
-					XMVectorSet(10.f, 1.f, 10.f, 0));
-
+				if (m_bLeftHand)
+				{
+					Spawn_Decal(m_BoneRefs[EBossBones::Neck],
+						TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+						TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+						XMVectorSet(5.f, 1.f, 5.f, 0));
+				}
 			}
 			else if (m_bLeftHand)
 			{
@@ -1091,7 +1087,7 @@ void CFestivalLeader::Register_Events()
 			Spawn_Decal(m_BoneRefs[EBossBones::Neck],
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
-				XMVectorSet(10.f, 1.f, 10.f, 0));
+				XMVectorSet(5.f, 1.f, 5.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("RightFallingEffect", [this]()
@@ -1159,7 +1155,7 @@ void CFestivalLeader::Register_Events()
 			Spawn_Decal(m_BoneRefs[EBossBones::Basket],
 				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
 				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-				XMVectorSet(10.f, 0.5f, 10.f, 0));
+				XMVectorSet(5.f, 0.5f, 5.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("HammerSlamEndEffect", [this]()

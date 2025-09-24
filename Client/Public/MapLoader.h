@@ -11,7 +11,7 @@
 //#define TEST_STATION_MAP //ÀÌ°Å Å°¸é ½ºÅ×ÀÌ¼Ç ¸Ê »ý¼ºµÊ
 //#define TEST_HOTEL_MAP //ÀÌ°Å Å°¸é   È£ÅÚ ¸Ê »ý¼ºµÊ
 //#define TEST_OUTER_MAP //ÀÌ°Å Å°¸é  ¿ÜºÎ ¸Ê »ý¼ºµÊ
-//#define TEST_FIRE_EATER_MAP //ÀÌ°Å Å°¸é Çª¿ÀÄÚ ¸Ê »ý¼ºµÊ
+#define TEST_FIRE_EATER_MAP //ÀÌ°Å Å°¸é Çª¿ÀÄÚ ¸Ê »ý¼ºµÊ
 
 #endif _TESTMAP
 
