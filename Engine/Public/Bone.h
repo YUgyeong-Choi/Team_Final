@@ -2,11 +2,8 @@
 
 #include "Base.h"
 
-/* 뼈. (aiNode, aiBone, aiNodeAnim) */
-/* aiNode를 이용해서 셋팅한 뼈 정보. */
 
 NS_BEGIN(Engine)
-
 class ENGINE_DLL CBone final : public CBase
 {
 private:

@@ -71,8 +71,12 @@ void CCamera::Priority_Update(_float fTimeDelta)
 	_vector vAt = vEye + vDir;
 
 	// 4) 최종 뷰/프로젝션
-	m_ViewMatrix = XMMatrixLookAtLH(vEye, vAt, vUp);
-	m_ProjMatrix = XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar);
+	XMMATRIX matViewLook = XMMatrixLookAtLH(vEye, vAt, vUp);
+	XMStoreFloat4x4(&m_ViewMatrix, matViewLook);
+
+	XMMATRIX matViewPerspective = XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar);
+	XMStoreFloat4x4(&m_ProjMatrix, matViewPerspective);
+
 }
 
 void CCamera::Update(_float fTimeDelta)
@@ -116,10 +120,11 @@ HRESULT CCamera::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 
 HRESULT CCamera::Update_Camera()
 {
-	m_vPureCamPos = m_pTransformCom->Get_State(STATE::POSITION);
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+	XMStoreFloat4(&m_vPureCamPos, vPos);
 
-	m_pTransformCom->Move(m_vCurrentShakePos);
-	m_pTransformCom->Quaternion_Turn(m_vCurrentShakeRot);
+	m_pTransformCom->Move(XMLoadFloat4(&m_vCurrentShakePos));
+	m_pTransformCom->Quaternion_Turn(XMLoadFloat4(&m_vCurrentShakeRot));
 
 
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
@@ -127,8 +132,8 @@ HRESULT CCamera::Update_Camera()
 	
 	//PrintMatrix("Real CameraWold", XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr()));
 	
-	m_pTransformCom->Move(-m_vCurrentShakePos);
-	m_pTransformCom->Quaternion_Turn(-m_vCurrentShakeRot);
+	m_pTransformCom->Move(XMLoadFloat4(&m_vCurrentShakePos) * -1.f);
+	m_pTransformCom->Quaternion_Turn(XMLoadFloat4(&m_vCurrentShakeRot) * -1.f);
 
 
 	return S_OK;
@@ -170,7 +175,7 @@ void CCamera::StartShake(_float fIntensity, _float fDuration, _float fShakeFreqP
 void CCamera::StartRot(_vector vRot, _float fDuration)
 {
 	m_fMoreRotDuration = fDuration;
-	m_vMoreRotFreq = vRot;
+	XMStoreFloat4(&m_vMoreRotFreq,vRot);
 
 	m_fMoreRotTime = 0.f;
 	m_bMoreRot = TRUE;
@@ -216,8 +221,8 @@ void CCamera::Update_Camera_Shake(_float fTimedelta)
 		};
 
 		// 적용
-		m_vCurrentShakePos = offsetPos;
-		m_vCurrentShakeRot = offsetRot;
+		XMStoreFloat4(&m_vCurrentShakePos, offsetPos);
+		XMStoreFloat4(&m_vCurrentShakeRot ,offsetRot);
 
 		// 누적 시간 초기화
 		m_fShakeUpdateAccum = 0.f;
@@ -247,12 +252,17 @@ void CCamera::Update_Camera_MoreRot(_float fTimedelta)
 		lerpFactor = 1.f - (t - 0.5f) / 0.5f; // 1 → 0
 
 	// 최종 회전 오프셋
-	_vector moreRot = m_vMoreRotFreq * lerpFactor;
+	_vector moreRot = XMLoadFloat4(&m_vMoreRotFreq) * lerpFactor;
 
-	if(m_bShake)
-		m_vCurrentShakeRot += moreRot;
+	if (m_bShake)
+	{
+		_vector vRot = moreRot - XMLoadFloat4(&m_vCurrentShakeRot);
+		XMStoreFloat4(&m_vCurrentShakeRot, vRot);
+	}
 	else
-		m_vCurrentShakeRot = moreRot;
+	{
+		XMStoreFloat4(&m_vCurrentShakeRot, moreRot);
+	}
 }
 
 void CCamera::Bind_Matrices()

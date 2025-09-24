@@ -77,8 +77,8 @@ private:
 	_float			m_fDistance = 3.f;
 	_float			m_fMouseSensor = { };
 
-	_vector			m_vTargetCamPos = {};
-	_vector			m_vPlayerPosition = {};
+	_float4			m_vTargetCamPos = {};
+	_float4			m_vPlayerPosition = {};
 private:
 	_bool			m_bLockOn = false;
 private:
@@ -88,19 +88,19 @@ private:
 	_bool			m_bCanMoveTalk = true;
 	_float			m_fTalkOffSet = 0.f;
 private:
-	_bool m_bDistanceLerp = {};
-	_float m_fDistanceTime = {};
-	_float m_fDistanceTarget = {};
-	_float m_fDistnaceStartSpeed = {};
-	_float m_fDistnaceEndSpeed = {};
-	_float m_fDistanceLerpElapsed = {};
-	_float m_fDistanceDelayTime = 0.f;      
-	_float m_fDistanceDelayElapsed = 0.f;  
+	_bool			m_bDistanceLerp = {};
+	_float			m_fDistanceTime = {};
+	_float			m_fDistanceTarget = {};
+	_float			m_fDistnaceStartSpeed = {};
+	_float			m_fDistnaceEndSpeed = {};
+	_float			m_fDistanceLerpElapsed = {};
+	_float			m_fDistanceDelayTime = 0.f;      
+	_float			m_fDistanceDelayElapsed = 0.f;  
 
-	_bool m_bActive = false;
+	_bool			m_bActive = false;
 
 
-	_float m_fAlwaysDistanceTarget = 3.f;
+	_float			m_fAlwaysDistanceTarget = 3.f;
 private:
 	const _float m_fPadding = 1.0f;     // 플레이어 & 타겟이 가까울 때를 위한 최소 반지름
 	const _float m_fFrame = 0.5f;   // 화면 높이의 안에 들어오도록 여유를 위한 변수
@@ -116,7 +116,7 @@ private:
 	CGameObject* m_pNpcTalkTarget = { nullptr };
 
 	// Look 보간을 위한 변수들
-	_vector m_vPrevLookTarget = XMVectorZero();
+	_float4 m_vPrevLookTarget = {};
 	bool m_bPrevLookInit = false;
 	float m_fLookLerpSpeed = 8.f; // 값 클수록 빠르게 붙음
 public:

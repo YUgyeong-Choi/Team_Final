@@ -96,9 +96,12 @@ HRESULT CCamera_Manager::Update(_float fTimeDelta)
 
     m_pCurCamera->Update_Camera();
 
-    m_vCurCamRight = XMVector3Normalize(m_pCurCamera->GetRightVector());
-    m_vCurCamUp = XMVector3Normalize(m_pCurCamera->GetUpVector());
-    m_vCurCamLook = XMVector3Normalize(m_pCurCamera->GetLookVector());
+    _vector vRight = XMVector3Normalize(m_pCurCamera->GetRightVector());
+    XMStoreFloat4(&m_vCurCamRight, vRight);
+    _vector vUp = XMVector3Normalize(m_pCurCamera->GetUpVector());
+    XMStoreFloat4(&m_vCurCamUp, vUp);
+    _vector vLook = XMVector3Normalize(m_pCurCamera->GetLookVector());
+    XMStoreFloat4(&m_vCurCamLook, vLook);
 
     /* [ 유경이 보아라 (멤버변수에 스피드 2개있는데 포그 , 밝기 스피드) ] */
     if (KEY_DOWN(DIK_Y))
@@ -123,6 +126,14 @@ CCamera* CCamera_Manager::GetCurCam()
     return m_pCurCamera;
 }
 
+
+_fvector CCamera_Manager::GetPureCamPos() const
+{
+    _float4 fCamPos = m_pCurCamera->GetPureCamPos();
+    _vector vCamPos = XMLoadFloat4(&fCamPos);
+    return vCamPos;
+}
+
 void CCamera_Manager::Play_CutScene(CUTSCENE_TYPE cutSceneType)
 {
     // 오비탈 -> 컷씬을 위한 정보
@@ -144,7 +155,7 @@ void CCamera_Manager::Shake_Camera(_float fIntensity, _float fDuration, _float f
         m_pCurCamera->StartShake(fIntensity, fDuration, fShakeFreqPos, fShakeFreqRot);
 }
 
-void CCamera_Manager::Rot_Camera(_vector vRot, _float fDuration)
+void CCamera_Manager::Rot_Camera(_fvector vRot, _float fDuration)
 {
     if (m_pCurCamera)
 		m_pCurCamera->StartRot(vRot, fDuration);

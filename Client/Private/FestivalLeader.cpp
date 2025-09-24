@@ -98,7 +98,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fPhase2HPThreshold = 0.65f;
 	m_fMaxRootMotionSpeed = 18.f;
 	m_fChangeMoveDirCooldown = 2.5f;
-	m_fRootMotionClampDist = 4.5f;
+	m_fRootMotionClampDist = 2.5f;
 
 	m_fGroggyScale_Weak = 0.07f;
 	m_fGroggyScale_Strong = 0.09f;
@@ -650,9 +650,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 			SwitchFury(true, 1.f);
 		}
 		break;
-	case ENUM_CLASS(BossStateID::Atk_Strike_Start):
 	case ENUM_CLASS(BossStateID::Atk_Strike_Loop):
-	case ENUM_CLASS(BossStateID::Atk_Strike_End):
 	case ENUM_CLASS(BossStateID::Atk_Jump_Start):
 	case ENUM_CLASS(BossStateID::Atk_Jump_Loop):
 	case ENUM_CLASS(BossStateID::Atk_Jump_End):

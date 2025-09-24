@@ -12,9 +12,9 @@ class CTriggerItem : public CGameObject
 public:
 	typedef struct tagTriggerItemDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		_matrix triggerWorldMatrix;
-		_vector vOffSetObj;
-		_vector vScaleObj;
+		_float4x4 triggerWorldMatrix;
+		_float4 vOffSetObj;
+		_float4 vScaleObj;
 
 		// 생성할 아이템 타입
 		// 이름

@@ -57,14 +57,7 @@ void CBossRetryDoor::Priority_Update(_float fTimeDelta)
 		}
 	}
 
-#ifdef _DEBUG
-	if (KEY_DOWN(DIK_X))
-	{
-		m_pAnimator->Get_CurrentAnimController()->SetState("Idle");
-		m_bFinish = false;
-		m_bCanActive = false;
-	}
-#endif
+
 }
 
 void CBossRetryDoor::Update(_float fTimeDelta)

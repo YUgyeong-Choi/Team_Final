@@ -49,7 +49,7 @@ public:
 	void PlayCutScene() { m_bActive = true; CUI_Manager::Get_Instance()->Off_Panel(); }
 
 	/* [ 오비탈 초기 위치 ] */
-	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { m_initOrbitalMatrix = initOrbitalPos; }
+	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { XMStoreFloat4x4(&m_initOrbitalMatrix, initOrbitalPos); }
 
 	void Set_StartBlend(_bool bStartBlend) { m_bOrbitalToSetOrbital = bStartBlend; }
 	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
@@ -107,7 +107,7 @@ private:
 
 	unordered_map<CUTSCENE_TYPE, CAMERA_FRAMEDATA> m_CutSceneDatas;
 
-	_matrix m_initOrbitalMatrix = {};
+	_float4x4 m_initOrbitalMatrix = {};
 	_bool m_bOrbitalToSetOrbital = false;
 	_bool m_bReadyCutScene = false;
 	_bool m_bReadyCutSceneOrbital = false;

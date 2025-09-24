@@ -11,6 +11,8 @@
 #include "AreaSoundBox.h"
 #include "BossDoor.h"
 #include "FinalDoor.h"
+#include "UI_Video.h"
+
 #pragma region help
 // ===== Speed-curve helpers =====
 // preset: Linear/EaseIn/EaseOut/EaseInOut 의 "속도 s(t)" (F(t)의 도함수)
@@ -158,7 +160,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (m_CameraDatas.vecTargetData.size() == 0)
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -181,7 +183,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (!bCheck && (m_CameraDatas.vecWorldMatrixData.front().iKeyFrame < m_CameraDatas.vecTargetData.front().iKeyFrame))
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -233,9 +235,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 			// 목표 행렬
-			_matrix targetMat = m_initOrbitalMatrix;
+			_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -362,7 +365,8 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 	m_eCurrentCutScene = cutSceneType;
 
-	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 	m_iCurrentFrame = -1;
 	m_fElapsedTime = 0.f;
 	m_Accumulate = 0.f;
@@ -390,16 +394,16 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			// Decompose A
 			XMVECTOR sA, rA, tA;
-			XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+			XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 
 			// Decompose B
 			XMVECTOR sB, rB, tB;
-			XMMatrixDecompose(&sB, &rB, &tB, b.WorldMatrix);
+			XMMatrixDecompose(&sB, &rB, &tB, XMLoadFloat4x4(&b.WorldMatrix));
 
 			if (IsNearlyZero3(tA))
 			{
-				a.WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+				a.WorldMatrix = m_pTransformCom->Get_World4x4();
+				XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 			}
 
 			XMVECTOR finalT = tA;
@@ -422,10 +426,10 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			case INTERPOLATION_CAMERA::CATMULLROM:
 			{
-				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(vec[i - 1].WorldMatrix);
+				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i - 1].WorldMatrix));
 				XMVECTOR t1 = tA;
 				XMVECTOR t2 = tB;
-				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(vec[i + 2].WorldMatrix) : t2;
+				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i + 2].WorldMatrix)) : t2;
 
 				finalT = XMVectorCatmullRom(t0, t1, t2, t3, tRemap);
 				finalR = XMQuaternionSlerp(rA, rB, tRemap); // 회전은 안정성을 위해 그대로 Slerp
@@ -545,19 +549,19 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			}
 
 			// 오프셋 회전 저장 (최종 회전은 update에서 적용)
-			m_vCurrentShakeRot = result;
+			XMStoreFloat4(&m_vCurrentShakeRot, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().offSetRot);
+		m_vCurrentShakeRot = _float4{ vec.front().offSetRot.x,vec.front().offSetRot.y,vec.front().offSetRot.z, 0.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetRot == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
+			m_vCurrentShakeRot = _float4{ vec.back().offSetRot.x,vec.back().offSetRot.y,vec.back().offSetRot.z, 0.f };;
 }
 
 void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
@@ -603,19 +607,19 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 			}
 
 			// 오프셋 위치 저장 (최종 위치는 update에서 적용)
-			m_vCurrentShakePos = result;
+			XMStoreFloat4(&m_vCurrentShakePos, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakePos = XMLoadFloat3(&vec.front().offSetPos);
+		m_vCurrentShakePos = _float4{ vec.front().offSetPos.x,vec.front().offSetPos.y,vec.front().offSetPos.z, 1.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetPos == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakePos = XMLoadFloat3(&vec.back().offSetPos);
+			m_vCurrentShakePos = _float4{ vec.back().offSetPos.x,vec.back().offSetPos.y,vec.back().offSetPos.z, 1.f };
 }
 
 // 각도 유틸(라디안)
@@ -860,7 +864,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			const std::vector<float>& matValues = worldJson["worldMatrix"];
 			XMFLOAT4X4 mat;
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
-			worldFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+			worldFrame.WorldMatrix = mat;
 
 			worldFrame.curveType = worldJson.value("curveType", 0); // 0=Linear
 
@@ -1349,10 +1353,13 @@ void CCamera_CutScene::Event()
 
 			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
 
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Effect");
+
 		}
 
 		// 먼지 이펙트 제거
-		if (m_iCurrentFrame == 75)
+		if (m_iCurrentFrame == 200)
 		{
 			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke1"));
 			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke2"));
@@ -1360,7 +1367,7 @@ void CCamera_CutScene::Event()
 
 
 		// 불 띄우기
-		if (m_iCurrentFrame == 250)
+		if (m_iCurrentFrame == 260)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 
@@ -1373,7 +1380,7 @@ void CCamera_CutScene::Event()
 			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
 		}
 
-		if (m_iCurrentFrame == 270)
+		if (m_iCurrentFrame == 290)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 			  
@@ -1391,10 +1398,47 @@ void CCamera_CutScene::Event()
 			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
 		}
 
-		if(m_iCurrentFrame == 550)
+		if(m_iCurrentFrame == 650)
 		{
-			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.f);
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.5f);
 		}
+
+		if (m_iCurrentFrame == 720)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(false);
+		}
+
+		if (m_iCurrentFrame == 745)
+		{
+			CUI_Video::VIDEO_UI_DESC eDesc = {};
+			eDesc.eType = CUI_Video::VIDEO_TYPE::FINAL;
+			eDesc.fOffset = 0.0f;
+			eDesc.fInterval = 0.032f;
+			eDesc.fSpeedPerSec = 1.f;
+			eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Ending.mp4");
+			eDesc.fX = g_iWinSizeX * 0.5f;
+			eDesc.fY = g_iWinSizeY * 0.5f;
+			eDesc.fSizeX = g_iWinSizeX;
+			eDesc.fSizeY = g_iWinSizeY;
+			eDesc.fAlpha = 1.f;
+			eDesc.isLoop = false;
+			
+
+
+			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+				static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"), &eDesc)))
+				return;
+
+			//CUI_Video* pVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base")));
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Song");
+
+		}
+
+
+		
+
+
 		break;
 	default:
 		break;
@@ -1432,7 +1476,7 @@ void CCamera_CutScene::Update_SoundLerp(_float fTimeDelta)
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 {
 	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-	_matrix targetMat = m_initOrbitalMatrix;
+	_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 
 	XMVECTOR curScale, curRot, curTrans;
 	XMVECTOR tgtScale, tgtRot, tgtTrans;

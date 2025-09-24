@@ -194,7 +194,7 @@ void CTransform::Rotation(_float fX, _float fY, _float fZ)
 	Set_State(STATE::LOOK, XMVector4Transform(vLook, RotationMatrix));
 }
 
-void CTransform::Move(const _vector& vDirectionVector, CPhysXController* pController)
+void CTransform::Move(const _fvector& vDirectionVector, CPhysXController* pController)
 {
 	_vector vPos = Get_State(STATE::POSITION) + vDirectionVector;
 	if(pController)
@@ -228,7 +228,7 @@ void CTransform::Go_Front(_float fTimeDelta, CPhysXController* pController, CNav
 	}
 }
 
-bool CTransform::Go_FrontByPosition(_float fTimeDelta, _vector vPosition, CPhysXController* pController, CNavigation* pNavigation)
+bool CTransform::Go_FrontByPosition(_float fTimeDelta, _fvector vPosition, CPhysXController* pController, CNavigation* pNavigation)
 {
 	// 현재 위치
 	_vector vMyPos = Get_State(STATE::POSITION);
@@ -304,7 +304,7 @@ void CTransform::Go_DownCustom(_float fTimeDelta, _float fSpeed, CPhysXControlle
 	}
 }
 
-void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
+void CTransform::Go_Dir(const _fvector& vMoveDir, _float fTimeDelta, CPhysXController* pController, CNavigation* pNavigation)
 {
 	// 현재 위치 + 이동 방향 x 델타 타임 x 스피드퍼세크
 	_vector vPos = Get_State(STATE::POSITION);
@@ -344,7 +344,7 @@ void CTransform::Go_Dir(const _vector& vMoveDir, _float fTimeDelta, CPhysXContro
 	}
 }
 
-bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
+bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _fvector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
 {
 	/* 특정 방향으로 Distance만큼 특정 시간안에 이동한다. */
 
@@ -354,8 +354,10 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 		m_bSpecialMoving = true;
 		m_fSpecialMoveElapsed = 0.f;
 		m_fSpecialMoveDuration = fTime;
-		m_fSpecialMoveStartPos = Get_State(STATE::POSITION);
-		m_vSpecialMoveOffset = XMVector3Normalize(vMoveDir) * fDistance;
+		_vector vStartPos = Get_State(STATE::POSITION);
+		XMStoreFloat4(&m_fSpecialMoveStartPos, vStartPos);
+		_vector vMoveOffset = XMVector3Normalize(vMoveDir) * fDistance;
+		XMStoreFloat4(&m_vSpecialMoveOffset, vMoveOffset);
 	}
 
 	// 매 프레임 델타 누적 + 보간 계산
@@ -364,8 +366,12 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 	t = min(t, 1.f);
 
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f; // 이징 In-Out
-	_vector vNewPos = m_fSpecialMoveStartPos + m_vSpecialMoveOffset * smoothT;
 
+	_vector vStart = XMLoadFloat4(&m_fSpecialMoveStartPos);
+	_vector vOffset = XMLoadFloat4(&m_vSpecialMoveOffset);
+
+	_vector vScaled = XMVectorScale(vOffset, smoothT);
+	_vector vNewPos = XMVectorAdd(vStart, vScaled);
 
 	// 중력 적용
 	constexpr _float fGravity = -9.81f;
@@ -429,7 +435,7 @@ bool CTransform::Move_Special(_float fTimeDelta, _float fTime, _vector& vMoveDir
 
 	return false;
 }
-bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
+bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _fvector& vMoveDir, _float fDistance, CPhysXController* pPhysXController, CNavigation* pNavigation)
 {
 	/* 특정 방향으로 Distance만큼 특정 시간안에 이동한다. */
 
@@ -439,8 +445,10 @@ bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDi
 		m_bSpecialMoving = true;
 		m_fSpecialMoveElapsed = 0.f;
 		m_fSpecialMoveDuration = fTime;
-		m_fSpecialMoveStartPos = Get_State(STATE::POSITION);
-		m_vSpecialMoveOffset = XMVector3Normalize(vMoveDir) * fDistance;
+		_vector vStartPos = Get_State(STATE::POSITION);
+		XMStoreFloat4(&m_fSpecialMoveStartPos, vStartPos);
+		_vector vMoveOffset = XMVector3Normalize(vMoveDir) * fDistance;
+		XMStoreFloat4(&m_vSpecialMoveOffset, vMoveOffset);
 	}
 
 	// 매 프레임 델타 누적 + 보간 계산
@@ -449,7 +457,11 @@ bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDi
 	t = min(t, 1.f);
 
 	_float smoothT = 1.f - powf(2.f, -10.f * t);
-	_vector vNewPos = m_fSpecialMoveStartPos + m_vSpecialMoveOffset * smoothT;
+	XMVECTOR vStart = XMLoadFloat4(&m_fSpecialMoveStartPos);
+	XMVECTOR vOffset = XMLoadFloat4(&m_vSpecialMoveOffset);
+
+	XMVECTOR vScaled = XMVectorScale(vOffset, smoothT);
+	XMVECTOR vNewPos = XMVectorAdd(vStart, vScaled);
 
 	if (pPhysXController)
 	{
@@ -489,7 +501,7 @@ bool CTransform::Move_SpecialB(_float fTimeDelta, _float fTime, _vector& vMoveDi
 	return false;
 }
 
-bool CTransform::Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetScale)
+bool CTransform::Scale_Special(_float fTimeDelta, _float fTime, _fvector vTargetScale)
 {
 	// 시작 시 초기화
 	if (!m_bScaling)
@@ -497,8 +509,9 @@ bool CTransform::Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetS
 		m_bScaling = true;
 		m_fScaleElapsed = 0.f;
 		m_fScaleDuration = fTime;
-		m_vStartScale = Get_Scale();
-		m_vTargetScale = vTargetScale;
+		_vector vStartScale = Get_Scale();
+		XMStoreFloat4(&m_vStartScale, vStartScale);
+		XMStoreFloat4(&m_vTargetScale, vTargetScale);
 	}
 
 	// 시간 누적 및 보간 비율 계산
@@ -509,7 +522,7 @@ bool CTransform::Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetS
 	// Sine 이징 In-Out
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f;
 
-	_vector vNewScale = XMVectorLerp(m_vStartScale, m_vTargetScale, smoothT);
+	_vector vNewScale = XMVectorLerp(XMLoadFloat4(&m_vStartScale), XMLoadFloat4(&m_vTargetScale), smoothT);
 
 	// 스케일 적용
 	SetUp_Scale(
@@ -529,24 +542,29 @@ bool CTransform::Scale_Special(_float fTimeDelta, _float fTime, _vector vTargetS
 	return false;
 }
 
-bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, _float fAngleDegree)
+bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _fvector vAxis, _float fAngleDegree)
 {
 	// 최초 진입 시 회전 초기화
 	if (!m_bSpecialRotating)
 	{
 		// 회전 처음 시작할 때 기준축을 저장
-		m_vOriginalRight = Get_State(STATE::RIGHT);
-		m_vOriginalUp = Get_State(STATE::UP);
-		m_vOriginalLook = Get_State(STATE::LOOK);
+		_vector vRight = Get_State(STATE::RIGHT);
+		XMStoreFloat4(&m_vOriginalRight, vRight);
+
+		_vector vUp = Get_State(STATE::UP);
+		XMStoreFloat4(&m_vOriginalUp, vUp);
+
+		_vector vLook = Get_State(STATE::LOOK);
+		XMStoreFloat4(&m_vOriginalLook, vLook);
 
 		m_bSpecialRotating = true;
 		m_fSpecialRotateElapsed = 0.f;
 		m_fSpecialRotateDuration = fTime;
 
 		m_fSpecialRotateAngle = XMConvertToRadians(fAngleDegree); // degree → radian
-		m_vSpecialRotateAxis = XMVector3Normalize(vAxis);
+		XMStoreFloat4(&m_vSpecialRotateAxis, XMVector3Normalize(vAxis));
 
-		m_matSpecialRotateStart = XMLoadFloat4x4(&m_WorldMatrix);
+		m_matSpecialRotateStart = m_WorldMatrix;
 	}
 
 	// 진행 시간 누적
@@ -558,7 +576,7 @@ bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, 
 	_float smoothT = (sinf(t * XM_PI - XM_PIDIV2) + 1.f) * 0.5f;
 
 	_float fCurrentAngle = m_fSpecialRotateAngle * smoothT;
-	_matrix matRot = XMMatrixRotationAxis(m_vSpecialRotateAxis, fCurrentAngle);
+	_matrix matRot = XMMatrixRotationAxis(XMLoadFloat4(&m_vSpecialRotateAxis), fCurrentAngle);
 
 	// 회전만 적용: 위치는 유지
 	_vector vPosition = Get_State(STATE::POSITION);
@@ -566,9 +584,9 @@ bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, 
 	_vector vScale = XMLoadFloat3(&vScaled);
 
 	// 원래 로컬 기준 회전 적용 (Right/Up/Look 축 재구성)
-	_vector vRight = XMVector3TransformNormal(m_vOriginalRight, matRot);
-	_vector vUp = XMVector3TransformNormal(m_vOriginalUp, matRot);
-	_vector vLook = XMVector3TransformNormal(m_vOriginalLook, matRot);
+	_vector vRight = XMVector3TransformNormal(XMLoadFloat4(&m_vOriginalRight), matRot);
+	_vector vUp = XMVector3TransformNormal(XMLoadFloat4(&m_vOriginalUp), matRot);
+	_vector vLook = XMVector3TransformNormal(XMLoadFloat4(&m_vOriginalLook), matRot);
 
 	Set_State(STATE::RIGHT, XMVector3Normalize(vRight) * XMVectorGetX(vScale));
 	Set_State(STATE::UP, XMVector3Normalize(vUp) * XMVectorGetY(vScale));
@@ -585,7 +603,7 @@ bool CTransform::Rotate_Special(_float fTimeDelta, _float fTime, _vector vAxis, 
 	return false;
 }
 
-bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJumpHeight, _float fJumpTime, CPhysXController* pController)
+bool CTransform::JumpToTarget(_float fTimeDelta, _fvector vTargetPos, _float fJumpHeight, _float fJumpTime, CPhysXController* pController)
 {
 	if (!m_bSpecialMoving)
 	{
@@ -593,8 +611,10 @@ bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJum
 		m_fSpecialMoveElapsed = 0.f;
 		m_fSpecialMoveDuration = fJumpTime;
 
-		m_fSpecialMoveStartPos = Get_State(STATE::POSITION);
-		m_vSpecialMoveTargetPos = vTargetPos;
+		_vector vPos = Get_State(STATE::POSITION);
+		XMStoreFloat4(&m_fSpecialMoveStartPos, vPos);
+
+		XMStoreFloat4(&m_vSpecialMoveTargetPos, vTargetPos);
 	}
 
 	m_fSpecialMoveElapsed += fTimeDelta;
@@ -603,9 +623,9 @@ bool CTransform::JumpToTarget(_float fTimeDelta, _vector vTargetPos, _float fJum
 
 	// X, Z는 선형 보간
 	_float3 vStart = {};
-	XMStoreFloat3(&vStart, m_fSpecialMoveStartPos);
+	XMStoreFloat3(&vStart, XMLoadFloat4(&m_fSpecialMoveStartPos));
 	_float3 vEnd = {};
-	XMStoreFloat3(&vEnd, m_vSpecialMoveTargetPos);
+	XMStoreFloat3(&vEnd, XMLoadFloat4(&(m_vSpecialMoveTargetPos)));
 
 	_float3 vInterp = {};
 	vInterp.x = vStart.x + (vEnd.x - vStart.x) * t;
@@ -748,7 +768,7 @@ bool CTransform::RotateToDirectionSmoothly(const _fvector& vTargetDir, _float fT
 	return (fAngle - fStep) <= 0.001f;
 }
 
-void CTransform::Quaternion_Turn(const _vector& vAngle)
+void CTransform::Quaternion_Turn(const _fvector& vAngle)
 {
 	_vector			vRight = Get_State(STATE::RIGHT);
 	_vector			vUp = Get_State(STATE::UP);
@@ -791,12 +811,13 @@ void CTransform::LookAtWithOutY(_fvector vAt)
 	Set_State(STATE::LOOK, vLook * vScale.z);
 }
 
-bool CTransform::ChaseWithOutY(_vector& vTargetPos, _float fTimeDelta, _float fMinDistance, CPhysXController* pController,CNavigation* pNavigation)
+bool CTransform::ChaseWithOutY(_fvector& vTargetPos, _float fTimeDelta, _float fMinDistance, CPhysXController* pController,CNavigation* pNavigation)
 {
 	_vector		vPosition = Get_State(STATE::POSITION);
-	vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vPosition));
+	_vector		vTargetPosition = vTargetPos;
+	vTargetPosition = XMVectorSetY(vTargetPos, XMVectorGetY(vPosition));
 
-	_vector		vMoveDir = vTargetPos - vPosition;
+	_vector		vMoveDir = vTargetPosition - vPosition;
 	_float fDist = XMVectorGetX(XMVector3Length(vMoveDir));
 	//최소거리보다 길때는 포지션 갱신
 	if (fDist >= fMinDistance)
@@ -895,7 +916,7 @@ void CTransform::SetUp_Scale(_float fScaleX, _float fScaleY, _float fScaleZ)
 	Set_State(STATE::LOOK, XMVector3Normalize(Get_State(STATE::LOOK)) * fScaleZ);
 }
 
-_vector CTransform::Get_Scale() const
+_fvector CTransform::Get_Scale() const
 {
 	_matrix matWorld = XMLoadFloat4x4(&m_WorldMatrix);
 
@@ -985,10 +1006,11 @@ void CTransform::QuaternionRotate(_matrix matWorld)
 	Set_Quaternion(vRotationQuat);
 }
 
-void CTransform::Set_Quaternion(_vector vQuaternion)
+void CTransform::Set_Quaternion(_fvector vQuaternion)
 {
 	// 정규화(안정성 확보) 후 저장
-	m_vQuaternionRotation = XMQuaternionNormalize(vQuaternion);
+	_vector vQuatern = XMQuaternionNormalize(vQuaternion);
+	XMStoreFloat4(&m_vQuaternionRotation, vQuatern);
 
 	// 회전값이 바뀌었으니 월드 행렬도 갱신 필요
 	Update_WorldMatrix();
@@ -999,7 +1021,7 @@ void CTransform::Update_WorldMatrix()
 	_float3 vScale = Compute_Scaled();
 	_matrix matScale = XMMatrixScaling(vScale.x, vScale.y, vScale.z);
 
-	_matrix matRotation = XMMatrixRotationQuaternion(m_vQuaternionRotation);
+	_matrix matRotation = XMMatrixRotationQuaternion(XMLoadFloat4(&m_vQuaternionRotation));
 
 	_vector vPosition = Get_State(STATE::POSITION);
 	_matrix matTranslation = XMMatrixTranslation(

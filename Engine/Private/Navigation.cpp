@@ -159,7 +159,7 @@ _vector CNavigation::GetSlideDirection(_fvector vPosition, _fvector vDir)
 		return vDir;
 
 	/* 나간 경계 선분의 법선 벡터와 내 이동 방향을 내적한다 */
-	_vector vLineNormal = XMVector3Normalize(NaviEdge->vNormal);
+	_vector vLineNormal = XMVector3Normalize(XMLoadFloat3(&NaviEdge->vNormal));
 	_vector vMyDirection = vDir;
 
 	_float fDot = XMVectorGetX(XMVector3Dot(vLineNormal, vMyDirection));
