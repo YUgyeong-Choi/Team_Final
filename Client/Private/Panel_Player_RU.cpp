@@ -54,7 +54,7 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 
 			if(iDelta > 0)
 				strAdd = L"+" + to_wstring(static_cast<_int>((iDelta)));
-			else
+			else if(iDelta < 0)
 				strAdd = to_wstring(static_cast<_int>((iDelta)));
 
 			static_cast<CUI_Text*>(m_PartObjects[0])->Set_Caption(strAdd);
