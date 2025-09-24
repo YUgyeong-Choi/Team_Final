@@ -1653,16 +1653,16 @@ HRESULT CFuoco::Ready_Effect()
 
 
 	/************************ 소드 트레일 이펙트 **************************/
-	CSwordTrailEffect::DESC desc = {};
-	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	desc.iLevelID = m_iLevelID;
+	//CSwordTrailEffect::DESC desc = {};
+	//desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//desc.iLevelID = m_iLevelID;
 
-	desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
-	desc.pOuterSocketMatrix = m_pMiddleFingierBone->Get_CombinedTransformationMatrix();
-	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_FireEater"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (!m_pTrailEffect)
-		return E_FAIL;
-	m_pTrailEffect->Set_TrailActive(false);
+	//desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
+	//desc.pOuterSocketMatrix = m_pMiddleFingierBone->Get_CombinedTransformationMatrix();
+	//m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_FireEater"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (!m_pTrailEffect)
+	//	return E_FAIL;
+	//m_pTrailEffect->Set_TrailActive(false);
 	return S_OK;
 }
 
