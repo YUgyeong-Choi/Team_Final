@@ -176,7 +176,7 @@ private:
 	_float m_fSpecialRotateDuration = 0.f;
 	_float m_fSpecialRotateAngle = 0.f;
 	_float4 m_vSpecialRotateAxis = {};
-	_matrix m_matSpecialRotateStart = {};
+	_float4x4 m_matSpecialRotateStart = {};
 
 	_float4 m_vOriginalRight = { 1.f, 0.f, 0.f, 0.f };
 	_float4 m_vOriginalUp = { 0.f, 1.f, 0.f, 0.f };

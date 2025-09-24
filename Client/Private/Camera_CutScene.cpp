@@ -160,7 +160,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (m_CameraDatas.vecTargetData.size() == 0)
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -183,7 +183,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (!bCheck && (m_CameraDatas.vecWorldMatrixData.front().iKeyFrame < m_CameraDatas.vecTargetData.front().iKeyFrame))
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -235,9 +235,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 			// 목표 행렬
-			_matrix targetMat = m_initOrbitalMatrix;
+			_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -364,7 +365,8 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 	m_eCurrentCutScene = cutSceneType;
 
-	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 	m_iCurrentFrame = -1;
 	m_fElapsedTime = 0.f;
 	m_Accumulate = 0.f;
@@ -392,16 +394,16 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			// Decompose A
 			XMVECTOR sA, rA, tA;
-			XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+			XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 
 			// Decompose B
 			XMVECTOR sB, rB, tB;
-			XMMatrixDecompose(&sB, &rB, &tB, b.WorldMatrix);
+			XMMatrixDecompose(&sB, &rB, &tB, XMLoadFloat4x4(&b.WorldMatrix));
 
 			if (IsNearlyZero3(tA))
 			{
-				a.WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+				a.WorldMatrix = m_pTransformCom->Get_World4x4();
+				XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 			}
 
 			XMVECTOR finalT = tA;
@@ -424,10 +426,10 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			case INTERPOLATION_CAMERA::CATMULLROM:
 			{
-				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(vec[i - 1].WorldMatrix);
+				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i - 1].WorldMatrix));
 				XMVECTOR t1 = tA;
 				XMVECTOR t2 = tB;
-				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(vec[i + 2].WorldMatrix) : t2;
+				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i + 2].WorldMatrix)) : t2;
 
 				finalT = XMVectorCatmullRom(t0, t1, t2, t3, tRemap);
 				finalR = XMQuaternionSlerp(rA, rB, tRemap); // 회전은 안정성을 위해 그대로 Slerp
@@ -862,7 +864,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			const std::vector<float>& matValues = worldJson["worldMatrix"];
 			XMFLOAT4X4 mat;
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
-			worldFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+			worldFrame.WorldMatrix = mat;
 
 			worldFrame.curveType = worldJson.value("curveType", 0); // 0=Linear
 
@@ -1474,7 +1476,7 @@ void CCamera_CutScene::Update_SoundLerp(_float fTimeDelta)
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 {
 	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-	_matrix targetMat = m_initOrbitalMatrix;
+	_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 
 	XMVECTOR curScale, curRot, curTrans;
 	XMVECTOR tgtScale, tgtRot, tgtTrans;
