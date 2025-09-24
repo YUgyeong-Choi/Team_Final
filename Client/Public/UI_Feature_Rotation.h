@@ -39,9 +39,9 @@ private:
 
 	_float2 m_fInitPos = {};
 
-	_vector m_vInitPos = {};
-	_vector m_vOffset = {};
-	_vector m_vCenter = {};
+	_float4 m_vInitPos = {};
+	_float4 m_vOffset = {};
+	_float4 m_vCenter = {};
 
 
 	UI_FEATURE_ROTATION_DESC m_eDesc = {};

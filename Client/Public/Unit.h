@@ -65,7 +65,7 @@ protected: /* [ Setup 함수 ] */
 
 public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
-	_vector Get_RayOffset() { return m_vRayOffset; }
+	_vector Get_RayOffset() { return XMLoadFloat4(&m_vRayOffset); }
 	virtual void RayCast(CPhysXActor* actor);
 #ifdef USE_IMGUI
 	class CAnimator* Get_Animator() const { return m_pAnimator; }
@@ -192,7 +192,7 @@ protected:				/* [ 그림자 관련 ] */
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};
-	_vector				m_vRayOffset = {};
+	_float4				m_vRayOffset = {};
 
 protected:				/* [ 중력관련 변수 ] */
 	_bool				m_bOnGround = {};
