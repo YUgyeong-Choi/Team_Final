@@ -148,6 +148,9 @@ void CWeapon_Monster::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
 	Update_Collider();
+
+
+
 }
 
 HRESULT CWeapon_Monster::Render()
@@ -332,24 +335,7 @@ HRESULT CWeapon_Monster::Ready_Effect()
 
 void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		_vector vDir = XMVector3Normalize(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION) - pOther->Get_TransfomCom()->Get_State(STATE::POSITION));
-
-		CUnit* pUnit = static_cast<CUnit*>(pOther);
-		auto& vLockonPos = pUnit->Get_LockonPos();
-		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
-
-		CEffectContainer::DESC desc = {};
-
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
-
-		CGameObject* pEffect = { nullptr };
-		pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
-
-		if (pEffect == nullptr)
-			MSG_BOX("이펙트 생성 실패함");
-	}
+	
 }
 
 void CWeapon_Monster::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
