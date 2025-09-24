@@ -75,7 +75,7 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 	{
 		
 		m_fEmissive = 0.f;
-		m_pWeapon->SetbIsActive(false);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 
 
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
