@@ -1341,7 +1341,7 @@
                     "Time": 11.0
                 },
                 {
-                    "EventName": "OneHandSlamEffect",
+                    "EventName": "OneHandSlam_L_Effect",
                     "Time": 14.0
                 },
                 {
@@ -1386,7 +1386,7 @@
                     "Time": 14.0
                 },
                 {
-                    "EventName": "OneHandSlamEffect",
+                    "EventName": "OneHandSlam_R_Effect",
                     "Time": 17.0
                 },
                 {
@@ -1431,7 +1431,7 @@
                     "Time": 11.0
                 },
                 {
-                    "EventName": "OneHandSlamEffect",
+                    "EventName": "OneHandSlam_L_Effect",
                     "Time": 22.0
                 },
                 {
@@ -1548,12 +1548,8 @@
                     "Time": 7.0
                 },
                 {
-                    "EventName": "OneHandSlamEffect",
+                    "EventName": "OneHandSlam_L_Effect",
                     "Time": 8.0
-                },
-                {
-                    "EventName": "OneHandSlamEffect",
-                    "Time": 9.0
                 },
                 {
                     "EventName": "GroundImpactSound",

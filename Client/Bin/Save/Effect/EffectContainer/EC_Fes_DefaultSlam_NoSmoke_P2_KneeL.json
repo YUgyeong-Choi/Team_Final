@@ -1,0 +1,280 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -20.0,
+                -14.829999923706055
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.44795918464660645,
+                0.23036646842956543,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                0.0628272294998169,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 124,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.800000011920929,
+            "EndTrack": 124,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0628272294998169,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.430000066757202,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.800000011920929,
+                        0.800000011920929,
+                        0.800000011920929
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 12874.3115234375,
+            "LifeTime_Particle": [
+                0.10000000149011612,
+                0.4000000059604645
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 5.0,
+            "Name": "Fes_DefaultSlam_NoSmoke_Spark1",
+            "NumInstance": 150,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -30.0,
+                30.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.11999999731779099,
+                0.0
+            ],
+            "Range": [
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.014999999664723873
+            ],
+            "Speed": [
+                15.0,
+                17.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -8.0,
+                -5.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.23560208082199097,
+                0.23560208082199097,
+                0.23560208082199097,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 125,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 125,
+            "FlipUV": false,
+            "Gravity": 6.5,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.23560208082199097,
+                        0.23560208082199097,
+                        0.23560208082199097,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 7061.30712890625,
+            "LifeTime_Particle": [
+                3.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 5.0,
+            "Name": "Fes_DefaultSlam_NoSmoke_Stone1",
+            "NumInstance": 15,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.10000000149011612,
+                0.0
+            ],
+            "Range": [
+                0.10000000149011612,
+                0.10000000149011612,
+                0.10000000149011612
+            ],
+            "RenderGroup": 9,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.5,
+                3.0
+            ],
+            "ShaderPass": 4,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.05000000074505806,
+                0.18000000715255737
+            ],
+            "Speed": [
+                6.0,
+                8.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "T_Stone11",
+                "",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                false,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 0.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 120
+}
