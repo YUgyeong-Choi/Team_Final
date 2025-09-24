@@ -1,8 +1,10 @@
 #include "Animator.h"
-#include "AnimController.h"
+
+#include "Bone.h"
 #include "Model.h"
 #include "GameInstance.h"
-#include "Bone.h"
+#include "AnimController.h"
+
 using ET = CAnimController::ETransitionType;
 CAnimator::CAnimator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent{ pDevice, pContext }
@@ -235,8 +237,7 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				fDeltaTime,
 				m_Bones,
 				m_pBlendAnimArray[i]->Get_isLoop(),
-				&triggeredEvents, nullptr
-			);
+				&triggeredEvents);
 		}
 	}
 
@@ -344,10 +345,10 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 	//  블렌드 끝났으면 정리
 	if (fBlendFactor >= 1.f)
 	{
-		_bool lowerChanged = (m_Blend.fromLowerAnim != m_Blend.toLowerAnim);
-		_bool upperChanged = (m_Blend.fromUpperAnim != m_Blend.toUpperAnim);
-		_bool lowerUpperSame = (m_Blend.fromLowerAnim != m_Blend.toUpperAnim);
-		_bool upperLowerSame = (m_Blend.fromUpperAnim != m_Blend.toLowerAnim);
+		_bool bIsLowerChanged = (m_Blend.fromLowerAnim != m_Blend.toLowerAnim);
+		_bool bIsUpperChanged = (m_Blend.fromUpperAnim != m_Blend.toUpperAnim);
+		_bool bIsLowerFromDiffUpperTo = (m_Blend.fromLowerAnim != m_Blend.toUpperAnim);
+		_bool bIsUpperFromDiffLowerTo = (m_Blend.fromUpperAnim != m_Blend.toLowerAnim);
 		unordered_set<CAnimation*> toReset;
 
 		if (m_Blend.canSameAnimReset)
@@ -359,25 +360,25 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				toReset.insert(m_Blend.fromUpperAnim);
 		}
 
-		if (lowerChanged)
+		if (bIsLowerChanged)
 		{
-			if (lowerUpperSame)
+			if (bIsLowerFromDiffUpperTo)
 			{
 				toReset.insert(m_Blend.fromLowerAnim);
 			}
 		}
-		if (upperChanged)
+		if (bIsUpperChanged)
 		{
-			if (upperLowerSame)
+			if (bIsUpperFromDiffLowerTo)
 			{
 				toReset.insert(m_Blend.fromUpperAnim);
 			}
 		}
 
-		for (auto* anim : toReset)
+		for (auto* pAnim : toReset)
 		{
-			if (anim && anim->Get_isLoop() == false)
-				anim->ResetTrack();
+			if (pAnim && pAnim->Get_isLoop() == false)
+				pAnim->ResetTrack();
 
 		}
 
@@ -402,10 +403,8 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 	if (m_bPlayMask && m_pLowerClip && m_pUpperClip)
 	{
 		// 하체/상체 업데이트
-		vector<_float4x4> lowerLocalMatrices(iBoneCount);
-		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents, &lowerLocalMatrices);
-		vector<_float4x4> upperLocalMatrices(iBoneCount);
-		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents, &upperLocalMatrices);
+		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
+		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
 
 		// 매트릭스 미리 가져오기
 		vector<_matrix> lowerM(iBoneCount), upperM(iBoneCount);
@@ -429,16 +428,11 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
 			}
 		}
-
-		//if (m_pLowerClip->IsRootMotionEnabled() || m_pUpperClip->IsRootMotionEnabled())
-		//{
-		//	RootMotionDecomposition();
-		//}
 	}
 	else if (m_pCurrentAnim)
 	{
 		// 단일 전체 애니메이션
-		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents, nullptr);
+		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
 
 		if (m_pCurrentAnim->IsRootMotionEnabled())
 		{
@@ -515,7 +509,7 @@ void CAnimator::CollectBoneChildren(const _char* boneName)
 	// 이 본의 모든 자식 이름을 가져와서 재귀
 	for (int childIdx : m_pModel->GetBoneChildren(boneName))
 	{
-		const char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
+		const _char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
 		CollectBoneChildren(childName, "Neck");
 	}
 }

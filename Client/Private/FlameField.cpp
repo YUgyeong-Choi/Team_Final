@@ -85,7 +85,7 @@ void CFlameField::Update(_float fTimeDelta)
 				if (fAngle < 0) fAngle += XM_2PI;
 
 				_float fAngleDegrees = XMConvertToDegrees(fAngle);
-				_int iIndex = static_cast<_int>(fAngleDegrees / 5.0f + 0.5f) % 72;
+				_int iIndex = static_cast<_int>(round(fAngleDegrees / 5.0f)) % 72; // 반올림 사용
 				_int iPrevIndex = (iIndex - 1 + 72) % 72; // 이전 인덱스
 				_int iNextIndex = (iIndex + 1) % 72;      // 다음 인덱스
 				_float fMaxAllowedDist = max(m_SpawnEffectDistanceList[iPrevIndex], m_SpawnEffectDistanceList[iIndex]);
