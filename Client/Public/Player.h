@@ -52,7 +52,8 @@ public:
 	{
 		NONE,IDLE,WALK,RUN, DASH_BACK, DASH_FRONT ,DASH_FOCUS,SPRINT,GUARD,GUARD_HIT, GUARD_BREAK,EQUIP,EQUIP_WALK,ITEM,ITEM_WALK,NORMAL_ATTACKA,NORMAL_ATTACKB,
 		STRONG_ATTACKA, STRONG_ATTACKB, CHARGE_ATTACKA, CHARGE_ATTACKB, SPRINT_ATTACKA, SPRINT_ATTACKB, MAINSKILLA, MAINSKILLB, MAINSKILLC, SIT, FIRSTDOOR,FESTIVALDOOR,
-		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDER, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, ITEMFAIL, STATIONDOOR, END
+		ARM_ATTACKA, ARM_ATTACKB, ARM_ATTACKCHARGE, ARM_FAIL, GRINDERSTART, GRINDERLOOP, GRINDEREND, HITED, HITEDUP, HITEDSTAMP, PULSE, FATAL, 
+		ITEMFAIL, STATIONDOOR, INTERACTIONFOG, END
 	};
 
 	enum class eHitedTarget
@@ -79,6 +80,9 @@ public:
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_Burn() override;
 	virtual HRESULT Render_LimLight() override;
+
+	_bool IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius);
+	void WetSystem();
 
 	virtual void	Reset() override;
 	void			WeaponReset();
@@ -113,7 +117,7 @@ public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector			ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void	Register_Events() override;
-
+	
 public: /* [ 컷씬 용 ] */
 	_bool	Get_HaveKey() { return m_bHaveKey; }
 	void	Set_GetKey() { m_bHaveKey = true; }
@@ -192,6 +196,14 @@ public: /* [ 림라이트 셰이딩 ] */
 	void OffLim(_float fTimeDelta);
 
 
+public: /* [ 비가 와요 ] */
+	void OnWet(_float fTimeDelta);
+	void OffWet(_float fTimeDelta);
+	void SwitchWet(_bool bWet, _float fWetSpeed);
+
+
+
+
 public:
 	CPlayerLamp* Get_PlayerLamp() { return m_pPlayerLamp; }
 
@@ -216,7 +228,9 @@ private: /* [ 이펙트 관리 함수 ]*/
 	void Create_HitEffect();
 	void Create_GuardEffect(_bool isPerfect);
 public:
-	void Create_LeftArm_Lightning();
+	void Create_LeftArm_Lightning(const _wstring& strECTag);
+	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
+	void Create_LostErgo_RimLight();
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -299,6 +313,13 @@ public:/*[스탯 관련]*/
 	CWeapon* Get_Equip_Weapon() { return m_pWeapon; }
 	CWeapon* Get_Equip_Legion();
 
+public:
+	void SetbEnding(_bool bEnding) { m_bEnding = bEnding; }
+	void Set_bEndingWalk(_bool bWalk);
+	void StartEnding(_float fTimeDelta);
+	
+
+public:
 	// 스탯 바뀌면 이제 체력, 스태미나 등등을 바꾸기...
 	void Apply_Stat();
 
@@ -322,6 +343,8 @@ private:
 private:
 	void Check_Dead_FestivalReader();
 
+	HRESULT Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale);
+
 private: /* [ 부여 속성 ] */
 	array<EELEMENTCONDITION, ELEMENT_END> m_vecElements;
 
@@ -338,6 +361,7 @@ private: /* [ 상태 변수 ] */
 
 	CPlayerState* m_pCurrentState = { nullptr };
 	CPlayerState* m_pStateArray[ENUM_CLASS(EPlayerState::END)] = { nullptr };
+
 
 private: /* [ 불타버려~ ] */
 	CTexture* m_pBurn = { nullptr };
@@ -364,6 +388,12 @@ private: /* [ 텔레포트 ] */
 
 	_bool m_bCheckRain = {};
 
+private:
+	_bool	m_bEnding = {};
+	_bool	m_bEndingWalk = {};
+	_bool	m_bEndSetting = {};
+	_float	m_fEndingTime = {};
+
 protected:
 	class CCamera_Manager* m_pCamera_Manager = { nullptr };
 	class CLockOn_Manager* m_pLockOn_Manager = { nullptr };
@@ -373,8 +403,8 @@ protected:
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 
 private: /* [ 그림자 변수 ] */
-	_vector m_vShadowCam_Eye = {};
-	_vector m_vShadowCam_At = {};
+	_float4 m_vShadowCam_Eye = {};
+	_float4 m_vShadowCam_At = {};
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*			m_pTarget = { nullptr };
@@ -397,8 +427,8 @@ private: /* [ 전투관련 변수 ] */
 
 	_float  m_fReceiveDamage = {};
 	_float  m_fPerfectGardTime = {};
-	_vector m_vHitPos = {};
-	_vector m_vHitNormal = {};
+	_float4 m_vHitPos = {};
+	_float4 m_vHitNormal = {};
 	EHitDir m_eDir = EHitDir::END;
 
 	_bool   m_bGardHit = {};
@@ -417,7 +447,7 @@ private: /* [ 이동관련 변수 ] */
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
 
-	_vector	 m_vMoveDir = {};
+	_float4	 m_vMoveDir = {};
 	_bool	 m_bSwitchLeft = {};
 	_bool	 m_bSwitchRight = {};
 	_bool	 m_bSwitchFront = {};
@@ -445,10 +475,10 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Item_Get_Walk"
 	};
 	_int m_iTestInt = { 0 };
-
+	
 private: /* [ 루트모션 관련 변수 ] */
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
+	_float4  m_PrevWorldRotation = {};
 	_bool    m_bIsFirstFrame = true;
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;
@@ -524,6 +554,9 @@ private: /* [ 벨트 슬롯 ] */
 
 private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
+	_float		m_fLostErgoRimlightAccTime = {};
+	_bool		m_bLostErgoRimlight = { false };
+
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
 

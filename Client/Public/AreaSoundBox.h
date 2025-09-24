@@ -41,10 +41,11 @@ public:
 	void SoundVolume(const string szSoundID, _float fVolume);
 	void SoundPosition(_float3 vPosition, _float fMin = 1.f, _float fMax = 10.f);
 	void SoundStop();
+	void SoundVolumeToZero();
 
 private:
 	HRESULT Ready_Components();
-
+	void Update_SoundToZero(_float fTimeDelta);
 private:
 	const _tchar*		m_szSoundID = { nullptr };
 	CSoundController*	m_pSoundCom = { nullptr };
@@ -52,6 +53,8 @@ private:
 
 	string m_strSoundName = {};
 
+	_float m_fSoundVolume = {};
+	_bool m_bSoundToZero = false;
 public:
 	static CAreaSoundBox* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

@@ -25,16 +25,6 @@
       "rotationDeg": [ 0.0, 0.0, 0.0 ],
       "triggerOffset": [ 0.0, 0.0, 0.0 ],
       "triggerSize": [ 0.2, 0.2, 2.5 ],
-      "strInBGM": "AMB_SS_Cathedral_Hall",
-      "strOutBGM": "AMB_SS_Train_Out_All",
-      "strInBGM2": "",
-      "strOutBGM2": ""
-    },
-    {
-      "vPos": [ 184.56, 8.85, -7.93 ],
-      "rotationDeg": [ 0.0, 0.0, 0.0 ],
-      "triggerOffset": [ 0.0, 0.0, 0.0 ],
-      "triggerSize": [ 0.2, 0.2, 2.5 ],
       "strInBGM": "AMB_SS_Train_Out_All",
       "strOutBGM": "AMB_SS_Rain_02",
       "strInBGM2": "",

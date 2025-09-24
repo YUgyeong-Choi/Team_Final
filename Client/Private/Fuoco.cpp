@@ -5,7 +5,6 @@
 #include "Player.h"
 #include "Projectile.h"
 #include "FlameField.h"
-#include "Static_Decal.h"
 #include "GameInstance.h"
 #include "SpringBoneSys.h"
 #include "Effect_Manager.h"
@@ -14,6 +13,7 @@
 #include "UI_MonsterHP_Bar.h"
 #include "Client_Calculation.h"
 #include "PhysX_IgnoreSelfCallback.h"
+#include "SwordTrailEffect.h"
 
 CFuoco::CFuoco(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -75,15 +75,14 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 		m_pHPBar->Set_bDead();
 
 #ifdef _DEBUG
-	static _int i = 0;
+	static _int i = -1;
 	static array<_int, 13> testArray{ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12,13 };
 
 	if (KEY_DOWN(DIK_X))
 	{
-
-		
-
-		/*cout << "현재 공격 인덱스 " << i << endl;*/
+		i++;
+		if (i >= 13)
+			i = 0;
 		m_eCurAttackPattern = static_cast<EBossAttackPattern>(i + 1);
 		switch (m_eCurAttackPattern)
 		{
@@ -130,29 +129,31 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 			cout << "Unknown" << endl;;
 			break;
 		}
-		i++;
-		if (i >= 13)
-			i = 0;
+
 	}
 
 	if (KEY_DOWN(DIK_C))
 	{
+		if (i == -1)
+			return;
 		m_pAnimator->SetInt("SkillType", testArray[i]);
 		m_pAnimator->SetTrigger("Attack");
 	}
 
-	//if (KEY_DOWN(DIK_B))
-	//{
-	//	EnterCutScene();
-	//	//m_bDebugMode = !m_bDebugMode;
-	//}
 
 	if (KEY_DOWN(DIK_V))
 	{
-		Reset();
+		m_bDebugMode = !m_bDebugMode;
+		if (m_bDebugMode)
+			cout << "디버그 모드 ON" << endl;
+		else
+			cout << "디버그 모드 OFF" << endl;
 	}
 
 #endif
+
+	if (KEY_DOWN(DIK_M))
+		m_fHp -= 200;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
@@ -161,6 +162,13 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 void CFuoco::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
+	if (m_bDeathProcessed)
+	{
+		if (auto pPlayer = dynamic_cast<CPlayer*>(m_pPlayer))
+		{
+			pPlayer->SetbEnding(true);
+		}
+	}
 
 	if (m_fFireFlameDuration > 0.f)
 	{
@@ -177,6 +185,7 @@ void CFuoco::Update(_float fTimeDelta)
 
 	if (m_pPlayer&&static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
+
 }
 
 void CFuoco::Late_Update(_float fTimeDelta)
@@ -309,12 +318,31 @@ void CFuoco::Ready_BoneInformation()
 
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Middle-Finger01"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pMiddleFingierBone = *it;
+	}
+
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
+		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-R-Forearm"); });
+
+	if (it != m_pModelCom->Get_Bones().end())
+	{
+		m_pRForearmBone = *it;
+	}
+
+	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bone001-Fist01"); });
 
 	if (it != m_pModelCom->Get_Bones().end())
 	{
 		m_pFistBone = *it;
 	}
+
+
 
 	it = find_if(m_pModelCom->Get_Bones().begin(), m_pModelCom->Get_Bones().end(),
 		[](CBone* pBone) { return !strcmp(pBone->Get_Name(), "Bip001-L-Foot"); });
@@ -338,11 +366,16 @@ void CFuoco::Update_Collider()
 
 void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
-	if (m_eCurrentState == EEliteState::CUTSCENE)
+	if (m_eCurrentState == EEliteState::DEAD || m_bDead
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY ||
+		m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
-		m_fFirstChaseBeforeAttack -= fTimeDelta;
+		if (m_eCurrentState != EEliteState::IDLE) // Idle이면 감소 안 함
+			m_fFirstChaseBeforeAttack -= fTimeDelta;
 		return;
 	}
 	// 퓨리 돌진 9번
@@ -360,6 +393,11 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 			pPlayer->SetHitedAttackType(EAttackType::FURY_AIRBORNE);
 		m_PatternCountMap[StrikeFury]++;
 		m_PatternWeightMap[StrikeFury] *= m_fWeightDecreaseRate;
+		return;
+	}
+
+	if (m_bWaitPhase2Rotate)
+	{
 		return;
 	}
 
@@ -388,11 +426,6 @@ void CFuoco::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		if (m_fAttackCooldown > 0.f)
 			return; // 공격 쿨타임이 남아있으면 업데이트 중지
 	}
-
-
-	//if (fDistance >= 25.f)
-	//	return;
-
 
 #ifdef _DEBUG
 	if (m_bDebugMode)
@@ -484,9 +517,7 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		m_eCurrentState = EEliteState::ATTACK;
 		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_SEQ3))
 		{
-
 			EffectSpawn_Active(EF_LASTSPIN, true);
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_2");
 		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(70.f);
 	}
@@ -502,37 +533,20 @@ void CFuoco::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R):
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM1):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R)
-			&& m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM1))
-		{
-		//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 	case ENUM_CLASS(BossStateID::ATK_SWING_R_COM2):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_R_COM2))
-		{
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM2):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM2))
-		{
-		//	m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_1");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
 
 	case ENUM_CLASS(BossStateID::ATK_SWING_L_COM1):
-		if (m_iPrevNodeID != ENUM_CLASS(BossStateID::ATK_SWING_L_COM1))
-		{
-			//m_pSoundCom->Play("SE_NPC_Boss_Fire_Eater_SK_WS_Long_0");
-		}
 		m_pAnimator->GetCurrentAnim()->SetTickPerSecond(55.f);
 		m_eCurrentState = EEliteState::ATTACK;
 		break;
@@ -919,7 +933,7 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Flamethrower", [this]()
 		{
-			m_fFireFlameDuration = 2.f;
+			m_fFireFlameDuration = 1.7f;
 			FlamethrowerAttack(15.f);
 		});
 
@@ -974,67 +988,11 @@ void CFuoco::Register_Events()
 
 	m_pAnimator->RegisterEventListener("DecalScratchEffect", [this]()
 		{
-#pragma region 영웅 데칼 생성코드
-			CStatic_Decal::DECAL_DESC DecalDesc = {};
-			DecalDesc.bNormalOnly = true;
-			DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal");
-			DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask");
-			DecalDesc.bHasLifeTime = true;
-			DecalDesc.fLifeTime = 5.f;
+			Spawn_Decal(m_pFistBone, 
+				TEXT("Prototype_Component_Texture_FireEater_Scratch_Normal"), 
+				TEXT("Prototype_Component_Texture_FireEater_Scratch_Mask"),
+			XMVectorSet(10.f, 0.5f, 5.f, 0));
 
-			auto worldmat = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
-
-			// 기존 월드행렬
-			_matrix World = XMLoadFloat4x4(m_pFistBone->Get_CombinedTransformationMatrix()) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
-
-			// 스케일, 회전, 위치 분해
-			_vector vScale, vRotQuat, vTrans;
-			XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
-
-			// 새 스케일 설정
-			vScale = XMVectorSet(10.f, 0.5f, 5.f, 0.f);
-
-			if (m_pNaviCom == nullptr)
-				return;
-			//네브메쉬 높이 값으로 변경
-			_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
-			vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
-
-			// Look 반대 방향
-			_matrix ParentWorld = m_pTransformCom->Get_WorldMatrix();
-
-			_vector vLook = XMVector3Normalize(-ParentWorld.r[2]);
-
-			// Up은 기존 Up을 쓰고
-			_vector vUp = XMVector3Normalize(ParentWorld.r[1]);
-
-			// Right는 Look과 Up으로 다시 계산
-			_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
-
-			// Orthonormalize (보정)
-			vUp = XMVector3Cross(vLook, vRight);
-
-			// 회전 행렬 구성
-			_matrix RotMat = XMMatrixIdentity();
-			RotMat.r[0] = vRight;
-			RotMat.r[1] = vUp;
-			RotMat.r[2] = vLook;
-
-			// 다시 합성
-			_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
-				RotMat *
-				XMMatrixTranslationFromVector(vTrans);
-
-			// 적용
-			XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-			if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-				ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-			{
-				//return E_FAIL;
-			}
-#pragma endregion
 		});
 
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
@@ -1138,8 +1096,10 @@ void CFuoco::Ready_AttackPatternWeightForPhase1()
 
 void CFuoco::Ready_AttackPatternWeightForPhase2()
 {
-	if (m_eCurrentState == EEliteState::FATAL)
+	if (m_eCurrentState == EEliteState::FATAL
+		 || m_eCurrentState == EEliteState::PARALYZATION)
 		return;
+	EffectSpawn_Active(EF_SWING_ATK, false);
 	m_pAnimator->SetTrigger("Paralyzation");
 	m_pAnimator->SetPlayRate(1.f);
 	m_bGroggyActive = false;
@@ -1154,14 +1114,22 @@ void CFuoco::Ready_AttackPatternWeightForPhase2()
 	m_PatternCountMap.clear();
 	for (const auto& pattern : m_vecBossPatterns)
 	{
-		if (pattern == P2_FireOil || pattern == P2_FireBall ||
-			pattern == P2_FireFlame || pattern == P2_FireBall_B)
+		if (pattern == P2_FireOil)
+		{
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 4.f;;
+		}
+		else if (pattern == P2_FireBall || pattern == P2_FireBall_B)
 		{
 			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 2.2f;
 		}
+		else if (pattern == P2_FireFlame)
+		{
+
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.8f;
+		}
 		else
 		{
-			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.2f;
+			m_PatternWeightMap[pattern] = m_fBasePatternWeight * 0.3f;
 		}
 
 		m_PatternCountMap[pattern] = 0;
@@ -1233,19 +1201,6 @@ void CFuoco::ChosePatternWeightByDistance(_float fDistance)
 			if (it == m_vecFarAttackPatterns.end())
 			{
 				m_PatternWeighForDisttMap[pattern] *= 0.f;
-			}
-		}
-	}
-
-	// 2페이즈 패턴 많이 보여주려고 가중치 올림
-	if (m_bIsPhase2)
-	{
-		for (auto& [pattern, weight] : m_PatternWeighForDisttMap)
-		{
-			if (pattern == P2_FireOil || pattern == P2_FireBall ||
-				pattern == P2_FireFlame || pattern == P2_FireBall_B)
-			{
-				weight *= m_fWeightIncreaseRate; // 2페이즈 패턴은 확률 높임
 			}
 		}
 	}
@@ -1397,7 +1352,7 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 	PxVec3 vRight = PxVec3(worldMatrix._11, worldMatrix._12, worldMatrix._13); // 손의 Right 방향
 	vDir.normalize();
 	vRight.normalize();
-	const _float pitchBiasDeg = 3.f;                
+	const _float pitchBiasDeg = 1.f;                
 	PxQuat qBias(XMConvertToRadians(pitchBiasDeg), vRight);
 	PxVec3 vDirBiased = qBias.rotate(vDir);
 
@@ -1439,11 +1394,14 @@ void CFuoco::FlamethrowerAttack(_float fConeAngle, _int iRayCount, _float fDista
 							pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.4f);
 							pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 						}
-						cout << "플레이어 화염방사 맞음" << endl;
 					}
-
-					// 데미지 계산 나중에 생각해보기
-					pHitActor->Get_Owner()->On_Hit(this, COLLIDERTYPE::BOSS_WEAPON);
+					else if (pHitActor->Get_Owner()->Get_Name() == TEXT("Oil"))
+					{
+						if (auto pOil = dynamic_cast<COil*>(pHitActor->Get_Owner()))
+						{
+							pOil->Explode_Oil();
+						}
+					}
 				}
 
 				m_bRayHit = true;
@@ -1487,23 +1445,16 @@ void CFuoco::Ready_EffectNames()
 {
 	m_EffectMap[EF_CUTSCENE].emplace_back(TEXT("EC_Fuoco_Cutscene_Slam"));
 	// Phase 1
-	//m_EffectMap[Uppercut] = TEXT("EC_Fuoco_Uppercut_01");
+
 	m_EffectMap[EF_SWING_ATK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 	m_EffectMap[EF_SWING_ATK].emplace_back(TEXT("EC_Fuoco_Spin3_HandSpark_P1"));
 	m_EffectMap[EF_SLAM].emplace_back(TEXT("EC_Fuoco_Slam_Imsi_P2"));
 	m_EffectMap[EF_SWING_ATK_SEQ].emplace_back(TEXT("EC_Fuoco_SpinReady_HandSpark_P2"));
 	m_EffectMap[EF_LASTSPIN].emplace_back(TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"));
-	//m_EffectMap[SlamFury] = TEXT("EC_Fuoco_SlamFury_01");
-	//m_EffectMap[FootAtk] = TEXT("EC_Fuoco_FootAtk_01");
-	//m_EffectMap[SlamAtk] = TEXT("EC_Fuoco_SlamAtk_01");
-	//m_EffectMap[StrikeFury] = TEXT("EC_Fuoco_StrikeFury_01");
 	// Phase 2
 	m_EffectMap[EF_FIRE_FLAME].emplace_back(TEXT("EC_Fuoco_FlameThrow_P1"));
 	m_EffectMap[EF_FIRE_BALL].emplace_back(TEXT("EC_Fuoco_Spawn_Fireball"));
 
-	//m_EffectMap[P2_FireOil] = TEXT("EC_Fuoco_P2_FireOil_01");
-	//m_EffectMap[P2_FireBall_B] = TEXT("EC_Fuoco_P2_FireBall_B_01");
-	//m_EffectMap[P2_FireFlame] = TEXT("EC_Fuoco_P2_FireFlame_01");
 }
 
 
@@ -1556,46 +1507,10 @@ void CFuoco::ProcessingEffects(const _wstring& stEffectTag)
 		
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
-#pragma region 영웅 데칼 생성코드
-		CStatic_Decal::DECAL_DESC DecalDesc = {};
-		DecalDesc.bNormalOnly = true;
-		DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Normal");
-		DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = TEXT("Prototype_Component_Texture_FireEater_Slam_Mask");
-		DecalDesc.bHasLifeTime = true;
-		DecalDesc.fLifeTime = 5.f;
-
-		// 기존 월드행렬
-		_matrix World = XMLoadFloat4x4(socketPtr) * XMLoadFloat4x4(parentPtr);
-
-		// 스케일, 회전, 위치 분해
-		_vector vScale, vRotQuat, vTrans;
-		XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, World);
-
-		// 새 스케일 설정
-		vScale = XMVectorSet(8.f, 0.5f, 8.f, 0.f);
-
-		//네브메쉬 높이 값으로 변경
-		if (m_pNaviCom == nullptr)
-			return;
-		_vector vNavPos = m_pNaviCom->SetUp_Height(m_pTransformCom->Get_State(STATE::POSITION));
-
-		vTrans = XMVectorSetY(vTrans, XMVectorGetY(vNavPos));
-
-		// 다시 합성
-		_matrix NewWorld = XMMatrixScalingFromVector(vScale) *
-			XMMatrixIdentity() *
-			XMMatrixTranslationFromVector(vTrans);
-
-		// 적용
-		XMStoreFloat4x4(&DecalDesc.WorldMatrix, NewWorld);
-
-		if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
-			ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
-		{
-			//return E_FAIL;
-		}
-#pragma endregion
+		Spawn_Decal(m_pFistBone,
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(10.f, 0.5f, 10.f, 0));
 
 	}
 	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_LastSpinFlame_S1P1_wls"))
@@ -1735,11 +1650,29 @@ HRESULT CFuoco::Ready_Effect()
 
 	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fuoco_HeadSmoke2"), static_cast<CEffectContainer*>(pEC));
 
+
+
+	/************************ 소드 트레일 이펙트 **************************/
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.iLevelID = m_iLevelID;
+
+	desc.pInnerSocketMatrix = m_pRForearmBone->Get_CombinedTransformationMatrix();
+	desc.pOuterSocketMatrix = m_pMiddleFingierBone->Get_CombinedTransformationMatrix();
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_FireEater"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
+	m_pTrailEffect->Set_TrailActive(false);
 	return S_OK;
 }
 
 void CFuoco::Ready_SoundEvents()
 {
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 60.f);
+		m_pSoundCom->SetVolume(1.f);
+	}
 	m_pAnimator->RegisterEventListener("MoveSound", [this]()
 	{
 	   m_pSoundCom->Play_Random("SE_NPC_FS_Boss_Fire_Eater_Stone_", 4); 
@@ -1910,6 +1843,15 @@ void CFuoco::Ready_SoundEvents()
 			}
 		});
 
+	m_pAnimator->RegisterEventListener("RockDebrisSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Rock_Debris_L_01");
+				m_pSoundCom->Play("SE_NPC_MT_Dust_M_01");
+			}
+		});
+
 }
 
 void CFuoco::UpdatePatternWeight(_int iPattern)
@@ -1943,6 +1885,7 @@ _bool CFuoco::CheckConditionFlameField()
 			m_bUsedFlameFiledOnLowHp = true;
 			m_pAnimator->SetTrigger("Attack");
 			m_pAnimator->SetPlayRate(1.f);
+
 		}
 		else
 		{
@@ -1956,11 +1899,32 @@ _bool CFuoco::CheckConditionFlameField()
 		}
 		m_pAnimator->SetBool("Move", false);
 		m_eCurrentState = EEliteState::ATTACK;
+		EffectSpawn_Active(EF_SWING_ATK, false);
 		return true;
 	}
 	return false;
 }
 
+
+void CFuoco::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("왕의 불꽃 푸오코");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+}
 
 void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {

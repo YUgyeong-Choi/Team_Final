@@ -17,6 +17,31 @@ CUI_Levelup::CUI_Levelup(const CUI_Levelup& Prototype)
 {
 }
 
+void CUI_Levelup::Set_bDead()
+{
+	m_bDead = true;
+
+	for (auto& pObj : m_PartObjects)
+		pObj->Set_bDead();
+
+	m_pErgoInfo->Set_bDead();
+	m_pLevelUpButton->Set_bDead();
+	m_pAbilInfo->Set_bDead();
+	m_pWeaponInfo->Set_bDead();
+	m_pLegionInfo->Set_bDead();
+	m_pArmorInfo->Set_bDead();
+	m_pBehindButtons->Set_bDead();
+
+	for (auto& pContainer : m_pStatButtons)
+		pContainer->Set_bDead();
+
+	for (auto& pConatiner : m_pWeaponStat)
+		pConatiner->Set_bDead();
+
+	if (m_isRenderCorfirmUI)
+		m_pConfirmUI->Set_bDead();
+}
+
 HRESULT CUI_Levelup::Initialize_Prototype()
 {
 	return S_OK;
@@ -130,7 +155,7 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 
 			pStar->Script_Activate();
 			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
-			return;
+			
 		}
 
 
@@ -143,9 +168,11 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 		{
 			m_pPlayer->Set_Player_Level(m_iLevel);
 			m_pPlayer->Set_Stat(m_eStat);
+			m_pPlayer->Set_Ergo(m_fCurrentErgo);
+
 			m_pPlayer->Apply_Stat();
 
-			m_pPlayer->Set_Ergo(m_fCurrentErgo);
+			
 
 			m_pErgoInfo->Get_PartUI()[1]->Set_Color({ 1.f,1.f,1.f,1.f });
 			
@@ -203,6 +230,9 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 			m_pLevelUpButton->Get_PartUI()[2]->Set_Alpha(0.f);
 
 			m_isRenderCorfirmUI = false;
+
+
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_LevelUP");
 		}
 		else
 		{
@@ -213,12 +243,13 @@ void CUI_Levelup::Priority_Update(_float fTimeDelta)
 				_wstring strErgo = to_wstring(static_cast<_int>(m_fErgo - m_fCurrentErgo));
 				static_cast<CDynamic_Text_UI*>(m_pConfirmUI->Get_PartUI().back())->Set_Caption(strErgo);
 
+				CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
 				
 			}
 				
 		}
 
-		CUI_Manager::Get_Instance()->Sound_Play("SE_UI_Btn_Selected_Default_03");
+		
 
 		return;
 	}

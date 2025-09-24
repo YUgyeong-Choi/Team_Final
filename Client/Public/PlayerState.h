@@ -26,6 +26,7 @@
 #include "ErgoItem.h"
 
 #include "Client_Calculation.h"
+#include "Level_KratCentralStation.h"
 
 
 NS_BEGIN(Client)
@@ -759,6 +760,8 @@ public:
             }
         }
 
+        m_pOwner->m_pUseItem = m_pOwner->m_pSelectItem;
+
         /* [ 디버깅 ] */
         printf("Player_State : %ls \n", GetStateName());
     }
@@ -780,14 +783,14 @@ public:
 				m_bGrinderEnd = false;
                 m_fGrinderTime = 0.f;
                 m_pOwner->m_pAnimator->SetBool("Grinding", true);
-                m_pOwner->m_pSelectItem->Activate(true);
+                m_pOwner->m_pUseItem->Activate(true);
             }
 
             if (KEY_UP(DIK_R))
             {
                 m_bGrinderEnd = true;
                 m_pOwner->m_pAnimator->SetBool("Grinding", false);
-                m_pOwner->m_pSelectItem->Activate(false);
+                m_pOwner->m_pUseItem->Activate(false);
             }
 
             if (m_bGrinderEnd)
@@ -822,10 +825,9 @@ public:
         m_bDoOnce = false;
         m_pOwner->LimActive(false, 1.5f, { 0.1f ,0.15f, 1.f, 1.f });
 
-        if (m_pOwner->m_isSelectUpBelt)
-            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseUpSelectItem"), m_pOwner-> m_pSelectItem);
-        else
-            m_pGameInstance->Notify(TEXT("Slot_Belts"), TEXT("UseDownSelectItem"), m_pOwner-> m_pSelectItem);
+        m_pOwner->m_pUseItem->Activate(false);
+
+        m_pOwner->m_pUseItem = nullptr;
         
     }
 
@@ -892,6 +894,7 @@ public:
         _int iCount = m_pOwner->m_pSelectItem->Get_UseCount();
         if (iCount > 0)
             bUse = true;
+
 
         return bUse;
     }
@@ -1369,6 +1372,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKB;
             if (m_bAttackB && IsStaminaEnough(1.f))
@@ -1494,6 +1500,9 @@ public:
 
         if (0.8f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackA && IsStaminaEnough(1.f))
                 return EPlayerState::WEAKATTACKA;
             if (m_bAttackB && IsStaminaEnough(1.f))
@@ -1627,6 +1636,9 @@ public:
 
         if (0.75f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKB;
             if (m_bAttackA && IsStaminaEnough(1.f))
@@ -1757,6 +1769,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (m_bAttackB && IsStaminaEnough(1.f))
                 return EPlayerState::STRONGATTACKA;
             if (m_bAttackA && IsStaminaEnough(1.f))
@@ -1885,6 +1900,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -1993,6 +2011,10 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
+
             if (KEY_UP(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2101,8 +2123,16 @@ public:
                     m_pCamera_Manager->GetCurCam()->StartRot(vRot, 0.4f);
                     m_pCamera_Manager->GetCurCam()->StartShake(0.15f, 0.35f);
 
-                    m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_", 3);
-
+                    if (m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_AIRBORNE
+                        || m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_STAMP
+                        || m_pOwner->m_eHitedAttackType == CEliteUnit::EAttackType::FURY_KNOCKBACK)
+                    {
+                        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_Metal_Fury_0", 3,1);
+                    }
+                    else
+                    {
+                        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Sword_PerfectGuard_", 3);
+                    }
                 }
                 else
                 {
@@ -2454,6 +2484,9 @@ public:
 
         if (1.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2570,6 +2603,9 @@ public:
 
         if (2.f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2673,6 +2709,9 @@ public:
 
         if (1.5f < m_fStateTime)
         {
+            if (KEY_PRESSING(DIK_LSHIFT))
+                return EPlayerState::GARD;
+
             if (KEY_DOWN(DIK_SPACE))
                 return EPlayerState::BACKSTEP;
 
@@ -2976,6 +3015,10 @@ public:
 
         /* [ 애니메이션 설정 ] */
         m_pOwner->m_pAnimator->SetTrigger("Fatal");
+        if (m_pOwner->m_pSoundCom)
+        {
+            m_pOwner-> m_pSoundCom->Play("SE_PC_MT_Body_Motor_06");
+        }
         m_pOwner->m_bIsInvincible = true;
 
         _float fDamageRatio = m_pGameInstance->Compute_Random(1.2f, 1.7f);;
@@ -3303,8 +3346,13 @@ public:
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);
         m_pOwner->SetFatalTargetNull();
-
         m_pOwner->SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
+
+        /* [ 사운드가 안멈춰.. ㅜㅜ ] */
+        m_pOwner->m_vecElements[0].fElementWeight = 0.f;
+        m_pOwner->m_vecElements[0].fDuration = 0.f;
+
+        m_pOwner->m_pSoundCom->StopAll();
     }
 
     virtual void Execute(_float fTimeDelta) override
@@ -3368,7 +3416,6 @@ public:
             m_pOwner->Reset();
             m_pOwner->WeaponReset();
 
-
             /* [ 무기 장착 해제 ] */
             m_pOwner->m_pAnimator->CancelOverrideAnimController();
             m_pOwner->m_pWeapon->SetbIsActive(false);
@@ -3382,12 +3429,19 @@ public:
             PxVec3 pxPos(m_pOwner->m_vTeleportPos.x, m_pOwner->m_vTeleportPos.y, m_pOwner->m_vTeleportPos.z);
             PxTransform posTrans = PxTransform(pxPos);
             m_pOwner->m_pControllerCom->Set_Transform(posTrans);
+            m_pOwner->m_pTransformCom->Set_State(STATE::POSITION, Float3ToVec(m_pOwner->m_vTeleportPos, 1.f));
+
+            /* [ 플레이어가 속한 구역탐색 ] */
+            m_pGameInstance->SetPlayerPosition(m_pOwner->m_pTransformCom->Get_State(STATE::POSITION));
+            m_pGameInstance->FindAreaContainingPoint();
+
             m_pOwner->m_pAnimator->SetTrigger("Teleport");
 
             XMVECTOR backDir = XMVector3Normalize(m_pOwner->m_pTransformCom->Get_State(STATE::LOOK)) * -1;
             CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_TargetYawPitch(backDir, 15.f, false);
            
 
+            // 사운드 
             // 페이드 되도록
 
             CUI_Container::UI_CONTAINER_DESC eDesc = {};
@@ -3406,7 +3460,29 @@ public:
             m_pOwner->SwitchDissolve(true, 0.35f, _float3{ 0.f, 0.749f, 1.f }, {});
             // 이거 지금 부활 위치 고정이라 비 껐는데 별바라기로 변경 후엔 별바라기 위치 확인 후 끌지말지 결정
             m_pOwner->Check_RainArea();
-         
+            if (auto pLevel = dynamic_cast<CLevel_KratCentralStation*>(m_pGameInstance->Get_CurrentLevel()))
+            {
+                pLevel->Apply_AreaBGM();
+            }
+
+	/*		AREAMGR areaMgr = m_pGameInstance->GetCurrentAreaMgr();
+            switch (areaMgr)
+            {
+            case Engine::AREAMGR::STATION:
+                m_pGameInstance->Change_BGM("AMB_SS_Train_Out_Rain");
+                break;
+            case Engine::AREAMGR::HOTEL:
+                m_pGameInstance->Change_BGM("AMB_SS_Cathedral_Hall");
+                break;
+            case Engine::AREAMGR::FUOCO:
+                break;
+            case Engine::AREAMGR::OUTER:
+            case Engine::AREAMGR::FESTIVAL:
+                m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+                break;
+            default:
+                break;
+            }*/
         }
 
 
@@ -3439,8 +3515,6 @@ public:
                     m_pOwner->m_isMakeGuide = true;
                 }
             }
-
-           
             
         }
 

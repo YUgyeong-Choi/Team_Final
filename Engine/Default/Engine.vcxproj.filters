@@ -50,7 +50,7 @@
       <Filter>01.Utility\03.GameObject\UIObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Prototype_Manager.h">
-      <Filter>01.Utility\02.Prototypes\Manager</Filter>
+      <Filter>01.Utility\01.Levels\02.Prototypes\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Object_Manager.h">
       <Filter>01.Utility\03.GameObject\Manager</Filter>
@@ -295,7 +295,7 @@
       <Filter>01.Utility\03.GameObject\UIObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Prototype_Manager.cpp">
-      <Filter>01.Utility\02.Prototypes\Manager</Filter>
+      <Filter>01.Utility\01.Levels\02.Prototypes\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Object_Manager.cpp">
       <Filter>01.Utility\03.GameObject\Manager</Filter>
@@ -524,9 +524,6 @@
     <Filter Include="01.Utility\99.SuperClass">
       <UniqueIdentifier>{c5c38433-b538-4e7b-891b-4809c69188f3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02.Prototypes">
-      <UniqueIdentifier>{d2429872-c1dd-4c52-8409-10ceab1000df6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.GameObject">
       <UniqueIdentifier>{8542546c-1517-43a4-a3ed-c7e1ed5245ec}</UniqueIdentifier>
     </Filter>
@@ -538,9 +535,6 @@
     </Filter>
     <Filter Include="01.Utility\04.Components\Transform">
       <UniqueIdentifier>{6b3d22a0-5c82-4ff4-a7fe-543e619d38f6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02.Prototypes\Manager">
-      <UniqueIdentifier>{4689e40f-5977-4a2b-9f9c-62be8b7df8df}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\03.GameObject\Manager\Layer">
       <UniqueIdentifier>{93c98eaf-40e7-4a00-931e-326aee0dbe94}</UniqueIdentifier>
@@ -757,6 +751,12 @@
     </Filter>
     <Filter Include="01.Utility\18.PullingManager">
       <UniqueIdentifier>{1924153b-0cfc-4244-a93e-6801760e21a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\01.Levels\02.Prototypes">
+      <UniqueIdentifier>{d2429872-c1dd-4c52-8409-10ceab1000df6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\01.Levels\02.Prototypes\Manager">
+      <UniqueIdentifier>{4689e40f-5977-4a2b-9f9c-62be8b7df8df}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -60,12 +60,15 @@
 #include "KeyDoor.h"
 #include "BossDoor.h"
 #include "ShortCutDoor.h"
+#include "BossRetryDoor.h"
+#include "FinalDoor.h"
 #include "TriggerSound.h"
 #include "TriggerTalk.h"
 #include "TriggerUI.h"
 #include "TriggerBGM.h"
 #include "TriggerRain.h"
 #include "TriggerItemLamp.h"
+#include "Trigger_Effect.h"
 #pragma endregion
 
 #pragma region LEVEL_DH
@@ -302,6 +305,8 @@ HRESULT CLoader::Loading_For_Static()
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Test_20_30_3.json"))))
 		return E_FAIL;
+	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_FireEater.json"))))
+		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_Skill.json"))))
 		return E_FAIL;
 	if (FAILED(CEffect_Manager::Get_Instance()->Ready_Effect(TEXT("../Bin/Save/Effect/TE_BloodTest.json"))))
@@ -486,7 +491,23 @@ HRESULT CLoader::Loading_For_Static()
 HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 {
 
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
+	lstrcpy(m_szLoadingText, TEXT("Lies Of P .. Loading"));
+
+	//푸오코 기름 데칼
+	/* For.Prototype_Component_Texture_FireEater_Oil_ARMT*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_ARMT"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_BloodSpot_38_ARMT.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FireEater_Oil_N*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_N"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_BloodClip_01_N_KMH.dds")))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_FireEater_Oil_BC*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FireEater_Oil_BC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_Dust_01_BC.dds")))))
+		return E_FAIL;
 
 	//땅찍기 데칼
 	/* For.Prototype_Component_Texture_FireEater_Slam_Mask*/
@@ -510,12 +531,19 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_12_N_KMH.dds")))))
 		return E_FAIL;
 
-	m_fRatio = 0.1f;
+	//인도자 두손 모아 찍기 데칼
+	/* For.Prototype_Component_Texture_FestivalLeader_TwoHand_Mask*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_C_LKM.dds")))))
+		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
+	/* For.Prototype_Component_Texture_FestivalLeader_TwoHand_Normal*/
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Decal/T_Decal_01_N_LKM.dds")))))
+		return E_FAIL;
+
 	m_fRatio = 0.2f;
 
-	lstrcpy(m_szLoadingText, TEXT("모델을(를) 로딩중입니다."));
 
 	/* [ 메인 플레이어 로딩 ] */
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
@@ -523,6 +551,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Player"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_PlayerWet"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/Player/T_CH_PC_Pino_01A_Body_Upper_Wet_BC.dds")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PlayerWeapon"),
@@ -556,6 +587,9 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FestivalLeader"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalLeader/FestivalLeader.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.004f, 0.004f, 0.004f) * XMMatrixRotationY(XMConvertToRadians(-90.f));
@@ -651,6 +685,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_SM_Station_TrainDoor"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/SM_Station_TrainDoor_01.bin", PreTransformMatrix))))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_FestivalRetryDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/FestivalRetryDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_PuocoRetryDoor"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/PuocoRetryDoor.bin", PreTransformMatrix))))
+		return E_FAIL;
 	
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(-180.f));
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_StationInnerDoor"),
@@ -697,16 +738,14 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/HeavyLockSmall/HeavyLockSmall.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.001f, 0.001f, 0.001f);
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Model_Oil"),
+		CModel::Create(m_pDevice, m_pContext, MODEL::NONANIM, "../Bin/Resources/Models/Bin_NonAnim/Oil_Ball.bin", PreTransformMatrix))))
+		return E_FAIL;
+
 	m_fRatio = 0.4f;
 
-
-	lstrcpy(m_szLoadingText, TEXT("네비게이션을(를) 로딩중입니다."));
-
-	m_fRatio = 0.6f;
-	lstrcpy(m_szLoadingText, TEXT("사운드을(를) 로딩중입니다."));
-
 	m_fRatio = 0.7f;
-	lstrcpy(m_szLoadingText, TEXT("원형객체을(를) 로딩중입니다."));
 
 	/* [ 메인 플레이어 로딩 ] */
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Player"),
@@ -811,6 +850,10 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CTriggerRain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerEffect"),
+		CTrigger_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_TriggerItemLamp"),
 		CTriggerItemLamp::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -837,6 +880,13 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 		CShortCutDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_BossRetryDoor"),
+		CBossRetryDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_FinalDoor"),
+		CFinalDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_AnimatedProp"),
 		CAnimatedProp::Create(m_pDevice, m_pContext))))
@@ -909,7 +959,7 @@ HRESULT CLoader::Loading_For_KRAT_CENTERAL_STATION()
 
 #pragma region 맵 로딩
 
-	lstrcpy(m_szLoadingText, TEXT("맵 생성 시작!!..."));
+	lstrcpy(m_szLoadingText, TEXT("Lies Of P .. Loading_Map"));
 
 	m_pGameInstance->ClaerOctoTreeObjects();
 
@@ -1346,7 +1396,9 @@ HRESULT CLoader::Loading_For_DH()
 HRESULT CLoader::Loading_For_JW()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
-
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -2199,6 +2251,9 @@ HRESULT CLoader::Loading_For_CY()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐을(를) 로딩중입니다."));
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::CY), TEXT("Prototype_Component_Texture_PlayerWet"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/Player/T_CH_PC_Pino_01A_Body_Upper_Wet_BC.dds")))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더을(를) 로딩중입니다."));
 
@@ -2350,6 +2405,10 @@ HRESULT CLoader::Loading_For_YG()
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Player/Player.bin", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Texture_PlayerWet"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/Player/T_CH_PC_Pino_01A_Body_Upper_Wet_BC.dds")))))
+		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_PlayerWeapon"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/Weapon/Bayonet.bin", PreTransformMatrix))))
 		return E_FAIL;
@@ -2381,6 +2440,10 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Model_FestivalLeader"),
 		CModel::Create(m_pDevice, m_pContext, MODEL::ANIM, "../Bin/Resources/Models/Bin_Anim/FestivalLeader/FestivalLeader.bin", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Models/Bin_Anim/FestivalLeader/T_CH_MOB_FestivalLeader_01A_Basic_Upper_E.png")))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Model_Buttler_Train_Weapon"),
@@ -2646,6 +2709,10 @@ HRESULT CLoader::Loading_For_YG()
 
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
 		CShortCutDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FinalDoor"),
+		CFinalDoor::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

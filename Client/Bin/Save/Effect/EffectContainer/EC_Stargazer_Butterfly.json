@@ -164,7 +164,7 @@
             "Name": "stargazer_butterfly1",
             "NumKeyFrames": 5,
             "RenderGroup": 8,
-            "ShaderPass": 4,
+            "ShaderPass": 5,
             "StartTrack": 0,
             "TextureTags": [
                 "T_Noise_02_C_LKM",
@@ -302,7 +302,7 @@
             "StartTrack": 0,
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
-                "T_Shere_05_C_HJS",
+                "",
                 "T_Shere_05_C_HJS",
                 "",
                 ""

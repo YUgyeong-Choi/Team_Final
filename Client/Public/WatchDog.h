@@ -49,12 +49,15 @@ public:
 	void Calc_Pos(_float fTimeDelta);
 
 	virtual void Register_Events();
+	virtual void Register_SoundEvent() override;
 
 	virtual void Block_Reaction();
 
 	virtual void Reset() override;
+	virtual void PlayDetectSound();
 private:
 	HRESULT Ready_Weapon();
+	virtual HRESULT Ready_Sound() override;
 
 private:
 	class CWeapon_Monster* m_pWeapon = { nullptr };
@@ -71,6 +74,8 @@ private:
 	CBone* m_pHeadBone = { nullptr };
 
 	_bool  m_isInit = { false };
+
+	_bool  m_bHitSound = {true};
 
 	//int m_iShapeTestState = 0; // 0: Box, 1: Sphere, 2: Capsule
 	//PxBoxGeometry m_DebugBox = PxBoxGeometry(1.0f, 2.0f, 1.0f);

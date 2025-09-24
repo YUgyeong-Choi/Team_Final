@@ -17,7 +17,7 @@ void CPulling_Manager::Add_PoolObject(const _wstring& wsLayerName, CGameObject* 
 	m_ObjectPools[wsLayerName].push(pObj);
 }
 
-void CPulling_Manager::Use_PoolObject(const _wstring& wsLayerName)
+void CPulling_Manager::Use_PoolObject(const _wstring& wsLayerName, _bool bReset)
 {
     auto it = m_ObjectPools.find(wsLayerName);
     if (it == m_ObjectPools.end() || it->second.empty())
@@ -30,11 +30,12 @@ void CPulling_Manager::Use_PoolObject(const _wstring& wsLayerName)
     if (!pObj) return;
 
     const int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
-    pObj->Reset();
+    if(bReset)
+        pObj->Reset();
     m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
 }
 
-void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName)
+void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset)
 {
     auto it = m_ObjectPools.find(wsLayerName);
     if (it == m_ObjectPools.end() || it->second.empty())
@@ -50,35 +51,37 @@ void CPulling_Manager::UseAll_PoolObjects(const _wstring& wsLayerName)
         queueObjs.pop();
 
         if (!pObj) continue; 
-
-        pObj->Reset();
+        if (bReset)
+            pObj->Reset();
         m_pGameInstance->Push_GameObject(pObj, levelIdx, wsLayerName);
     }
 }
 
 
-void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+void CPulling_Manager::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 {
     const _int levelIdx = m_pGameInstance->GetCurrentLevelIndex();
     CGameObject* pReturnObj = m_pGameInstance->Recycle_GameObject(pObj, levelIdx, wsLayerName);
     if (!pObj)
         return;
-
+    if(bReset)
+        pReturnObj->Reset();
     m_ObjectPools[wsLayerName].push(pReturnObj);
 }
 
-void CPulling_Manager::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+void CPulling_Manager::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 {
     RemoveObject desc{};
     desc.layerName = wsLayerName;
     desc.pObj = pObj;
+    desc.bReset = bReset;
     m_RemoveObjects.push_back(desc);
 }
 
 void CPulling_Manager::RemoveObjMagr_PushPullingMgr()
 {
     for (auto& obj : m_RemoveObjects)
-        Return_PoolObject(obj.layerName, obj.pObj);
+        Return_PoolObject(obj.layerName, obj.pObj, obj.bReset);
 
     m_RemoveObjects.clear();
 }

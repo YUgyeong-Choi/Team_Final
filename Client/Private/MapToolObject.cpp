@@ -531,6 +531,8 @@ void CMapToolObject::Free()
 		Safe_Release(m_pModelCom[i]);
 	}
 
+	if (m_pEffect)
+		m_pEffect->Set_bDead();
 	//m_pEffect->End_Effect();
 
 	Safe_Release(m_pShaderCom);

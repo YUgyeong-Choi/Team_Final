@@ -89,8 +89,8 @@ NavigationEdge* CCell::FindEdge(_fvector vPosition)
 	if (iBestIndex != -1)
 	{
 		// 침범한 Edge 중 가장 깊은 것 하나만 기준으로 반환
-		m_LastEdge.vDir = _vector{ -m_vNormals[iBestIndex].z, 0.f, m_vNormals[iBestIndex].x, 0.f };
-		m_LastEdge.vNormal = XMLoadFloat3(&m_vNormals[iBestIndex]);
+		m_LastEdge.vDir = _float4{ -m_vNormals[iBestIndex].z, 0.f, m_vNormals[iBestIndex].x, 0.f };
+		m_LastEdge.vNormal = m_vNormals[iBestIndex];
 
 		return &m_LastEdge;
 	}

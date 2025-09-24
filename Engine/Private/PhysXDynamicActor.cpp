@@ -91,11 +91,27 @@ void CPhysXDynamicActor::Set_ShapeFlag(_bool bSimulation, _bool bTrigger, _bool 
 
 void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
 {
-	m_pShape->setSimulationFilterData(_data);
-	if (Get_Actor() && Get_Actor()->getScene())
+	if (!m_pShape)
 	{
-		m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+		return;
 	}
+
+	m_pShape->setSimulationFilterData(_data);
+
+	// 모든 포인터 안전성 체크 후 즉시 적용
+	if (Get_Actor() && Get_Actor()->getScene() && m_pGameInstance && m_pGameInstance->Get_Scene())
+	{
+		try
+		{
+			m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+		}
+		catch (...)
+		{
+			// resetFiltering 실패 시에도 필터 데이터는 설정되었으므로 계속 진행
+			OutputDebugString(L"[WARNING] resetFiltering failed, but filter data is set\n");
+		}
+	}
+
 	m_filterData = _data;
 #ifdef _DEBUG
 	m_bReadyForDebugDraw = true;
@@ -104,13 +120,28 @@ void CPhysXDynamicActor::Set_SimulationFilterData(PxFilterData _data)
 
 void CPhysXDynamicActor::Init_SimulationFilterData()
 {
+	if (!m_pShape)
+	{
+		return;
+	}
+
 	PxFilterData filterData{};
 	filterData.word0 = 0;
-	filterData.word1 = 0; 
+	filterData.word1 = 0;
+
 	m_pShape->setSimulationFilterData(filterData);
-	if (Get_Actor() && Get_Actor()->getScene())
+
+	// 모든 포인터 안전성 체크 후 즉시 적용
+	if (Get_Actor() && Get_Actor()->getScene() && m_pGameInstance && m_pGameInstance->Get_Scene())
 	{
-		m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+		try
+		{
+			m_pGameInstance->Get_Scene()->resetFiltering(*Get_Actor());
+		}
+		catch (...)
+		{
+			OutputDebugString(L"[WARNING] resetFiltering failed in Init\n");
+		}
 	}
 #ifdef _DEBUG
 	m_bReadyForDebugDraw = false;

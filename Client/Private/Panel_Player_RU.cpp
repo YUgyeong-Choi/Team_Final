@@ -38,7 +38,7 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), this, [this](_wstring eventType, void* data) {
 		if (L"CurrentErgo" == eventType)
 		{
 
@@ -49,13 +49,13 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 			
 			m_PartObjects[0]->Set_Color({ 1.f,1.f,1.f,1.f });
 
-			_int iDelat = static_cast<_int>((m_fErgo - m_fPreErgo));
+			_int iDelta = static_cast<_int>((m_fErgo - m_fPreErgo));
 			_wstring strAdd = {};
 
-			if(iDelat> 0)
-				strAdd = L"+" + to_wstring(static_cast<_int>((iDelat)));
+			if(iDelta > 0)
+				strAdd = L"+" + to_wstring(static_cast<_int>((iDelta)));
 			else
-				strAdd = to_wstring(static_cast<_int>((iDelat)));
+				strAdd = to_wstring(static_cast<_int>((iDelta)));
 
 			static_cast<CUI_Text*>(m_PartObjects[0])->Set_Caption(strAdd);
 			static_cast<CDynamic_Text_UI*>(m_PartObjects[1])->Set_Caption(to_wstring(static_cast<_int>(m_fErgo)));
@@ -83,6 +83,22 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 
 			m_fMaxErgo = *static_cast<_float*>(data);
 
+			_float fRatio = m_fErgo / m_fMaxErgo;
+
+			if (fRatio > 1.f)
+			{
+				fRatio = 1.f;
+				m_PartObjects[1]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+				m_PartObjects[2]->Set_Color({ 0.08f,0.5f,0.5f,1.f });
+			}
+			else
+			{
+				m_PartObjects[1]->Set_Color({ 1.f,1.f,1.f,1.f });
+				m_PartObjects[2]->Set_Color({ 1.f,1.f,1.f,1.f });
+			}
+
+			static_cast<CErgo_Bar*>(m_PartObjects[2])->Set_Ratio(fRatio);
+
 		}
 		else if (L"UseErgo" == eventType)
 		{
@@ -100,6 +116,11 @@ HRESULT CPanel_Player_RU::Initialize(void* pArg)
 void CPanel_Player_RU::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 
 	if (m_isChange)
 	{

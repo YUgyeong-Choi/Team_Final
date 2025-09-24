@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "DynamicMesh.h"
 
 NS_BEGIN(Engine)
 class CModel;
@@ -104,7 +103,7 @@ private:
 
 private:
 	//몇초뒤 렌더링과, 콜라이더도 빼주자
-	const _float m_fTime_Invisible = { 8.f };
+	const _float m_fTime_Invisible = { 5.f };
 	_float m_fTimeAcc = { 0.f };
 	_bool m_bInvisible = { false };
 
@@ -114,6 +113,11 @@ private:
 private:
 	//푸오코 보스 기둥만 매커니즘이 좀 달라서 이렇게 처리해버려야겠다. 새로운 클래스 파기 너무 번거로울 듯
 	_bool m_bFireEaterBossPipe = { false };
+
+private:
+	_bool m_bMakeEffect = { false };
+	
+
 
 private:    
 

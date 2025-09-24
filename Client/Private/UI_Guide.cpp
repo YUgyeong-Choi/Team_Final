@@ -93,7 +93,11 @@ HRESULT CUI_Guide::Initialize(void* pArg)
 
         list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Monster_Normal"));
         for (auto& obj : objList)
-            obj->Set_TimeScale(0.0000001f);
+        {
+            if (obj)
+                obj->Set_TimeScale(0.0000001f);
+        }
+
 
         CGameObject* pPlayer = m_pGameInstance->Get_LastObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Player"));
         pPlayer->Set_TimeScale(0.0000001f);

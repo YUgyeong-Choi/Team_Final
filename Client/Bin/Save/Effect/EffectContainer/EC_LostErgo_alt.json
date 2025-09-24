@@ -1,0 +1,1103 @@
+{
+    "EffectObject": [
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.4588235318660736,
+                0.46666666865348816,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.4586498439311981,
+                        0.46596860885620117,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.75,
+                        0.75,
+                        0.75
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.4588235318660736,
+                        0.46666666865348816,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.6000000238418579
+                    ],
+                    "TrackPosition": 48.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.4588235318660736,
+                        0.46666666865348816,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.75,
+                        0.75,
+                        0.75
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 8094.5048828125,
+            "Loop": true,
+            "ModelTag": "SM_Sphere_02_KMH",
+            "Name": "LostErgo_Spheremesh1",
+            "NumKeyFrames": 3,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Galaxy_01_C_RSW",
+                "T_WaterDrop_02_C_GDH",
+                "T_Mask_09_C_GDH",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.0,
+                0.4588235318660736,
+                0.46666666865348816,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 0.0,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.4588235318660736,
+                        0.46666666865348816,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.6000000238418579
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.4588235318660736,
+                        0.46666666865348816,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.699999988079071,
+                        0.699999988079071,
+                        0.699999988079071
+                    ],
+                    "TrackPosition": 100.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.0,
+                        0.4588235318660736,
+                        0.46666666865348816,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.6000000238418579,
+                        0.6000000238418579,
+                        0.6000000238418579
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 8094.01318359375,
+            "Loop": true,
+            "ModelTag": "SM_Sphere_02_KMH",
+            "Name": "LostErgo_Spheremesh2",
+            "NumKeyFrames": 3,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Galaxy_01_C_RSW",
+                "T_Mask_14_C_HJS",
+                "T_Mask_17_C_HJS",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.4156862795352936,
+                0.6666666865348816,
+                0.9686274528503418,
+                0.9883489012718201
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 2.3499999046325684,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.41583290696144104,
+                        0.6647171974182129,
+                        0.9685863852500916,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        0.699999988079071,
+                        1.5
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.01675477623939514,
+                        -0.10000000149011612,
+                        0.2749596834182739
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        1.0,
+                        1.5
+                    ],
+                    "TrackPosition": 56.0,
+                    "Translation": [
+                        0.017000000923871994,
+                        0.0,
+                        0.2750000059604645
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.5,
+                        2.0,
+                        1.5
+                    ],
+                    "TrackPosition": 179.0,
+                    "Translation": [
+                        0.017000000923871994,
+                        0.5,
+                        0.2750000059604645
+                    ]
+                }
+            ],
+            "LifeTime": 8092.79248046875,
+            "Loop": true,
+            "ModelTag": "SM_Helix_03_GDH",
+            "Name": "LostErgo_Helixmesh1",
+            "NumKeyFrames": 3,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Line_05_C_GDH",
+                "T_Line_02_C_GDH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Accel": [
+                -2.2100000381469727,
+                -1.1299999952316284
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "Gravity": -0.20000000298023224,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 12099.748046875,
+            "LifeTime_Particle": [
+                1.0,
+                2.0
+            ],
+            "Local": true,
+            "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -1.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.20000000298023224,
+            "Name": "LostErgo_RaisingParticle1",
+            "NumInstance": 40,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.2314550280570984,
+                0.9449111223220825,
+                0.2314550280570984
+            ],
+            "OrbitSpeed": [
+                -50.0,
+                50.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -1.0299999713897705,
+                0.0
+            ],
+            "Range": [
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.019999999552965164,
+                0.03999999910593033
+            ],
+            "Speed": [
+                1.0,
+                2.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                0.07368218898773193,
+                0.2937643527984619,
+                0.5026178359985352,
+                0.05759161710739136
+            ],
+            "Color": [
+                0.0659247413277626,
+                0.17223279178142548,
+                0.3403141498565674,
+                0.010471224784851074
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 5.599999904632568,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0659247413277626,
+                        0.17223279178142548,
+                        0.3403141498565674,
+                        0.010471224784851074
+                    ],
+                    "Intensity": 2.609999895095825,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.7071068286895752,
+                        0.0,
+                        0.0,
+                        0.7071066498756409
+                    ],
+                    "Scale": [
+                        0.800000011920929,
+                        0.7999927401542664,
+                        2.299985408782959
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        1.065000057220459,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 5960.32568359375,
+            "Loop": true,
+            "ModelTag": "SM_CrossPlane_01_HJS",
+            "Name": "LostErgo_pillarmesh1",
+            "NumKeyFrames": 1,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 0,
+            "TextureTags": [
+                "",
+                "T_Shere_07_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.34354668855667114,
+                0.5850525498390198,
+                0.7034695744514465,
+                0.48109257221221924
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 1.7000000476837158,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.3663002848625183,
+                        0.6857186555862427,
+                        0.8429319262504578,
+                        0.686274528503418
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 29.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 81.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.364705890417099,
+                        0.686274528503418,
+                        0.843137264251709,
+                        0.686274528503418
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 163.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        0.29019609093666077,
+                        0.3490196168422699,
+                        0.3764705955982208,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 3,
+                    "Rotation": [
+                        0.7071069478988647,
+                        0.0,
+                        0.0,
+                        0.7071065902709961
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        1.7000000476837158
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        1.2000000476837158,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1179.053466796875,
+            "Loop": true,
+            "ModelTag": "SM_CrossPlane_01_HJS",
+            "Name": "LostErgo_Pillarmesh2",
+            "NumKeyFrames": 5,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Shere_01_C_LGS",
+                "T_Shere_02_C_LGS",
+                "T_Shere_02_C_LGS",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                true,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Animation": true,
+            "Billboard": false,
+            "CenterColor": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "Color": [
+                0.4156862497329712,
+                0.6191747188568115,
+                0.9686274528503418,
+                0.2702844738960266
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 2,
+            "EmissiveIntensity": 2.4000000953674316,
+            "EndTrack": 200,
+            "FlipUV": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.41583290696144104,
+                        0.6647171974182129,
+                        0.9685863852500916,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        -0.0,
+                        0.0,
+                        -0.0,
+                        1.0
+                    ],
+                    "Scale": [
+                        2.6877999305725098,
+                        0.7283552885055542,
+                        2.6877999305725098
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        -0.041675105690956116,
+                        -0.10000000149011612,
+                        0.0182257741689682
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        2.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 45.0,
+                    "Translation": [
+                        -0.041999999433755875,
+                        0.0,
+                        0.017999999225139618
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862199306488,
+                        0.490955650806427,
+                        0.9686274528503418,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        4.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 91.0,
+                    "Translation": [
+                        -0.041999999433755875,
+                        0.5,
+                        0.017999999225139618
+                    ]
+                },
+                {
+                    "Color": [
+                        0.4156862795352936,
+                        0.6666666865348816,
+                        0.9686274528503418,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        2.687999963760376,
+                        4.328000068664551,
+                        2.687999963760376
+                    ],
+                    "TrackPosition": 200.0,
+                    "Translation": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 8109.41162109375,
+            "Loop": true,
+            "ModelTag": "SM_Helix_04_LGS",
+            "Name": "LostErgo_Helixmesh2",
+            "NumKeyFrames": 4,
+            "RenderGroup": 8,
+            "ShaderPass": 7,
+            "StartTrack": 0,
+            "TextureTags": [
+                "T_Line_05_C_GDH",
+                "T_Line_02_C_GDH",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.8999999761581421,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Accel": [
+                -2.0199999809265137,
+                -0.6700000166893005
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "Gravity": 0.30000001192092896,
+            "IsCircleRange": true,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 4615.7275390625,
+            "LifeTime_Particle": [
+                0.30000001192092896,
+                1.5
+            ],
+            "Local": true,
+            "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -0.5,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 0.05000000074505806,
+            "Name": "LostErgo_CircleParticle1",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                200.0,
+                300.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.44999998807907104,
+                0.30000001192092896,
+                1.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.004999999888241291,
+                0.019999999552965164
+            ],
+            "Speed": [
+                0.10000000149011612,
+                0.5
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 200
+}

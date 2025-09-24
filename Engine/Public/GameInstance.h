@@ -41,8 +41,12 @@ public:
 	HRESULT Change_Level(_uint iLevelIndex, class CLevel* pNewLevel);
 	class CLevel* Get_CurrentLevel() const;
 	void Reset_LevelUnits();
-	void Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop = false, string willMainBGM="");
 	class CSound_Core* Get_CurrentBGM();
+	void Stop_BGM();
+
+	void Start_BGM(string soundName);
+	void Change_BGM(string soundName);
+	void Change_BGM(string soundNoLoopName, string soundName);
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -86,8 +90,8 @@ public:
 	_bool Get_RenderMapCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);	
 #endif
-	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
-	_vector GetPlayerPos() { return m_vPlayerPosition; }
+	void SetPlayerPos(_fvector vPos) { XMStoreFloat4(&m_vPlayerPosition, vPos); }
+	_vector GetPlayerPos() { return XMLoadFloat4(&m_vPlayerPosition); }
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -132,6 +136,8 @@ public:
 	HRESULT Remove_Light(_uint iLevelIndex, class CLight* pLight);
 	HRESULT RemoveAll_Light(_uint iLevelIndex);
 	_uint Get_LightCount(_uint TYPE, _uint iLevel) const;
+	void AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight);
+	vector<CGameObject*>* Find_CustomLight(const wstring& strCustomLightKey);
 #pragma endregion
 
 #pragma region FONT_MANAGER
@@ -238,8 +244,11 @@ public:
 	void Notify_Push(const _wstring& strTag, const _wstring& eventType, void* pData);
 
 	class CObserver* Find_Observer(const _wstring& strTag);
-	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
-	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
+
+	void Remove_Callback(const _wstring& strTag, CGameObject* pOwner);
+
 	void Reset(const _wstring& strTag);
 	void Reset_All();
 #pragma endregion
@@ -279,10 +288,10 @@ public:
 
 #pragma region PULLING_MANAGER
 	void Add_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
-	void Use_PoolObject(const _wstring& wsLayerName);
-	void UseAll_PoolObjects(const _wstring& wsLayerName);
-	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj);
-	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj);
+	void Use_PoolObject(const _wstring& wsLayerName, _bool bReset);
+	void UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset);
+	void Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
+	void Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset);
 #pragma endregion
 
 
@@ -320,7 +329,7 @@ private:
 	_float					m_fAccTime = {}; // 게임 실행 후 누적 시간 전역으로 저장함 임시로..아마도
 
 private: /* [ 플레이어 포지션 ] */
-	_vector m_vPlayerPosition = {};
+	_float4 m_vPlayerPosition = {};
 	class CCamera* m_pCurCam = {};
 public:
 	void Release_Engine();

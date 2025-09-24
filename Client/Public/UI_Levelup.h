@@ -25,7 +25,7 @@ protected:
 	virtual ~CUI_Levelup() = default;
 
 public:
-
+	virtual void Set_bDead();
 
 
 

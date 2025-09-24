@@ -56,10 +56,12 @@ public:
 	_float3 GetLocalRot3() { return _float3(m_vLocalRot.x, m_vLocalRot.y, m_vLocalRot.z); }
 	void    SetLocalRot(const _float3& vRot) { m_vLocalRot = _float4(vRot.x, vRot.y, vRot.z, 0.f); }
 
+	virtual void Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType = TRAIL_DEFAULT) override;
+
 protected: /* [ Setup 함수 ] */
 	HRESULT Ready_Components();
 	HRESULT Ready_Actor();
-
+	virtual HRESULT Ready_Effect() override;
 
 protected: /* [ 충돌 시 공통으로 실행 ] */
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -80,6 +82,13 @@ private:
 	_float  m_fRotationDegree = {};
 
 	PxVec3 m_physxExtent = {};
+
+private:
+	_float4x4 m_InnerMatrix = {};
+	_float4x4 m_OuterMatrix = {};
+
+	class CSwordTrailEffect* m_pTrailEffect = { nullptr };
+
 public:
 	static CWeapon_Monster* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

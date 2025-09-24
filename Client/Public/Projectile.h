@@ -8,6 +8,7 @@ NS_BEGIN(Engine)
 class CModel;
 class CShader;
 class CPhysXDynamicActor;
+class CSoundController;
 NS_END
 
 NS_BEGIN(Client)
@@ -45,7 +46,7 @@ protected:
 	_float3 Get_WorldPosFromActor() const;
 	virtual HRESULT Ready_Components();
 	HRESULT Ready_Actor();
-	HRESULT Bind_Shader();
+	virtual HRESULT Bind_Shader();
 	virtual HRESULT Ready_Effect() { return S_OK; };
 
 protected:
@@ -71,11 +72,11 @@ protected:
 	_float m_fDistance = 0.f; // 날아간 이동 거리
 	_float m_fStartTime = 0.f; // 시간으로 트리거 쓴다면
 	_float m_fRadius = 0.5f; // 충돌 반경
-	_vector m_vDirection = XMVectorZero();
-	_vector m_vStartPos = XMVectorZero(); // 시작 위치
+	_float3 m_vDirection = {};
+	_float4 m_vStartPos = {};
 
 	_float  m_fBasicDamage = { 5.f };
-
+	class CSoundController* m_pSoundCom = nullptr;
 	class CEffectContainer* m_pEffect = { nullptr }; // 최소 하나의 이펙트,
 public:
 	static CProjectile* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

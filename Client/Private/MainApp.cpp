@@ -290,6 +290,10 @@ HRESULT CMainApp::Ready_Static()
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_NoiseMap"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Noise.png")))))
 		return E_FAIL;
+	/* [ 보스문 디졸브 마스크 ] */
+	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_NoiseMap2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_Tile_Noise_39_C_RSW.dds")))))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Prototype(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_Texture_FireElement"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Effect/T_Tile_Noise_57_C_HJS_D.dds")))))
 		return E_FAIL;
@@ -309,6 +313,15 @@ HRESULT CMainApp::Ready_Sound()
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGM/", false, true);
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/BGMIntro/", false, false);
 	m_pGameInstance->LoadSound("../Bin/Resources/Sound/SoundSpace/", false, true);
+	//ADD_SOUND_EX(BGM, "../Bin/Resources/Sound/BGM/", false, true, false);
+	//ADD_SOUND_EX(BGMIntro, "../Bin/Resources/Sound/BGMIntro/", false, false, false);
+	//ADD_SOUND_EX(SoundSpace, "../Bin/Resources/Sound/SoundSpace/", false, true, false);
+
+	/* [ UI용 사운드 ] */
+	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", false, false, false);
+
+	/* [ 컷씬때 추가로 필요한 사운드 ] */
+	ADD_SOUND_EX(CutSceneExtra, "../Bin/Resources/Sound/CutScene/Camera/", false, false);
 
 	/* [ 플레이어 사운드 ] */
 	ADD_SOUND_EX(Player, "../Bin/Resources/Sound/Unit/Player/", false, false, false);
@@ -318,7 +331,7 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ 동영상용 사운드 ] */
 	ADD_SOUND_EX(Intro, "../Bin/Resources/Sound/Video/Intro/", false, false, false);
 
-	/* [ 컷씬 문용 사운드 ] */
+	///* [ 컷씬 문용 사운드 ] */
 	ADD_SOUND_EX(CutSceneDoor, "../Bin/Resources/Sound/CutScene/Door/", false, false, false);
 
 	/* [ 번개 사운드 ] */
@@ -330,8 +343,6 @@ HRESULT CMainApp::Ready_Sound()
 	/* [ 트리거용 사운드 ] */
 	ADD_SOUND_EX(Trigger, "../Bin/Resources/Sound/Trigger/", false, false, false);
 
-	/* [ UI용 사운드 ] */
-	ADD_SOUND_EX(UI, "../Bin/Resources/Sound/UI/", false, false, false);
 
 	ADD_SOUND_EX(FireEater, "../Bin/Resources/Sound/Unit/FireEater/", true, false, false);
 	ADD_SOUND_EX(FestivalLeader, "../Bin/Resources/Sound/Unit/FestivalLeader/", true, false, false);
@@ -340,14 +351,13 @@ HRESULT CMainApp::Ready_Sound()
 	// 램프 줍기 전 사운드
 	ADD_SOUND_EX(LampAmb, "../Bin/Resources/Sound/LampAmb/", true, false, false);
 
-
-	/* [ Breakable 부서지는 사운드 ] */
+	/* [ Breakable 부서지는 사운드 ] */ 
 	ADD_SOUND_EX(Breakable, "../Bin/Resources/Sound/Breakable/", true, false, false);
 
-	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", false, false, false);
+	ADD_SOUND_EX(Stargazer, "../Bin/Resources/Sound/Stargazer/", true, false, false);
 
 	/* [ 숏컷 사운드 ] */ 
-	ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
+	//ADD_SOUND_EX(ShortCutDoor, "../Bin/Resources/Sound/ShortCutDoor/", false, false, false);
 
 	/* [ 일반 몬스터 사운드 ] */
 	ADD_SOUND_EX(Buttler, "../Bin/Resources/Sound/Unit/Buttler/", true, false, false);

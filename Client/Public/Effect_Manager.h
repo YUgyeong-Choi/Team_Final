@@ -69,8 +69,11 @@ private:
 
     CONTAINERS                          m_ECs;
 
+    _bool                   m_bContainer = false;
+
 private:
     _float                  m_fAccTime = {};
+    _wstring                m_strECFilename;
 
 public:
     virtual void Free() override;

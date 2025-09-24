@@ -10,16 +10,26 @@
         {
             "ClipName": "AS_Open",
             "Duration": 300.0,
+            "Events": [
+              {
+                "EventName": "OpenSound",
+                "Time": 44.0
+              },
+              {
+                "EventName": "ActiveSound",
+                "Time": 250.0
+              }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
         },
-        {
-            "ClipName": "AS_Open_Idle",
-            "Duration": 720.0,
-            "IsLoop": false,
-            "RootMotion": false,
-            "TickPerSecond": 55.0
-        }
+      {
+        "ClipName": "AS_Open_Idle",
+        "Duration": 720.0,
+        "IsLoop": false,
+        "RootMotion": false,
+        "TickPerSecond": 55.0
+      }
     ]
 }

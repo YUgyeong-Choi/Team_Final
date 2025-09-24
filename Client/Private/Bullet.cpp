@@ -32,12 +32,31 @@ HRESULT CBullet::Initialize(void* pArg)
     // 이펙트?
     // 모르겟음 필요하면 넣기
 
+    if (FAILED(Ready_Sound()))
+        return E_FAIL;
+
+
+   
+
     return S_OK;
 }
 
 void CBullet::Priority_Update(_float fTimeDelta)
 {
     __super::Priority_Update(fTimeDelta);
+
+    if (m_isCollision)
+    {
+        //CEffectContainer::DESC desc = {};
+        ////_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+        //_float3 vfloatpos = Get_WorldPosFromActor();
+        //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
+        ////XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
+        //if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
+        //    MSG_BOX("이펙트 생성 실패함");
+
+        Set_bDead();
+    }
 }
 
 void CBullet::Update(_float fTimeDelta)
@@ -46,6 +65,17 @@ void CBullet::Update(_float fTimeDelta)
         return;
 
     __super::Update(fTimeDelta);
+
+    if (m_pSoundCom)
+    {
+        _vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+        _float3 f3Pos{};
+        XMStoreFloat3(&f3Pos, vPos);
+
+        m_pSoundCom->Update3DPosition(f3Pos);
+    }
+
 }
 
 void CBullet::Late_Update(_float fTimeDelta)
@@ -73,15 +103,9 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
         pPlayer->SetfReceiveDamage(m_fDamge);
     }
 
-    //CEffectContainer::DESC desc = {};
-    ////_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
-    //_float3 vfloatpos = Get_WorldPosFromActor();
-    //XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vfloatpos.x, vfloatpos.y, vfloatpos.z));
-    ////XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2]));
-    //if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
-    //    MSG_BOX("이펙트 생성 실패함");
+    m_isCollision = true;
 
-    Set_bDead();
+  
 
     //if (m_pEffect)
     //    m_pEffect->Set_bDead();
@@ -89,6 +113,7 @@ void CBullet::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 void CBullet::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
+   
 }
 
 void CBullet::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -118,7 +143,7 @@ HRESULT CBullet::Ready_Components()
 HRESULT CBullet::Ready_Effect()
 {
     _vector vFrom = XMVectorSet(0.f, 0.f, 1.f, 0.f); // 기준: +Y
-    _vector vTo = XMVector3Normalize(m_vDirection);         // 원하는 방향
+    _vector vTo = XMVector3Normalize(XMLoadFloat3(&m_vDirection));         // 원하는 방향
 
     _vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
     _matrix mRot = XMMatrixRotationQuaternion(qRot);
@@ -132,6 +157,26 @@ HRESULT CBullet::Ready_Effect()
     //    MSG_BOX("이펙트 생성 실패함");
 
     return S_OK;
+}
+
+HRESULT CBullet::Ready_Sound()
+{
+    /* For.Com_Sound */
+    if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+        return E_FAIL;
+ 
+    m_pSoundCom->Set3DState(0.f, 25.f);
+
+    _int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+    string strTag = "SE_NPC_SK_PJ_Bullet_0" + to_string(iNum);
+
+    m_pSoundCom->SetVolume(strTag, 1.5f);
+    m_pSoundCom->Play(strTag);
+
+
+    return S_OK;
+
 }
 
 CBullet* CBullet::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

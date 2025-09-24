@@ -39,6 +39,8 @@ HRESULT CEffectBase::Initialize(void* pArg)
 	m_iShaderPass = pDesc->iShaderPass;
 	m_bAnimation = pDesc->bAnimation;
 	m_isLoop = pDesc->isLoop;
+	m_strECName = pDesc->strECName;
+	m_bContainer = pDesc->m_bContainer;
 
 	for (_uint i = 0; i < TU_END; i++)
 	{
@@ -222,7 +224,7 @@ HRESULT CEffectBase::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_Depth"), m_pShaderCom, "g_DepthTexture")))
+	if (FAILED(m_pGameInstance->Bind_RT_ShaderResource(TEXT("Target_PBR_Depth"), m_pShaderCom, "g_DepthTexture")))
 		return E_FAIL;
 
 	if (m_bTextureUsage[TU_DIFFUSE] == true) {
@@ -273,9 +275,13 @@ void CEffectBase::Update_Keyframes()
 	else
 	{
 		if (m_KeyFrames.size() <= m_iCurKeyFrameIndex + 1)
-			MSG_BOX("비상!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			return;
+
 		if (m_fCurrentTrackPosition >= m_KeyFrames[m_iCurKeyFrameIndex + 1].fTrackPosition)
 			++m_iCurKeyFrameIndex;
+
+		if (m_KeyFrames.size() <= m_iCurKeyFrameIndex + 1)
+			return;
 
 		_float			fRatio = (m_fCurrentTrackPosition - m_KeyFrames[m_iCurKeyFrameIndex].fTrackPosition) /
 			(m_KeyFrames[m_iCurKeyFrameIndex + 1].fTrackPosition - m_KeyFrames[m_iCurKeyFrameIndex].fTrackPosition);

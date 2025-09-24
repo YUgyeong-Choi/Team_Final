@@ -142,7 +142,6 @@ protected:
 	EEliteState m_ePrevState = EEliteState::NONE;
 	_bool    m_bIsFirstAttack{ true };
 	_float4x4 	m_InitWorldMatrix{};
-
 	
 
 	 _bool   m_bGroggyActive = false;
@@ -200,6 +199,9 @@ protected:
 	list<pair<_wstring, _bool>> m_ActiveEffect; // 활성화된 이펙트 (이름, 한번만 실행할지)
 
 	_float m_fMinimumTurnAngle = 35.f;
+
+	//트레일 이펙트
+	class CSwordTrailEffect* m_pTrailEffect = { nullptr };
 
 public:
 	virtual CGameObject* Clone(void* pArg = nullptr) override;

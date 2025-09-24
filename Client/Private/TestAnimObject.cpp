@@ -173,13 +173,13 @@ void CTestAnimObject::Update(_float fTimeDelta)
 		if (fDeltaMag > m_fSmoothThreshold)
 		{
 			_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+			finalDelta = XMVectorLerp(XMLoadFloat4(&m_PrevWorldDelta), vWorldDelta, alpha);
 		}
 		else
 		{
 			finalDelta = vWorldDelta;
 		}
-		m_PrevWorldDelta = finalDelta;
+		XMStoreFloat4(&m_PrevWorldDelta, finalDelta);
 
 		PxVec3 pos{
 			XMVectorGetX(finalDelta),
@@ -384,7 +384,6 @@ void CTestAnimObject::Input_Test(_float fTimeDelta)
 				else
 					iCombo = 0;
 				m_pAnimator->SetInt("Combo", iCombo);
-				m_pAnimator->SetTrigger("NormalAttack");
 			}
 		}
 	}
@@ -526,11 +525,11 @@ HRESULT CTestAnimObject::UpdateShadowCamera()
 	_vector vTargetAt = vPlayerPos;
 
 	// 3. 적용
-	m_vShadowCam_Eye = vFixedEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vFixedEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 

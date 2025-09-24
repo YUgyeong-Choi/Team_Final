@@ -16,6 +16,9 @@ public:
 		_bool	 useLifeTime = {};
 		_float   fLifeTime = {};
 		_wstring strFilePath;
+		// 활성화되면 작동할 사운드?
+		string strSoundTag = {};
+		_float fSoundDelay = {};
 	}UI_CONTAINER_DESC;
 protected:
 	CUI_Container(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -57,6 +60,9 @@ protected:
 
 	_bool								m_useLifeTime = { false };
 	_float								m_fLifeTime = {};
+	_bool								m_isSound = {};
+	string								m_strSoundTag = {};
+	_float								m_fSoundDelay = {};
 
 protected:
 

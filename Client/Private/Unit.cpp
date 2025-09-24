@@ -44,6 +44,13 @@ HRESULT CUnit::Initialize(void* pArg)
 	m_iRender = pDesc->iRender;
 	m_szName = pDesc->szName;
 
+	if (m_bSecondEmissiveLoad)
+	{
+		if (FAILED(Add_Component(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Texture_FestivalSecondEmissive"),
+			TEXT("SecondEmissive_Com"), reinterpret_cast<CComponent**>(&m_pSecondEmissiveMap))))
+			return E_FAIL;
+	}
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -81,6 +88,11 @@ void CUnit::Update(_float fTimeDelta)
 		OnEmissive(fTimeDelta);
 	else
 		OffEmissive(fTimeDelta);
+
+	if (m_bSecondEmissive)
+		OnSecondEmissive(fTimeDelta);
+	else
+		OffSecondEmissive(fTimeDelta);
 
 	if (m_bFurySwitch)
 		OnFury(fTimeDelta);
@@ -402,6 +414,21 @@ HRESULT CUnit::Bind_Shader()
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fEmissiveIntensity", &fEmissive, sizeof(_float))))
 				return E_FAIL;
 		}
+
+		if (m_bSecondEmissiveLoad && i == 1)
+		{
+			m_pShaderCom->Bind_RawValue("g_fSecondEmissiveIntensity", &m_fSecondEmissive, sizeof(_float));
+			if (FAILED(m_pSecondEmissiveMap->Bind_ShaderResource(m_pShaderCom, "g_SecondEmissive", 0)))
+				return E_FAIL;
+		}
+
+		if (m_bIsPlayer && i == 0)
+		{
+			if (FAILED(m_pWetTexture->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTextureWet", 0)))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fPlayerWetIntensity", &m_fWetIntensity, sizeof(_float))))
+				return E_FAIL;
+		}
 		
 		m_pModelCom->Bind_Bone_Matrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -410,6 +437,12 @@ HRESULT CUnit::Bind_Shader()
 
 		if (FAILED(m_pModelCom->Render(i)))
 			return E_FAIL;
+
+		// 렌더가 끝난 후 값 초기화
+		_float fSecondEmissive = 0.f;
+		m_pShaderCom->Bind_RawValue("g_fSecondEmissiveIntensity", &fSecondEmissive, sizeof(_float));
+		_float fWetIntensity = 0.f;
+		m_pShaderCom->Bind_RawValue("g_fPlayerWetIntensity", &fWetIntensity, sizeof(_float));
 	}
 
 	return S_OK;
@@ -558,6 +591,26 @@ void CUnit::OffEmissive(_float fTimeDelta)
 	}
 }
 
+void CUnit::OnSecondEmissive(_float fTimeDelta)
+{
+	if (m_fSecondEmissive <= 1.2f)
+	{
+		m_fSecondEmissive += fTimeDelta * m_fSecondEmissiveSpeed;
+		if (m_fSecondEmissive > 1.2f)
+			m_fSecondEmissive = 1.2f;
+	}
+}
+
+void CUnit::OffSecondEmissive(_float fTimeDelta)
+{
+	if (m_fSecondEmissive >= 0.f)
+	{
+		m_fSecondEmissive -= fTimeDelta * m_fSecondEmissiveSpeed;
+		if (m_fSecondEmissive < 0.f)
+			m_fSecondEmissive = 0.f;
+	}
+}
+
 void CUnit::OnFury(_float fTimeDelta)
 {
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
@@ -591,6 +644,12 @@ void CUnit::SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed)
 {
 	m_bEmissive = bEmissive;
 	m_fEmissiveSpeed = fEmissiveSpeed;
+}
+
+void CUnit::SwitchSecondEmissive(_bool bSecondEmissive, _float fSecondEmissiveSpeed)
+{
+	m_bSecondEmissive = bSecondEmissive;
+	m_fSecondEmissiveSpeed = fSecondEmissiveSpeed;
 }
 
 void CUnit::SwitchFury(_bool bFury, _float fFurySpeed)
@@ -657,4 +716,6 @@ void CUnit::Free()
 	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pNoiseMap);
 	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pWetTexture);
+	Safe_Release(m_pSecondEmissiveMap);
 }

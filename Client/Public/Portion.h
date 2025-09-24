@@ -45,12 +45,14 @@ public:
 
 	void Heal();
 
+
+
 private:
 	CModel* m_pModelCom = { nullptr };
 	CShader* m_pShaderCom = { nullptr };
 private:
 	//
-	_int	m_iMaxCount = { 3 };
+	_int	m_iMaxCount = { 0 };
 	_float  m_fRatio = { 0.35f };
 	
 	

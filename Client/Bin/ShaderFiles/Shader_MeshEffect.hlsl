@@ -262,6 +262,63 @@ PS_OUT_EFFECT_WB_D PS_MAIN_SHOCKWAVE(PS_IN In)
     return Out;
 }
 
+float2 g_vNoiseScale = float2(0.4f, 0.5f);
+float g_fNoiseSpeed = 5.f;
+float g_fDistortion = 0.5f;
+
+PS_OUT_EFFECT_WB PS_MAIN_LOSTERGO(PS_IN In)
+{
+    PS_OUT_EFFECT_WB Out;
+    
+    float2 uv = In.vTexcoord;
+
+    // === 노이즈 기반 왜곡 ===
+    float2 noiseUV = uv * g_vNoiseScale + g_fTime * g_fNoiseSpeed * 0.1;
+    float2 noise = g_MaskTexture2.Sample(DefaultSampler, noiseUV).rg;
+    noise = (noise - 0.5f) * 2.0f; // -1 ~ 1
+
+    // === 파동 기반 왜곡 ===
+    float waveX = sin(uv.y * 10 + g_fTime * g_fNoiseSpeed) * g_fDistortion;
+    float waveY = cos(uv.x * 8 + g_fTime * g_fNoiseSpeed * 1.2) * g_fDistortion;
+
+    // === 최종 흔들림 UV ===
+    float2 finalUV = uv + noise * (g_fDistortion * 0.5) + float2(waveX, waveY);
+
+    // 텍스쳐 샘플링
+    vector diffuse = g_DiffuseTexture.Sample(DefaultSampler, finalUV);
+    
+
+    
+
+    //float2 mask_noise = g_MaskTexture2.Sample(DefaultSampler, UVTileScroll(In.vTexcoord, g_fTileSize, g_fTileOffset, g_fSpeed, g_fTime)).rg;
+    
+    //vector diffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord + mask_noise);
+    
+    
+    float mask_modeldiffuse = g_MaskTexture1.Sample(DefaultSampler, finalUV).r;
+    
+    //float4 vPreColor;
+    //float lerpFactor = saturate((mask - g_fThreshold) / (1.f - g_fThreshold));
+    
+    //vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
+    
+    diffuse = diffuse * g_vColor;
+
+    vector vColor;
+    
+    vColor.rgb = diffuse.rgb;
+    vColor.a = diffuse.a * mask_modeldiffuse;
+    
+
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+        
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {   
     pass Default        // 0
@@ -316,8 +373,7 @@ technique11 DefaultTechnique
         
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
-        PixelShader = compile ps_5_0 /*PS_MAIN_MASKONLY_SCROLL_WB();*/PS_MAIN_MASKONLY_WB();
-
+        PixelShader = compile ps_5_0 PS_MAIN_MASKONLY_SCROLL_WB(); /*PS_MAIN_MASKONLY_WB();*/
     }
     pass MaskOnly_WB // 5
     {
@@ -338,6 +394,16 @@ technique11 DefaultTechnique
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SHOCKWAVE();
+    }
+    pass LostErgo_MaskFlow // 7
+    {
+        SetRasterizerState(RS_Cull_None);
+        SetDepthStencilState(DSS_ReadOnlyDepth, 0);
+        SetBlendState(BS_WBOIT, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LOSTERGO();
     }
    
 }

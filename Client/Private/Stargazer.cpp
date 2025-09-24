@@ -64,13 +64,27 @@ HRESULT CStargazer::Initialize(void* pArg)
 	if (FAILED(Ready_EffectSet()))
 		return E_FAIL;
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update(0.016f);
+	m_pModelCom[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->Update_Bones();
+
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 10.f);
+	}
+
+	m_pCamera_Manager = CCamera_Manager::Get_Instance();
 	return S_OK;
 }
 
 void CStargazer::Priority_Update(_float fTimeDelta)
 {
 	if(m_pPlayer == nullptr)
+	{
 		Find_Player();
+
+		if(m_pPlayer)
+			Ready_PlayerButterflyEffectSet();
+	}
 
 	
 	if (!m_bUseOtherUI)
@@ -136,6 +150,12 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			if (m_bTalkActive)
 			{
 				m_pSoundCom->StopAll();
+				if (m_pSoundCom->IsPlaying("AMB_OJ_PR_Stargazer_Active_Loop_DLC") == false)
+				{
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+					m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+				}
 				if (nullptr != m_pGuide)
 				{
 					m_bUseOtherUI = true;
@@ -178,11 +198,11 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_Popup(false);
 				m_pEffectSet->Activate_Stargazer_Reassemble();
 
-				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
-				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
+				//m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Open_01", g_fInteractSoundVolume);
+				//m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Open_01");
 
-				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
-				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
+				//m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Restore_Activated", g_fInteractSoundVolume);
+				//m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Restore_Activated");
 
 				if (m_eStargazerTag == STARGAZER_TAG::FESTIVAL_LEADER_IN)
 				{
@@ -206,6 +226,14 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 				if (m_bIsRotatingToStargazer == false)
 					m_bIsRotatingToStargazer = true;
 				m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_ACTIVATE_START);
+
+				if (m_pSoundCom->IsPlaying("AMB_OJ_PR_Stargazer_Active_Loop_DLC") == false)
+				{
+					m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+					m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+					m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Interaction_01");
+				}
 				if (m_eScriptDatas.empty())
 				{
 					// 바로 별바라기용 스크립트로 띄우고, 선택할 수 있는 버튼도 같이
@@ -302,7 +330,10 @@ void CStargazer::Priority_Update(_float fTimeDelta)
 			m_bUseOtherUI = false;
 
 			Delete_Script();
-			m_pSoundCom->StopAll();
+			m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Interaction_01");
+			m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Interaction_01");
+			m_pSoundCom->StopAllSpecific("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_CloseWindow_01");
 			return;
 		}
 
@@ -406,6 +437,13 @@ void CStargazer::Update(_float fTimeDelta)
 
 	if (nullptr != m_pGuide)
 		m_pGuide->Update(fTimeDelta);
+
+	if (m_pSoundCom)
+	{
+		_float3 vPos;
+		XMStoreFloat3(&vPos, Get_TransfomCom()->Get_State(STATE::POSITION));
+		m_pSoundCom->Update3DPosition(vPos); // 3D 사운드 위치 업데이트
+	}
 
 }
 
@@ -596,7 +634,7 @@ void CStargazer::Register_Events()
 			m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->SetTrigger("Open");
 			m_pPlayer->OnTriggerEvent(CPlayer::eTriggerEvent::STARGAZER_RESTORE_END);
 			m_pEffectSet->Activate_Stargazer_Spread();
-			
+
 			if (m_eStargazerTag != STARGAZER_TAG::FIRE_EATER)
 			{
 				CUI_Container::UI_CONTAINER_DESC eDesc{};
@@ -611,12 +649,40 @@ void CStargazer::Register_Events()
 
 				static_cast<CDynamic_UI*>(pObj->Get_PartUI().back())->Set_isUVmove(true);
 			}
+		});
 
-		
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("PreRestroeSound", [this]() // 철컥철컥
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_PreRestore_01");
+			}
+		});
 
-			
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::DESTROYED)]->RegisterEventListener("RestroeWhisperSound", [this]() // 목소리
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("AMB_OJ_PR_Stargazer_Restore_0",2,1);
+			}
+		});
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->RegisterEventListener("OpenSound", [this]() // 열릴 때 사운드
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play_Random("AMB_OJ_PR_Stargazer_Open_0", 2, 1);
+			}
+		});
 
+	m_pAnimator[ENUM_CLASS(STARGAZER_STATE::FUNCTIONAL)]->RegisterEventListener("ActiveSound", [this]() // 열릴 때 사운드
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("AMB_OJ_PR_Stargazer_Active_Loop_DLC", g_fInteractSoundVolume);
+				m_pSoundCom->Set_Loop("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+				m_pSoundCom->Play("AMB_OJ_PR_Stargazer_Active_Loop_DLC");
+			}
 		});
 }
 
@@ -632,6 +698,8 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 		{
 			// 플레이어가 텔레포트 자세를 잡는다
 			m_pPlayer->Start_Teleport();
+			if (!m_pPlayerEffectSet->GetbDelete())
+				m_pPlayerEffectSet->SetbDelete(true);
 
 			// 선택된 별바라기의 위치를 가져온다.
 			_float3 vPos;
@@ -642,13 +710,27 @@ void CStargazer::Teleport_Stargazer(STARGAZER_TAG eTag)
 			vPos.x -= 2.5f;
 			m_pPlayer->SetTeleportPos(vPos);
 
+			switch (eTag)
+			{
+			case Client::STARGAZER_TAG::OUTER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER:
+			case Client::STARGAZER_TAG::FESTIVAL_LEADER_IN:
+				m_pGameInstance->Change_BGM("AMB_SS_Rain_02");
+				break;
+			case Client::STARGAZER_TAG::FIRE_EATER:
+				m_pGameInstance->Change_BGM("AMB_SS_Factory_Basement_Loop_02");
+				break;
+			case Client::STARGAZER_TAG::END:
+				break;
+			default:
+				break;
+			}
+
 			break;
 		}
 	}
 
 	
-
-
 	Delete_Script();
 	m_bUseTeleport = true;
 	m_bUseOtherUI = false;
@@ -684,6 +766,17 @@ void CStargazer::On_TriggerStay(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		}
 			
 	}
+
+	if (KEY_DOWN(DIK_E) && m_eState == STARGAZER_STATE::FUNCTIONAL)
+	{
+		m_pPlayerEffectSet->SetbDelete(false);
+		m_pPlayerEffectSet->Activate_Stargazer_PlayerButterfly();
+	}
+	if (KEY_DOWN(DIK_ESCAPE))
+	{
+		if (!m_pPlayerEffectSet->GetbDelete())
+			m_pPlayerEffectSet->SetbDelete(true);
+	}
 }
 
 void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
@@ -694,6 +787,7 @@ void CStargazer::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
 	m_bTalkActive = false;
 	m_bUseScript = false;
 	m_bUseOtherUI = false;
+	m_pPlayerEffectSet->SetbDelete(false);
 	
 }
 
@@ -938,6 +1032,19 @@ HRESULT CStargazer::Ready_EffectSet()
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance,&desc)))
 		return E_FAIL;
 	m_pEffectSet = static_cast<CStargazerEffect*>(pInstance);
+	return S_OK;
+}
+
+HRESULT CStargazer::Ready_PlayerButterflyEffectSet()
+{
+	CGameObject* pInstance = nullptr;
+	CStargazerEffect::DESC desc = {};
+	desc.pOwner = m_pPlayer;
+	desc.iLevelID = m_iLevelID;
+	desc.bIsPlayer = true;
+	if (FAILED(m_pGameInstance->Add_GameObjectReturn(m_iLevelID, TEXT("Prototype_GameObject_StargazerEffect"), m_iLevelID, TEXT("Layer_EffectSet"), &pInstance, &desc)))
+		return E_FAIL;
+	m_pPlayerEffectSet = static_cast<CStargazerEffect*>(pInstance);
 	return S_OK;
 }
 

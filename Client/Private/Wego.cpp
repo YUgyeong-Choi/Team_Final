@@ -45,6 +45,10 @@ HRESULT CWego::Initialize(void* pArg)
 
 	m_pAnimator->SetPlaying(true);
 
+	if (FAILED(Ready_Sound()))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -71,6 +75,8 @@ void CWego::Update(_float fTimeDelta)
 		
 		if (m_pGameInstance->Key_Down(DIK_SPACE))
 		{
+			m_pSoundCom->StopAll();
+
 			++m_curTalkIndex;
 
 			if(m_curTalkIndex < m_NpcTalkData[m_curTalkType].size())
@@ -98,6 +104,9 @@ void CWego::Update(_float fTimeDelta)
 					}
 
 				}
+				string strTag = string("Wego_Voice") + to_string(m_curTalkIndex);
+
+				m_pSoundCom->Play(strTag);
 			}
 			else if (m_curTalkIndex >= m_NpcTalkData[m_curTalkType].size())
 			{
@@ -113,12 +122,15 @@ void CWego::Update(_float fTimeDelta)
 				CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 				CUI_Manager::Get_Instance()->On_Panel();
 				m_pAnimator->SetBool("TalkStart", false);
+				m_pSoundCom->StopAll();
 				return;
 			}
 			
 
 			//wprintf(L"Wego: %s\n", m_NpcTalkData[m_curTalkType][m_curTalkIndex].c_str());
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
+
+		
 
 			//
 		}
@@ -143,6 +155,12 @@ void CWego::Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->Update_TalkScript(m_strNpcName, (m_NpcTalkData[m_curTalkType][m_curTalkIndex]), m_bAutoTalk);
 
 			m_pAnimator->SetBool("TalkStart",true);
+			m_pSoundCom->StopAll();
+
+			if(m_curTalkType == WEGOTALKTYPE::ONE)
+				m_pSoundCom->Play("Wego_Voice0");
+			else
+				m_pSoundCom->Play("Wego_Voice5");
 		}
 	}
 
@@ -162,6 +180,8 @@ void CWego::Update(_float fTimeDelta)
 			CUI_Manager::Get_Instance()->On_Panel();
 			CUI_Manager::Get_Instance()->Activate_TalkScript(false);
 			m_pAnimator->SetBool("TalkStart", false);
+
+			m_pSoundCom->StopAll();
 		}
 	}
 
@@ -296,6 +316,15 @@ HRESULT CWego::Ready_Trigger()
 	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::NPC);
 	m_pPhysXTriggerCom->Set_Kinematic(true);
 	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
+
+	return S_OK;
+}
+
+HRESULT CWego::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Trigger"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -496,6 +525,7 @@ void CWego::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pPhysXActorCom);
 	Safe_Release(m_pPhysXTriggerCom);
+	Safe_Release(m_pSoundCom);
 
 	for (auto& pButton : m_pSelectButtons)
 		Safe_Release(pButton);

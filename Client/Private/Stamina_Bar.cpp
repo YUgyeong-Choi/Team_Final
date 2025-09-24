@@ -35,7 +35,7 @@ HRESULT CStamina_Bar::Initialize(void* pArg)
 
 	}
 
-	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), [this](_wstring eventType, void* data) {
+	m_pGameInstance->Register_PushCallback(TEXT("Player_Status"), this, [this](_wstring eventType, void* data) {
 		if (L"CurrentStamina" == eventType)
 		{
 			m_fCurrentStamina = *static_cast<_float*>(data);
@@ -96,6 +96,10 @@ HRESULT CStamina_Bar::Initialize(void* pArg)
 
 void CStamina_Bar::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CStamina_Bar::Update(_float fTimeDelta)

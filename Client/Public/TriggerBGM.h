@@ -14,7 +14,6 @@ class CTriggerBGM : public CTriggerBox
 public:
 	typedef struct tagTriggerBGMDesc : public CTriggerBox::TRIGGERBOX_DESC
 	{
-		CSound_Core* pBGM;
 		string strInBGM;
 		string strOutBGM;
 	}TRIGGERBGM_DESC;
@@ -37,16 +36,8 @@ public:
 	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType) override;
 private:
 	HRESULT Ready_Components();
-	void Play_BGM(_float fTimeDelta);
 private:
-	// 레벨에서 받아온 BGM
-	CSound_Core* m_pBGM = { nullptr };
-
 	_bool m_bInSound = false;
-	_bool m_bBGMToZero = false;
-	_bool m_bBGMToVolume = false;
-
-	_float m_fBGMVolume = 1.f;
 
 	string m_strInBGM;
 	string m_strOutBGM;

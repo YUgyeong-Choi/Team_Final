@@ -4,9 +4,11 @@
 #include "Camera.h"
 #include "UI_Manager.h"
 
+#include "DH_ToolMesh.h"
 
 NS_BEGIN(Engine)
 class CGameObject;
+class CSoundController;
 NS_END
 
 
@@ -47,12 +49,14 @@ public:
 	void PlayCutScene() { m_bActive = true; CUI_Manager::Get_Instance()->Off_Panel(); }
 
 	/* [ 오비탈 초기 위치 ] */
-	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { m_initOrbitalMatrix = initOrbitalPos; }
+	void Set_InitOrbitalWorldMatrix(_matrix initOrbitalPos) { XMStoreFloat4x4(&m_initOrbitalMatrix, initOrbitalPos); }
 
 	void Set_StartBlend(_bool bStartBlend) { m_bOrbitalToSetOrbital = bStartBlend; }
 	void Set_EndBlend(_bool bEndBlend) { m_bReadyCutSceneOrbital = bEndBlend; }
 
 	HRESULT InitDatas();
+
+	void Set_BossDoor(class CBossDoor* pDoor);
 private:
 	/* [ 카메라 위치, 회전 보간 ] */
 	void Interp_WorldMatrixOnly(_int curFrame);
@@ -75,12 +79,15 @@ private:
 
 	/* [ 오비탈 초기 위치 ->  컷씬 초기 위치] || [ 컷씬 끝 위치 ->  오비탈 초기 위치] */
 	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat);
+	_bool Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat, _bool bActive);
 
 	/* [ 컷씬 데이터 로드 ] */
 	CAMERA_FRAMEDATA LoadCameraFrameData(const json& j);
 
 	/* [ 이벤트 ] */
 	void Event();
+
+	void Update_SoundLerp(_float fTimeDelta);
 public:
 	void	Set_FOV(_float FOV) { m_fFov = FOV; }
 
@@ -100,7 +107,7 @@ private:
 
 	unordered_map<CUTSCENE_TYPE, CAMERA_FRAMEDATA> m_CutSceneDatas;
 
-	_matrix m_initOrbitalMatrix = {};
+	_float4x4 m_initOrbitalMatrix = {};
 	_bool m_bOrbitalToSetOrbital = false;
 	_bool m_bReadyCutScene = false;
 	_bool m_bReadyCutSceneOrbital = false;
@@ -113,6 +120,20 @@ private:
 	_bool m_bShowSpecial = false;
 
 	_double m_Accumulate = 0.0;
+
+	// 추가 사운드 용
+	CSoundController* m_pSoundCom = { nullptr };
+	string m_strSoundName = {};
+	_float m_fSoundVolume = {};
+	_bool m_bSoundLerp = false;
+	_float m_fTargetVolume = 0.f;
+
+	class CBossDoor* m_pBossDoor = { nullptr };
+
+
+	float m_fAccumulator = 0.f;        // 누적 시간
+	float m_fFrameRate = 60.f;       // 초당 프레임(키프레임 단위)
+	float m_fFramePeriod = 1.f / 60.f; // 한 프레임 시간
 public:
 	static CCamera_CutScene* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

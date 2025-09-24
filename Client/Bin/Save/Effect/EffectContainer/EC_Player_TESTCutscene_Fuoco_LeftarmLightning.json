@@ -18,6 +18,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.0,
                 0.0418848991394043,
@@ -31,6 +36,7 @@
             "EndTrack": 34,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -40,7 +46,7 @@
                         1.0,
                         1.0
                     ],
-                    "Intensity": 2.7899999618530273,
+                    "Intensity": 6.829999923706055,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -61,13 +67,15 @@
                     ]
                 }
             ],
-            "LifeTime": 1253.5948486328125,
+            "LifeTime": 1372.1201171875,
             "LifeTime_Particle": [
-                0.20000000298023224,
-                0.4000000059604645
+                0.17000000178813934,
+                0.33000001311302185
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.06999999284744263,
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -106,6 +114,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -119,7 +128,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_06_2x2_SC_HJS",
+                "T_SubUV_Thunder_01_4x4_SC_HJS",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -131,9 +140,9 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
-            "TileTickPerSec": 22.0,
-            "TileX": 2,
-            "TileY": 2,
+            "TileTickPerSec": 43.0,
+            "TileX": 7,
+            "TileY": 3,
             "isTileLoop": false
         },
         {
@@ -154,6 +163,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.14659643173217773,
                 0.0,
@@ -167,6 +181,7 @@
             "EndTrack": 73,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -197,13 +212,15 @@
                     ]
                 }
             ],
-            "LifeTime": 5010.22802734375,
+            "LifeTime": 5017.81787109375,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 0.4000000059604645
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -242,6 +259,7 @@
                 0.0
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -290,6 +308,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.0,
                 0.0418848991394043,
@@ -303,6 +326,7 @@
             "EndTrack": 117,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -333,13 +357,15 @@
                     ]
                 }
             ],
-            "LifeTime": 1174.9376220703125,
+            "LifeTime": 1233.7613525390625,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 0.4399999976158142
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -378,6 +404,7 @@
                 0.0
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -391,7 +418,7 @@
             "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
-                "T_SubUV_Thunder_06_2x2_SC_HJS",
+                "T_SubUV_Thunder_01_4x1_SC_GDH",
                 "T_Waterfall_Foam_01_SC_RSW",
                 ""
             ],
@@ -404,8 +431,8 @@
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
             "TileTickPerSec": 22.0,
-            "TileX": 2,
-            "TileY": 2,
+            "TileX": 4,
+            "TileY": 4,
             "isTileLoop": false
         },
         {
@@ -426,6 +453,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.0,
                 0.0418848991394043,
@@ -439,6 +471,7 @@
             "EndTrack": 171,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -469,13 +502,15 @@
                     ]
                 }
             ],
-            "LifeTime": 1226.1151123046875,
+            "LifeTime": 1236.706298828125,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 0.4399999976158142
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -514,6 +549,7 @@
                 0.0
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -562,6 +598,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.14659643173217773,
                 0.0,
@@ -575,6 +616,7 @@
             "EndTrack": 236,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -605,13 +647,15 @@
                     ]
                 }
             ],
-            "LifeTime": 4921.8486328125,
+            "LifeTime": 4986.5830078125,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 0.4000000059604645
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -650,6 +694,7 @@
                 0.0
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -698,6 +743,11 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 0.14659643173217773,
                 0.0,
@@ -711,6 +761,7 @@
             "EndTrack": 266,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -741,13 +792,15 @@
                     ]
                 }
             ],
-            "LifeTime": 5017.69580078125,
+            "LifeTime": 5074.23583984375,
             "LifeTime_Particle": [
                 0.20000000298023224,
                 0.4000000059604645
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -786,6 +839,7 @@
                 0.0
             ],
             "ShaderPass": 7,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.10000000149011612,
                 0.4000000059604645
@@ -834,6 +888,11 @@
                 0.17277485132217407,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.0,
@@ -847,6 +906,7 @@
             "EndTrack": 163,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -877,13 +937,15 @@
                     ]
                 }
             ],
-            "LifeTime": 2567.10498046875,
+            "LifeTime": 2573.001220703125,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.4000000059604645
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 2.0,
@@ -922,6 +984,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.009999999776482582,
                 0.019999999552965164
@@ -963,9 +1026,9 @@
             ],
             "Color": [
                 1.0,
-                1.0,
-                1.0,
-                0.0
+                0.09424090385437012,
+                0.0,
+                1.0
             ],
             "DistortionStrength": 10.0,
             "Duration": 10,
@@ -1029,13 +1092,260 @@
                     ]
                 }
             ],
-            "LifeTime": 96.11157989501953,
+            "LifeTime": 102.04927062988281,
             "Loop": true,
             "Name": "Sprite",
             "NumKeyFrames": 2,
             "RenderGroup": 8,
             "ShaderPass": 5,
             "StartTrack": 153,
+            "TextureTags": [
+                "",
+                "T_Flare_04_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1
+        },
+        {
+            "Accel": [
+                -30.0,
+                -20.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                1.0,
+                0.25073331594467163,
+                0.17277485132217407,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 10,
+            "EffectType": 1,
+            "EmissiveIntensity": 2.0,
+            "EndTrack": 108,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 2.450000047683716,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 2574.55322265625,
+            "LifeTime_Particle": [
+                0.09000000357627869,
+                0.4000000059604645
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 0.10000000149011612,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 2.0,
+            "Name": "testfuocoblahsparkp2",
+            "NumInstance": 8,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                0.009999999776482582,
+                0.009999999776482582,
+                0.009999999776482582
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.009999999776482582,
+                0.019999999552965164
+            ],
+            "Speed": [
+                3.0,
+                4.0
+            ],
+            "Spin": false,
+            "StartTrack": 98,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_02_C_LGS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Animation": true,
+            "Billboard": true,
+            "CenterColor": [
+                1.0,
+                0.21989530324935913,
+                0.0,
+                1.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                0.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 10,
+            "EffectType": 0,
+            "EmissiveIntensity": 1.7000000476837158,
+            "EndTrack": 108,
+            "FlipUV": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        0.09424090385437012,
+                        0.0,
+                        1.0
+                    ],
+                    "Intensity": 3.0299999713897705,
+                    "Interpolation": 2,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        0.20000000298023224,
+                        0.20000000298023224,
+                        0.20000000298023224
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                },
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        0.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 6.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 103.10871887207031,
+            "Loop": true,
+            "Name": "Sprite",
+            "NumKeyFrames": 2,
+            "RenderGroup": 8,
+            "ShaderPass": 5,
+            "StartTrack": 98,
             "TextureTags": [
                 "",
                 "T_Flare_04_C_LGS",

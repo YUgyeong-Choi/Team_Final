@@ -2,6 +2,7 @@
 
 #include "Base.h"
 #include "Observer.h"
+#include "GameObject.h"
 
 
 NS_BEGIN(Engine)
@@ -17,9 +18,9 @@ public:
 	HRESULT Add_Observer(const _wstring strTag, CObserver* pObserver);
 	HRESULT Remove_Observer(const _wstring strTag);
 
-	void Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
 	
-	void Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback);
+	void Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback);
 
 	// pull push ตัดู
 	void Notify(const _wstring& strTag, const _wstring& eventType, void* pData);
@@ -38,6 +39,8 @@ public:
 			return iter->second;
 		return nullptr;
 	}
+
+	void Remove_CallBack(const _wstring& strTag, CGameObject* pOwner);
 
 	void Reset_All();
 

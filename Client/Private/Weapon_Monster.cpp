@@ -8,6 +8,7 @@
 #include "Unit.h"
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "SwordTrailEffect.h"
 
 CWeapon_Monster::CWeapon_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CWeapon(pDevice, pContext)
@@ -64,6 +65,9 @@ HRESULT CWeapon_Monster::Initialize(void* pArg)
 	if (FAILED(Ready_Actor()))
 		return E_FAIL;
 
+	if (FAILED(Ready_Effect()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -81,7 +85,17 @@ void CWeapon_Monster::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 
-	
+	//XMStoreFloat4x4(
+	//	&m_InnerMatrix,
+	//	XMMatrixTranslation(0.f, 0.f, 0.0f) // (x=0, y=1, z=0)
+	//);
+	//XMStoreFloat4x4(
+	//	&m_OuterMatrix,
+	//	XMMatrixTranslation(0.f, 10.f, 0.0f) // (x=0, y=1, z=0)
+	//);
+
+	//XMStoreFloat4x4(&m_InnerMatrix, XMLoadFloat4x4(&m_InnerMatrix) * XMLoadFloat4x4(m_pParentWorldMatrix));
+	//XMStoreFloat4x4(&m_OuterMatrix, XMLoadFloat4x4(&m_OuterMatrix) * XMLoadFloat4x4(m_pParentWorldMatrix));
 
 }
 
@@ -134,6 +148,9 @@ void CWeapon_Monster::Late_Update(_float fTimeDelta)
 		m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	}
 	Update_Collider();
+
+
+
 }
 
 HRESULT CWeapon_Monster::Render()
@@ -221,6 +238,12 @@ void CWeapon_Monster::SetisAttack(_bool isAttack)
 //	m_pPhysXActorCom->Set_Kinematic(false);
 //}
 
+void CWeapon_Monster::Set_WeaponTrail_Active(_bool bActive, TRAILTYPE eType)
+{
+	if (m_pTrailEffect)
+		m_pTrailEffect->Set_TrailActive(bActive);
+}
+
 HRESULT CWeapon_Monster::Ready_Components()
 {
 	/* [ 따로 추가할 컴포넌트가 있습니까? ] */
@@ -262,26 +285,57 @@ HRESULT CWeapon_Monster::Ready_Actor()
 	return S_OK;
 }
 
+HRESULT CWeapon_Monster::Ready_Effect()
+{
+	XMStoreFloat4x4(
+		&m_InnerMatrix,
+		XMMatrixTranslation(0.f, 0.f, 0.0f)
+	);
+
+
+	if (m_szMeshID == TEXT("Elite_Police_Weapon"))	//엘리트 폴리스는 디스토션 길이 2배
+	{
+		XMStoreFloat4x4(
+			&m_OuterMatrix,
+			XMMatrixTranslation(0.0f, 2.f, 0.f)
+		);
+	}
+	else if (m_szMeshID == TEXT("Buttler_Range_Weapon")) //레인저는 트레일 없고
+	{
+		return S_OK;
+	}
+	else //나머지 근접무기 든 애들 트레일 크기
+	{
+		XMStoreFloat4x4(
+			&m_InnerMatrix,
+			XMMatrixTranslation(0.5f, 0.f, 0.0f)
+		);
+
+		XMStoreFloat4x4(
+			&m_OuterMatrix,
+			XMMatrixTranslation(1.0f, 0.f, 0.f)
+		);
+	}
+
+	/************************ 소드 트레일 이펙트 **************************/
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = Get_CombinedWorldMatrix();
+	desc.iLevelID = m_iLevelID;
+
+	desc.pInnerSocketMatrix = &m_InnerMatrix;
+	desc.pOuterSocketMatrix = &m_OuterMatrix;
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
+
+	m_pTrailEffect->Set_TrailActive(false);
+
+	return S_OK;
+}
+
 void CWeapon_Monster::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
-	if (eColliderType == COLLIDERTYPE::PLAYER)
-	{
-		_vector vDir = XMVector3Normalize(m_pOwner->Get_TransfomCom()->Get_State(STATE::POSITION) - pOther->Get_TransfomCom()->Get_State(STATE::POSITION));
 
-		CUnit* pUnit = static_cast<CUnit*>(pOther);
-		auto& vLockonPos = pUnit->Get_LockonPos();
-		_float3 vModifiedPos = _float3(vLockonPos.x + vDir.m128_f32[0], vLockonPos.y + vDir.m128_f32[1], vLockonPos.z + vDir.m128_f32[2]);
-
-		CEffectContainer::DESC desc = {};
-
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixScaling(2.f, 2.f, 2.f) * XMMatrixTranslation(vModifiedPos.x, vModifiedPos.y, vModifiedPos.z));
-
-		CGameObject* pEffect = { nullptr };
-		//pEffect = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_PlayerHit_Basic_Spark_1_P1S3"), &desc);
-
-		//if (pEffect == nullptr)
-		//	MSG_BOX("이펙트 생성 실패함");
-	}
 }
 
 void CWeapon_Monster::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)

@@ -16,16 +16,28 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "AttackSound",
+                    "Time": 30.0
+                },
+                {
                     "EventName": "NotLookAt",
-                    "Time": 58.0
+                    "Time": 60.0
+                },
+                {
+                    "EventName": "FireSound",
+                    "Time": 60.0
                 },
                 {
                     "EventName": "AddAttackCount",
                     "Time": 60.0
+                },
+                {
+                    "EventName": "ReloadSound",
+                    "Time": 150.0
                 }
             ],
             "IsLoop": false,
-            "RootMotion": true,
+            "RootMotion": false,
             "TickPerSecond": 55.0
         },
         {
@@ -38,6 +50,10 @@
                 },
                 {
                     "EventName": "BackMoveEnd",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "WalkSound",
                     "Time": 1.0
                 }
             ],
@@ -139,6 +155,12 @@
         {
             "ClipName": "AS_Down_Away_Land_B_02",
             "Duration": 60.0,
+            "Events": [
+                {
+                    "EventName": "FallSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -170,6 +192,10 @@
             "Events": [
                 {
                     "EventName": "NotLookAt",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "DeadSound",
                     "Time": 1.0
                 },
                 {
@@ -216,6 +242,12 @@
         {
             "ClipName": "AS_Down_Getup_B_01",
             "Duration": 187.0,
+            "Events": [
+                {
+                    "EventName": "GetupSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": false,
             "TickPerSecond": 55.0
@@ -314,6 +346,12 @@
         {
             "ClipName": "AS_Hit_B_03",
             "Duration": 86.0,
+            "Events": [
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -355,6 +393,10 @@
                     "Time": 1.0
                 },
                 {
+                    "EventName": "DeadSound",
+                    "Time": 1.0
+                },
+                {
                     "EventName": "Dissolve",
                     "Time": 120.0
                 },
@@ -373,6 +415,10 @@
             "Events": [
                 {
                     "EventName": "NotLookAt",
+                    "Time": 1.0
+                },
+                {
+                    "EventName": "DeadSound",
                     "Time": 1.0
                 },
                 {
@@ -409,6 +455,12 @@
         {
             "ClipName": "AS_Hit_L_03",
             "Duration": 83.0,
+            "Events": [
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -430,6 +482,12 @@
         {
             "ClipName": "AS_Hit_R_03",
             "Duration": 83.0,
+            "Events": [
+                {
+                    "EventName": "HitSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -458,6 +516,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_B_03",
             "Duration": 126.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -479,6 +543,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_L_03",
             "Duration": 131.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0
@@ -500,6 +570,12 @@
         {
             "ClipName": "AS_KnockBack_Weak_R_03",
             "Duration": 129.0,
+            "Events": [
+                {
+                    "EventName": "KnockBackSound",
+                    "Time": 1.0
+                }
+            ],
             "IsLoop": false,
             "RootMotion": true,
             "TickPerSecond": 55.0

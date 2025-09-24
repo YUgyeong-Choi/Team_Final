@@ -32,6 +32,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -40,6 +41,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -47,6 +49,8 @@
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableASAN>false</EnableASAN>
+    <EnableFuzzer>false</EnableFuzzer>
     <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -56,6 +60,7 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableASAN>false</EnableASAN>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -182,6 +187,7 @@
     <ClInclude Include="..\public\Bayonet.h" />
     <ClInclude Include="..\public\Belt.h" />
     <ClInclude Include="..\Public\BossDoor.h" />
+    <ClInclude Include="..\public\BossRetryDoor.h" />
     <ClInclude Include="..\public\BossUnit.h" />
     <ClInclude Include="..\public\BreakableMesh.h" />
     <ClInclude Include="..\public\Bullet.h" />
@@ -209,6 +215,7 @@
     <ClInclude Include="..\public\ErgoItem.h" />
     <ClInclude Include="..\public\Ergo.h" />
     <ClInclude Include="..\Public\FestivalLeader.h" />
+    <ClInclude Include="..\Public\FinalDoor.h" />
     <ClInclude Include="..\Public\KeyDoor.h" />
     <ClInclude Include="..\public\MapLoader.h" />
     <ClInclude Include="..\public\MeshEmitter.h" />
@@ -216,7 +223,7 @@
     <ClInclude Include="..\Public\ShortCutDoor.h" />
     <ClInclude Include="..\Public\SlideDoor.h" />
     <ClInclude Include="..\public\Durability_Bar.h" />
-    <ClInclude Include="..\Public\DynamicMesh.h" />
+    <ClInclude Include="..\Public\DefaultDoor.h" />
     <ClInclude Include="..\public\Dynamic_Text_UI.h" />
     <ClInclude Include="..\public\Dynamic_UI.h" />
     <ClInclude Include="..\public\EditorObjectFactory.h" />
@@ -251,6 +258,7 @@
     <ClInclude Include="..\Public\TriggerSound.h" />
     <ClInclude Include="..\Public\TriggerTalk.h" />
     <ClInclude Include="..\Public\TriggerUI.h" />
+    <ClInclude Include="..\public\Trigger_Effect.h" />
     <ClInclude Include="..\public\UI_Button_Script.h" />
     <ClInclude Include="..\public\UI_Container_DeBuff.h" />
     <ClInclude Include="..\public\UI_Fatal_Icon.h" />
@@ -387,6 +395,7 @@
     <ClCompile Include="..\private\Bayonet.cpp" />
     <ClCompile Include="..\private\Belt.cpp" />
     <ClCompile Include="..\Private\BossDoor.cpp" />
+    <ClCompile Include="..\private\BossRetryDoor.cpp" />
     <ClCompile Include="..\private\BossUnit.cpp" />
     <ClCompile Include="..\private\BreakableMesh.cpp" />
     <ClCompile Include="..\private\Bullet.cpp" />
@@ -409,6 +418,7 @@
     <ClCompile Include="..\private\ErgoItem.cpp" />
     <ClCompile Include="..\private\Ergo.cpp" />
     <ClCompile Include="..\Private\FestivalLeader.cpp" />
+    <ClCompile Include="..\Private\FinalDoor.cpp" />
     <ClCompile Include="..\Private\KeyDoor.cpp" />
     <ClCompile Include="..\private\MapLoader.cpp" />
     <ClCompile Include="..\private\MeshEmitter.cpp" />
@@ -416,7 +426,7 @@
     <ClCompile Include="..\Private\ShortCutDoor.cpp" />
     <ClCompile Include="..\Private\SlideDoor.cpp" />
     <ClCompile Include="..\private\Durability_Bar.cpp" />
-    <ClCompile Include="..\Private\DynamicMesh.cpp" />
+    <ClCompile Include="..\Private\DefaultDoor.cpp" />
     <ClCompile Include="..\private\Dynamic_Text_UI.cpp" />
     <ClCompile Include="..\private\Dynamic_UI.cpp" />
     <ClCompile Include="..\private\EditorObjectFactory.cpp" />
@@ -488,7 +498,7 @@
     <ClCompile Include="..\Private\MapToolObject.cpp" />
     <ClCompile Include="..\private\Stamina_Bar.cpp" />
     <ClCompile Include="..\private\Stargazer.cpp" />
-    <ClCompile Include="..\private\StargazerEffect.cpp" />
+    <ClCompile Include="..\Private\StargazerEffect.cpp" />
     <ClCompile Include="..\Private\StaticMesh.cpp" />
     <ClCompile Include="..\private\StaticMesh_Instance.cpp" />
     <ClCompile Include="..\Private\TriggerBGM.cpp" />
@@ -508,6 +518,7 @@
     <ClCompile Include="..\Private\SwordTrailEffect.cpp" />
     <ClCompile Include="..\Private\TriggerTalk.cpp" />
     <ClCompile Include="..\Private\TriggerUI.cpp" />
+    <ClCompile Include="..\private\Trigger_Effect.cpp" />
     <ClCompile Include="..\private\UI_Bar_Loading.cpp" />
     <ClCompile Include="..\private\UI_Button.cpp" />
     <ClCompile Include="..\private\UI_Button_Script.cpp" />

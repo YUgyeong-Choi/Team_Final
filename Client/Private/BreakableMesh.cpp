@@ -7,6 +7,9 @@
 #include "GameInstance.h"
 #include "Client_Calculation.h"
 
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
+
 CBreakableMesh::CBreakableMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CGameObject(pDevice, pContext)
 {
@@ -64,13 +67,16 @@ HRESULT CBreakableMesh::Initialize(void* pArg)
 			//자신의 aabb 만큼의 네브 인덱스를 가져온다.
 			Store_NavIndices();
 		}
+
+		//푸오코 기둥은 좀 크게
+		m_pSoundCom->SetVolume(1.0f);
 	}
 
 	m_pSoundCom->SetVolume(0.5f);
 	_float3 vPos = {};
 	XMStoreFloat3(&vPos, m_pTransformCom->Get_State(STATE::POSITION));
 	m_pSoundCom->Update3DPosition(vPos);
-	m_pSoundCom->Set3DState(0.f, 10.f);
+	m_pSoundCom->Set3DState(0.f, 30.f);
 
 	return S_OK;
 }
@@ -87,6 +93,9 @@ void CBreakableMesh::Priority_Update(_float fTimeDelta)
 	//{
 	//	Reset();
 	//}
+	// 
+
+	
 }
 
 void CBreakableMesh::Update(_float fTimeDelta)
@@ -110,7 +119,7 @@ void CBreakableMesh::Update(_float fTimeDelta)
 
 	if (m_bIsBroken)
 	{
-		if (m_fTimeAcc > m_fTime_Invisible * 0.7f)
+		if (m_fTimeAcc > m_fTime_Invisible * 0.3f)
 		{
 			if (m_bIsDissolve == true)
 			{
@@ -234,6 +243,11 @@ void CBreakableMesh::Reset()
 		m_pPartTransformComs[i]->Set_WorldMatrix(m_PartInitWorldMatrixs[i]);
 	}
 
+	if (m_bMakeEffect)
+	{
+		m_bMakeEffect = false;
+	
+	}
 }
 
 void CBreakableMesh::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
@@ -292,6 +306,29 @@ void CBreakableMesh::Break()
 	else
 	{
 		m_pSoundCom->Play_Random("AMB_OJ_PR_Pipe_Destruction_0", 3, 4);
+
+		// 이펙트 생성해준다
+		if (!m_bMakeEffect)
+		{
+			CEffectContainer::DESC eDesc = {};
+
+			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+			XMStoreFloat4x4(&eDesc.PresetMatrix, XMMatrixScaling(1.f, 2.f, 1.f));
+
+
+			eDesc.PresetMatrix._41 = vPos.m128_f32[0] + 4.09f;
+			eDesc.PresetMatrix._42 = vPos.m128_f32[1] - 1.45f; 
+			eDesc.PresetMatrix._43 = vPos.m128_f32[2] + 1.21f;
+
+			if (nullptr == MAKE_EFFECT(m_iLevelID, TEXT("EC_GL_Smoke_UpToDown"), &eDesc))
+				MSG_BOX("make fail effect smokeupdown");
+			
+			
+			m_bMakeEffect = true;
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
+		}
+
 	}
 
 	m_bIsBroken = true;

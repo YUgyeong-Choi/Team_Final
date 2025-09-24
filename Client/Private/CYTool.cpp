@@ -494,17 +494,28 @@ void CCYTool::Change_SelectedItem(class CEffectBase* pEffect)
 HRESULT CCYTool::Window_Sprite()
 {
 	CToolSprite* pSE = dynamic_cast<CToolSprite*>(m_pSequence->m_Items[m_iSelected].pEffect);
-
-	ImGui::Text("Select Pass\n3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
-
-	for (_uint i = SE_UVSPRITE_COLOR; i < SE_END; i++)
+	if (m_iLastSelected != m_iSelected)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
-			*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		m_iLastSelected = m_iSelected;
 	}
+	_int iSelected = *pSE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Sprite", &iSelected, m_Pass_Sprite, IM_ARRAYSIZE(m_Pass_Sprite)))
+	{
+		*pSE->Get_ShaderPass_Ptr() = static_cast<SPRITEEFFECT_PASS_INDEX>(iSelected);
+	}
+
+	//ImGui::SeparatorText("Select Pass");
+	//ImGui::Text("3. diffuse\t4. UVSprite_Color_WB\t5. MaskOnly\t6. MaskNoise\t7. DistortionOnlyFlow\n8. Distortion NoMaskFlow");
+
+	//for (_uint i = SE_UVSPRITE_COLOR; i < SE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##SE").c_str(), *pSE->Get_ShaderPass_Ptr() == i)) {
+	//		*pSE->Get_ShaderPass_Ptr() = (SPRITEEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
+
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	return S_OK;
@@ -515,6 +526,8 @@ HRESULT CCYTool::Window_Particle()
 	CToolParticle* pPE = dynamic_cast<CToolParticle*>(m_pSequence->m_Items[m_iSelected].pEffect);
 	if (m_iLastSelected != m_iSelected)
 	{
+		m_iLastSelected = m_iSelected;
+
 		auto& desc = pPE->Get_InstanceBufferDesc();
 
 		m_eParticleType = desc.ePType;
@@ -528,7 +541,6 @@ HRESULT CCYTool::Window_Particle()
 		m_vAccel = desc.vAccel;
 		m_vMin_MaxSpeed.x = desc.fMinSpeed;
 		m_vMin_MaxSpeed.y = desc.fMaxSpeed;
-		m_iLastSelected = m_iSelected;
 		m_tPCB.bUseGravity = desc.bGravity;
 		m_tPCB.fGravity = desc.fGravity;
 		m_tPCB.vOrbitAxis = desc.vOrbitAxis;
@@ -541,21 +553,31 @@ HRESULT CCYTool::Window_Particle()
 		m_tPCB.isTileLoop = desc.isTileLoop;
 		m_tPCB.fShrinkThreshold = desc.fShrinkThreshold;
 		m_tPCB.isCircleRange = desc.isCircleRange;
+		m_tPCB.vCircleNormal = desc.vCircleNormal;
+		m_tPCB.bLoopInSet = desc.bLoopInSet;
+		m_tPCB.fLoopInSet_LoopDelay = desc.fLoopInSet_LoopDelay - desc.vLifeTime.y;
 	}
 
-	ImGui::Text("Select Pass\n0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
-	for (_uint i = 0; i < PE_END; i++)
+	_int iSelected = *pPE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Particle", &iSelected, m_Pass_Particle, IM_ARRAYSIZE(m_Pass_Particle)))
 	{
-		if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
-			*pPE->Get_ShaderPass_Ptr() = (PARTICLEEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		*pPE->Get_ShaderPass_Ptr() = static_cast<PARTICLEEFFECT_PASS_INDEX>(iSelected);
 	}
+	//ImGui::SeparatorText("Select Pass");
+	//ImGui::Text("0. Default\t1. MaskOnly\t2. WBTest\t3. vstretch\n4. Nonlight\t5. Rain(Distort+Mask)\n6. Diffuse_WB\t7. MaskDissolve_WB,");
+	//for (_uint i = 0; i < PE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##PE").c_str(), *pPE->Get_ShaderPass_Ptr() == i)) {
+	//		*pPE->Get_ShaderPass_Ptr() = (PARTICLEEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	m_tPCB = pPE->Get_CBuffer();
 
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
+	ImGui::SeparatorText("Default Particle Preferences");
 	ImGui::DragInt("Num Instance", &m_iNumInstance, 1, 1, 10000, "%d");
 	ImGui::DragFloat3("Pivot", reinterpret_cast<_float*>(&m_tPCB.vPivot), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat3("Center", reinterpret_cast<_float*>(&m_tPCB.vCenter), 0.01f, -1000.f, 1000.f, "%.2f");
@@ -564,6 +586,10 @@ HRESULT CCYTool::Window_Particle()
 	m_bIsCircleRange = m_tPCB.isCircleRange == 0 ? false : true;
 	ImGui::Checkbox("CircleRange", &m_bIsCircleRange);
 	m_tPCB.isCircleRange = m_bIsCircleRange == true ? 1 : 0;
+	if (m_bIsCircleRange)
+	{
+		ImGui::InputFloat3("CircleNormal", &m_tPCB.vCircleNormal.x);
+	}
 
 	ImGui::DragFloat2("Speed", reinterpret_cast<_float*>(&m_vSpeed), 0.01f, 0.01f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Size", reinterpret_cast<_float*>(&m_vSize), 0.001f, 0.001f, 1000.f, "%.3f");
@@ -589,11 +615,7 @@ HRESULT CCYTool::Window_Particle()
 	// 가감속
 	ImGui::DragFloat2("Accel", reinterpret_cast<_float*>(&m_vAccel), 0.01f, -1000.f, 1000.f, "%.2f");
 	ImGui::DragFloat2("Min/Max Speed", reinterpret_cast<_float*>(&m_vMin_MaxSpeed), 0.01f, -1000.f, 1000.f, "%.2f");
-	
-	// 타일 루프 설정
-	m_bIsTileLoop = m_tPCB.isTileLoop == 0 ? false : true;
-	ImGui::Checkbox("TileLoop", &m_bIsTileLoop);
-	m_tPCB.isTileLoop = m_bIsTileLoop == true ? 1 : 0;
+
 
 	// stretch 시에 늘어나는 정도
 	if (*pPE->Get_ShaderPass_Ptr() == PE_WB_VSTRETCH || *pPE->Get_ShaderPass_Ptr() == PE_RAIN)
@@ -606,10 +628,6 @@ HRESULT CCYTool::Window_Particle()
 	}
 	/**************************************************/
 	
-	m_bIsLoop = m_tPCB.bIsLoop == 0 ? false : true;
-	ImGui::Checkbox("Loop", &m_bIsLoop); ImGui::SameLine();
-	m_tPCB.bIsLoop = m_bIsLoop == true ? 1 : 0;
-
 	m_bUseSpin = m_tPCB.bUseSpin == 0 ? false : true;
 	ImGui::Checkbox("Spin", &m_bUseSpin); ImGui::SameLine();
 	m_tPCB.bUseSpin = m_bUseSpin == true ? 1 : 0;
@@ -617,6 +635,27 @@ HRESULT CCYTool::Window_Particle()
 	m_bUseOrbit = m_tPCB.bUseOrbit == 0 ? false : true;
 	ImGui::Checkbox("Orbit", &m_bUseOrbit);
 	m_tPCB.bUseOrbit = m_bUseOrbit == true ? 1 : 0;
+
+
+	// 루프 설정
+	ImGui::SeparatorText("Loop Options");
+	m_bIsLoop = m_tPCB.bIsLoop == 0 ? false : true;
+	ImGui::Checkbox("Loop", &m_bIsLoop);
+	m_tPCB.bIsLoop = m_bIsLoop == true ? 1 : 0;
+
+	// isTileBased? < 변경예정
+	m_bIsTileLoop = m_tPCB.isTileLoop == 0 ? false : true;
+	ImGui::Checkbox("TileLoop", &m_bIsTileLoop); ImGui::SameLine();
+	m_tPCB.isTileLoop = m_bIsTileLoop == true ? 1 : 0;
+	
+	m_bLoopInSet = m_tPCB.bLoopInSet == 0 ? false : true;
+	ImGui::Checkbox("Loop In Whole Set", &m_bLoopInSet);
+	m_tPCB.bLoopInSet = m_bLoopInSet == true ? 1 : 0;
+
+	if (m_bLoopInSet)
+	{
+		ImGui::DragFloat("LoopInSet Delay", &m_tPCB.fLoopInSet_LoopDelay, 0.1f, -100.0f, 100.f, "%.1f");
+	}
 
 
 
@@ -641,6 +680,7 @@ HRESULT CCYTool::Window_Particle()
 	m_tPCB.fTileTickPerSec = *pPE->Get_TileTickPerSec();
 	pPE->Set_CBuffer(m_tPCB);
 
+	ImGui::Separator();
 	if(ImGui::Button("Update Particle"))
 	{
 		CVIBuffer_Point_Instance::DESC desc = {};
@@ -669,6 +709,9 @@ HRESULT CCYTool::Window_Particle()
 		desc.fTileTickPerSec = m_tPCB.fTileTickPerSec;
 		desc.fShrinkThreshold = m_tPCB.fShrinkThreshold;
 		desc.isCircleRange = m_tPCB.isCircleRange;
+		desc.vCircleNormal = m_tPCB.vCircleNormal;
+		desc.bLoopInSet = m_tPCB.bLoopInSet;
+		desc.fLoopInSet_LoopDelay = m_tPCB.fLoopInSet_LoopDelay - m_vLifeTime.y;
 		pPE->Change_InstanceBuffer(&desc);
 	}
 
@@ -684,16 +727,28 @@ HRESULT CCYTool::Window_Mesh()
 	CToolMeshEffect* pME = dynamic_cast<CToolMeshEffect*>(m_pSequence->m_Items[m_iSelected].pEffect);
 	if (pME == nullptr)
 		return E_FAIL;
-
-	ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave");
-	for (_uint i = 0; i < ME_END; i++)
+	if (m_iLastSelected != m_iSelected)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {
-			*pME->Get_ShaderPass_Ptr() = (MESHEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		m_iLastSelected = m_iSelected;
 	}
+
+	_int iSelected = *pME->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Mesh", &iSelected, m_Pass_Mesh, IM_ARRAYSIZE(m_Pass_Mesh)))
+	{
+		*pME->Get_ShaderPass_Ptr() = static_cast<MESHEFFECT_PASS_INDEX>(iSelected);
+	}
+
+
+
+	//ImGui::Text("Select Pass\n0. Default\t1. Mask only\t2. Mask Noise\t3. UVMask\n4. Mask_Scroll_WB\t5. Mask Only WB\t6. Shockwave\n7. LostErgo");
+	//for (_uint i = 0; i < ME_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##ME").c_str(), *pME->Get_ShaderPass_Ptr() == i)) {
+	//		*pME->Get_ShaderPass_Ptr() = (MESHEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 
 	if (ImGui::Button("Load Models"))
@@ -738,17 +793,26 @@ HRESULT CCYTool::Window_Mesh()
 HRESULT CCYTool::Window_Trail()
 {
 	CToolTrail* pTE = dynamic_cast<CToolTrail*>(m_pSequence->m_Items[m_iSelected].pEffect);
-
-	ImGui::Text("Select Pass\n0. Default\n1.Drop");
-
-	for (_uint i = 0; i < TE_END; i++)
+	if (m_iLastSelected != m_iSelected)
 	{
-		if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), *pTE->Get_ShaderPass_Ptr() == i)) {
-			*pTE->Get_ShaderPass_Ptr() = (TRAILEFFECT_PASS_INDEX)i;
-		}
-		if (i % 6 != 0 || i == 0)
-			ImGui::SameLine();
+		m_iLastSelected = m_iSelected;
 	}
+	_int iSelected = *pTE->Get_ShaderPass_Ptr();
+	if (ImGui::Combo("Select Pass ##Trail", &iSelected, m_Pass_Trail, IM_ARRAYSIZE(m_Pass_Trail)))
+	{
+		*pTE->Get_ShaderPass_Ptr() = static_cast<TRAILEFFECT_PASS_INDEX>(iSelected);
+	}
+
+	//ImGui::Text("Select Pass\n0. Default\t1.Drop\t2. blooddrop\t3. basic");
+
+	//for (_uint i = 0; i < TE_END; i++)
+	//{
+	//	if (ImGui::RadioButton((to_string(i) + "##TE").c_str(), *pTE->Get_ShaderPass_Ptr() == i)) {
+	//		*pTE->Get_ShaderPass_Ptr() = (TRAILEFFECT_PASS_INDEX)i;
+	//	}
+	//	if (i % 6 != 0 || i == 0)
+	//		ImGui::SameLine();
+	//}
 	ImGui::Dummy(ImVec2(0.0f, 2.0f));
 	if (ImGui::Button("Enable Trail"))
 	{
@@ -1055,6 +1119,7 @@ HRESULT CCYTool::Load_EffectSet()
 		}
 		m_bOpenLoadEffectContainer = false;
 		m_iSelected = -1;
+		m_iLastSelected = -1;
 		IFILEDIALOG->Close();
 	}
 	return S_OK;

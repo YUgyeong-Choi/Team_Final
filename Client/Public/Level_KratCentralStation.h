@@ -40,6 +40,7 @@ public:
 
 	HRESULT Ready_Level();
 
+	void Apply_AreaBGM();
 private:
 	HRESULT Ready_Player();
 	HRESULT Ready_Npc();
@@ -56,10 +57,11 @@ private:
 	HRESULT Ready_Interact();
 	HRESULT Ready_Trigger();
 	HRESULT Ready_TriggerBGM();
-	HRESULT Ready_RainTrigger();
+	HRESULT Ready_TriggerEffect();
 	HRESULT Ready_WaterPuddle();
 	HRESULT Ready_Thunder();
 	HRESULT Ready_Sound();
+
 
 
 	HRESULT Ready_AnimatedProp();
@@ -102,8 +104,8 @@ private:
 
 private:
 	_bool m_bHold = { true };
-	vector<class CDH_ToolMesh*> m_vecLights;
-	vector<class CDH_ToolMesh*> m_vecThunder;
+	vector<class CDH_ToolMesh*> m_vecLights = {};
+	vector<class CDH_ToolMesh*> m_vecThunder = {};
 
 private:
 	CSoundController* m_pThunderSoundCom = { nullptr };

@@ -170,19 +170,19 @@ HRESULT CLevel_YG::Reset()
 {
 	list<CGameObject*> objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_FireEater");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FireEater", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_FestivalLeader");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_FestivalLeader", obj, true);
 
 	objList = m_pGameInstance->Get_ObjectList(ENUM_CLASS(LEVEL::YG), L"Layer_Monster_Normal");
 	for (auto& obj : objList)
-		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj);
+		m_pGameInstance->Return_PoolObject(L"Layer_Monster_Normal", obj, false);
 
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader");
-	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal");
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FireEater", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_FestivalLeader", false);
+	m_pGameInstance->UseAll_PoolObjects(L"Layer_Monster_Normal", true);
 	return S_OK;
 }
 
@@ -419,7 +419,6 @@ HRESULT CLevel_YG::Ready_Camera()
 
 HRESULT CLevel_YG::Ready_Lights()
 {
-	/*
 	wstring basePath = L"../Bin/Save/LightInfomation/";
 	wstring fileName = L"Light_Information.json";
 
@@ -444,7 +443,7 @@ HRESULT CLevel_YG::Ready_Lights()
 		_float fFalloff = jLight["Falloff"];
 		_float fFogDensity = jLight["FogDensity"];
 		_float fFogCutOff = jLight["FogCutOff"];
-		_int m_iVolumetricMode = jLight["Volumetric"].get<int>();
+		_bool  bVolumetricMode = jLight["Volumetric"];
 
 		CDHTool::LIGHT_TYPE eLightType = static_cast<CDHTool::LIGHT_TYPE>(jLight["LightType"].get<int>());
 		CDHTool::LEVEL_TYPE eLevelType = static_cast<CDHTool::LEVEL_TYPE>(jLight["LevelType"].get<int>());
@@ -475,25 +474,25 @@ HRESULT CLevel_YG::Ready_Lights()
 		pNewLight->SetfFalloff(fFalloff);
 		pNewLight->SetfFogDensity(fFogDensity);
 		pNewLight->SetfFogCutOff(fFogCutOff);
-		pNewLight->SetbVolumetric(m_iVolumetricMode);
+		pNewLight->SetbVolumetric(bVolumetricMode);
 
-		pNewLight->SetDebug(false);
+		//pNewLight->SetDebug(false);
 	}
-	*/
-	m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YG));
 
-	LIGHT_DESC			LightDesc{};
+	//m_pGameInstance->RemoveAll_Light(ENUM_CLASS(LEVEL::YG));
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.fAmbient = 0.6f;
-	LightDesc.fIntensity = 0.8f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.fFogDensity = 0.f;
+	//LIGHT_DESC			LightDesc{};
 
-	if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YG), LightDesc)))
-		return E_FAIL;
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.fAmbient = 0.6f;
+	//LightDesc.fIntensity = 0.8f;
+	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vDirection = _float4(1.f, -0.5f, 1.f, 0.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.fFogDensity = 0.f;
+
+	//if (FAILED(m_pGameInstance->Add_LevelLightData(ENUM_CLASS(LEVEL::YG), LightDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -777,8 +776,8 @@ HRESULT CLevel_YG::Separate_Area()
 	FnToAABB(a18p0, a18p1, a18Min, a18Max);
 
 	// Area 19 
-	_float3 a19p0 = _float3{ 51.44f, 42.46f, -266.51f };
-	_float3 a19p1 = _float3{ -42.91f, 0.20f, -139.25f };
+	_float3 a19p0 = _float3{ 160.44f, 42.46f, -266.51f };
+	_float3 a19p1 = _float3{ -42.91f, 0.20f, -80.25f };
 	_float3 a19Min, a19Max;
 	FnToAABB(a19p0, a19p1, a19Min, a19Max);
 
@@ -1253,7 +1252,7 @@ HRESULT CLevel_YG::Ready_OctoTree()
 HRESULT CLevel_YG::Ready_Interact()
 {
 	/*  [ 기차역 슬라이딩 문 ] */
-	CSlideDoor::DOORMESH_DESC Desc{};
+	CDefaultDoor::DEFAULTDOOR_DESC Desc{};
 	Desc.m_eMeshLevelID = LEVEL::YG;
 	Desc.szMeshID = TEXT("SM_Station_TrainDoor");
 	lstrcpy(Desc.szName, TEXT("SM_Station_TrainDoor"));
@@ -1266,15 +1265,16 @@ HRESULT CLevel_YG::Ready_Interact()
 	_float4x4 matWorldFloat;
 	XMStoreFloat4x4(&matWorldFloat, matWorld);
 	Desc.WorldMatrix = matWorldFloat;
-	Desc.vColliderOffSet = _vector({ 0.f, 1.3f, 0.f, 0.f });
-	Desc.vColliderSize = _vector({ 1.5f, 2.f, 0.2f, 0.f });
+	Desc.vColliderOffSet = { 0.f, 1.3f, 0.f, 0.f };
+	Desc.vColliderSize = { 1.5f, 2.f, 0.2f, 0.f };
 
 	Desc.eInteractType = INTERACT_TYPE::TUTORIALDOOR;
-	Desc.vTriggerOffset = _vector({ 0.f, 0.f, 0.3f, 0.f });
-	Desc.vTriggerSize = _vector({ 1.f, 0.2f, 0.5f, 0.f });
+	Desc.vTriggerOffset = { 0.f, 0.f, 0.3f, 0.f };
+	Desc.vTriggerSize = { 1.f, 0.2f, 0.5f, 0.f };
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_SlideDoor"),
 		ENUM_CLASS(LEVEL::YG), TEXT("TrainDoor"), &Desc)))
 		return E_FAIL;
+
 
 	/* [ 푸쿠오 보스 문 ] */
 	CBossDoor::BOSSDOORMESH_DESC BossDoorDesc{};
@@ -1292,17 +1292,17 @@ HRESULT CLevel_YG::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 1.5f, 0.f });
+	BossDoorDesc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+	BossDoorDesc.vColliderSize = { 0.2f, 2.f, 1.5f, 0.f };
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FUOCO;
-	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.5f, 0.f, 0.f });
-	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.5f, 0.f });
+	BossDoorDesc.vTriggerOffset = { 0.f, 0.5f, 0.f, 0.f };
+	BossDoorDesc.vTriggerSize = { 0.5f, 0.2f, 1.5f, 0.f };
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
 		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
-	///* [ 축제의 인도자 문 ] */
+	/* [ 축제의 인도자 문 ] */
 	BossDoorDesc = {};
 	BossDoorDesc.m_eMeshLevelID = LEVEL::YG;
 	BossDoorDesc.szMeshID = TEXT("FestivalDoor");
@@ -1321,37 +1321,70 @@ HRESULT CLevel_YG::Ready_Interact()
 
 	XMStoreFloat4x4(&matWorldFloat, world);
 	BossDoorDesc.WorldMatrix = matWorldFloat;
-	BossDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-	BossDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+	BossDoorDesc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+	BossDoorDesc.vColliderSize = { 0.2f, 2.f, 2.f, 0.f };
 
 	BossDoorDesc.eInteractType = INTERACT_TYPE::FESTIVALDOOR;
-	BossDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
-	BossDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	BossDoorDesc.vTriggerOffset = { 0.f, 0.f, 0.f, 0.f };
+	BossDoorDesc.vTriggerSize = { 0.5f, 0.2f, 1.0f, 0.f };
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_BossDoor"),
 		ENUM_CLASS(LEVEL::YG), TEXT("BossDoor"), &BossDoorDesc)))
 		return E_FAIL;
 
-	CKeyDoor::KEYDOORMESH_DESC KeyDoorDesc{};
-	KeyDoorDesc.m_eMeshLevelID = LEVEL::YG;
-	KeyDoorDesc.szMeshID = TEXT("StationDoubleDoor");
-	lstrcpy(KeyDoorDesc.szName, TEXT("StationDoubleDoor"));
+	/* [ 야외 나가는 문 ] */
+	Desc = {};
+	Desc.m_eMeshLevelID = LEVEL::YG;
+	Desc.szMeshID = TEXT("StationDoubleDoor");
+	lstrcpy(Desc.szName, TEXT("StationDoubleDoor"));
 
 	ModelPrototypeTag = TEXT("Prototype_Component_Model_StationDoubleDoor");
-	lstrcpy(KeyDoorDesc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
 	vPosition = _float3(184.04f, 8.90f, -8.f);
 	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
 	world = trans;
 
 	XMStoreFloat4x4(&matWorldFloat, world);
-	KeyDoorDesc.WorldMatrix = matWorldFloat;
-	KeyDoorDesc.vColliderOffSet = _vector({ 0.f, 1.5f, 0.f, 0.f });
-	KeyDoorDesc.vColliderSize = _vector({ 0.2f, 2.f, 2.f, 0.f });
+	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+	Desc.vColliderSize = { 0.2f, 2.f, 2.f, 0.f };
 
-	KeyDoorDesc.eInteractType = INTERACT_TYPE::OUTDOOR;
-	KeyDoorDesc.vTriggerOffset = _vector({ 0.f, 0.f, 0.f, 0.f });
-	KeyDoorDesc.vTriggerSize = _vector({ 0.5f, 0.2f, 1.0f, 0.f });
+	Desc.eInteractType = INTERACT_TYPE::OUTDOOR;
+	Desc.vTriggerOffset = { 0.f, 0.f, 0.f, 0.f };
+	Desc.vTriggerSize = { 0.5f, 0.2f, 1.0f, 0.f };
 	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_KeyDoor"),
-		ENUM_CLASS(LEVEL::YG), TEXT("KeyDoor"), &KeyDoorDesc)))
+		ENUM_CLASS(LEVEL::YG), TEXT("KeyDoor"), &Desc)))
+		return E_FAIL;
+
+	/* [ 숏컷 문 ] */
+	Desc = {};
+	Desc.m_eMeshLevelID = LEVEL::YG;
+	Desc.szMeshID = TEXT("ShortCutDoor");
+	lstrcpy(Desc.szName, TEXT("ShortCutDoor"));
+
+	ModelPrototypeTag = TEXT("Prototype_Component_Model_ShortCutDoor");
+	lstrcpy(Desc.szModelPrototypeTag, ModelPrototypeTag.c_str());
+	vPosition = _float3(147.46f, 2.66f, -25.17f);
+	trans = XMMatrixTranslation(vPosition.x, vPosition.y, vPosition.z);
+	world = trans;
+
+	XMStoreFloat4x4(&matWorldFloat, world);
+	Desc.WorldMatrix = matWorldFloat;
+	Desc.vColliderOffSet = { 0.f, 1.5f, 0.f, 0.f };
+	Desc.vColliderSize = { 2.0f, 2.f, 0.2f, 0.f };
+
+	Desc.eInteractType = INTERACT_TYPE::SHORTCUT;
+	Desc.vTriggerOffset = { 0.f, 0.f, 0.f, 0.f };
+	Desc.vTriggerSize = { 0.5f, 0.2f, 1.0f, 0.f };
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_ShortCutDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("ShortCutDoor"), &Desc)))
+		return E_FAIL;
+
+	/* [ 마지막 문 ] */
+	CGameObject::GAMEOBJECT_DESC ObjDesc = {};
+	ObjDesc.iLevelID = ENUM_CLASS(LEVEL::YG);
+	lstrcpy(Desc.szName, TEXT("FinalDoor"));
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::YG), TEXT("Prototype_GameObject_FinalDoor"),
+		ENUM_CLASS(LEVEL::YG), TEXT("FinalDoor"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

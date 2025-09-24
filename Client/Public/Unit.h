@@ -65,7 +65,7 @@ protected: /* [ Setup 함수 ] */
 
 public: /* [ 피직스 관련 ] */
 	PxRigidActor* Get_Actor(CPhysXActor* actor);
-	_vector Get_RayOffset() { return m_vRayOffset; }
+	_vector Get_RayOffset() { return XMLoadFloat4(&m_vRayOffset); }
 	virtual void RayCast(CPhysXActor* actor);
 #ifdef USE_IMGUI
 	class CAnimator* Get_Animator() const { return m_pAnimator; }
@@ -93,10 +93,13 @@ public:
 public: /* [ 셰이더를 켜고 끈다. ] */
 	void OnEmissive(_float fTimeDelta);
 	void OffEmissive(_float fTimeDelta);
+	void OnSecondEmissive(_float fTimeDelta);
+	void OffSecondEmissive(_float fTimeDelta);
 	void OnFury(_float fTimeDelta);
 	void OffFury(_float fTimeDelta);
 	void ToggleEmissive(_float fEmissiveSpeed);
 	void SwitchEmissive(_bool bEmissive, _float fEmissiveSpeed);
+	void SwitchSecondEmissive(_bool bSecondEmissive, _float fSecondEmissiveSpeed);
 	void SwitchFury(_bool bFury, _float fFurySpeed);
 
 
@@ -147,6 +150,17 @@ protected:
 	_float				m_fFurySwitch = {};
 	_float				m_fFurySpeed = {};
 
+	class CTexture*		m_pSecondEmissiveMap = { nullptr };
+	_float				m_fSecondEmissive = {};
+	_bool				m_bSecondEmissive = {};
+	_bool				m_bSecondEmissiveLoad = {};
+	_float				m_fSecondEmissiveSpeed = {};
+
+	class CTexture*		m_pWetTexture = { nullptr };
+	_float				m_fWetIntensity = {};
+	_bool				m_bWet = {};
+	_float				m_fWetSpeed = { 1.f };
+
 
 protected:              /* [ 컴포넌트 ] */
 	CModel*				m_pModelCom = { nullptr };
@@ -178,7 +192,7 @@ protected:				/* [ 그림자 관련 ] */
 protected:				/* [ 레이캐스트 변수 ] */
 	PxVec3				m_vRayHitPos = {};
 	_bool				m_bRayHit = {};
-	_vector				m_vRayOffset = {};
+	_float4				m_vRayOffset = {};
 
 protected:				/* [ 중력관련 변수 ] */
 	_bool				m_bOnGround = {};

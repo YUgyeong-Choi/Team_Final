@@ -9,8 +9,8 @@
             "Name": "Run_F",
             "NodeId": 2,
             "NodePos": [
-                19825.0,
-                0.0
+                46929.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -24,8 +24,8 @@
             "Name": "Walk_F",
             "NodeId": 4,
             "NodePos": [
-                26725.0,
-                0.0
+                53829.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -39,8 +39,8 @@
             "Name": "Run_F_Stop",
             "NodeId": 5,
             "NodePos": [
-                21125.0,
-                0.0
+                48229.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -54,8 +54,8 @@
             "Name": "Sprint",
             "NodeId": 9,
             "NodePos": [
-                -2311.29248046875,
-                359.5851745605469
+                6066.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -69,8 +69,8 @@
             "Name": "Idle",
             "NodeId": 17,
             "NodePos": [
-                -1775.0,
-                0.0
+                25329.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -84,8 +84,8 @@
             "Name": "Sprint_Stop",
             "NodeId": 23,
             "NodePos": [
-                -2311.29248046875,
-                524.585205078125
+                6066.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -99,8 +99,8 @@
             "Name": "Dash_Normal_B",
             "NodeId": 26,
             "NodePos": [
-                -20425.0,
-                0.0
+                6679.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -114,8 +114,8 @@
             "Name": "Dash_Normal_F",
             "NodeId": 29,
             "NodePos": [
-                -20425.0,
-                165.0
+                6679.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -129,8 +129,8 @@
             "Name": "EquipWeapon",
             "NodeId": 35,
             "NodePos": [
-                -9111.29296875,
-                359.5851745605469
+                -1584.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -144,8 +144,8 @@
             "Name": "EquipWeapon_Walk_F",
             "NodeId": 38,
             "NodePos": [
-                24175.0,
-                0.0
+                51279.0,
+                1.0
             ],
             "UpperClip": "AS_Pino_T_EquipmentWeapon",
             "UpperStartTime": 0.0
@@ -159,8 +159,8 @@
             "Name": "StrongAttack",
             "NodeId": 45,
             "NodePos": [
-                -22375.0,
-                0.0
+                4729.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -174,8 +174,8 @@
             "Name": "ChargeStrongAttack",
             "NodeId": 46,
             "NodePos": [
-                -27475.0,
-                0.0
+                -371.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -189,8 +189,8 @@
             "Name": "NormalAttack2",
             "NodeId": 48,
             "NodePos": [
-                -24925.0,
-                165.0
+                2179.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -204,8 +204,8 @@
             "Name": "NormalAttack",
             "NodeId": 47,
             "NodePos": [
-                -24925.0,
-                0.0
+                2179.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -219,8 +219,8 @@
             "Name": "StrongAttack2",
             "NodeId": 77,
             "NodePos": [
-                -22375.0,
-                165.0
+                4729.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -234,8 +234,8 @@
             "Name": "ChargeStrongAttack2",
             "NodeId": 78,
             "NodePos": [
-                -27475.0,
-                165.0
+                -371.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -249,8 +249,8 @@
             "Name": "SprintStrongAttack",
             "NodeId": 79,
             "NodePos": [
-                -23225.0,
-                0.0
+                3879.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -264,8 +264,8 @@
             "Name": "SprintNormalAttack",
             "NodeId": 80,
             "NodePos": [
-                -24075.0,
-                0.0
+                3029.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -279,8 +279,8 @@
             "Name": "Guard_Walk_R",
             "NodeId": 102,
             "NodePos": [
-                -14125.0,
-                0.0
+                12979.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -294,8 +294,8 @@
             "Name": "Guard_Walk_F",
             "NodeId": 103,
             "NodePos": [
-                -14125.0,
-                165.0
+                12979.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -309,8 +309,8 @@
             "Name": "Guard_Walk_B",
             "NodeId": 104,
             "NodePos": [
-                -14125.0,
-                330.0
+                12979.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -324,8 +324,8 @@
             "Name": "Guard_Walk_L",
             "NodeId": 105,
             "NodePos": [
-                -14125.0,
-                495.0
+                12979.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -340,8 +340,8 @@
             "Name": "Guard_Hit",
             "NodeId": 106,
             "NodePos": [
-                -11975.0,
-                0.0
+                15129.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -355,8 +355,8 @@
             "Name": "Guard_Break",
             "NodeId": 107,
             "NodePos": [
-                -14975.0,
-                0.0
+                12129.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -370,8 +370,8 @@
             "Name": "Guard",
             "NodeId": 108,
             "NodePos": [
-                -14975.0,
-                165.0
+                12129.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -385,8 +385,8 @@
             "Name": "Run_B",
             "NodeId": 109,
             "NodePos": [
-                19825.0,
-                165.0
+                46929.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -400,8 +400,8 @@
             "Name": "Run_BL",
             "NodeId": 110,
             "NodePos": [
-                19825.0,
-                330.0
+                46929.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -415,8 +415,8 @@
             "Name": "Run_BR",
             "NodeId": 112,
             "NodePos": [
-                19825.0,
-                495.0
+                46929.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -430,8 +430,8 @@
             "Name": "Run_FL",
             "NodeId": 114,
             "NodePos": [
-                20275.0,
-                0.0
+                47379.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -445,8 +445,8 @@
             "Name": "Run_FR",
             "NodeId": 116,
             "NodePos": [
-                20275.0,
-                165.0
+                47379.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -460,8 +460,8 @@
             "Name": "Run_R",
             "NodeId": 118,
             "NodePos": [
-                20275.0,
-                330.0
+                47379.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -475,8 +475,8 @@
             "Name": "Run_L",
             "NodeId": 119,
             "NodePos": [
-                20275.0,
-                495.0
+                47379.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -490,8 +490,8 @@
             "Name": "MainSkill",
             "NodeId": 148,
             "NodePos": [
-                -25775.0,
-                0.0
+                1329.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -505,8 +505,8 @@
             "Name": "MainSkill2",
             "NodeId": 149,
             "NodePos": [
-                -25775.0,
-                165.0
+                1329.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -520,8 +520,8 @@
             "Name": "MainSkill3",
             "NodeId": 150,
             "NodePos": [
-                -25775.0,
-                330.0
+                1329.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -535,8 +535,8 @@
             "Name": "PutWeapon",
             "NodeId": 257,
             "NodePos": [
-                -4861.29248046875,
-                359.5851745605469
+                3516.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -550,8 +550,8 @@
             "Name": "PutWeapon_Walk_F",
             "NodeId": 258,
             "NodePos": [
-                25875.0,
-                0.0
+                52979.0,
+                1.0
             ],
             "UpperClip": "AS_Pino_T_PutWeapon",
             "UpperStartTime": 0.0
@@ -565,8 +565,8 @@
             "Name": "Dash_Focus_B",
             "NodeId": 265,
             "NodePos": [
-                -21275.0,
-                0.0
+                5829.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -580,8 +580,8 @@
             "Name": "Dash_Focus_F",
             "NodeId": 266,
             "NodePos": [
-                -21275.0,
-                165.0
+                5829.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -595,8 +595,8 @@
             "Name": "Dash_Focus_L",
             "NodeId": 267,
             "NodePos": [
-                -21275.0,
-                330.0
+                5829.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -610,8 +610,8 @@
             "Name": "Dash_Focus_R",
             "NodeId": 268,
             "NodePos": [
-                -21275.0,
-                495.0
+                5829.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -625,8 +625,8 @@
             "Name": "Walk_R",
             "NodeId": 298,
             "NodePos": [
-                26725.0,
-                165.0
+                53829.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -640,8 +640,8 @@
             "Name": "Walk_L",
             "NodeId": 299,
             "NodePos": [
-                26725.0,
-                330.0
+                53829.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -655,8 +655,8 @@
             "Name": "Walk_B",
             "NodeId": 300,
             "NodePos": [
-                26725.0,
-                495.0
+                53829.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -670,8 +670,8 @@
             "Name": "Walk_FL",
             "NodeId": 301,
             "NodePos": [
-                27175.0,
-                0.0
+                54279.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -685,8 +685,8 @@
             "Name": "Walk_FR",
             "NodeId": 302,
             "NodePos": [
-                27175.0,
-                165.0
+                54279.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -700,8 +700,8 @@
             "Name": "Walk_BL",
             "NodeId": 303,
             "NodePos": [
-                27175.0,
-                330.0
+                54279.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -715,8 +715,8 @@
             "Name": "Walk_BR",
             "NodeId": 304,
             "NodePos": [
-                27175.0,
-                495.0
+                54279.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -730,8 +730,8 @@
             "Name": "SlidingDoor",
             "NodeId": 403,
             "NodePos": [
-                -3161.29248046875,
-                359.5851745605469
+                5216.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -745,8 +745,8 @@
             "Name": "DoubleDoor_Push_TrainStation",
             "NodeId": 404,
             "NodePos": [
-                -9961.29296875,
-                359.5851745605469
+                -2434.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -760,8 +760,8 @@
             "Name": "Sit_Loop",
             "NodeId": 407,
             "NodePos": [
-                -4011.29248046875,
-                359.5851745605469
+                4366.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -775,8 +775,8 @@
             "Name": "Sit_End",
             "NodeId": 408,
             "NodePos": [
-                -4011.29248046875,
-                524.585205078125
+                4366.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -790,8 +790,8 @@
             "Name": "OnLamp",
             "NodeId": 446,
             "NodePos": [
-                -5711.29248046875,
-                359.5851745605469
+                2666.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -805,8 +805,8 @@
             "Name": "Fail_Item",
             "NodeId": 449,
             "NodePos": [
-                -1025.0,
-                0.0
+                26079.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -820,8 +820,8 @@
             "Name": "OnLamp_Walk",
             "NodeId": 452,
             "NodePos": [
-                25025.0,
-                0.0
+                52129.0,
+                1.0
             ],
             "UpperClip": "AS_Pino_Item_Lamp",
             "UpperStartTime": 0.0
@@ -835,8 +835,8 @@
             "Name": "Arm_NormalAttack",
             "NodeId": 497,
             "NodePos": [
-                -28325.0,
-                0.0
+                -1221.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -850,8 +850,8 @@
             "Name": "Arm_NormalAttack2",
             "NodeId": 498,
             "NodePos": [
-                -28325.0,
-                165.0
+                -1221.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -865,8 +865,8 @@
             "Name": "Arm_ChargeAttack",
             "NodeId": 499,
             "NodePos": [
-                -28325.0,
-                330.0
+                -1221.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -880,8 +880,8 @@
             "Name": "Fail_Arm",
             "NodeId": 555,
             "NodePos": [
-                -8261.29296875,
-                359.5851745605469
+                -734.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -895,8 +895,8 @@
             "Name": "Grinder_Start",
             "NodeId": 100030,
             "NodePos": [
-                -175.0,
-                0.0
+                26929.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -910,8 +910,8 @@
             "Name": "Grinder_Loop",
             "NodeId": 100031,
             "NodePos": [
-                -175.0,
-                165.0
+                26929.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -925,8 +925,8 @@
             "Name": "Grinder_End",
             "NodeId": 100032,
             "NodePos": [
-                -175.0,
-                330.0
+                26929.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -940,8 +940,8 @@
             "Name": "Grinder_Loop_Walk_F",
             "NodeId": 100035,
             "NodePos": [
-                675.0,
-                0.0
+                27779.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -955,8 +955,8 @@
             "Name": "Heal",
             "NodeId": 100060,
             "NodePos": [
-                1525.0,
-                0.0
+                28629.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -970,8 +970,8 @@
             "Name": "Heal_Walk_F",
             "NodeId": 100064,
             "NodePos": [
-                2375.0,
-                0.0
+                29479.0,
+                1.0
             ],
             "UpperClip": "AS_Pino_Item_Pulse",
             "UpperStartTime": 0.0
@@ -985,8 +985,8 @@
             "Name": "Heal_Walk_FR",
             "NodeId": 100069,
             "NodePos": [
-                2375.0,
-                165.0
+                29479.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1000,8 +1000,8 @@
             "Name": "Heal_Walk_FL",
             "NodeId": 100070,
             "NodePos": [
-                2375.0,
-                330.0
+                29479.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1015,8 +1015,8 @@
             "Name": "Heal_Walk_L",
             "NodeId": 100071,
             "NodePos": [
-                2375.0,
-                495.0
+                29479.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1030,8 +1030,8 @@
             "Name": "Heal_Walk_R",
             "NodeId": 100072,
             "NodePos": [
-                2825.0,
-                0.0
+                29929.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1045,8 +1045,8 @@
             "Name": "Heal_Walk_BL",
             "NodeId": 100073,
             "NodePos": [
-                2825.0,
-                165.0
+                29929.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1060,8 +1060,8 @@
             "Name": "Heal_Walk_BR",
             "NodeId": 100074,
             "NodePos": [
-                2825.0,
-                330.0
+                29929.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1075,8 +1075,8 @@
             "Name": "Heal_Walk_B",
             "NodeId": 100075,
             "NodePos": [
-                2825.0,
-                495.0
+                29929.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1090,8 +1090,8 @@
             "Name": "FatalAttack",
             "NodeId": 100146,
             "NodePos": [
-                -26625.0,
-                0.0
+                479.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1105,8 +1105,8 @@
             "Name": "Grinder_Loop_Walk_R",
             "NodeId": 100149,
             "NodePos": [
-                675.0,
-                165.0
+                27779.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1120,8 +1120,8 @@
             "Name": "Grinder_Loop_Walk_L",
             "NodeId": 100150,
             "NodePos": [
-                675.0,
-                330.0
+                27779.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1135,8 +1135,8 @@
             "Name": "Grinder_Loop_Walk_B",
             "NodeId": 100151,
             "NodePos": [
-                675.0,
-                495.0
+                27779.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1151,8 +1151,8 @@
             "Name": "Hit_R",
             "NodeId": 100195,
             "NodePos": [
-                -11125.0,
-                0.0
+                15979.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1167,8 +1167,8 @@
             "Name": "Hit_B",
             "NodeId": 100196,
             "NodePos": [
-                -11125.0,
-                165.0
+                15979.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1183,8 +1183,8 @@
             "Name": "Hit_L",
             "NodeId": 100197,
             "NodePos": [
-                -11125.0,
-                330.0
+                15979.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1199,8 +1199,8 @@
             "Name": "Hit_LtoR",
             "NodeId": 100198,
             "NodePos": [
-                -11125.0,
-                495.0
+                15979.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1215,8 +1215,8 @@
             "Name": "Hit_RtoL",
             "NodeId": 100199,
             "NodePos": [
-                -10675.0,
-                0.0
+                16429.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1231,8 +1231,8 @@
             "Name": "Hit_FtoB",
             "NodeId": 100200,
             "NodePos": [
-                -10675.0,
-                165.0
+                16429.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1246,8 +1246,8 @@
             "Name": "Death_F",
             "NodeId": 100216,
             "NodePos": [
-                -18275.0,
-                0.0
+                8829.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1261,8 +1261,8 @@
             "Name": "Death_B",
             "NodeId": 100217,
             "NodePos": [
-                -18275.0,
-                165.0
+                8829.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1277,8 +1277,8 @@
             "Name": "Hit_Knockback_Strong_F",
             "NodeId": 100221,
             "NodePos": [
-                -8975.0,
-                0.0
+                18129.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1293,8 +1293,8 @@
             "Name": "Hit_Knockback_Weak_F",
             "NodeId": 100224,
             "NodePos": [
-                -8975.0,
-                165.0
+                18129.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1309,8 +1309,8 @@
             "Name": "Hit_Knockback_Weak_L",
             "NodeId": 100227,
             "NodePos": [
-                -8975.0,
-                330.0
+                18129.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1325,8 +1325,8 @@
             "Name": "Hit_Knockback_Weak_R",
             "NodeId": 100228,
             "NodePos": [
-                -8975.0,
-                495.0
+                18129.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1341,8 +1341,8 @@
             "Name": "Hit_Knockback_Weak_B",
             "NodeId": 100229,
             "NodePos": [
-                -8525.0,
-                0.0
+                18579.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1356,8 +1356,8 @@
             "Name": "Teleport_Death_Start",
             "NodeId": 100236,
             "NodePos": [
-                -17425.0,
-                0.0
+                9679.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1371,8 +1371,8 @@
             "Name": "Teleport_Death_End",
             "NodeId": 100237,
             "NodePos": [
-                -17425.0,
-                165.0
+                9679.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1386,8 +1386,8 @@
             "Name": "Teleport_End",
             "NodeId": 100238,
             "NodePos": [
-                238.70751953125,
-                359.5851745605469
+                8616.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1401,8 +1401,8 @@
             "Name": "Teleport_Start",
             "NodeId": 100242,
             "NodePos": [
-                238.70751953125,
-                524.585205078125
+                8616.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1417,8 +1417,8 @@
             "Name": "Hit_Stamp_F",
             "NodeId": 100248,
             "NodePos": [
-                -7675.0,
-                0.0
+                19429.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1433,8 +1433,8 @@
             "Name": "Hit_Stamp_B",
             "NodeId": 100249,
             "NodePos": [
-                -7675.0,
-                165.0
+                19429.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1448,8 +1448,8 @@
             "Name": "Hit_Getup_F",
             "NodeId": 100250,
             "NodePos": [
-                -9825.0,
-                0.0
+                17279.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1463,8 +1463,8 @@
             "Name": "Hit_Getup_B",
             "NodeId": 100251,
             "NodePos": [
-                -9825.0,
-                165.0
+                17279.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1479,8 +1479,8 @@
             "Name": "Hit_Up_F",
             "NodeId": 100256,
             "NodePos": [
-                -6825.0,
-                0.0
+                20279.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1494,8 +1494,8 @@
             "Name": "Hit_Up_B",
             "NodeId": 100257,
             "NodePos": [
-                -6825.0,
-                165.0
+                20279.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1509,8 +1509,8 @@
             "Name": "Hit_Up_Fall_F",
             "NodeId": 100258,
             "NodePos": [
-                -6825.0,
-                330.0
+                20279.0,
+                331.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1524,8 +1524,8 @@
             "Name": "Hit_Up_Land_F",
             "NodeId": 100260,
             "NodePos": [
-                -6825.0,
-                495.0
+                20279.0,
+                496.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1539,8 +1539,8 @@
             "Name": "Hit_Up_Fall_B",
             "NodeId": 100263,
             "NodePos": [
-                -6375.0,
-                0.0
+                20729.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1554,8 +1554,8 @@
             "Name": "Hit_Up_Land_B",
             "NodeId": 100264,
             "NodePos": [
-                -6375.0,
-                165.0
+                20729.0,
+                166.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1569,8 +1569,8 @@
             "Name": "Stargazer_Inactive_Start",
             "NodeId": 100309,
             "NodePos": [
-                -611.29248046875,
-                359.5851745605469
+                7766.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1584,8 +1584,8 @@
             "Name": "Stargazer_Inactive_Loop",
             "NodeId": 100310,
             "NodePos": [
-                -611.29248046875,
-                524.585205078125
+                7766.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1599,8 +1599,8 @@
             "Name": "Stargazer_Inactive_End",
             "NodeId": 100311,
             "NodePos": [
-                -611.29248046875,
-                689.585205078125
+                7766.0,
+                520.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1614,8 +1614,8 @@
             "Name": "Stargazer_Active_Start",
             "NodeId": 100312,
             "NodePos": [
-                -1461.29248046875,
-                359.5851745605469
+                6916.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1629,8 +1629,8 @@
             "Name": "Stargazer_Active_Loop",
             "NodeId": 100313,
             "NodePos": [
-                -1461.29248046875,
-                524.585205078125
+                6916.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1644,8 +1644,8 @@
             "Name": "Stargazer_Active_End",
             "NodeId": 100314,
             "NodePos": [
-                -1461.29248046875,
-                689.585205078125
+                6916.0,
+                520.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1659,8 +1659,8 @@
             "Name": "Item_Get",
             "NodeId": 100325,
             "NodePos": [
-                3675.0,
-                0.0
+                30779.0,
+                1.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1674,8 +1674,8 @@
             "Name": "Item_Get_Walk",
             "NodeId": 100326,
             "NodePos": [
-                4525.0,
-                0.0
+                31629.0,
+                1.0
             ],
             "UpperClip": "AS_Pino_Prop_ItemGet",
             "UpperStartTime": 0.0
@@ -1689,8 +1689,8 @@
             "Name": "DoubleDoor_Boss",
             "NodeId": 100333,
             "NodePos": [
-                -10811.29296875,
-                359.5851745605469
+                -3284.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1704,8 +1704,8 @@
             "Name": "Door_Unlock",
             "NodeId": 100334,
             "NodePos": [
-                -11661.29296875,
-                359.5851745605469
+                -4134.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1719,8 +1719,8 @@
             "Name": "Door_Check",
             "NodeId": 100335,
             "NodePos": [
-                -11661.29296875,
-                524.585205078125
+                -4134.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1734,8 +1734,8 @@
             "Name": "Door_PutWeapon",
             "NodeId": 100343,
             "NodePos": [
-                -11661.29296875,
-                689.585205078125
+                -4134.0,
+                520.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1749,8 +1749,8 @@
             "Name": "Door_EquipWeapon",
             "NodeId": 100346,
             "NodePos": [
-                -11610.29296875,
-                889.585205078125
+                -4134.0,
+                685.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1764,8 +1764,8 @@
             "Name": "LiftDoor_Fail",
             "NodeId": 100349,
             "NodePos": [
-                -6561.29248046875,
-                359.5851745605469
+                1816.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1779,8 +1779,8 @@
             "Name": "LiftDoor_Activate",
             "NodeId": 100350,
             "NodePos": [
-                -6561.29248046875,
-                524.585205078125
+                1816.0,
+                355.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -1794,8 +1794,23 @@
             "Name": "InnerDoor_Open",
             "NodeId": 100353,
             "NodePos": [
-                -7411.29248046875,
-                359.5851745605469
+                116.0,
+                190.0
+            ],
+            "UpperClip": "",
+            "UpperStartTime": 0.0
+        },
+        {
+            "BlendWeight": 1.0,
+            "Clip": "AS_Pino_Prop_Fog",
+            "LowerClip": "",
+            "LowerStartTime": 0.0,
+            "MaskBone": "",
+            "Name": "Interaction_Fog",
+            "NodeId": 100357,
+            "NodePos": [
+                966.0,
+                190.0
             ],
             "UpperClip": "",
             "UpperStartTime": 0.0
@@ -27878,7 +27893,7 @@
         {
             "Conditions": [
                 {
-                    "Op": "None",
+                    "Op": "IsTrue",
                     "ParamName": "",
                     "Type": "Bool",
                     "fThreshold": 0.0,
@@ -27913,6 +27928,28 @@
             "Link": {
                 "FromNodeId": 1003332,
                 "LinkId": 100356,
+                "ToNodeId": 1000001
+            },
+            "MaxTime": 1.0,
+            "MinTime": 0.0,
+            "ToNodeId": 100000
+        },
+        {
+            "Conditions": [
+                {
+                    "Op": "None",
+                    "ParamName": "",
+                    "Type": "Bool",
+                    "fThreshold": 0.0,
+                    "iThreshold": 0
+                }
+            ],
+            "Duration": 0.20000000298023224,
+            "FromNodeId": 100357,
+            "HasExitTime": true,
+            "Link": {
+                "FromNodeId": 1003572,
+                "LinkId": 100358,
                 "ToNodeId": 1000001
             },
             "MaxTime": 1.0,

@@ -61,6 +61,9 @@ HRESULT CButtler_Range::Initialize(void* pArg)
 	m_pPhysXActorCom->Add_IngoreActors(m_pPhysXActorCom->Get_Actor());
 	m_pPhysXActorCom->Add_IngoreActors((m_pWeapon)->Get_PhysXActor()->Get_Actor());
 	
+	m_pSoundCom->Set3DState(0.f, 30.f);
+
+	m_pSoundCom->StopAll();
 
 	return S_OK;
 }
@@ -79,7 +82,7 @@ void CButtler_Range::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			m_pWeapon->SetbIsActive(false);
 		}
 	}
@@ -146,7 +149,8 @@ void CButtler_Range::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		++m_iCollisionCount;
-		m_vPushDir -= HitNormal;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), HitNormal));
+		m_vPushDir.w = 0.f;
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
@@ -158,7 +162,8 @@ void CButtler_Range::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
 		_vector vCorrection = HitNormal * 0.01f;
-		m_vPushDir -= vCorrection;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vCorrection));
+		m_vPushDir.w = 0.f;
 	}
 }
 
@@ -337,9 +342,7 @@ void CButtler_Range::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
 
-			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
-
-			XMVector3Normalize(m_vKnockBackDir);
+			XMStoreFloat4(&m_vKnockBackDir, XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
 
 			return;
 		}
@@ -433,7 +436,9 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
+
+
+		m_pTransformCom->Go_Dir(XMLoadFloat4(& m_vKnockBackDir), fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{
@@ -466,38 +471,18 @@ void CButtler_Range::Register_Events()
 		const _float* vWeaponPos = m_pWeapon->Get_CombinedWorldMatrix()->m[3] ;
 
 		_vector vPos = { vWeaponPos[0], vWeaponPos[1], vWeaponPos[2], vWeaponPos[3] };
-		vPos -= m_vRayOffset * 0.5f;
+
 		CProjectile::PROJECTILE_DESC desc{};
 		_int iLevelIndex = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
 
-		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.3f - vPos;
+		_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - vPos;
 
-		// XZ 방향 추출 
-		_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
-		dirXZ = XMVector3Normalize(dirXZ);
+		// 플레이어가 더 높은 곳에 있으면 보정?
+		if (vDir.m128_f32[1] >= 0.f)
+			vDir.m128_f32[1] += 0.5f;
 
-		// Look의 XZ
-		_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
-		lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
-		lookXZ = XMVector3Normalize(lookXZ);
+		vDir = XMVector3Normalize(vDir);
 
-		// 각도 구하기
-		float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
-		dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
-		float angle = acosf(dot);
-
-		// 회전 방향 결정 
-		float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
-		if (crossY < 0.f) angle = -angle;
-
-		// Y축 회전 행렬
-		XMMATRIX rot = XMMatrixRotationY(angle);
-
-		// vDir 전체를 회전
-		_vector vRotated = XMVector3TransformNormal(vDir, rot);
-
-
-		vRotated = XMVector3Normalize(vRotated);
 
 		desc.bUseDistTrigger = false;
 		desc.bUseTimeTrigger = false;
@@ -508,7 +493,7 @@ void CButtler_Range::Register_Events()
 		desc.fSpeed = 10.f;
 		desc.iLevelID = iLevelIndex;
 		lstrcpy(desc.szName, TEXT("Bullet"));
-		desc.vDir = { vRotated.m128_f32[0], vRotated.m128_f32[1], vRotated.m128_f32[2] };
+		desc.vDir = { vDir.m128_f32[0], vDir.m128_f32[1], vDir.m128_f32[2] };
 		desc.vPos = { vPos.m128_f32[0], vPos.m128_f32[1], vPos.m128_f32[2] };
 
 		if (FAILED(m_pGameInstance->Add_GameObject(iLevelIndex, TEXT("Prototype_GameObject_Bullet"), iLevelIndex, TEXT("Layer_Projectile_Normal"), &desc)))
@@ -530,6 +515,123 @@ void CButtler_Range::Register_Events()
 		});
 
 
+}
+
+void CButtler_Range::Register_SoundEvent()
+{
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Movement_04");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Movement_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("IdleSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 3.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Getup_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 8.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Dead_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 17.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Attack_" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FallSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				string strTag = "SE_NPC_Servant02_MT_Bodyfall_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("FireSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				string strTag = "SE_NPC_WP_Gun_Load_MN_0" + to_string(iNum);
+
+				m_pSoundCom->SetVolume(strTag, 1.5f);
+				m_pSoundCom->Play(strTag);
+
+				
+
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("ReloadSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				string strTag = "SE_NPC_WP_Rifle_Reload_0" + to_string(iNum);
+
+				m_pSoundCom->SetVolume(strTag, 1.5f);
+				m_pSoundCom->Play(strTag);
+
+
+			}
+		});
 }
 
 void CButtler_Range::Start_Fatal_Reaction()
@@ -573,40 +675,17 @@ void CButtler_Range::Reset()
 void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) - static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() * 0.5f - m_pTransformCom->Get_State(STATE::POSITION);
+	// offset 적당히 줘서 보정
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() - (m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset) );
 
-	// XZ 방향 추출 
-	_vector dirXZ = XMVectorSet(vDir.m128_f32[0], 0.f, vDir.m128_f32[2], 0.f);
-	dirXZ = XMVector3Normalize(dirXZ);
+	vDir = XMVector3Normalize(vDir);
 
-	// Look의 XZ
-	_vector lookXZ = m_pTransformCom->Get_State(STATE::LOOK);
-	lookXZ = XMVectorSet(lookXZ.m128_f32[0], 0.f, lookXZ.m128_f32[2], 0.f);
-	lookXZ = XMVector3Normalize(lookXZ);
-
-	// 각도 구하기
-	float dot = XMVectorGetX(XMVector3Dot(dirXZ, lookXZ));
-	dot = max(-1.f, min(1.f, dot)); // 안전하게 clamp
-	float angle = acosf(dot);
-
-	// 회전 방향 결정 
-	float crossY = XMVectorGetY(XMVector3Cross(dirXZ, lookXZ));
-	if (crossY < 0.f) angle = -angle;
-
-	// Y축 회전 행렬
-	XMMATRIX rot = XMMatrixRotationY(angle);
-
-	// vDir 전체를 회전
-	_vector vRotated = XMVector3TransformNormal(vDir, rot);
-
-	_vector vOffset = m_vRayOffset * 0.5f;
-
-	PxVec3 origin = actor->Get_Actor()->getGlobalPose().p +VectorToPxVec3(vOffset);
+	PxVec3 origin = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset));
 	XMFLOAT3 fLook;
 	XMStoreFloat3(&fLook, vDir);
 	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
 	direction.normalize();
-	_float fRayLength = 10.f;
+	_float fRayLength = 12.5f;
 
 	PxHitFlags hitFlags = PxHitFlag::eDEFAULT;
 	PxRaycastBuffer hit;
@@ -643,35 +722,24 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 					m_bRayHit = true;
 					m_vRayHitPos = hitPos;
 				}
-				else
-				{
-					m_bRayHit = false;
-					m_vRayHitPos = {};
-				}
 			}
-
-		
-			
-			
-
-			
 		}
 	}
 
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		DEBUGRAY_DATA _data{};
-		_data.vStartPos = actor->Get_Actor()->getGlobalPose().p + VectorToPxVec3(vOffset);
+		_data.vStartPos = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset));
 		XMFLOAT3 fLook;
 		XMStoreFloat3(&fLook, vDir);
 		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
+		_data.vDirection.normalize();
 		_data.fRayLength = 10.f;
 		_data.bIsHit = m_bRayHit;
 		_data.vHitPos = m_vRayHitPos;
 		actor->Add_RenderRay(_data);
 
-		//m_bRayHit = false;
-		//m_vRayHitPos = {};
+
 	}
 #endif
 }

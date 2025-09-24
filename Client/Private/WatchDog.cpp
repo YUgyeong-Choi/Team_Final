@@ -53,6 +53,11 @@ HRESULT CWatchDog::Initialize(void* pArg)
 
 	m_CanFatal = false;
 
+	m_pSoundCom->Set3DState(0.f, 25.f);
+	m_pSoundCom->SetVolume(0.8f);
+
+	m_pSoundCom->StopAll();
+
 	return S_OK;
 }
 
@@ -77,7 +82,7 @@ void CWatchDog::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			
 		}
 	}
@@ -156,7 +161,8 @@ void CWatchDog::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		++m_iCollisionCount;
-		m_vPushDir -= HitNormal;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), HitNormal));
+		m_vPushDir.w = 0.f;
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
@@ -171,7 +177,8 @@ void CWatchDog::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
 		_vector vCorrection = HitNormal * 0.01f;
-		m_vPushDir -= vCorrection;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vCorrection));
+		m_vPushDir.w = 0.f;
 	}
 
 
@@ -329,9 +336,8 @@ void CWatchDog::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderType)
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
 
-			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
 
-			XMVector3Normalize(m_vKnockBackDir);
+			XMStoreFloat4(&m_vKnockBackDir, XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
 
 			return;
 		}
@@ -380,11 +386,11 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		m_vPushDir = XMVector3Normalize(m_vPushDir);
+		XMStoreFloat4(&m_vPushDir, XMVector3Normalize(XMLoadFloat4(&m_vPushDir)));
 
-		m_vPushDir.m128_f32[3] = 0.f;
+		m_vPushDir.z = 0.f;
 
-		_vector vDir = XMVector3Normalize(vLook) + m_vPushDir;
+		_vector vDir = XMVector3Normalize(vLook) + XMLoadFloat4(&m_vPushDir);
 
 
 		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
@@ -400,7 +406,7 @@ void CWatchDog::Calc_Pos(_float fTimeDelta)
 
 		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
+		m_pTransformCom->Go_Dir(XMLoadFloat4(&m_vKnockBackDir), fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Jump") != m_strStateName.npos)
 	{
@@ -462,10 +468,121 @@ void CWatchDog::Register_Events()
 		});
 }
 
+void CWatchDog::Register_SoundEvent()
+{
+
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant10_MT_Movement_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_bHitSound)
+			{
+				if (m_pSoundCom && m_bSoundCheck)
+				{
+					_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+					m_pSoundCom->Play("VO_NPC_Watchdog_DMG_0" + to_string(iNum));
+				}
+			}
+			else
+			{
+				m_bHitSound = true;
+
+				if (m_pSoundCom && m_bSoundCheck)
+				{
+					_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
+
+					m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+				}
+
+			
+
+			}
+
+			
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->SetVolume("VO_NPC_Watchdog_Growl_0" + to_string(iNum), 0.8f);
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Growl_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Attack_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("JumpSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 7.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant10_MT_Step_0" + to_string(iNum));
+
+				iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->SetVolume("VO_NPC_Watchdog_Growl_0" + to_string(iNum), 0.8f);
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Growl_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 5.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Lying_0" + to_string(iNum));
+
+				
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DieSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(1.f, 3.9f)));
+
+				m_pSoundCom->Play("VO_NPC_Watchdog_Die_0" + to_string(iNum));
+
+
+			}
+		});
+
+
+}
+
 void CWatchDog::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");
+
+	m_bHitSound = false;
 }
 
 void CWatchDog::Reset()
@@ -506,6 +623,10 @@ void CWatchDog::Reset()
 	m_isFatal = false;
 
 
+}
+
+void CWatchDog::PlayDetectSound()
+{
 }
 
 HRESULT CWatchDog::Ready_Weapon()
@@ -554,6 +675,15 @@ HRESULT CWatchDog::Ready_Weapon()
 
 
     return S_OK;
+}
+
+HRESULT CWatchDog::Ready_Sound()
+{
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Watchdog"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CWatchDog* CWatchDog::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

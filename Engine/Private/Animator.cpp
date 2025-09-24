@@ -1,8 +1,10 @@
 #include "Animator.h"
-#include "AnimController.h"
+
+#include "Bone.h"
 #include "Model.h"
 #include "GameInstance.h"
-#include "Bone.h"
+#include "AnimController.h"
+
 using ET = CAnimController::ETransitionType;
 CAnimator::CAnimator(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent{ pDevice, pContext }
@@ -45,42 +47,12 @@ HRESULT CAnimator::Initialize(void* pArg)
 		return E_FAIL;
 	// 디폴트 컨트롤러 생성해서 설정
 	m_pCurAnimController->SetAnimator(this);
-//	m_pCurAnimController->Initialize_Prototype();
 	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
 	// 컨트롤러 이름
-
 	m_AnimControllers[m_pModel->Get_ModelName() + "_Default"] = m_pCurAnimController;
 	return S_OK;
 }
 
-HRESULT CAnimator::Initialize_Test(void* pArg)
-{
-	if (pArg == nullptr)
-		return E_FAIL;
-
-	ANIMATOR_DESC* pDesc = static_cast<ANIMATOR_DESC*>(pArg);
-	m_pModel = pDesc->pModel;
-	m_Bones = m_pModel->Get_Bones();
-
-	m_pCurAnimController = CAnimController::Create();
-	if (m_pCurAnimController == nullptr)
-		return E_FAIL;
-	// 디폴트 컨트롤러 생성해서 설정
-	m_pCurAnimController->SetAnimator(this);
-	m_AnimControllers["Default"] = m_pCurAnimController;
-	m_pCurAnimController->SetName(m_pModel->Get_ModelName() + "_Default");
-	_wstring csoFilepath = TEXT("../Bin/ShaderFiles/Shader_AnimCS.cso");
-
-	m_pAnimComputeShader = CAnimComputeShader::Create(m_pDevice, m_pContext, csoFilepath,static_cast<_uint>(m_Bones.size()));
-	
-	if (m_pAnimComputeShader == nullptr)
-	{
-		MSG_BOX("Failed to create CAnimComputeShader");
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
 
 void CAnimator::Update(_float fDeltaTime)
 {
@@ -117,7 +89,7 @@ void CAnimator::Reset()
 	m_PrevRootPosition = { 0.f, 0.f, 0.f };
 	m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 	m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
-
+	CancelOverrideAnimController();
 	// 블렌드 초기화
 	m_Blend = {};
 	m_eCurrentTransitionType = ET::FullbodyToFullbody;
@@ -229,32 +201,6 @@ void CAnimator::SetCurrentRootPosition(const _float3& pos)
 	};
 
 }
-#ifdef _DEBUG
-void CAnimator::DebugComputeShader()
-{
-	_int iBoneCount = static_cast<_int>(m_Bones.size());
-	vector<_float4x4> boneMatrices(iBoneCount);
-	if (SUCCEEDED(m_pAnimComputeShader->DownloadBoneMatrices(boneMatrices.data(),static_cast<_uint>(m_Bones.size()))))
-	{
-		for (_int i = 0; i < iBoneCount; ++i)
-		{
-			_matrix tmpMatrix = XMLoadFloat4x4(&boneMatrices[i]);
-			// 디버그용 출력
-			cout << "Bone " << i << ": "
-				<< "Position: (" << tmpMatrix.r[3].m128_f32[0] << ", "
-				<< tmpMatrix.r[3].m128_f32[1] << ", "
-				<< tmpMatrix.r[3].m128_f32[2] << "), "
-				<< "Rotation: (" << tmpMatrix.r[0].m128_f32[0] << ", "
-				<< tmpMatrix.r[1].m128_f32[1] << ", "
-				<< tmpMatrix.r[2].m128_f32[2] << ")\n";
-		}
-	}
-	else
-	{
-		MSG_BOX("Failed to dispatch compute shader");
-	}
-}
-#endif
 
 void CAnimator::RefreshAndProcessTransition(_float fDeltaTime)
 {
@@ -291,8 +237,7 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				fDeltaTime,
 				m_Bones,
 				m_pBlendAnimArray[i]->Get_isLoop(),
-				&triggeredEvents, nullptr
-			);
+				&triggeredEvents);
 		}
 	}
 
@@ -400,10 +345,10 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 	//  블렌드 끝났으면 정리
 	if (fBlendFactor >= 1.f)
 	{
-		_bool lowerChanged = (m_Blend.fromLowerAnim != m_Blend.toLowerAnim);
-		_bool upperChanged = (m_Blend.fromUpperAnim != m_Blend.toUpperAnim);
-		_bool lowerUpperSame = (m_Blend.fromLowerAnim != m_Blend.toUpperAnim);
-		_bool upperLowerSame = (m_Blend.fromUpperAnim != m_Blend.toLowerAnim);
+		_bool bIsLowerChanged = (m_Blend.fromLowerAnim != m_Blend.toLowerAnim);
+		_bool bIsUpperChanged = (m_Blend.fromUpperAnim != m_Blend.toUpperAnim);
+		_bool bIsLowerFromDiffUpperTo = (m_Blend.fromLowerAnim != m_Blend.toUpperAnim);
+		_bool bIsUpperFromDiffLowerTo = (m_Blend.fromUpperAnim != m_Blend.toLowerAnim);
 		unordered_set<CAnimation*> toReset;
 
 		if (m_Blend.canSameAnimReset)
@@ -415,25 +360,25 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 				toReset.insert(m_Blend.fromUpperAnim);
 		}
 
-		if (lowerChanged)
+		if (bIsLowerChanged)
 		{
-			if (lowerUpperSame)
+			if (bIsLowerFromDiffUpperTo)
 			{
 				toReset.insert(m_Blend.fromLowerAnim);
 			}
 		}
-		if (upperChanged)
+		if (bIsUpperChanged)
 		{
-			if (upperLowerSame)
+			if (bIsUpperFromDiffLowerTo)
 			{
 				toReset.insert(m_Blend.fromUpperAnim);
 			}
 		}
 
-		for (auto* anim : toReset)
+		for (auto* pAnim : toReset)
 		{
-			if (anim && anim->Get_isLoop() == false)
-				anim->ResetTrack();
+			if (pAnim && pAnim->Get_isLoop() == false)
+				pAnim->ResetTrack();
 
 		}
 
@@ -449,7 +394,6 @@ void CAnimator::UpdateBlend(_float fDeltaTime, size_t iBoneCount, vector<string>
 		m_Blend.elapsed = 0.f;
 		m_Blend.active = false;
 		m_pCurrentAnim = m_Blend.toLowerAnim;
-
 		return;
 	}
 }
@@ -459,10 +403,8 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 	if (m_bPlayMask && m_pLowerClip && m_pUpperClip)
 	{
 		// 하체/상체 업데이트
-		vector<_float4x4> lowerLocalMatrices(iBoneCount);
-		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents, &lowerLocalMatrices);
-		vector<_float4x4> upperLocalMatrices(iBoneCount);
-		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents, &upperLocalMatrices);
+		m_pLowerClip->Update_Bones(fDeltaTime, m_Bones, m_pLowerClip->Get_isLoop(), &triggeredEvents);
+		m_bIsFinished = m_pUpperClip->Update_Bones(fDeltaTime, m_Bones, m_pUpperClip->Get_isLoop(), &triggeredEvents);
 
 		// 매트릭스 미리 가져오기
 		vector<_matrix> lowerM(iBoneCount), upperM(iBoneCount);
@@ -486,51 +428,12 @@ void CAnimator::UpdateAnimation(_float fDeltaTime, size_t iBoneCount, vector<str
 					m_Bones[i]->Set_TransformationMatrix(lowerM[i]);
 			}
 		}
-
-		//if (m_pLowerClip->IsRootMotionEnabled() || m_pUpperClip->IsRootMotionEnabled())
-		//{
-		//	RootMotionDecomposition();
-		//}
 	}
 	else if (m_pCurrentAnim)
 	{
 		// 단일 전체 애니메이션
-		vector<_float4x4> vecLocalMat(iBoneCount);
+		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents);
 
-		//m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents,&vecLocalMat);
-		m_bIsFinished = m_pCurrentAnim->Update_Bones(fDeltaTime, m_Bones, m_pCurrentAnim->Get_isLoop(), &triggeredEvents, nullptr);
-		//for (size_t i = 0; i < iBoneCount; ++i)
-		//{
-		//	vecLocalMat[i] = *m_Bones[i]->Get_TransformationMatrix();
-		//}
-		//if (!vecLocalMat.empty())
-		//{
-		//	//vector<_int> parentsForCS(m_Bones.size());
-		//	//for (_uint i = 0; i < m_Bones.size(); ++i)
-		//	//{
-		//	//	int p = m_Bones[i]->Get_ParentBoneIndex();               // 원본 부모
-		//	//	if (m_bApplyRootMotion && p == 1) p = -1; // CPU와 동일 규칙
-		//	//	parentsForCS[i] = p;
-		//	//}
-
-		//	//// 이 parentsForCS로 레벨 계산 + GPU 업로드
-		//	//BuildHierarchyLevelsFrom(parentsForCS);
-		//	//UploadParentsBuffer(parentsForCS); // g_Parents (t2)
-		//	//vector<_int> boneParents;
-		//	//boneParents.reserve(m_Bones.size());
-		//	//for (const auto& bone : m_Bones)
-		//	//{
-		//	//	boneParents.push_back(bone->Get_UseParentIndex());
-		//	//}
-		//	//m_pAnimComputeShader->SetParentIndices(parentsForCS);
-		//	//m_pAnimComputeShader->BuildHierarchyLevels();
-		//	//vector<_float> boneMask(m_Bones.size(), 0.f);
-		//	//m_pAnimComputeShader->SetBoneMask(boneMask);
-		//	//// 로컬 행렬 업로드
-		//	//m_pAnimComputeShader->UploadBoneMatrices(vecLocalMat.data());
-		//	//_float4x4 preTransform = m_pModel->Get_PreTransformMatrix();
-		//	//m_pAnimComputeShader->ExecuteHierarchical(preTransform);
-		//}
 		if (m_pCurrentAnim->IsRootMotionEnabled())
 		{
 			RootMotionDecomposition();
@@ -601,19 +504,12 @@ void CAnimator::CollectBoneChildren(const _char* boneName)
 	if (idx < 0 || m_UpperMaskSet.count(idx) || m_Bones.size() <= idx)
 		return;
 
-#ifdef _DEBUG
-	cout << "Collecting bone: " << boneName << endl;
-#endif // _DEBUG
-
 	m_UpperMaskSet.insert(idx);
 
 	// 이 본의 모든 자식 이름을 가져와서 재귀
 	for (int childIdx : m_pModel->GetBoneChildren(boneName))
 	{
-		const char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
-//#ifdef _DEBUG
-//		cout << "Child bone: " << childName << endl;
-//#endif // _DEBUG
+		const _char* childName = m_pModel->Get_Bones()[childIdx]->Get_Name();
 		CollectBoneChildren(childName, "Neck");
 	}
 }
@@ -650,8 +546,6 @@ void CAnimator::AddUniqueClip(CAnimation* pClip, array<CAnimation*, 4>& pArray, 
 	pArray[clipCount++] = pClip;
 }
 
-
-
 _matrix CAnimator::LerpMatrix(const _matrix& src, const _matrix& dst, _float t)
 {
 	_vector sS, sR, sT, dS, dR, dT;
@@ -670,7 +564,6 @@ void CAnimator::CollectBoneMatrices(CAnimation* pAnim, vector<_matrix>& boneMatr
 		boneMatrices[i] = pAnim ? pAnim->GetBoneMatrix(static_cast<_uint>(i)) : XMMatrixIdentity();
 	}
 }
-
 
 void CAnimator::RootMotionDecomposition()
 {
@@ -700,7 +593,7 @@ void CAnimator::ResetRootMotion()
 	m_bFirstFrameAfterReset = true;
 	m_RootMotionDelta = { 0.f, 0.f, 0.f };
 
-	if (!m_Bones.empty())
+	if (!m_Bones.empty()) // 이전 프레임 루트을 저장해서 확 튀지 않게
 	{
 		_matrix rootMat = XMLoadFloat4x4(m_Bones[1]->Get_CombinedTransformationMatrix());
 		_vector s, r, t;
@@ -719,11 +612,6 @@ void CAnimator::ResetRootMotion()
 	}
 	m_RootMotionDelta = { 0.f, 0.f, 0.f };
 	m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
-	//m_PrevRootPosition = { 0.f, 0.f, 0.f };
-	//m_CurrentRootPosition = { 0.f, 0.f, 0.f };
-	//m_RootRotationDelta = { 0.f, 0.f, 0.f, 1.f };
-	//m_PrevRootRotation = { 0.f, 0.f, 0.f, 1.f };
-	//m_CurrentRootRotation = { 0.f, 0.f, 0.f, 1.f };
 }
 
 void CAnimator::DispatchAnimEvents(const vector<string>& triggeredEvents)
@@ -737,13 +625,6 @@ void CAnimator::DispatchAnimEvents(const vector<string>& triggeredEvents)
 				cb();
 		}
 	}
-}
-
-_float CAnimator::GetYAngleFromQuaternion(const _vector& quat)
-{
-	_float4 q;
-	XMStoreFloat4(&q, quat);
-	return atan2(2.0f * (q.w * q.y + q.x * q.z), 1.0f - 2.0f * (q.y * q.y + q.z * q.z));
 }
 
 const string CAnimator::GetCurrentAnimName() const
@@ -1188,16 +1069,6 @@ CComponent* CAnimator::Clone(void* pArg)
 	return pInstance;
 }
 
-void CAnimator::Free()
-{
-	__super::Free();
-	for (auto& Pair : m_AnimControllers)
-	{
-		Safe_Release(Pair.second);
-	}
-	Safe_Release(m_pAnimComputeShader);
-}
-
 json CAnimator::Serialize()
 {
 	CHAR exeFullPath[MAX_PATH] = {};
@@ -1370,5 +1241,14 @@ void CAnimator::Deserialize(const json& j)
 		{
 			it->second->Add_OverrideAnimController(name, ctrl);
 		}
+	}
+}
+
+void CAnimator::Free()
+{
+	__super::Free();
+	for (auto& Pair : m_AnimControllers)
+	{
+		Safe_Release(Pair.second);
 	}
 }

@@ -13,6 +13,7 @@
 
 #include "EffectContainer.h"
 #include "Effect_Manager.h"
+#include "SwordTrailEffect.h"
 
 CFestivalLeader::CFestivalLeader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CBossUnit(pDevice, pContext)
@@ -31,6 +32,8 @@ HRESULT CFestivalLeader::Initialize_Prototype()
 HRESULT CFestivalLeader::Initialize(void* pArg)
 {
 	m_bIsDissolve = true;
+	m_bSecondEmissiveLoad = true;
+
 	if (pArg == nullptr)
 	{
 		UNIT_DESC UnitDesc{};
@@ -95,7 +98,7 @@ HRESULT CFestivalLeader::Initialize(void* pArg)
 	m_fPhase2HPThreshold = 0.65f;
 	m_fMaxRootMotionSpeed = 18.f;
 	m_fChangeMoveDirCooldown = 2.5f;
-	m_fRootMotionClampDist = 4.5f;
+	m_fRootMotionClampDist = 2.5f;
 
 	m_fGroggyScale_Weak = 0.07f;
 	m_fGroggyScale_Strong = 0.09f;
@@ -118,101 +121,112 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_V))
 	{
-		Reset();
+		BreakPanel();
 	}
 	if (KEY_DOWN(DIK_C))
 	{
 		EnterNextCutScene();
+	}
+
+	if (KEY_DOWN(DIK_I))
+	{
+	
+		m_fHp -= 500.f;
+	//	SwitchSecondEmissive(true, 1.f);
+		//	ReChallenge();
 	}
 #ifdef _DEBUG
 
 
 	
 
-	//if (KEY_PRESSING(DIK_LALT))
-	//{
-	//	if (KEY_DOWN(DIK_MINUS))
-	//	{
-	//		m_fTimeScale = 0.5f;
-	//	}
-	//	if (KEY_DOWN(DIK_EQUALS))
-	//	{
-	//		m_fTimeScale = 1.f;
-	//	}
-	//	if (KEY_DOWN(DIK_Q))
-	//	{
+	if (KEY_PRESSING(DIK_LALT))
+	{
+		if (KEY_DOWN(DIK_MINUS))
+		{
+			m_fTimeScale = 0.5f;
+		}
+		if (KEY_DOWN(DIK_EQUALS))
+		{
+			m_fTimeScale = 1.f;
+		}
+		if (KEY_DOWN(DIK_Q))
+		{
 
-	//		// 오른손 왼손 회전 상태 뭔가 이상한 것 같은데 나중에 확인함
-	//		CEffectContainer::DESC desc = {};
+			// 오른손 왼손 회전 상태 뭔가 이상한 것 같은데 나중에 확인함
+			CEffectContainer::DESC desc = {};
 
-	//		desc.pSocketMatrix = nullptr;
-	//		desc.pParentMatrix = nullptr;
-	//		const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
-	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//		_matrix socket = XMLoadFloat4x4(socketPtr);
-	//		_matrix parent = XMLoadFloat4x4(parentPtr);
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-	//		_matrix comb = socket * parent;
+			_matrix comb = socket * parent;
 
-	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
-	//		_vector pos, rot, scale;
-	//		XMMatrixDecompose(&scale, &rot, &pos, comb);
+			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+			_vector pos, rot, scale;
+			XMMatrixDecompose(&scale, &rot, &pos, comb);
 
-	//		rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
 
-	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
-	//		MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+			MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
 
-	//		socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
-	//		socket = XMLoadFloat4x4(socketPtr);
-	//		comb = socket * parent;
-	//		position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
+			socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+			socket = XMLoadFloat4x4(socketPtr);
+			comb = socket * parent;
+			position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1] + 0.5f);
 
-	//		XMMatrixDecompose(&scale, &rot, &pos, comb);
+			XMMatrixDecompose(&scale, &rot, &pos, comb);
 
-	//		rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
-	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
+			rot = XMQuaternionMultiply(XMQuaternionRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f)), rot);
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixRotationQuaternion(rot) * XMMatrixTranslationFromVector(position));
 
-	//		CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
-	//		if (pEC == nullptr)
-	//			MSG_BOX("이펙트 생성 실패함");
-	//	}
-	//	if (KEY_DOWN(DIK_W))
-	//	{
-	//		CEffectContainer::DESC desc = {};
-	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//		_matrix parent = XMLoadFloat4x4(parentPtr);
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Scratch"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_DOWN(DIK_W))
+		{
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-Spine1"));
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-	//		_matrix comb = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
+			_matrix comb = socket * parent;
 
-	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+			//_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
-	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_NormalExplosions3"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+		if (KEY_PRESSING(DIK_E))
+		{
+			CEffectContainer::DESC desc = {};
+			desc.pSocketMatrix = nullptr;
+			desc.pParentMatrix = nullptr;
+			const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
+			const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+			_matrix socket = XMLoadFloat4x4(socketPtr);
+			_matrix parent = XMLoadFloat4x4(parentPtr);
 
-	//		if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HammerSlam"), &desc) == nullptr)
-	//			MSG_BOX("이펙트 생성 실패함");
-	//	}
-	//	if (KEY_DOWN(DIK_E))
-	//	{
-	//		CEffectContainer::DESC desc = {};
+			_matrix comb = socket * parent;
 
-	//		desc.pSocketMatrix = nullptr;
-	//		desc.pParentMatrix = nullptr;
-	//		const _float4x4* socketPtr = m_BoneRefs[HeadJaw]->Get_CombinedTransformationMatrix();
-	//		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//		_matrix socket = XMLoadFloat4x4(socketPtr);
-	//		_matrix parent = XMLoadFloat4x4(parentPtr);
+			_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
 
-	//		_matrix comb = socket * parent;
-
-	//		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
-
-	//		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
-	//		CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2Start"), &desc);
-	//		if (pEC == nullptr)
-	//			MSG_BOX("이펙트 생성 실패함");
-	//	}
-	//}
+			XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+			CGameObject* pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2Start"), &desc);
+			if (pEC == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+		}
+	}
 #endif
 
 	if (nullptr != m_pHPBar)
@@ -233,7 +247,6 @@ void CFestivalLeader::Update(_float fTimeDelta)
 	if (m_pPlayer && static_cast<CUnit*>(m_pPlayer)->GetHP() <= 0 && m_pHPBar)
 		m_pHPBar->Set_RenderTime(0.f);
 	Update_Collider();
-
 
 }
 
@@ -268,6 +281,7 @@ void CFestivalLeader::Late_Update(_float fTimeDelta)
 HRESULT CFestivalLeader::Render()
 {
 	__super::Render();
+
 	return S_OK;
 }
 
@@ -285,12 +299,12 @@ void CFestivalLeader::Reset()
 	m_pModelCom->SetMeshVisible(3, true);
 	m_pModelCom->SetMeshVisible(5, true);
 
-	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_bSwitchHeadSpace = false;
 
 	m_pModelCom->Update_Bones();                      // 뼈 재계산
 	Update_Collider();                                // 콜라이더도 같은 프레임에 동기화
-
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 }
 
 HRESULT CFestivalLeader::Ready_Components(void* pArg)
@@ -331,11 +345,11 @@ HRESULT CFestivalLeader::Ready_Actor()
 	};
 
 	vector<ColliderSetup> setupList = {
-		{EBossBones::Hammer,      PxBoxGeometry(1.75f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
+		{EBossBones::Hammer,      PxBoxGeometry(2.2f, 0.9f, 0.9f), XMVectorSet(-2.5f, 0.f, 0.f, 1.f)},
 		{EBossBones::Basket,      PxSphereGeometry(1.0f),          XMVectorZero()},
 		{EBossBones::LeftHand,    PxSphereGeometry(1.1f),          XMVectorZero()},
 		{EBossBones::RightHand,   PxSphereGeometry(0.96f),          XMVectorZero()},
-		{EBossBones::LeftForearm, PxSphereGeometry(1.3f),          XMVectorZero()},
+		{EBossBones::LeftForearm, PxSphereGeometry(1.4f),          XMVectorZero()},
 		{EBossBones::RightForearm,PxSphereGeometry(0.96f),          XMVectorZero()}
 	};
 
@@ -440,7 +454,7 @@ void CFestivalLeader::Update_Collider()
 		if (i == EBossBones::Hammer)
 		{
 			//_vector vWorldOffset = XMVectorSet(fOffsetX, fOffsetY, fOffsetZ, 1.f);
-			_vector vWorldOffset = XMVectorSet(0.800000072f, 0.f, 1.49011612e-08f, 1.f);
+			_vector vWorldOffset = XMVectorSet(1.5f, 0.f, 1.49011612e-08f, 1.f);
 			_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
 			m_Colliders[i]->Set_Transform(GetBonePose(m_BoneRefs[i], &matWorldOffset));
 		}
@@ -454,11 +468,15 @@ void CFestivalLeader::Update_Collider()
 void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 {
 	if (m_eCurrentState == EEliteState::DEAD || m_bDead
-		|| m_eCurrentState == EEliteState::CUTSCENE)
+		|| m_eCurrentState == EEliteState::CUTSCENE
+		|| m_eCurrentState == EEliteState::GROGGY || 
+		 m_eCurrentState == EEliteState::PARALYZATION ||
+		m_eCurrentState == EEliteState::FATAL)
 		return;
 	if (m_fFirstChaseBeforeAttack >= 0.f)
 	{
-		m_fFirstChaseBeforeAttack -= fTimeDelta;
+		if (m_eCurrentState != EEliteState::IDLE) // Idle이면 감소 안 함
+			m_fFirstChaseBeforeAttack -= fTimeDelta;
 		return;
 	}
 	// 퓨리 몸빵
@@ -480,25 +498,7 @@ void CFestivalLeader::UpdateAttackPattern(_float fDistance, _float fTimeDelta)
 		return;
 	}
 
-	if (fDistance >=6.f)
-	{
-		if (m_bIsPhase2)
-		{
-			if (m_fAttackCooldown <= 0.f)
-			{
-				m_pAnimator->SetInt("SkillType", DashSwing);
-				m_pAnimator->SetTrigger("Attack");
-				m_ePrevAttackPattern = m_eCurAttackPattern;
-				m_eCurAttackPattern = DashSwing;
-				m_ePrevState = m_eCurrentState;
-				m_eCurrentState = EEliteState::ATTACK;
-				m_fAttackCooldown = m_fAttckDleay + 2.f;
-			}
-		}
-		return;
-	}
-
-
+	
 	if (false == UpdateTurnDuringAttack(fTimeDelta))
 	{
 		return;
@@ -568,12 +568,16 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		break;
 	case ENUM_CLASS(BossStateID::Groggy_Start):
 	case ENUM_CLASS(BossStateID::Groggy_Loop):
+		m_eCurrentState = EEliteState::GROGGY;
+		break;
 	case ENUM_CLASS(BossStateID::Groggy_End):
+		m_bHeadSpark = false;
 		m_eCurrentState = EEliteState::GROGGY;
 		break;
 	case ENUM_CLASS(BossStateID::Special_Die):
 		m_eCurrentState = EEliteState::DEAD;
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+		EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 		break;
 	case ENUM_CLASS(BossStateID::Turn_L):
 	case ENUM_CLASS(BossStateID::Turn_R):
@@ -590,7 +594,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 		{
 			if (m_iSwingComboCount == 0 && m_bInSwingCombo == false) // 이전 콤보가 끝난 상태
 			{
-				m_iSwingComboLimit = GetRandomInt(0, 2); 
+				m_iSwingComboLimit = GetRandomInt(0, 1); 
 				m_bInSwingCombo = true;                  
 			}
 		}
@@ -646,9 +650,7 @@ void CFestivalLeader::UpdateStateByNodeID(_uint iNodeID)
 			SwitchFury(true, 1.f);
 		}
 		break;
-	case ENUM_CLASS(BossStateID::Atk_Strike_Start):
 	case ENUM_CLASS(BossStateID::Atk_Strike_Loop):
-	case ENUM_CLASS(BossStateID::Atk_Strike_End):
 	case ENUM_CLASS(BossStateID::Atk_Jump_Start):
 	case ENUM_CLASS(BossStateID::Atk_Jump_Loop):
 	case ENUM_CLASS(BossStateID::Atk_Jump_End):
@@ -683,6 +685,12 @@ void CFestivalLeader::UpdateSpecificBehavior(_float fTimeDelta)
 		m_pTransformCom->LookAtWithOutY(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 	}
 
+
+	if (m_eCurrentState == EEliteState::GROGGY || m_eCurrentState == EEliteState::FATAL
+		|| m_eCurrentState == EEliteState::DEAD)
+	{
+		EffectSpawn_Active(EF_GROUND_SPARK, false);
+	}
 }
 
 void CFestivalLeader::EnableColliders(_bool bEnable)
@@ -835,7 +843,7 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Turnning", [this]()
 		{
-			SetTurnTimeDuringAttack(0.9f, 1.f);
+			SetTurnTimeDuringAttack(1.2f, 1.5f);
 		});
 
 	m_pAnimator->RegisterEventListener("ActiveHpBar", [this]()
@@ -880,7 +888,7 @@ void CFestivalLeader::Register_Events()
 		});
 	m_pAnimator->RegisterEventListener("ColliderBasketOff", [this]()
 		{
-			m_Colliders[EBossBones::Basket]->Init_SimulationFilterData();
+			m_Colliders[EBossBones::Basket]->Init_SimulationFilterData();	
 			m_bPlayerCollided = false;
 		});
 
@@ -938,7 +946,6 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("Phase2InvisibledModel", [this]()
 		{
-
 			if (m_pAnimator)
 			{
 				m_pAnimator->ApplyOverrideAnimController("Phase2");
@@ -960,7 +967,9 @@ void CFestivalLeader::Register_Events()
 					m_bSwitchHeadSpace = true;
 				}
 			}
+			SwitchSecondEmissive(true, 1.f);
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), true);
+			EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), true);
 		});
 
 	m_pAnimator->RegisterEventListener("DissolveOn", [this]()
@@ -1003,6 +1012,35 @@ void CFestivalLeader::Register_Events()
 			}
 
 			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
+
+			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop) || m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)/*|| GetFuryState() == CBossUnit::EFuryState::Fury*/)
+			{
+				//이거 키면 절할 때 두손에서 이펙트 생겨버려서 z파이팅나버림,
+				//그렇다고 꺼버리면 한손 씩 땅찍는 공격 때 오른손 데칼이 안나옴
+				//절할 때는 하나만 나오게 하고 싶은데 어케할까요 장원햄(이걸로 해결한듯)
+
+				//이제는 퓨리큰절 할때만 두손에서 나와버림
+
+				Spawn_Decal(m_BoneRefs[EBossBones::Neck],
+					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+					XMVectorSet(10.f, 1.f, 10.f, 0));
+
+			}
+			else if (m_bLeftHand)
+			{
+				Spawn_Decal(m_BoneRefs[LeftHand],
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+					XMVectorSet(5.f, 0.5f, 5.f, 0));
+			}
+			else
+			{
+				Spawn_Decal(m_pRightWeaponBone,
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+					XMVectorSet(5.f, 0.5f, 5.f, 0));
+			}
 		});
 
 	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
@@ -1015,12 +1053,18 @@ void CFestivalLeader::Register_Events()
 		{
 			m_bLeftHand = false;
 			EffectSpawn_Active(EF_SCRATCH, true);
+
 		});
 
 	m_pAnimator->RegisterEventListener("SlamNoSmokeEffect", [this]()
 		{
 			m_bLeftHand = true;
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+
+			Spawn_Decal(m_BoneRefs[LeftHand],
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+				XMVectorSet(5.f, 0.5f, 5.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("SmokeEffect", [this]()
@@ -1041,6 +1085,11 @@ void CFestivalLeader::Register_Events()
 			m_bLeftKnee = true;
 			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
 			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+
+			Spawn_Decal(m_BoneRefs[EBossBones::Neck],
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+				XMVectorSet(10.f, 1.f, 10.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("RightFallingEffect", [this]()
@@ -1073,12 +1122,53 @@ void CFestivalLeader::Register_Events()
 
 	m_pAnimator->RegisterEventListener("OnGroundScratchEffect", [this]()
 		{
-
 			EffectSpawn_Active(EF_GROUND_SPARK, true, false);
+
 		});
+
 	m_pAnimator->RegisterEventListener("OffGroundScratchEffect", [this]()
 		{
 			EffectSpawn_Active(EF_GROUND_SPARK, false);
+		});
+
+	m_pAnimator->RegisterEventListener("ShockWaveEffect", [this]()
+		{
+			EffectSpawn_Active(EF_HAMMER_SLAM, true);
+
+			if (m_bLeftHand == false)
+			{
+				Spawn_Decal(m_pRightWeaponBone,
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+					XMVectorSet(5.f, 0.5f, 5.f, 0));
+			}
+
+		});
+
+	m_pAnimator->RegisterEventListener("P2_StartEffect", [this]()
+		{
+			EffectSpawn_Active(EF_P2_START, true);
+		});
+
+	m_pAnimator->RegisterEventListener("P2_BaskeEffect", [this]()
+		{
+			EffectSpawn_Active(EF_BASKET_SLAM, true);
+
+			Spawn_Decal(m_BoneRefs[EBossBones::Basket],
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+				XMVectorSet(10.f, 0.5f, 10.f, 0));
+		});
+
+	m_pAnimator->RegisterEventListener("HammerSlamEndEffect", [this]()
+		{
+			EffectSpawn_Active(EF_HAMMER_SLAM_END, true);
+		});
+
+	m_pAnimator->RegisterEventListener("GroggyEffect", [this]()
+		{
+			m_bHeadSpark = true;
+			EffectSpawn_Active(EF_GROGGY, true);
 		});
 }
 
@@ -1115,8 +1205,8 @@ void CFestivalLeader::Ready_AttackPatternWeightForPhase2()
 		static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(EAttackType::STAMP); // 바스켓에 충돌했을 때를 생각해서 
 		m_bStartPhase2 = true;
 		vector<EBossAttackPattern> m_vecBossPatterns = {
-			Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
-			DashSwing ,Swing,FuryHammerSlam ,FurySwing
+			DashSwing,Slam, JumpAttack ,Strike ,Spin ,HalfSpin ,HammerSlam ,
+			Swing,FuryHammerSlam ,FurySwing
 		};
 		m_PatternWeightMap.clear();
 		m_PatternCountMap.clear();
@@ -1220,7 +1310,17 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee"));
 
 	m_EffectMap[EF_GROUND_SPARK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
+	m_EffectMap[EF_HAMMER_SLAM].emplace_back(TEXT("EC_Fes_P2_HammerSlam"));
+	m_EffectMap[EF_HAMMER_SLAM].emplace_back(TEXT("EC_Fes_HammerSmallSlam"));
+	m_EffectMap[EF_P2_START].emplace_back(TEXT("EC_Fes_P2Start"));
+	m_EffectMap[EF_BASKET_SLAM].emplace_back(TEXT("EC_Fes_P2Start_CageSlam"));
 
+	m_EffectMap[EF_HAMMER_SLAM_END].emplace_back(TEXT("EC_Fes_HammerSmallSlam"));
+
+
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_LHand"));
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
+	m_EffectMap[EF_GROGGY].emplace_back(TEXT("EC_OldSparkDrop_Big_RClavicle"));
 }
 
 
@@ -1333,7 +1433,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼 손 스파크
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_LHand")) // 왼손 스파크
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
@@ -1345,19 +1445,19 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Big_RClavicle")) // 오른쪽 어깨 스파크 (그로기 때 머리 스팤크로도 사용)
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-
-		_matrix socket = XMLoadFloat4x4(m_BoneRefs[RightShoulder]->Get_CombinedTransformationMatrix());
+		EBossBones bone = m_bHeadSpark ? HeadJaw : RightShoulder;
+		_matrix socket = XMLoadFloat4x4(m_BoneRefs[bone]->Get_CombinedTransformationMatrix());
 		_matrix parent = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
 
 		_matrix comb = socket * parent;
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
 	}
-	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크, 쬐만함
+	else if (stEffectTag == TEXT("EC_OldSparkDrop_Small_LForearm")) // 왼쪽 팔꿈치 스파크
 	{
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
@@ -1371,7 +1471,7 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	}
 
 	// P2
-	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5")) //
+	else if (stEffectTag == TEXT("EC_Fuoco_Spin3_FloorFountain_P5")) 
 	{
 		auto worldmat = XMLoadFloat4x4(m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 		_vector rot, trans, scale;
@@ -1395,9 +1495,53 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
+	else if (stEffectTag == TEXT("EC_Fes_P2Start"))
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
 
-	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-	//	MSG_BOX("이펙트 생성 실패함");
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(comb.r[3]));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_HammerSmallSlam"))
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[Hammer]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_P2Start_CageSlam"))
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[Basket]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
@@ -1456,29 +1600,40 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 
 HRESULT CFestivalLeader::Ready_Effect()
 {
-	//CGameObject* pEC = { nullptr };
-	//CEffectContainer::DESC P2HeadSmokeDesc = {};
-	//P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
-	//P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
-	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	//if (pEC == nullptr)
-	//	MSG_BOX("이펙트 생성 실패함");
+	CGameObject* pEC = { nullptr };
+	CEffectContainer::DESC P2HeadSmokeDesc = {};
+	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
+	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 
-	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
-	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
-	//
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	
 
-	///**************************************/
-	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
-	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	//if (pEC == nullptr)
-	//	MSG_BOX("이펙트 생성 실패함");
+	/**************************************/
+	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	if (pEC == nullptr)
+		MSG_BOX("이펙트 생성 실패함");
 
-	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
-	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
+	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
+	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 
+	/************************ 소드 트레일 이펙트 **************************/
+	CSwordTrailEffect::DESC desc = {};
+	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	desc.iLevelID = m_iLevelID;
 
+	desc.pInnerSocketMatrix = m_BoneRefs[EBossBones::RightHand]->Get_CombinedTransformationMatrix();
+	desc.pOuterSocketMatrix = m_BoneRefs[EBossBones::Hammer]->Get_CombinedTransformationMatrix();
+	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	if (!m_pTrailEffect)
+		return E_FAIL;
+
+	m_pTrailEffect->Set_TrailActive(false);
 
 	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
@@ -1682,6 +1837,47 @@ void CFestivalLeader::Ready_SoundEvents()
 				m_pSoundCom->Play_Random("VO_NPC_FestivalLeader_Dmg_S_0", 5, 1);
 			}
 		});
+
+	m_pAnimator->RegisterEventListener("FistSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Seed_Clown_SK_Fist_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("RockDebrisSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Rock_Debris_L_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DropBasketSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_GetHit_M_Parry_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("PullOutHeadSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_Boss_Judge_SK_Dead_Explo_01");
+				m_pSoundCom->Play("SE_PC_SK_GetHit_M_Sword_PerfectGuard_03");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("PullOutFireSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_FX_Bomb");
+			}
+		});
 }
 
 void CFestivalLeader::EnterCutScene()
@@ -1690,6 +1886,27 @@ void CFestivalLeader::EnterCutScene()
 	m_pAnimator->Get_CurrentAnimController()->GetCurrentState()->clip->SetCurrentTrackPosition(120.f);
 	m_pAnimator->SetPlaying(true);
 	m_bCutSceneOn = true;
+}
+
+void CFestivalLeader::ReChallenge()
+{
+	__super::ReChallenge();
+
+	if (m_pHPBar)
+	{
+		m_pHPBar->Set_RenderTime(0.0016f);
+		return;
+	}
+
+	CUI_MonsterHP_Bar::HPBAR_DESC eDesc{};
+	eDesc.strName = TEXT("축제 인도자");
+	eDesc.isBoss = true;
+	eDesc.pHP = &m_fHp;
+	eDesc.pIsGroggy = &m_bGroggyActive;
+
+	m_pHPBar = static_cast<CUI_MonsterHP_Bar*>(m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT,
+		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
+
 }
 
 void CFestivalLeader::Calc_WeaponDir()
@@ -1836,6 +2053,11 @@ void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eCollide
 			pPlayer->SetfReceiveDamage(DAMAGE_HEAVY);
 			pPlayer->SetHitMotion(HITMOTION::STAMP);
 			pPlayer->SetHitedAttackType(EAttackType::STAMP);
+			break;
+		case ENUM_CLASS(BossStateID::Atk_FuryHammerSlam_Loop):
+			pPlayer->SetfReceiveDamage(DAMAGE_FURY);
+			pPlayer->SetHitMotion(HITMOTION::STAMP);
+			pPlayer->SetHitedAttackType(EAttackType::FURY_STAMP);
 			break;
 		case ENUM_CLASS(BossStateID::Atk_Phase2Start):
 			pPlayer->SetfReceiveDamage(DAMAGE_MEDIUM);

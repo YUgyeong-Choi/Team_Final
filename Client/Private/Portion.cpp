@@ -33,12 +33,26 @@ HRESULT CPortion::Initialize(void* pArg)
 	Ready_Components();
 
 
+	m_pGameInstance->Register_PushCallback(TEXT("Slot_Belts"), this, [this](const _wstring& eventType, void* data) {
+		if (L"MaxCount" == eventType)
+		{
+			m_iMaxCount = *static_cast<_int*>(data);
+
+			m_iUseCount = m_iMaxCount;
+		}
+		
+
+		});
+
 
 	return S_OK;
 }
 
 void CPortion::Priority_Update(_float fTimeDelta)
 {
+	if (m_bDead)
+		m_pGameInstance->Remove_Callback(TEXT("Slot_Belts"), this);
+
 }
 
 void CPortion::Update(_float fTimeDelta)
@@ -109,7 +123,7 @@ HRESULT CPortion::Ready_Components()
 {
 	return S_OK;
 }
-
+ 
 void CPortion::Heal()
 {
 	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"AddHp"), &m_fRatio);

@@ -135,7 +135,9 @@ HRESULT CLockOn_Manager::Update(_float fTimeDelta)
                 PxRigidActor* hitActor = hit.block.actor;
                 CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                _bool isMonster = !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON || pHitActor->Get_ColliderType() == COLLIDERTYPE::BOSS_WEAPON);
+                _bool isMonster = !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON 
+                    || pHitActor->Get_ColliderType() == COLLIDERTYPE::BOSS_WEAPON || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON_BODY
+                    || pHitActor->Get_ColliderType() == COLLIDERTYPE::BREAKABLE_OBJECT);
                 if (pHitActor && isMonster)
                 {
                     // 다른 오브젝트(벽 등)가 레이에 먼저 걸림 → 타겟에서 제거
@@ -232,7 +234,8 @@ void CLockOn_Manager::RemoveSomeTargets()
                     PxRigidActor* hitActor = hit.block.actor;
                     CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hitActor->userData);
 
-                    if (pHitActor && !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON || pHitActor->Get_ColliderType() == COLLIDERTYPE::BOSS_WEAPON))
+                    if (pHitActor && !(pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON 
+                        || pHitActor->Get_ColliderType() == COLLIDERTYPE::BOSS_WEAPON || pHitActor->Get_ColliderType() == COLLIDERTYPE::MONSTER_WEAPON_BODY))
                     {
                         // 벽 등 다른 오브젝트가 먼저 막음 → 제거
                         bRemove = true;

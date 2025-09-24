@@ -150,6 +150,11 @@ class CFestivalLeader final : public CBossUnit
 		EF_RShoulder_SPARK = 8,
 		EF_LHand_SPARK = 9,
 		EF_LForearm_SPARK = 10,
+		EF_P2_START = 11,
+		EF_HAMMER_SLAM = 12,
+		EF_HAMMER_SLAM_END = 13,
+		EF_BASKET_SLAM = 14,
+		EF_GROGGY = 15
 	};
 
 private:
@@ -170,6 +175,7 @@ public:
 	void BreakPanel();
 	void EnterNextCutScene();
 	virtual void EnterCutScene() override;
+	virtual void ReChallenge() override;
 private:
 	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
@@ -222,8 +228,6 @@ private:
 	array<CBone*, EBossBones::Total_Bones> m_BoneRefs{};
 	CBone* m_pRightWeaponBone{ nullptr };
 
-	class CWeapon_Monster* m_pHammer{ nullptr };
-
 	_bool m_bSwitchHeadSpace = false;
 	_int m_iOriginBoneIndex = -1;
 	_int m_iNewParentIndex = -1;
@@ -248,6 +252,7 @@ private:
 	// ¿Ã∆Â∆Æ
 	_bool	m_bLeftHand = true;
 	_bool   m_bLeftKnee = true;
+	_bool   m_bHeadSpark = false;
 	_bool   m_bFullbodyEffect = false;
 	_float3 m_vCurWeaponPos = {};
 	_float3 m_vPrevWeaponPos = {};

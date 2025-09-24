@@ -4,7 +4,8 @@
 #include "Effect_Manager.h"
 #include "SoundController.h"
 #include "PhysX_IgnoreSelfCallback.h"
-
+#include "EffectContainer.h"
+#include "Effect_Manager.h"
 #include "Player.h"
 
 CPlayerLamp::CPlayerLamp(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -59,7 +60,7 @@ HRESULT CPlayerLamp::Initialize(void* pArg)
 	SetColor(_float4(1.f, 0.7f, 0.4f, 1.f));
 	SetIntensity(1.f);
 	m_pSoundCom->Set3DState(0.f, 12.f);
-	m_pSoundCom->SetVolume(0.8f);
+	m_pSoundCom->SetVolume(0.6f);
 	return S_OK;
 }
 
@@ -97,7 +98,7 @@ void CPlayerLamp::Late_Update(_float fTimeDelta)
 
 
 
-	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
+ 	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
 	for (size_t i = 0; i < 3; i++)
 		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
@@ -283,7 +284,16 @@ HRESULT CPlayerLamp::Ready_Light()
 
 HRESULT CPlayerLamp::Play_Absorbe_Effect()
 {
-	//¿©±â¼­ Èí¼ö ÀÌÆåÆ® Àç»ýÇÏ¸éµÊ
+	if (m_bIsVisible)
+	{
+		//¿©±â¼­ Èí¼ö ÀÌÆåÆ® Àç»ýÇÏ¸éµÊ
+		CEffectContainer::DESC desc = {};
+		desc.pParentMatrix = &m_CombinedWorldMatrix;
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+		//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(m_CombinedWorldMatrix.m[3][0], m_CombinedWorldMatrix.m[3][1], m_CombinedWorldMatrix.m[3][2]));
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_Monad_ConsumeErgo"), &desc))
+			return E_FAIL;
+	}
 
 	return S_OK;
 }

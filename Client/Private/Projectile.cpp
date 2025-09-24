@@ -36,9 +36,9 @@ HRESULT CProjectile::Initialize(void* pArg)
 	m_fElapsedTime = 0.f;
 	m_fSpeed = pDesc->fSpeed; // 초기 스피드
 	m_fLifeTime = pDesc->fLifeTime; // 생명 주기
-	m_vDirection = XMLoadFloat3(&pDesc->vDir); // 방향
+	m_vDirection = pDesc->vDir; // 방향
 	_vector vStartPos = XMVectorSetW(XMLoadFloat3(&pDesc->vPos), 1.f); // 시작 위치
-	m_vStartPos = vStartPos;
+	XMStoreFloat4(&m_vStartPos, vStartPos);
 	m_fRadius = pDesc->fRadius; // 구체 반지름
 	m_fStartTime = pDesc->fStartTime; // 중력 시작 시간 
 	m_fGravityOnDist = pDesc->fGravityOnDist; // 중력 시작 거리
@@ -93,7 +93,7 @@ void CProjectile::Update(_float fTimeDelta)
 			else // 거리 기반
 			{
 				_float3 vCurPos = Get_WorldPosFromActor();
-				_float3 vStartPos = { XMVectorGetX(m_vStartPos), XMVectorGetY(m_vStartPos), XMVectorGetZ(m_vStartPos) };
+				_float3 vStartPos = { m_vStartPos.x, m_vStartPos.y, m_vStartPos.z };
 				_float fDist = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&vCurPos), XMLoadFloat3(&vStartPos))));
 				if (fDist >= m_fGravityOnDist)
 				{
@@ -111,6 +111,13 @@ void CProjectile::Update(_float fTimeDelta)
 		PxTransform pose = pActor->getGlobalPose();
 		_vector vPos = XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f);
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+
+		if (m_pSoundCom)
+		{
+			_float3 pos{};
+			XMStoreFloat3(&pos, vPos);
+			m_pSoundCom->Update3DPosition(pos);
+		}
 	}
 }
 
@@ -154,7 +161,7 @@ HRESULT CProjectile::Ready_Components()
 HRESULT CProjectile::Ready_Actor()
 {
 	PxQuat RotationQuat = PxQuat(PxIdentity);
-	PxVec3 PositionVec = PxVec3(XMVectorGetX(m_vStartPos), XMVectorGetY(m_vStartPos), XMVectorGetZ(m_vStartPos));
+	PxVec3 PositionVec = PxVec3(m_vStartPos.x, m_vStartPos.y, m_vStartPos.z);
 	PxTransform armPose(PositionVec, RotationQuat);
 	PxSphereGeometry Geom = m_pGameInstance->CookSphereGeometry(m_fRadius);
 	if (FAILED(m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), Geom, armPose, m_pGameInstance->GetMaterial(L"Default"))))
@@ -175,7 +182,7 @@ HRESULT CProjectile::Ready_Actor()
 		// 초기에 중력 비활성화
 		pActor->setActorFlag(PxActorFlag::eDISABLE_GRAVITY, true);
 	}
-	PxVec3 velocity = PxVec3(XMVectorGetX(m_vDirection), XMVectorGetY(m_vDirection), XMVectorGetZ(m_vDirection)) * m_fSpeed;
+	PxVec3 velocity = PxVec3(m_vDirection.x, m_vDirection.y, m_vDirection.z) * m_fSpeed;
 
 	if (auto pRigid = m_pPhysXActorCom->Get_Actor()->is<PxRigidDynamic>())
 	{
@@ -244,7 +251,9 @@ void CProjectile::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pSoundCom);
 	Safe_Release(m_pPhysXActorCom);
 	if (m_pEffect)
 		m_pEffect->End_Effect();
+
 }

@@ -243,6 +243,8 @@ public:
 
 			return; 
 		}
+		if (name == "NormalAttack")
+			cout << "Set Trigger: " << name << endl; // 디버그용 출력
 		auto& p = m_Params[name];
 		p.bTriggered = true;
 	}
@@ -386,7 +388,7 @@ private:
 			return iNodeId;
 
 		_int bestId = -1;
-		int bestSpecificity = -1; // 조건 개수
+		_int bestSpecificity = -1; // 조건 개수
 
 		for (const auto& tr : m_Transitions)
 		{
@@ -397,7 +399,7 @@ private:
 			if (!tr.Evaluates(const_cast<CAnimController*>(this), m_pAnimator))
 				continue;
 
-			int spec = static_cast<int>(tr.conditions.size());
+			int spec = static_cast<_int>(tr.conditions.size());
 			if (spec > bestSpecificity)
 			{
 				bestSpecificity = spec;

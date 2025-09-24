@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                0.0,
-                0.0
+                -41.5,
+                -36.869998931884766
             ],
             "Animation": true,
             "Billboard": false,
@@ -18,6 +18,11 @@
                 0.07853400707244873,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.0,
@@ -25,12 +30,13 @@
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 60,
+            "Duration": 101,
             "EffectType": 1,
             "EmissiveIntensity": 0.3499999940395355,
-            "EndTrack": 60,
+            "EndTrack": 101,
             "FlipUV": false,
             "Gravity": -1.5,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -61,18 +67,20 @@
                     ]
                 }
             ],
-            "LifeTime": 376.156982421875,
+            "LifeTime": 588.8173828125,
             "LifeTime_Particle": [
                 0.10000000149011612,
                 1.5
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
-            "MinSpeed": 0.0,
+            "MinSpeed": 3.0,
             "Name": "Fuoco_FlameThrow_Particle1",
-            "NumInstance": 100,
+            "NumInstance": 130,
             "NumKeyFrames": 1,
             "Orbit": false,
             "OrbitAxis": [
@@ -106,6 +114,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 1.0,
                 2.0
@@ -116,6 +125,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_SubUV_Fire_06_8x8_SC_KMH",
@@ -137,5 +147,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 59
+    "MaxFrame": 100
 }

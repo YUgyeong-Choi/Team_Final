@@ -1,0 +1,151 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                -3.549999952316284,
+                -7.760000228881836
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 33,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.15000000596046448,
+            "EndTrack": 33,
+            "FlipUV": false,
+            "Gravity": -0.5,
+            "IsCircleRange": false,
+            "IsGravity": true,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 4.96999979019165,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 1437.880126953125,
+            "LifeTime_Particle": [
+                1.100000023841858,
+                2.640000104904175
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 1000.0,
+            "MinSpeed": 3.1500000953674316,
+            "Name": "YW_PAPER_DUST",
+            "NumInstance": 1000,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.6154574155807495,
+                0.6154574155807495,
+                0.4923659563064575
+            ],
+            "OrbitSpeed": [
+                -180.0,
+                180.0
+            ],
+            "PType": 2,
+            "Pivot": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "Range": [
+                10.0,
+                5.179999828338623,
+                10.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.699999988079071,
+                1.5
+            ],
+            "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.06499999761581421,
+                0.08900000154972076
+            ],
+            "Speed": [
+                1.0,
+                5.0
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.10999999940395355,
+            "TextureTags": [
+                "T_Spark_01_C_HJS",
+                "T_SubUV_Piece_01_SC_RSW",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                true,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 2,
+            "TileY": 2,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": true,
+    "MaxFrame": 30
+}

@@ -282,14 +282,30 @@ void CGameInstance::Reset_LevelUnits()
 {
 	m_pLevel_Manager->Get_CurrentLevel()->Reset();
 }
-void CGameInstance::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
-{
-	m_pLevel_Manager->Get_CurrentLevel()->Start_BGM(soundName, bNowPlaying, bNotLoop, willMainBGM);
-}
 
 CSound_Core* CGameInstance::Get_CurrentBGM()
 {
 	return m_pLevel_Manager->Get_CurrentLevel()->Get_BGM();
+}
+
+void CGameInstance::Stop_BGM()
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Stop_BGM();
+}
+
+void CGameInstance::Start_BGM(string soundName)
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Start_BGM(soundName);
+}
+
+void CGameInstance::Change_BGM(string soundName)
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Change_BGM(soundName);
+}
+
+void CGameInstance::Change_BGM(string soundNoLoopName, string soundName)
+{
+	m_pLevel_Manager->Get_CurrentLevel()->Change_BGM(soundNoLoopName,soundName);
 }
 
 
@@ -600,6 +616,16 @@ _uint CGameInstance::Get_LightCount(_uint TYPE, _uint iLevel) const
 	return m_pLight_Manager->Get_LightCount(TYPE, iLevel);
 }
 
+void CGameInstance::AddCustomLight(const wstring& strCustomLightKey, CGameObject* pCustomLight)
+{
+	m_pLight_Manager->Add_LightCustomObject(strCustomLightKey, pCustomLight);
+}
+
+vector<CGameObject*>* CGameInstance::Find_CustomLight(const wstring& strCustomLightKey)
+{
+	return m_pLight_Manager->Find_CustomLight(strCustomLightKey);
+}
+
 HRESULT CGameInstance::Add_Font(const _wstring& strFontTag, const _tchar* pFontFilePath)
 {
 	return m_pFont_Manager->Add_Font(strFontTag, pFontFilePath);
@@ -882,14 +908,19 @@ CObserver* CGameInstance::Find_Observer(const _wstring& strTag)
 	return m_pObserver_Manager->Find_Observer(strTag);
 }
 
-void CGameInstance::Register_PullCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PullCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PullCallback(strTag, callback);
+	m_pObserver_Manager->Register_PullCallback(strTag, pOwner, callback);
 }
 
-void CGameInstance::Register_PushCallback(const _wstring& strTag, function<void(const _wstring& eventType, void* data)> callback)
+void CGameInstance::Register_PushCallback(const _wstring& strTag, CGameObject* pOwner, function<void(const _wstring& eventType, void* data)> callback)
 {
-	m_pObserver_Manager->Register_PushCallback(strTag, callback);
+	m_pObserver_Manager->Register_PushCallback(strTag, pOwner, callback);
+}
+
+void CGameInstance::Remove_Callback(const _wstring& strTag, CGameObject* pOwner)
+{
+	m_pObserver_Manager->Remove_CallBack(strTag, pOwner);
 }
 
 void CGameInstance::Reset(const _wstring& strTag)
@@ -1009,21 +1040,21 @@ void CGameInstance::Add_PoolObject(const _wstring& wsLayerName, CGameObject* pOb
 {
 	m_pPulling_Manager->Add_PoolObject(wsLayerName, pObj);
 }
-void CGameInstance::Use_PoolObject(const _wstring& wsLayerName)
+void CGameInstance::Use_PoolObject(const _wstring& wsLayerName, _bool bReset)
 {
-	m_pPulling_Manager->Use_PoolObject(wsLayerName);
+	m_pPulling_Manager->Use_PoolObject(wsLayerName, bReset);
 }
-void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName)
+void CGameInstance::UseAll_PoolObjects(const _wstring& wsLayerName, _bool bReset)
 {
-	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName);
+	m_pPulling_Manager->UseAll_PoolObjects(wsLayerName, bReset);
 }
-void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj)
+void CGameInstance::Return_PoolObject(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 {
-	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj);
+	m_pPulling_Manager->Return_PoolObject(wsLayerName, pObj, bReset);
 }
-void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj)
+void CGameInstance::Push_WillRemove(const _wstring& wsLayerName, CGameObject* pObj, _bool bReset)
 { 	
-	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj);
+	m_pPulling_Manager->Push_WillRemove(wsLayerName, pObj, bReset);
 }
 HRESULT CGameInstance::Render_DOF(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {

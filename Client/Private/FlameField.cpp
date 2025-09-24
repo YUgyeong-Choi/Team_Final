@@ -21,6 +21,7 @@ CFlameField::CFlameField(const CFlameField& Prototype)
 
 HRESULT CFlameField::Initialize_Prototype()
 {
+	//SE_NPC_SK_FX_FIre_Field_Heavy_Loop
     return S_OK;
 }
 
@@ -48,6 +49,12 @@ HRESULT CFlameField::Initialize(void* pArg)
 	m_LastSpawnDist.resize(16, 0.f);
 	m_SpawnEffectDistanceList.reserve(72);
 	Check_SpawnEffectDistance();
+	
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->Set3DState(0.f, 50.f);
+		m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Field_Heavy_Loop");
+	}
     return S_OK;
 }
 
@@ -68,16 +75,17 @@ void CFlameField::Update(_float fTimeDelta)
 			if (m_pPlayer)
 			{
 				_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-				_vector vFieldPos = m_vBegningRayPos;
+				_vector vFieldPos = XMLoadFloat4(&m_vBegningRayPos);
 
 				_vector vDir = vPlayerPos - vFieldPos;
+				vDir = XMVectorSetY(vDir, 0.f);
 				_float fDist = XMVectorGetX(XMVector3Length(vDir));
 
 				_float fAngle = atan2f(XMVectorGetZ(vDir), XMVectorGetX(vDir));
 				if (fAngle < 0) fAngle += XM_2PI;
 
 				_float fAngleDegrees = XMConvertToDegrees(fAngle);
-				_int iIndex = static_cast<_int>(fAngleDegrees / 5.0f + 0.5f) % 72;
+				_int iIndex = static_cast<_int>(round(fAngleDegrees / 5.0f)) % 72; // 반올림 사용
 				_int iPrevIndex = (iIndex - 1 + 72) % 72; // 이전 인덱스
 				_int iNextIndex = (iIndex + 1) % 72;      // 다음 인덱스
 				_float fMaxAllowedDist = max(m_SpawnEffectDistanceList[iPrevIndex], m_SpawnEffectDistanceList[iIndex]);
@@ -88,7 +96,7 @@ void CFlameField::Update(_float fTimeDelta)
 
 					if (fDist <= fMaxAllowedDist)
 					{
-						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.01f);
+						m_pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.4f);
 						m_pPlayer->SetHitMotion(HITMOTION::NONE_MOTION);
 					}
 				}
@@ -112,6 +120,7 @@ void CFlameField::Update(_float fTimeDelta)
 		m_bEnterPlayer = false;
 		m_bIsExpanded = true;
 		m_fExpandElapsedTime = m_fExpandTime + m_fRemainTime; // 확장 완료
+		
 	}
 	
 	if (m_fExpandElapsedTime <= m_fExpandTime)
@@ -150,6 +159,9 @@ void CFlameField::Update(_float fTimeDelta)
 		PxTransform pose = pActor->getGlobalPose();
 		_vector vPos = XMVectorSet(pose.p.x, pose.p.y, pose.p.z, 1.f);
 		m_pTransformCom->Set_State(STATE::POSITION, vPos);
+		_float3 pos = {};
+		XMStoreFloat3(&pos, vPos);
+		m_pSoundCom->Update3DPosition(pos);
 	}
 }
 
@@ -158,6 +170,7 @@ void CFlameField::Late_Update(_float fTimeDelta)
 	if (m_bIsExpanded)
 	{
 		Set_bDead();
+		m_pSoundCom->StopAllSpecific("SE_NPC_SK_FX_FIre_Field_Heavy_Loop");
 	}
 
 #ifdef _DEBUG
@@ -245,6 +258,10 @@ HRESULT CFlameField::Ready_Components()
 	/* For.Com_PhysX */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_Component_PhysX_Dynamic"), TEXT("Com_PhysX"), reinterpret_cast<CComponent**>(&m_pPhysXActorCom))))
 		return E_FAIL;
+
+	/* For.Com_Sound */
+	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_FireEater"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -287,7 +304,7 @@ void CFlameField::Check_SpawnEffectDistance()
 	_float fOffSetY = 1.f; // 불꽃 필드의 Y 오프셋
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vOffsetPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + fOffSetY);
-	m_vBegningRayPos = vOffsetPos;
+	XMStoreFloat4(&m_vBegningRayPos, vOffsetPos);
 	PxVec3 origin(XMVectorGetX(vOffsetPos), XMVectorGetY(vOffsetPos), XMVectorGetZ(vOffsetPos));
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;
@@ -404,5 +421,6 @@ CGameObject* CFlameField::Clone(void* pArg)
 void CFlameField::Free()
 {
 	Safe_Release(m_pPhysXActorCom);
+	Safe_Release(m_pSoundCom);
 	__super::Free();
 }

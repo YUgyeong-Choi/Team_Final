@@ -221,8 +221,8 @@ namespace Engine
 
 	struct ENGINE_DLL NavigationEdge
 	{
-		_vector		vDir;
-		_vector		vNormal;
+		_float4		vDir;
+		_float3		vNormal;
 	};
 
 	inline XMFLOAT3 AABB_Center(const AABBBOX& b)
@@ -342,6 +342,11 @@ namespace Engine
 	{
 		return (p.x >= b.vMin.x - eps && p.x <= b.vMax.x + eps) &&
 			(p.y >= b.vMin.y - eps && p.y <= b.vMax.y + eps) &&
+			(p.z >= b.vMin.z - eps && p.z <= b.vMax.z + eps);
+	}
+	inline _bool AABB_ContainsPointWithOutY(const AABBBOX& b, const XMFLOAT3& p, float eps = 0.0f)
+	{
+		return (p.x >= b.vMin.x - eps && p.x <= b.vMax.x + eps) &&
 			(p.z >= b.vMin.z - eps && p.z <= b.vMax.z + eps);
 	}
 
@@ -592,10 +597,14 @@ namespace Engine
 		_float		fShrinkThreshold;
 
 		_float3		vOrbitAxis;      // normalized
-		_uint		isCircleRange;	 // 초기 위치 원형 둘레에서 생성
+		_uint		bLoopInSet;		 // 전체 사망 기준 루프
+		//_float		_pad0;
 
 		_float3		vRange;			 // vRange
-		_float		_pad2;
+		_float		fLoopInSet_LoopDelay; // 전체 사망 기준 루프일 경우 전체 사망 후 더 딜레이를 줄 것인지?
+
+		_float3		vCircleNormal;	 // 원형 생성 시, 원의 기준 축 설정
+		_uint		isCircleRange;	 // 초기 위치 원형 둘레에서 생성
 
 		_float4		vSocketRot;
 

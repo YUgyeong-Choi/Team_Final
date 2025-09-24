@@ -189,6 +189,8 @@ HRESULT CParticleEffect::Ready_Components()
 	}
 
 	_wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+	if (m_bContainer)
+		strPrototypeTag += m_strECName + L"_";
 	strPrototypeTag += m_strBufferTag;
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC), strPrototypeTag,

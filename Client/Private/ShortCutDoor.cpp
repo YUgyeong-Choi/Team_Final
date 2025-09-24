@@ -3,15 +3,17 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "Camera_Manager.h"
+#include "Effect_Manager.h"
+#include "EffectContainer.h"
 
 CShortCutDoor::CShortCutDoor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CDynamicMesh{ pDevice, pContext }
+	: CDefaultDoor{ pDevice, pContext }
 {
 
 }
 
 CShortCutDoor::CShortCutDoor(const CShortCutDoor& Prototype)
-	: CDynamicMesh(Prototype)
+	: CDefaultDoor(Prototype)
 {
 
 }
@@ -27,18 +29,11 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 {
 	m_bIsDissolve = true;
 
-	CShortCutDoor::SHORTCUTDOORMESH_DESC* pDoorMeshDESC = static_cast<SHORTCUTDOORMESH_DESC*>(pArg);
-
-	m_eInteractType = pDoorMeshDESC->eInteractType;
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
-
-	Ready_Trigger(pDoorMeshDESC);
-	m_pPlayer = GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex());
 
 	if (FAILED(LoadFromJson()))
 		return E_FAIL;
@@ -51,8 +46,7 @@ HRESULT CShortCutDoor::Initialize(void* pArg)
 void CShortCutDoor::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-	if (m_pPlayer == nullptr)
-		return;
+
 	if (m_bCanActive && !m_bFinish)
 	{
 		if (KEY_DOWN(DIK_E))
@@ -62,7 +56,7 @@ void CShortCutDoor::Priority_Update(_float fTimeDelta)
 			// ÇÃ·¹ÀÌ¾î¶û ¹® À§Ä¡¶û ºñ±³ÇØ¼­
 			_float fPlayerZ = XMVectorGetZ(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION));
 			_float fDoorZ = XMVectorGetZ(m_pTransformCom->Get_State(STATE::POSITION));
-			if (fPlayerZ < fDoorZ)
+			if (fPlayerZ < fDoorZ) // ÇÃ·¹ÀÌ¾îz°¡ ¹®º¸´Ù ÀÛÀ¸¸é.. ¿ÞÂÊÀÌ¸é?
 			{
 				m_bCanOpen = true;
 				m_bFinish = true;
@@ -117,11 +111,10 @@ void CShortCutDoor::Update(_float fTimeDelta)
 		m_pModelComBackKey->Update_Bones();
 
 	Move_Player(fTimeDelta);
+
 	if(m_bEffectActive)
 		Start_Effect(fTimeDelta);
 
-	if (m_bSoundActive)
-		Play_Sounds(fTimeDelta);
 }
 
 void CShortCutDoor::Late_Update(_float fTimeDelta)
@@ -225,20 +218,6 @@ void CShortCutDoor::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderTy
 	CUI_Manager::Get_Instance()->Activate_Popup(false);
 }
 
-void CShortCutDoor::Play_Sound()
-{
-	//switch (m_eInteractType)
-	//{
-	//case Client::TUTORIALDOOR:
-	//	m_pSoundCom->SetVolume("AMB_OJ_DR_BossGate_SlidingDoor_Open", 0.5f * g_fInteractSoundVolume);
-	//	m_pSoundCom->Play("AMB_OJ_DR_BossGate_SlidingDoor_Open");
-	//	break;
-	//default:
-	//	break;
-	//}
-
-}
-
 void CShortCutDoor::OpenDoor()
 {
 	if (m_pAnimator)
@@ -309,11 +288,11 @@ void CShortCutDoor::Move_Player(_float fTimeDelta)
 		m_bStartCutScene = false;
 		m_bCanMovePlayer = true;
 		m_bEffectActive = true;
-		m_bSoundActive = true;
+		m_bStartSound = true;
 		// ¹® ¿©´Â °Å È°¼ºÈ­
 		m_pPlayer->Interaction_Door(m_eInteractType, this, m_bCanOpen);
 
-		m_fSoundTime = 0.f;
+		m_fSoundDelta = 0.f;
 		m_fEffectTime = 0.f;
 	}
 
@@ -350,15 +329,6 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 		TEXT("Shader_Com"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	/* For.Com_PhysX */
-	if (FAILED(__super::Add_Component(ENUM_CLASS(LEVEL::STATIC),
-		TEXT("Prototype_Component_PhysX_Static"), TEXT("Com_PhysXTrigger"), reinterpret_cast<CComponent**>(&m_pPhysXTriggerCom))))
-		return E_FAIL;
-
-	/* For.Com_Sound */
-	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_ShortCutDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
-		return E_FAIL;
-
 	m_pAnimator = CAnimator::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pAnimator)
 		return E_FAIL;
@@ -388,38 +358,13 @@ HRESULT CShortCutDoor::Ready_Components(void* pArg)
 	if (FAILED(m_pAnimatorBackKey->Initialize(m_pModelComBackKey)))
 		return E_FAIL;
 
-	return S_OK;
-}
-
-HRESULT CShortCutDoor::Ready_Trigger(SHORTCUTDOORMESH_DESC* pDesc)
-{
-	XMVECTOR S, R, T;
-	XMMatrixDecompose(&S, &R, &T, m_pTransformCom->Get_WorldMatrix());
-
-	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
-	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
-	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
-
-	PxTransform pose(positionVec, rotationQuat);
-	PxMeshScale meshScale(scaleVec);
-
-	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
-	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
-	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
-	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
-
-	PxFilterData filterData{};
-	filterData.word0 = WORLDFILTER::FILTER_INTERACT;
-	filterData.word1 = WORLDFILTER::FILTER_PLAYERBODY;
-	m_pPhysXTriggerCom->Set_SimulationFilterData(filterData);
-	m_pPhysXTriggerCom->Set_QueryFilterData(filterData);
-	m_pPhysXTriggerCom->Set_Owner(this);
-	m_pPhysXTriggerCom->Set_ColliderType(COLLIDERTYPE::TRIGGER);
-	m_pGameInstance->Get_Scene()->addActor(*m_pPhysXTriggerCom->Get_Actor());
+	/* For.Com_Sound */
+	//if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_ShortCutDoor"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
+
 
 HRESULT CShortCutDoor::LoadFromJson()
 {
@@ -442,59 +387,6 @@ HRESULT CShortCutDoor::LoadFromJson()
 	return S_OK;
 }
 
-HRESULT CShortCutDoor::LoadAnimationEventsFromJson(const string& modelName, CModel* pModelCom)
-{
-	string path = "../Bin/Save/AnimationEvents/" + modelName + "_events.json";
-	ifstream ifs(path);
-	if (ifs.is_open())
-	{
-		json root;
-		ifs >> root;
-		if (root.contains("animations"))
-		{
-			auto& animationsJson = root["animations"];
-			auto& clonedAnims = pModelCom->GetAnimations();
-
-			for (const auto& animData : animationsJson)
-			{
-				const string& clipName = animData["ClipName"];
-
-				for (auto& pAnim : clonedAnims)
-				{
-					if (pAnim->Get_Name() == clipName)
-					{
-						pAnim->Deserialize(animData);
-						break;
-					}
-				}
-			}
-		}
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation events file.");
-		return E_FAIL;
-	}
-	return S_OK;
-}
-
-HRESULT CShortCutDoor::LoadAnimationStatesFromJson(const string& modelName, CAnimator* pAnimator)
-{
-	string path = "../Bin/Save/AnimationStates/" + modelName + "_States.json";
-	ifstream ifsStates(path);
-	if (ifsStates.is_open())
-	{
-		json rootStates;
-		ifsStates >> rootStates;
-		pAnimator->Deserialize(rootStates);
-	}
-	else
-	{
-		MSG_BOX("Failed to open animation states file.");
-		return E_FAIL;
-	}
-	return S_OK;
-}
 
 HRESULT CShortCutDoor::Render_Key()
 {
@@ -661,12 +553,17 @@ void CShortCutDoor::Start_Effect(_float fTimeDelta)
 {
 	m_fEffectTime += fTimeDelta;
 
+	CEffectContainer::DESC ECDesc = {};
+	ECDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
 	if (m_bCanOpen) // ¹® ¿°
 	{
-		if (m_fEffectTime > 1.3f)
+		if (m_fEffectTime > 1.15f)
 		{
 			m_bEffectActive = false;
+			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.6f, -0.42f));
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_UnLocked_Door"), &ECDesc))
+				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
 		}
 	}
 	else 	
@@ -674,47 +571,51 @@ void CShortCutDoor::Start_Effect(_float fTimeDelta)
 		if (m_fEffectTime > 1.4f)
 		{
 			m_bEffectActive = false;
+			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.5f, 0.2f));
+			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_Locked_LightningDoor_alt_real"), &ECDesc))
+				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
+			m_pPlayer->Create_LeftArm_Lightning_Hand(TEXT("EC_Shortcut_Locked_LightningHand"));
 		}
 	}
 }
 
-void CShortCutDoor::Play_Sounds(_float fTimeDelta)
+void CShortCutDoor::Play_Sound(_float fTimeDelta)
 {
-	m_fSoundTime += fTimeDelta;
+	m_fSoundDelta += fTimeDelta;
 
-	if (m_bCanOpen) // ¹® ¿°
+	if (m_bCanOpen) // ¹® ¿°ÁÖ ·»°íÄí ÄìÁê·Î ¤»¤»
 	{
-		if (m_fSoundTime > 2.f && !m_bSoundPlay[0])
+		if (m_fSoundDelta > 2.f && !m_bSoundPlay[0])
 		{
 			m_bSoundPlay[0] = true;
 			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Gear_", 3);
 		}
-		if (m_fSoundTime > 4.f && !m_bSoundPlay[1])
+		if (m_fSoundDelta > 4.f && !m_bSoundPlay[1])
 		{
 			m_bSoundPlay[1] = true;
 			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Drop_", 3);
 		}
-		if (m_fSoundTime > 5.f && !m_bSoundPlay[2])
+		if (m_fSoundDelta > 5.f && !m_bSoundPlay[2])
 		{
 			m_pSoundCom->Play_Random("AMB_OJ_DR_HeavyLocker_Open_Back_Drop_", 3);
 			m_bSoundPlay[2] = true;
 		}
 
-		if (m_fSoundTime > 6.3f && !m_bSoundPlay[3])
+		if (m_fSoundDelta > 6.3f && !m_bSoundPlay[3])
 		{
 			SwitchDissolve(false, 0.35f, _float3{ 0.f, 0.f, 0.f }, {});
 
 			m_pSoundCom->Play("AMB_OJ_DR_Metal_Squeak_Open2");
 			m_bSoundPlay[3] = true;
-			m_bSoundActive = false;
+			m_bStartSound = false;
 		}
 	}
 	else
 	{
-		if (m_fSoundTime > 1.4f)
+		if (m_fSoundDelta > 1.4f)
 		{
 			m_pSoundCom->Play_Random("AMB_OJ_FX_Crane_Spark_S_",3);
-			m_bSoundActive = false;
+			m_bStartSound = false;
 		}
 	}
 
@@ -751,11 +652,6 @@ CGameObject* CShortCutDoor::Clone(void* pArg)
 void CShortCutDoor::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pPhysXTriggerCom);
-	Safe_Release(m_pSoundCom);
-	Safe_Release(m_pAnimator);
-
 
 	Safe_Release(m_pModelComFrontKey);
 	Safe_Release(m_pAnimatorFrontKey);

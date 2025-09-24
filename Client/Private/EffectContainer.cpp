@@ -34,6 +34,7 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(pDesc->PresetMatrix);
 	m_pSocketMatrix = pDesc->pSocketMatrix;
 	m_pParentMatrix = pDesc->pParentMatrix;
+	m_strECName = pDesc->strECName;
 	if (FAILED(Load_JsonFiles(pDesc->j)))
 		return E_FAIL;
     return S_OK;
@@ -41,8 +42,9 @@ HRESULT CEffectContainer::Initialize(void* pArg)
 
 void CEffectContainer::Priority_Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead)
 		return;
+
 	m_fCurFrame += m_fTickPerSecond * fTimeDelta;
 	m_iCurFrame = static_cast<_int>(m_fCurFrame); // 캐스팅을 너무 많이 하는 것 같아서 그냥 별도로 저장
 	//m_fLifeTimeAcc += fTimeDelta;
@@ -68,7 +70,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 			m_iCurFrame = 0;
 			for (auto& pEffect : m_Effects)
 			{
-				pEffect->Reset_TrackPosition();
+				if(pEffect)
+					pEffect->Reset_TrackPosition();
 			}
 		}
 		else
@@ -83,6 +86,8 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
 		/*
 		* 시퀀스와 최대한 비슷한 구조로 저장 
 		* 컨테이너의 (전체적인) 프레임을 돌리고
@@ -99,7 +104,7 @@ void CEffectContainer::Priority_Update(_float fTimeDelta)
 
 void CEffectContainer::Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead)
 		return;
 	// EC의 combinedworldmatrix 갱신
 	_matrix matSocket = XMMatrixIdentity();
@@ -128,6 +133,9 @@ void CEffectContainer::Update(_float fTimeDelta)
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
+
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
@@ -138,11 +146,14 @@ void CEffectContainer::Update(_float fTimeDelta)
 
 void CEffectContainer::Late_Update(_float fTimeDelta)
 {
-	if (m_isActive == false)
+	if (m_isActive == false || m_bDead)
 		return;
 	// 가진 이펙트들을 업데이트
 	for (auto& pEffect : m_Effects)
 	{
+		if (pEffect == nullptr)
+			continue;
+
 		if (m_iCurFrame >= pEffect->Get_StartTrackPosition() &&
 			m_iCurFrame <= pEffect->Get_EndTrackPosition())
 		{
@@ -161,7 +172,9 @@ void CEffectContainer::End_Effect()
 {
 	for (auto& pEffect : m_Effects)
 	{
-		_float fDeathTime = pEffect->Ready_Death();
+		_float fDeathTime = {};
+		if (pEffect)
+			fDeathTime = pEffect->Ready_Death();
 		//if (pEffect->Get_EffectType() == EFF_PARTICLE)
 		//	static_cast<CParticleEffect*>(pEffect)->Set_Loop(false);
 		if (m_fDeadInterval < fDeathTime)
@@ -189,82 +202,86 @@ HRESULT CEffectContainer::Load_JsonFiles(const json& j)
 	else
 		m_bLoop = true;
 
-		for (const auto& jItem : j["EffectObject"])
+	for (const auto& jItem : j["EffectObject"])
+	{
+		// 이름
+		//if (jItem.contains("Name"))
+		//	m_strSeqItemName = jItem["Name"].get<string>();
+
+		// 타입
+		EFFECT_TYPE eEffectType = {};
+		if (jItem.contains("EffectType"))
+			eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
+
+		// Effect 객체 생성 및 역직렬화
+		CEffectBase* pInstance = { nullptr };
+
+		switch (eEffectType)
 		{
-			// 이름
-			//if (jItem.contains("Name"))
-			//	m_strSeqItemName = jItem["Name"].get<string>();
-
-			// 타입
-			EFFECT_TYPE eEffectType = {};
-			if (jItem.contains("EffectType"))
-				eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
-
-			// Effect 객체 생성 및 역직렬화
-			CEffectBase* pInstance = { nullptr };
-
-			switch (eEffectType)
-			{
-			case Client::EFF_SPRITE:
-			{
-				CSpriteEffect::DESC desc = {};
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.bTool = false;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
-			}
-			break;
-			case Client::EFF_PARTICLE:
-			{
-				CParticleEffect::DESC desc = {};
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				desc.bTool = false;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
-			}
-			break;
-			case Client::EFF_MESH:
-			{
-				CMeshEffect::DESC desc = {};
-				desc.fRotationPerSec = XMConvertToRadians(90.f);
-				desc.fSpeedPerSec = 5.f;
-				desc.pSocketMatrix = &m_CombinedWorldMatrix;
-				desc.bTool = false;
-				pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-					PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
-			}
-			break;
-			case Client::EFF_TRAIL:
-			{
-				// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
-				//CSwordTrailEffect::DESC desc = {};
-				//desc.fRotationPerSec = XMConvertToRadians(90.f);
-				//desc.fSpeedPerSec = 5.f;
-				//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-				//desc.bTool = false;
-				//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
-				//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));
-			}
-			break;
-			}
-			if (pInstance != nullptr)
-			{
-				if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
-					return E_FAIL;
-				_vector rot, scale, trans;
-				XMMatrixDecompose(&scale, &rot, &trans, m_pTransformCom->Get_WorldMatrix());
-				if (eEffectType == EFF_PARTICLE)
-					static_cast<CParticleEffect*>(pInstance)->Set_InitRotation(XMMatrixRotationQuaternion(rot));
-				m_Effects.push_back(pInstance);
-			}
-			else
-				return E_FAIL;
+		case Client::EFF_SPRITE:
+		{
+			CSpriteEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.bTool = false;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_SpriteEffect"), &desc));
 		}
-		return S_OK;
+		break;
+		case Client::EFF_PARTICLE:
+		{
+			CParticleEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_ParticleEffect"), &desc));
+		}
+		break;
+		case Client::EFF_MESH:
+		{
+			CMeshEffect::DESC desc = {};
+			desc.strECName = m_strECName;
+			desc.fRotationPerSec = XMConvertToRadians(90.f);
+			desc.fSpeedPerSec = 5.f;
+			desc.pSocketMatrix = &m_CombinedWorldMatrix;
+			desc.bTool = false;
+			pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+				PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_MeshEffect"), &desc));
+		}
+		break;
+		case Client::EFF_TRAIL:
+		{
+			// 소드트레일만??? 트레일은 개별적으로 처리할 듯? 
+			//CSwordTrailEffect::DESC desc = {};
+			//desc.strECName = m_strECName;
+			//desc.fRotationPerSec = XMConvertToRadians(90.f);
+			//desc.fSpeedPerSec = 5.f;
+			//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+			//desc.bTool = false;
+			//pInstance = dynamic_cast<CEffectBase*>(m_pGameInstance->Clone_Prototype(
+			//	PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_TrailEffect"), &desc));
+		}
+		break;
+		}
+		if (pInstance != nullptr)
+		{
+			if (FAILED(pInstance->Ready_Effect_Deserialize(jItem)))
+				return E_FAIL; 
+			_vector rot, scale, trans;
+			XMMatrixDecompose(&scale, &rot, &trans, m_pTransformCom->Get_WorldMatrix());
+			if (eEffectType == EFF_PARTICLE)
+				static_cast<CParticleEffect*>(pInstance)->Set_InitRotation(XMMatrixRotationQuaternion(rot));
+			m_Effects.push_back(pInstance);
+		}
+		else
+			return E_FAIL;
+	}
+	return S_OK;
 }
 
 HRESULT CEffectContainer::Ready_Components()
@@ -309,6 +326,8 @@ void CEffectContainer::Free()
 	__super::Free();
 	for (auto& pEffect : m_Effects)
 	{
+		if(pEffect)
+			pEffect->Set_bDead();
 		Safe_Release(pEffect);
 	}
 }

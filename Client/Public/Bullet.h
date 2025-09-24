@@ -30,6 +30,8 @@ private:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Ready_Effect() override;
 
+	HRESULT Ready_Sound();
+
 private:
 	_float m_fDamge = 10.f;
 

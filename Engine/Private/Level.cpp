@@ -26,6 +26,25 @@ void CLevel::Update(_float fTimeDelta)
     // 마우스를 화면 중앙으로 이동
     /*if (MOUSE_PRESSING(DIM::RBUTTON))
         HoldMouse();*/
+
+    if (m_pBGM && !m_pBGM->IsPlaying())
+    {
+        m_pBGM->Stop();
+        Safe_Release(m_pBGM);
+
+        if (m_BGMQueued != "")
+        {
+            m_CurBGMName = m_BGMQueued;
+            m_BGMQueued = "";
+        }
+
+        m_pBGM = m_pGameInstance->Get_Single_Sound(m_CurBGMName);
+        if (m_pBGM)
+        {
+            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+            m_pBGM->Play();
+        }
+    }
 }
 
 void CLevel::Late_Update(_float fTimeDelta)
@@ -38,26 +57,33 @@ HRESULT CLevel::Render()
     return S_OK;
 }
 
-void CLevel::Start_BGM(string soundName, _bool bNowPlaying, _bool bNotLoop, string willMainBGM)
+void CLevel::Start_BGM(string soundName)
+{	
+    m_pBGM = m_pGameInstance->Get_Single_Sound(soundName);
+    if (!m_pBGM)
+        return;
+    m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+    m_pBGM->Play();
+    m_CurBGMName = soundName;
+}
+
+void CLevel::Change_BGM(string soundName)
 {
-    if (!bNowPlaying)
+    if (!m_pBGM)
     {
-        m_pBGM = m_pGameInstance->Get_Single_Sound(soundName);
-        m_pBGM->Set_Volume(1.f * g_fBGMSoundVolume);
-        m_pBGM->Play();
+        Start_BGM(soundName);
+        return;
     }
-    else
-    {
-		m_bBGMToZero = true;
-		m_strWillChangeBGM = soundName;
-    }
+    /* [ 사운드 ] */
+    m_bBGMToZero = true;
+    m_BGMNext = soundName;
+}
 
-    if (bNotLoop) {
-        m_bCheckBGMFinish = true;
-		m_strWillMainBGM = willMainBGM;
-    }
-
-        
+void CLevel::Change_BGM(string soundNoLoopName, string soundName)
+{
+    m_bBGMToZero = true;
+    m_BGMNext = soundNoLoopName;
+    m_BGMQueued = soundName;
 }
 
 static _float LerpFloat(_float a, _float b, _float t)
@@ -67,32 +93,40 @@ static _float LerpFloat(_float a, _float b, _float t)
 
 void CLevel::Update_ChangeBGM(_float fTimeDelta)
 {
-	if (m_bBGMToZero)
+	if (m_bBGMToZero && m_pBGM)
 	{
         m_fBGMVolume = LerpFloat(m_fBGMVolume, 0.f, fTimeDelta * 3.f);
+        
         m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
         if (m_fBGMVolume < 0.01f)
         {
             m_pBGM->Stop();
             Safe_Release(m_pBGM);
-            m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillChangeBGM);
-            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-            m_pBGM->Play();
-
+            m_pBGM = m_pGameInstance->Get_Single_Sound(m_BGMNext);
+            if (m_pBGM)
+            {
+                m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
+                m_pBGM->Play();
+				m_CurBGMName = m_BGMNext;
+                m_BGMNext = "";
+                m_bBGMToVolume = true;
+            }
+            else
+            {
+                m_CurBGMName = "";
+                m_BGMNext = "";
+            }
 
             m_bBGMToZero = false;
-            m_bBGMToVolume = true;
         }
 	}
 
 	if (m_bBGMToVolume)
 	{
-		// m_fBGMVolume 이 0일텐데 1로 lerp할거임
 		m_fBGMVolume = LerpFloat(m_fBGMVolume, 1.f, fTimeDelta * 1.5f);
 		m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
 
-		// 만약에 m_fBGMVolume가 1이 되면
         if (m_fBGMVolume > 0.99f)
         {
 			m_fBGMVolume = 1.f;
@@ -100,19 +134,14 @@ void CLevel::Update_ChangeBGM(_float fTimeDelta)
             m_bBGMToVolume = false;
         }
 	}
+}
 
-    if (m_bCheckBGMFinish)
-    {
-		if (m_pBGM && !m_pBGM->IsPlaying())
-		{
-            m_pBGM->Stop();
-            Safe_Release(m_pBGM);
-            m_pBGM = m_pGameInstance->Get_Single_Sound(m_strWillMainBGM);
-            m_pBGM->Set_Volume(m_fBGMVolume * g_fBGMSoundVolume);
-            m_pBGM->Play();
-
-            m_bCheckBGMFinish = false;
-		}
+void CLevel::Stop_BGM()
+{
+    if (m_pBGM) {
+        m_pBGM->Stop();
+        Safe_Release(m_pBGM);
+		m_CurBGMName = "";
     }
 }
 
@@ -134,7 +163,15 @@ void CLevel::Free()
     if (m_pBGM)
     {
         m_pBGM->Stop();
-        Safe_Release(m_pBGM);
+        //Safe_Release(m_pBGM);
+
+        _int iRefCount = Safe_Release(m_pBGM);
+        if (iRefCount != 0)
+        {
+            //MSG_BOX("사운드 릴리즈 실패");
+            printf_s("SoundCore Ref Count %d\n", iRefCount);
+        }
+
     }
 
     Safe_Release(m_pDevice);

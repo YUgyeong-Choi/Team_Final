@@ -14,7 +14,7 @@ public:
 		_float4x4			PresetMatrix = {};
 		const _float4x4*	pSocketMatrix = { nullptr };         // 우선적으로 사용되는 부모 행렬 (e.g. 뼈소켓매트릭스, 혹은 단순히 부모 행렬 - 이 경우 웬만하면 EC의 트랜스폼을 조정하시오 - )
 		const _float4x4*	pParentMatrix = { nullptr }; // 위의 행렬이 별개로 부모 행렬을 또 들어야 하는 경우 사용할 것.. (뼈 소켓일 경우 -> 부모 객체의 월드 매트릭스)
-
+		_wstring			strECName;
 	}DESC;
 
 private:
@@ -49,6 +49,8 @@ private:
 	_float		m_fLifeTimeAcc = {};
 	_float		m_fLifeTime = {};
 
+	_wstring	m_strECName;
+
 private:
 	_float				m_fFrame = { };
 	_bool				m_bReadyDeath = { false };
@@ -66,6 +68,8 @@ private:
 	HRESULT Bind_ShaderResources();
 
 	//HRESULT Add_Effect(class CEffectBase* pEffect);
+
+
 
 public:
 	static CEffectContainer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

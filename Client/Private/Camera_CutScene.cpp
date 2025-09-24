@@ -8,6 +8,10 @@
 #include "Player.h"
 #include "UI_Manager.h"
 #include "FestivalLeader.h"
+#include "AreaSoundBox.h"
+#include "BossDoor.h"
+#include "FinalDoor.h"
+#include "UI_Video.h"
 
 #pragma region help
 // ===== Speed-curve helpers =====
@@ -107,6 +111,12 @@ HRESULT CCamera_CutScene::Initialize(void* pArg)
 	if (FAILED(InitDatas()))
 		return E_FAIL;
 
+	/* For.Com_Sound */
+	if (FAILED(Add_Component(static_cast<int>(LEVEL::STATIC), _wstring(TEXT("Prototype_Component_Sound_CutSceneExtra")),
+		TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
+		return E_FAIL;
+
+
 	m_pTransformCom->Set_WorldMatrix(m_CutSceneDatas[CUTSCENE_TYPE::WAKEUP].vecWorldMatrixData.front().WorldMatrix);
 	m_pGameInstance->Set_Transform(D3DTS::VIEW, m_pTransformCom->Get_WorldMatrix_Inverse());
 	m_pGameInstance->Set_Transform(D3DTS::PROJ, XMMatrixPerspectiveFovLH(m_fFov, m_fAspect, m_fNear, m_fFar));
@@ -150,7 +160,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (m_CameraDatas.vecTargetData.size() == 0)
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -173,7 +183,7 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			if (!bCheck && (m_CameraDatas.vecWorldMatrixData.front().iKeyFrame < m_CameraDatas.vecTargetData.front().iKeyFrame))
 			{
 				// 목표 행렬
-				_matrix targetMat = m_CameraDatas.vecWorldMatrixData.front().WorldMatrix;
+				_matrix targetMat = XMLoadFloat4x4(&m_CameraDatas.vecWorldMatrixData.front().WorldMatrix);
 				// 현재 행렬
 				_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
@@ -184,19 +194,25 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 
 		if (m_bReadyCutScene && !m_bReadyCutSceneOrbital)
 		{
-			m_fElapsedTime += fTimeDelta;
+			// 1) 스파이크 클램프(옵션): 일시적인 렉으로 큰 점프 방지
+			fTimeDelta = std::min(fTimeDelta, 0.1f);
 
-			// 시간 누적 → 프레임 단위 변환
-			_int iNewFrame = static_cast<_int>(m_fElapsedTime * m_fFrameSpeed);
+			// 2) 시간 누적
+			m_fAccumulator += fTimeDelta;
 
-			if (iNewFrame != m_iCurrentFrame)
+			// 3) 한 번에 너무 많은 서브스텝 방지(무한 루프/스파이럴 오브 데스 방지)
+			const int kMaxSubsteps = 4;
+			int substeps = 0;
+
+			// 4) 누적 시간이 프레임 기간을 넘을 때마다 정확히 1프레임씩 진행
+			while (m_fAccumulator >= m_fFramePeriod &&
+				substeps < kMaxSubsteps &&
+				!m_bReadyCutSceneOrbital)
 			{
-				m_iCurrentFrame = iNewFrame;
+				m_fAccumulator -= m_fFramePeriod;
+				++m_iCurrentFrame;
 
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("zzzzzzzzzzzzzzzzzzzzzzzzzzzPlszzzzzzzzzzzzzzzzzzzzzzzzz\n");
-				//printf("%d CurrentFrame\n", m_iCurrentFrame);
-
+				// 기존 “프레임 증가 시에만 호출” 로직을 여기로 이동
 				Interp_WorldMatrixOnly(m_iCurrentFrame);
 				Interp_Fov(m_iCurrentFrame);
 				Interp_OffsetRot(m_iCurrentFrame);
@@ -210,19 +226,27 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				if (m_iCurrentFrame > m_CameraDatas.iEndFrame)
 				{
 					m_bReadyCutSceneOrbital = true;
+					break;
 				}
+
+				++substeps;
 			}
 		}
 
 		if (m_bReadyCutSceneOrbital)
 		{
-			m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+			XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 			// 목표 행렬
-			_matrix targetMat = m_initOrbitalMatrix;
+			_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 			// 현재 행렬
 			_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
 
-			_bool bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
+			_bool bFinish = false;
+			if (m_eCurrentCutScene == CUTSCENE_TYPE::FESTIVAL)
+				bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat, true);
+			else
+				bFinish = Camera_Blending(fTimeDelta, targetMat, currentMat);
 
 			if (bFinish)
 			{
@@ -236,6 +260,13 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 				CCamera_Manager::Get_Instance()->GetOrbitalCam()->Set_InitCam(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
 				CCamera_Manager::Get_Instance()->SetOrbitalCam();
 				CUI_Manager::Get_Instance()->On_Panel();
+
+				if (m_pBossDoor)
+				{
+					m_pBossDoor->Create_RetryDoor();
+					m_pBossDoor = nullptr;
+				}
+					
 			}
 		}
 	}
@@ -279,6 +310,10 @@ void CCamera_CutScene::Priority_Update(_float fTimeDelta)
 			Event();
 		}
 	}
+
+
+	if (m_bSoundLerp)
+		Update_SoundLerp(fTimeDelta);
 }
 
 void CCamera_CutScene::Update(_float fTimeDelta)
@@ -330,7 +365,8 @@ void CCamera_CutScene::Set_CutSceneData(CUTSCENE_TYPE cutSceneType)
 
 	m_eCurrentCutScene = cutSceneType;
 
-	m_initOrbitalMatrix = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	_matrix matObital = CCamera_Manager::Get_Instance()->GetOrbitalCam()->Get_OrbitalWorldMatrix(m_CameraDatas.fPitch, m_CameraDatas.fYaw);
+	XMStoreFloat4x4(&m_initOrbitalMatrix, matObital);
 	m_iCurrentFrame = -1;
 	m_fElapsedTime = 0.f;
 	m_Accumulate = 0.f;
@@ -358,16 +394,16 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			// Decompose A
 			XMVECTOR sA, rA, tA;
-			XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+			XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 
 			// Decompose B
 			XMVECTOR sB, rB, tB;
-			XMMatrixDecompose(&sB, &rB, &tB, b.WorldMatrix);
+			XMMatrixDecompose(&sB, &rB, &tB, XMLoadFloat4x4(&b.WorldMatrix));
 
 			if (IsNearlyZero3(tA))
 			{
-				a.WorldMatrix = m_pTransformCom->Get_WorldMatrix();
-				XMMatrixDecompose(&sA, &rA, &tA, a.WorldMatrix);
+				a.WorldMatrix = m_pTransformCom->Get_World4x4();
+				XMMatrixDecompose(&sA, &rA, &tA, XMLoadFloat4x4(&a.WorldMatrix));
 			}
 
 			XMVECTOR finalT = tA;
@@ -390,10 +426,10 @@ void CCamera_CutScene::Interp_WorldMatrixOnly(_int curFrame)
 
 			case INTERPOLATION_CAMERA::CATMULLROM:
 			{
-				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(vec[i - 1].WorldMatrix);
+				XMVECTOR t0 = (i == 0) ? tA : XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i - 1].WorldMatrix));
 				XMVECTOR t1 = tA;
 				XMVECTOR t2 = tB;
-				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(vec[i + 2].WorldMatrix) : t2;
+				XMVECTOR t3 = (i + 2 < vec.size()) ? XMMatrixDecompose_T(XMLoadFloat4x4(&vec[i + 2].WorldMatrix)) : t2;
 
 				finalT = XMVectorCatmullRom(t0, t1, t2, t3, tRemap);
 				finalR = XMQuaternionSlerp(rA, rB, tRemap); // 회전은 안정성을 위해 그대로 Slerp
@@ -495,7 +531,7 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			switch (interp)
 			{
 			case INTERPOLATION_CAMERA::NONE:
-				m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+				m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 1.f };
 				break;
 			case INTERPOLATION_CAMERA::LERP:
 			default:
@@ -513,19 +549,19 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			}
 
 			// 오프셋 회전 저장 (최종 회전은 update에서 적용)
-			m_vCurrentShakeRot = result;
+			XMStoreFloat4(&m_vCurrentShakeRot, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().offSetRot);
+		m_vCurrentShakeRot = _float4{ vec.front().offSetRot.x,vec.front().offSetRot.y,vec.front().offSetRot.z, 0.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetRot == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
+			m_vCurrentShakeRot = _float4{ vec.back().offSetRot.x,vec.back().offSetRot.y,vec.back().offSetRot.z, 0.f };;
 }
 
 void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
@@ -571,19 +607,19 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 			}
 
 			// 오프셋 위치 저장 (최종 위치는 update에서 적용)
-			m_vCurrentShakePos = result;
+			XMStoreFloat4(&m_vCurrentShakePos, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakePos = XMLoadFloat3(&vec.front().offSetPos);
+		m_vCurrentShakePos = _float4{ vec.front().offSetPos.x,vec.front().offSetPos.y,vec.front().offSetPos.z, 0.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetPos == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakePos = XMLoadFloat3(&vec.back().offSetPos);
+			m_vCurrentShakePos = _float4{ vec.back().offSetPos.x,vec.back().offSetPos.y,vec.back().offSetPos.z, 0.f };
 }
 
 // 각도 유틸(라디안)
@@ -788,7 +824,22 @@ HRESULT CCamera_CutScene::InitDatas()
 		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FESTIVAL, LoadCameraFrameData(j)));
 	}
 
+	ifstream inFile6("../Bin/Save/CutScene/Final.json");
+	if (inFile6.is_open())
+	{
+		json j;
+		inFile6 >> j;
+		inFile6.close();
+
+		m_CutSceneDatas.emplace(make_pair(CUTSCENE_TYPE::FINAL, LoadCameraFrameData(j)));
+	}
+
 	return S_OK;
+}
+
+void CCamera_CutScene::Set_BossDoor(CBossDoor* pDoor)
+{
+	m_pBossDoor = pDoor;
 }
 
 CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
@@ -813,7 +864,7 @@ CAMERA_FRAMEDATA CCamera_CutScene::LoadCameraFrameData(const json& j)
 			const std::vector<float>& matValues = worldJson["worldMatrix"];
 			XMFLOAT4X4 mat;
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
-			worldFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+			worldFrame.WorldMatrix = mat;
 
 			worldFrame.curveType = worldJson.value("curveType", 0); // 0=Linear
 
@@ -989,10 +1040,10 @@ void CCamera_CutScene::Event()
 	{
 		if (m_iCurrentFrame == 20)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"));
 		}
 	}
-		break;
+	break;
 	case Client::CUTSCENE_TYPE::OUTDOOOR:
 		break;
 	case Client::CUTSCENE_TYPE::FUOCO:
@@ -1000,11 +1051,17 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 20)
 		{
-			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning();
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning(TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"));
 		}
 
-		if (m_iCurrentFrame == 450)
-			m_pGameInstance->Start_BGM("FireEaterCutScene", true);
+		if (m_iCurrentFrame == 550)
+		{
+			m_strSoundName = "FireEaterCutScene";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 1.f;
+			m_bSoundLerp = true;
+		}
 
 		if (m_iCurrentFrame == 575)
 		{
@@ -1020,108 +1077,367 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 860)
 		{
-			CBossUnit* unit = static_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
-			unit->EnterCutScene();
-
-			
+			CBossUnit* unit = dynamic_cast<CBossUnit*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FireEater")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
 		if (m_iCurrentFrame == 1550)
 		{
-			//CEffectContainer::DESC Lightdesc = {};
-			//CEffectContainer* pEffect = { nullptr };
-			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-			//Lightdesc.PresetMatrix._41 = 4.3f;
-			//Lightdesc.PresetMatrix._42 = 0.3f;
-			//Lightdesc.PresetMatrix._43 = -203.f;
-			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+
+			Lightdesc.PresetMatrix._41 = 4.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -203.f;
+
+
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
+
+
 		}
 
 		if (m_iCurrentFrame == 1600)
 		{
-			//CEffectContainer::DESC Lightdesc = {};
+			CEffectContainer::DESC Lightdesc = {};
 
-			//CEffectContainer* pEffect = { nullptr };
-			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-			//Lightdesc.PresetMatrix._41 = -4.3f;
-			//Lightdesc.PresetMatrix._42 = 0.3f;
-			//Lightdesc.PresetMatrix._43 = -205.f;
+			CEffectContainer* pEffect = { nullptr };
 
-			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+			Lightdesc.PresetMatrix._41 = -4.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -205.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1650)
 		{
 			//EFFECT_MANAGER->
-			//CEffectContainer::DESC Lightdesc = {};
+			CEffectContainer::DESC Lightdesc = {};
 
-			//CEffectContainer* pEffect = { nullptr };
-			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
-			//Lightdesc.PresetMatrix._41 = 2.3f;
-			//Lightdesc.PresetMatrix._42 = 0.3f;
-			//Lightdesc.PresetMatrix._43 = -200.f;
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = 2.3f;
+			Lightdesc.PresetMatrix._42 = 0.3f;
+			Lightdesc.PresetMatrix._43 = -200.f;
 
-			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FireEater_PH01_Intro", true, true, "MU_MS_Boss_FireEater_PH02");
+			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH01_Intro", "MU_MS_Boss_FireEater_PH02");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
 
 		if (m_iCurrentFrame == 1700)
 		{
 			CEffectContainer::DESC Lightdesc = {};
 
-
-
 			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
 			Lightdesc.PresetMatrix._41 = -1.f;
 			Lightdesc.PresetMatrix._42 = 0.3f;
 			Lightdesc.PresetMatrix._43 = -210.f;
 
-			//CEffectContainer* pEffect = { nullptr };
-			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			//if (pEffect == nullptr)
-			//	MSG_BOX("이펙트 생성 실패함");
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
+			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
 		}
-			
+
 		break;
 	}
 	case Client::CUTSCENE_TYPE::FESTIVAL:
+		if (m_iCurrentFrame == 30)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Create_LeftArm_Lightning_Hand(TEXT("EC_WhatIsLightning"));
+		}
+		if (m_iCurrentFrame == 125)
+		{
+			CAreaSoundBox* pSound = dynamic_cast<CAreaSoundBox*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalEntranceSound")));
+			if(pSound)
+				pSound->SoundVolumeToZero();
+		}
+
 		if (m_iCurrentFrame == 250)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 2.5f);
 		}
+
+		if (m_iCurrentFrame == 495)
+		{
+			m_pSoundCom->SetVolume("SE_CIN_Boss_F_Guide_Appearance_No_BGM", 1.f);
+			m_pSoundCom->Play("SE_CIN_Boss_F_Guide_Appearance_No_BGM");
+		}
+
 		if (m_iCurrentFrame == 499)
 		{
 			CUI_Manager::Get_Instance()->Background_Fade(1.f, 0.f, 1.25f);
+
+			m_strSoundName = "MU_MS_Boss_FestivalLeader_Entrance";
+			m_pSoundCom->SetVolume(m_strSoundName, 0.f);
+			m_pSoundCom->Play(m_strSoundName);
+			m_fTargetVolume = 0.7f;
+			m_bSoundLerp = true;
 		}
-		if (m_iCurrentFrame == 400)
+
+		if (m_iCurrentFrame == 600)
 		{
-			m_pGameInstance->Start_BGM("SE_CIN_Boss_F_Guide_Appearance_No_BGM", true);
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 1.5f,1.5f);
+		}
+
+		if (m_iCurrentFrame == 975)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 407.f;
+			Lightdesc.PresetMatrix._42 = 15.7f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 1005)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterCutScene();
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterCutScene();
 		}
 
-		if (m_iCurrentFrame == 1190)
+		if (m_iCurrentFrame == 1100)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->BreakPanel();
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1120)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1180)
+		{
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->BreakPanel();
+		}
+
+		if (m_iCurrentFrame == 1235)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1255)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1365)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 2.f, 2.f);
+		}
+
+		if (m_iCurrentFrame == 1385)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 4.f, 4.f);
+		}
+
+		if (m_iCurrentFrame == 1400)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
+		}
+
+		if (m_iCurrentFrame == 1410)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(false, 6.f, 6.f);
+		}
+
+		if (m_iCurrentFrame == 1425)
+		{
+			CFestivalLeader* unit = dynamic_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
+			if(unit)
+				unit->EnterNextCutScene();
 		}
 
 		if (m_iCurrentFrame == 1430)
 		{
-			CFestivalLeader* unit = static_cast<CFestivalLeader*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Layer_FestivalLeader")));
-			unit->EnterNextCutScene();
+			m_bSoundLerp = true;
+			m_fTargetVolume = 0.f;
 		}
-		
-		if (m_iCurrentFrame == 1490)
+
+		if (m_iCurrentFrame == 1430)
 		{
-			m_pGameInstance->Start_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", true, true, "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+			CEffectContainer::DESC Lightdesc = {};
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 407.f;
+			Lightdesc.PresetMatrix._42 = 15.7f;
+			Lightdesc.PresetMatrix._43 = -49.f;
+
+			CEffectContainer* pEffect = { nullptr };
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
+
+			if (pEffect == nullptr)
+				MSG_BOX("이펙트 생성 실패함");
+
+			//pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Paper_Dust"), &Lightdesc));
+
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
+
+			//MSG_BOX("펑");
+			//펑
 		}
+
+
+		if (m_iCurrentFrame == 1510)
+		{
+			m_pGameInstance->Change_BGM("MU_MS_Boss_FestivalLeader_PH01_New_Intro", "MU_MS_Boss_FestivalLeader_PH01_New_Battle");
+		}
+
+		if (m_iCurrentFrame == 1700)
+		{
+			CCamera_Manager::Get_Instance()->CutSceneLight_OnOff(true, 6.f, 6.f);
+		}
+
+		break;
+	case CUTSCENE_TYPE::FINAL:
+		if (m_iCurrentFrame == 1)
+		{
+			CFinalDoor* pDoor = dynamic_cast<CFinalDoor*>(m_pGameInstance->Get_LastObject(m_pGameInstance->GetCurrentLevelIndex(), TEXT("FinalDoor")));
+			pDoor->DoorOpen();
+
+			// 먼지 이펙트 생성
+
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke1"), pEffect);
+
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(-15.f)));
+			Lightdesc.PresetMatrix._41 = -0.28f;
+			Lightdesc.PresetMatrix._42 = 0.29f;
+			Lightdesc.PresetMatrix._43 = -177.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+
+			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
+
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Effect");
+
+		}
+
+		// 먼지 이펙트 제거
+		if (m_iCurrentFrame == 200)
+		{
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke1"));
+			CEffect_Manager::Get_Instance()->Set_Dead_EffectContainer(TEXT("FinalDoorSmoke2"));
+		}
+
+
+		// 불 띄우기
+		if (m_iCurrentFrame == 260)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = 0.25f;
+			Lightdesc.PresetMatrix._42 = 2.2f;
+			Lightdesc.PresetMatrix._43 = -150.4f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		}
+
+		if (m_iCurrentFrame == 290)
+		{
+			CEffectContainer::DESC Lightdesc = {};
+			  
+			CEffectContainer* pEffect = { nullptr };
+			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			Lightdesc.PresetMatrix._41 = -0.7f;
+			Lightdesc.PresetMatrix._42 = 2.5f;
+			Lightdesc.PresetMatrix._43 = -150.f;
+
+			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		}
+
+		if (m_iCurrentFrame == 430)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(true);
+		}
+
+		if(m_iCurrentFrame == 650)
+		{
+			CUI_Manager::Get_Instance()->Background_Fade(0.f, 1.f, 1.5f);
+		}
+
+		if (m_iCurrentFrame == 720)
+		{
+			GET_PLAYER(m_pGameInstance->GetCurrentLevelIndex())->Set_bEndingWalk(false);
+		}
+
+		if (m_iCurrentFrame == 745)
+		{
+			CUI_Video::VIDEO_UI_DESC eDesc = {};
+			eDesc.eType = CUI_Video::VIDEO_TYPE::FINAL;
+			eDesc.fOffset = 0.0f;
+			eDesc.fInterval = 0.032f;
+			eDesc.fSpeedPerSec = 1.f;
+			eDesc.strVideoPath = TEXT("../Bin/Resources/Video/Ending.mp4");
+			eDesc.fX = g_iWinSizeX * 0.5f;
+			eDesc.fY = g_iWinSizeY * 0.5f;
+			eDesc.fSizeX = g_iWinSizeX;
+			eDesc.fSizeY = g_iWinSizeY;
+			eDesc.fAlpha = 1.f;
+			eDesc.isLoop = false;
+			
+
+
+			if (FAILED(m_pGameInstance->Add_GameObject(static_cast<_uint>(LEVEL::STATIC), TEXT("Prototype_GameObject_UI_Video"),
+				static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base"), &eDesc)))
+				return;
+
+			//CUI_Video* pVideo = static_cast<CUI_Video*>(m_pGameInstance->Get_LastObject(static_cast<_uint>(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_BackGround_Base")));
+			m_pSoundCom->SetVolume(1.f);
+			m_pSoundCom->Play("EndingSound_Song");
+
+		}
+
+
+		
+
 
 		break;
 	default:
@@ -1129,10 +1445,38 @@ void CCamera_CutScene::Event()
 	}
 }
 
+void CCamera_CutScene::Update_SoundLerp(_float fTimeDelta)
+{
+	_bool bStart = m_fTargetVolume == 1.f ? true : false;
+
+	m_fSoundVolume = LerpFloat(m_fSoundVolume, m_fTargetVolume, fTimeDelta);
+	m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+
+	if (bStart)
+	{
+		if (m_fSoundVolume >= 0.99f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+		}
+	}
+	else
+	{
+		if (m_fSoundVolume <= 0.01f)
+		{
+			m_fSoundVolume = m_fTargetVolume;
+			m_bSoundLerp = false;
+			m_pSoundCom->SetVolume(m_strSoundName, m_fSoundVolume);
+			m_pSoundCom->StopAll();
+		}
+	}
+}
+
 _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 {
 	_matrix currentMat = m_pTransformCom->Get_WorldMatrix();
-	_matrix targetMat = m_initOrbitalMatrix;
+	_matrix targetMat = XMLoadFloat4x4(&m_initOrbitalMatrix);
 
 	XMVECTOR curScale, curRot, curTrans;
 	XMVECTOR tgtScale, tgtRot, tgtTrans;
@@ -1165,12 +1509,14 @@ _bool CCamera_CutScene::ReadyToOrbitalWorldMatrix(_float fTimeDelta)
 
 _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat)
 {
+	// 컷씬 카메라 오비탈 위치로
 	XMVECTOR curScale, curRotQuat, curTrans;
 	XMVECTOR tgtScale, tgtRotQuat, tgtTrans;
 	XMMatrixDecompose(&curScale, &curRotQuat, &curTrans, currentMat);
 	XMMatrixDecompose(&tgtScale, &tgtRotQuat, &tgtTrans, targetMat);
 
 	_float blendSpeed = 5.f;
+
 	_float t = fTimeDelta * blendSpeed;
 	t = min(t, 1.0f); // overshoot 방지
 
@@ -1185,11 +1531,88 @@ _bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _m
 
 	m_pTransformCom->Set_WorldMatrix(blendedMat);
 
-	// 차이 계산
+	// fov 60으로
+	m_fFov = LerpFloat(m_fFov, XMConvertToRadians(60.f), t);
+
+	_bool bFinish = true;
 	XMVECTOR diff = XMVector3LengthSq(tgtTrans - lerpPos);
-	if (XMVectorGetX(diff) < 0.00001f)
+	if (XMVectorGetX(diff) >= 0.001f)
 	{
-		return true; 
+		bFinish = false;
+	}
+
+	_float diffFov = m_fFov - 60.f;
+	if (diffFov >= 0.001f)
+	{
+		bFinish = false;
+	}
+	else
+		m_fFov = XMConvertToRadians(60.f);
+
+	return bFinish;
+}
+
+_bool CCamera_CutScene::Camera_Blending(_float fTimeDelta, _matrix targetMat, _matrix currentMat, _bool bActive)
+{
+	// --- 1) 시작/목표 1회만 캡처 ---
+	static bool   s_active = false;
+	static float  s_elapsed = 0.f;
+	static float  s_duration = 0.9f; // 총 블렌딩 시간(초)
+
+	static XMVECTOR s_startScale, s_startRot, s_startTrans;
+	static XMVECTOR s_tgtScale, s_tgtRot, s_tgtTrans;
+	static float    s_startFov, s_tgtFov;   // 라디안
+
+	// bActive가 false로 들어오면 언제든 리셋할 수 있게(옵션)
+	if (!bActive) s_active = false;
+
+	if (!s_active)
+	{
+		XMMatrixDecompose(&s_startScale, &s_startRot, &s_startTrans, currentMat);
+		XMMatrixDecompose(&s_tgtScale, &s_tgtRot, &s_tgtTrans, targetMat);
+
+		s_startFov = m_fFov;                     // 현재 FOV(라디안)
+		s_tgtFov = XMConvertToRadians(60.f);   // 목표 FOV(라디안)
+
+		s_elapsed = 0.f;
+		s_active = true;
+	}
+
+	// --- 2) 누적 진행도 0..1 ---
+	s_elapsed += fTimeDelta;
+	float u = min(1.0f, s_elapsed / max(0.0001f, s_duration));
+
+	// ===== Ease-In remap =====
+	// Quadratic Ease-In:  t = u^2  (초반 더 천천히)
+	// Cubic Ease-In:      t = u^3  (더 강한 Ease-In)
+	float tPos = u * u;           // 위치: quadratic ease-in
+	float tScl = u * u;           // 스케일: quadratic ease-in
+	float tFov = u * u;           // FOV: quadratic ease-in
+	float tRot = u * u * u;       // 회전: cubic ease-in (조금 더 부드럽게)
+
+	// --- 3) 시작↔목표 보간 (current 기준 재보간 금지) ---
+	XMVECTOR lerpPos = XMVectorLerp(s_startTrans, s_tgtTrans, tPos);
+	XMVECTOR slerpRot = XMQuaternionSlerp(s_startRot, s_tgtRot, tRot);
+	XMVECTOR lerpScale = XMVectorLerp(s_startScale, s_tgtScale, tScl);
+
+	_matrix blendedMat = XMMatrixScalingFromVector(lerpScale)
+		* XMMatrixRotationQuaternion(slerpRot)
+		* XMMatrixTranslationFromVector(lerpPos);
+	m_pTransformCom->Set_WorldMatrix(blendedMat);
+
+	// --- 4) FOV 보간 ---
+	m_fFov = s_startFov + (s_tgtFov - s_startFov) * tFov; // 라디안
+
+	// --- 5) 종료 처리 ---
+	if (u >= 1.0f)
+	{
+		m_pTransformCom->Set_WorldMatrix(XMMatrixScalingFromVector(s_tgtScale)
+			* XMMatrixRotationQuaternion(s_tgtRot)
+			* XMMatrixTranslationFromVector(s_tgtTrans));
+		m_fFov = s_tgtFov;
+
+		s_active = false;
+		return true;
 	}
 	return false;
 }
@@ -1222,5 +1645,10 @@ CGameObject* CCamera_CutScene::Clone(void* pArg)
 void CCamera_CutScene::Free()
 {
 	__super::Free();
+	if (m_pSoundCom)
+	{
+		m_pSoundCom->StopAll();
+		Safe_Release(m_pSoundCom);
+	}
 
 }

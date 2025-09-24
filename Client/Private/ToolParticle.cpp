@@ -352,10 +352,15 @@ json CToolParticle::Serialize()
 	j["ShrinkThreshold"] = m_tDesc.fShrinkThreshold;
 
 	j["IsCircleRange"] = m_tDesc.isCircleRange;
+	j["CircleNormal"] = { m_tDesc.vCircleNormal.x, m_tDesc.vCircleNormal.y, m_tDesc.vCircleNormal.z };
 
 	j["IsGravity"] = m_tDesc.bGravity;
 	j["Gravity"] = m_tDesc.fGravity;
 	j["isTileLoop"] = m_tDesc.isTileLoop;
+
+
+	j["LoopInSet"] = m_tDesc.bLoopInSet;
+	j["LoopInSet_Delay"] = m_tDesc.fLoopInSet_LoopDelay;
 
 	return j;
 }
@@ -416,6 +421,8 @@ void CToolParticle::Deserialize(const json& j)
 
 	if (j.contains("IsCircleRange"))
 		m_tDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
+	if (j.contains("CircleNormal") && j["CircleNormal"].is_array() && j["CircleNormal"].size() == 3)
+		m_tDesc.vCircleNormal = { j["CircleNormal"][0].get<_float>(), j["CircleNormal"][1].get<_float>(), j["CircleNormal"][2].get<_float>() };
 
 	if (j.contains("IsGravity"))
 		m_tDesc.bGravity = j["IsGravity"].get<_bool>();
@@ -429,4 +436,11 @@ void CToolParticle::Deserialize(const json& j)
 		m_tDesc.vTileCnt.x = (_float)(j["TileX"].get<_int>());
 	if (j.contains("TileY"))
 		m_tDesc.vTileCnt.y = (_float)(j["TileY"].get<_int>());
+
+
+	if (j.contains("LoopInSet"))
+		m_tDesc.bLoopInSet = j["LoopInSet"].get<_bool>();
+	if (j.contains("LoopInSet_Delay"))
+		m_tDesc.fLoopInSet_LoopDelay = j["LoopInSet_Delay"].get<_float>();
+
 }

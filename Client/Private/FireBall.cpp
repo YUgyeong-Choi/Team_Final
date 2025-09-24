@@ -66,39 +66,20 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 		if (auto pOil = dynamic_cast<COil*>(pOther))
 		{
 			pOil->Explode_Oil();
-		//	Set_bDead();
-		//	m_CollisionPriority[Oil] = pOther;
-#ifdef _DEBUG
-				cout << "FireBall On_CollisionEnter COil" << endl;
-#endif
-
 		}
 	}
 
 	if (eColliderType == COLLIDERTYPE::PLAYER)
 	{
-		//if (auto pPlayer = dynamic_cast<CPlayer*>(pOther))
-		//{
-		//	pPlayer->SetHitMotion(HITMOTION::KNOCKBACK);
-		//	pPlayer->SetfReceiveDamage(7.f);
-		//	pPlayer->SetElementTypeWeight(EELEMENT::FIRE, 0.5f);
-		////	Set_bDead();
-		//}
 		m_CollisionPriority[Player] = pOther;
-#ifdef _DEBUG
-			cout << "FireBall On_CollisionEnter Player" << endl;
-#endif
 	}
 	else if (eColliderType == COLLIDERTYPE::ENVIRONMENT_CONVEX || eColliderType == COLLIDERTYPE::ENVIRONMENT_TRI
 		|| eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT)
 	{
 		m_CollisionPriority[Environment] = pOther;
-	//	Set_bDead();
-#ifdef _DEBUG
-		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
-#endif
 	}
-	
+	if(m_pPhysXActorCom)
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, true);
 	//if(m_pEffect)
 	//	m_pEffect->End_Effect();
 }
@@ -208,5 +189,4 @@ CGameObject* CFireBall::Clone(void* pArg)
 void CFireBall::Free()
 {
 	__super::Free();
-	Safe_Release(m_pSoundCom);
 }

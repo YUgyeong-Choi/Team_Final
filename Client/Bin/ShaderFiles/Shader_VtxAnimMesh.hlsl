@@ -18,9 +18,11 @@ matrix g_BoneMatrices2[256];
 //// 지금 메시의 뼈 오프셋들
 //StructuredBuffer<matrix> g_Offsets          : register(t2);
 Texture2D g_DiffuseTexture;
+Texture2D g_DiffuseTextureWet;
 Texture2D g_NormalTexture;
 Texture2D g_ARMTexture;
 Texture2D g_Emissive;
+Texture2D g_SecondEmissive;
 Texture2D g_NoiseMap;
 
 /* [ 조절용 파라미터 ] */
@@ -33,7 +35,9 @@ float g_fMetallicIntensity = 1;
 float g_fReflectionIntensity = 1;
 float g_fSpecularIntensity = 1;
 float g_fEmissiveIntensity = 1;
+float g_fSecondEmissiveIntensity = 1;
 float g_fLimLightIntensity = 0;
+float g_fPlayerWetIntensity = 0;
 vector g_vDiffuseTint = { 1.f, 1.f, 1.f, 1.f };
 
 /* [ BurnTextures ] */
@@ -395,8 +399,11 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     
     // 디퓨즈 텍스처
     vector vMtrlDiffuse = g_DiffuseTexture.Sample(DefaultSampler, In.vTexcoord);
+    vector vMtrlDiffuseWet = g_DiffuseTextureWet.Sample(DefaultSampler, In.vTexcoord);
     if (vMtrlDiffuse.a < 0.3f)
         discard;
+    
+    vector vMtrlDiffuseFinal = lerp(vMtrlDiffuse, vMtrlDiffuseWet, g_fPlayerWetIntensity);
     
     // 노말 텍스처
     vector vNormalDesc = g_NormalTexture.Sample(DefaultSampler, In.vTexcoord);
@@ -404,21 +411,32 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     float3 vNormalSample = vNormalDesc.xyz * 2.f - 1.f;
-    float3 vNormalTS = normalize(lerp(float3(0, 0, 1), vNormalSample, g_fNormalIntensity));
+    //float3 vNormalTS = normalize(lerp(float3(0, 0, 1), vNormalSample, g_fNormalIntensity));
+    
+    const float fWet = saturate(g_fPlayerWetIntensity);
+    const float fNrmIntensityWet = lerp(g_fNormalIntensity, g_fNormalIntensity * 0.5f, fWet);
+    float3 vNormalTS = normalize(lerp(float3(0, 0, 1), vNormalSample, fNrmIntensityWet));
+    
     float3x3 TBN = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     float3 vWorldNormal = mul(vNormalTS, TBN);
     
     // ARM 텍스처
+    float fRoughWetTarget = 0.7f;
+    float FinalRoughnessIntensity = lerp(g_fRoughnessIntensity, fRoughWetTarget, g_fPlayerWetIntensity);
+    
     float3 vARM = g_ARMTexture.Sample(DefaultSampler, In.vTexcoord).rgb;
     float AO = pow(abs(vARM.r), g_fAOPower) * g_fAOIntensity;
-    float Roughness = vARM.g * g_fRoughnessIntensity;
+    float Roughness = vARM.g * FinalRoughnessIntensity;
     float Metallic = vARM.b * g_fMetallicIntensity;
     
     // 이미시브 텍스처
     vector vEmissive = g_Emissive.Sample(DefaultSampler, In.vTexcoord);
-   
+    vEmissive *= g_fEmissiveIntensity;
+    vector vSecondEmissive = g_SecondEmissive.Sample(DefaultSampler, In.vTexcoord);
+    vSecondEmissive *= g_fSecondEmissiveIntensity;
+    
     float fIsUnit = 0.f;
-    Out.vDiffuse = float4(vMtrlDiffuse.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuse.a);
+    Out.vDiffuse = float4(vMtrlDiffuseFinal.rgb * g_fDiffuseIntensity * g_vDiffuseTint.rgb, vMtrlDiffuseFinal.a);
     if (g_bDissolve)
         Out.vDiffuse.rgb += tD.vAddColor;
     Out.vNormal = float4(normalize(vWorldNormal) * 0.5f + 0.5f, 1.f);
@@ -427,7 +445,7 @@ PS_OUT_PBR PS_MAIN(PS_IN_PBR In)
     Out.vAO = float4(AO, AO, AO, 1.f);
     Out.vRoughness = float4(Roughness, Roughness, Roughness, 1.0f);
     Out.vMetallic = float4(Metallic, Metallic, Metallic, 1.0f);
-    Out.vEmissive = float4(vEmissive.rgb * g_fEmissiveIntensity, 0.f);
+    Out.vEmissive = float4((vEmissive.rgb + vSecondEmissive.rgb), 0.f);
     if (g_bDissolve)
         Out.vEmissive.rgb += tD.vAddColor;
     

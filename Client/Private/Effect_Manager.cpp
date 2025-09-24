@@ -68,6 +68,7 @@ HRESULT CEffect_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 HRESULT CEffect_Manager::Update(_float fTimeDelta)
 {
     //m_fAccTime += fTimeDelta;
+
     return S_OK;
 }
 
@@ -190,7 +191,7 @@ CGameObject* CEffect_Manager::Make_EffectContainer(_uint iLevelIndex, const _wst
     ECDesc.iLevelID = iLevelIndex;
     ECDesc.fRotationPerSec = XMConvertToRadians(90.f); // 수정하고싶으면 툴에서 수정해서 파싱하던가 하쇼
     ECDesc.fSpeedPerSec = 10.f;
-
+    ECDesc.strECName = strECTag;
     CGameObject* pInstance = { nullptr };
     if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_EffectContainer"),
         iLevelIndex, TEXT("Layer_Effect"), &pInstance , &ECDesc)))
@@ -284,10 +285,10 @@ HRESULT CEffect_Manager::Ready_Effect(const _wstring strEffectPath)
         MSG_BOX("Effect Filepath Open Failed");
         return E_FAIL;
     }
-
     ifs >> jItem;
     ifs.close();
 
+	m_bContainer = false;
     EFFECT_TYPE eEffectType = {};
     if (jItem.contains("EffectType"))
         eEffectType = static_cast<EFFECT_TYPE>(jItem["EffectType"].get<_int>());
@@ -330,17 +331,19 @@ HRESULT CEffect_Manager::Ready_Effect(const _wstring strEffectPath)
     return S_OK;
 }
 
-
 HRESULT CEffect_Manager::Ready_EffectContainer(const _wstring strECPath)
 {
     //CEffectContainer* pInstance = CEffectContainer::Create();
     json j;
     ifstream ifs(strECPath);
+    m_bContainer = true;
     if (!ifs.is_open())
     {
         MSG_BOX("EC Filepath Open Failed");
         return E_FAIL;
     }
+     
+    m_strECFilename = path(strECPath).stem().wstring();
 
     ifs >> j;
     ifs.close();
@@ -473,9 +476,12 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 {
     CVIBuffer_Point_Instance::DESC VIBufferDesc = {};
     _wstring strPrototypeTag = TEXT("Prototype_Component_VIBuffer_");
+    if (m_bContainer)
+        strPrototypeTag += m_strECFilename + L"_";
+    else
+        int a = 0;
     /* 이 버퍼 어디 저장해둬야 할 것 같다 */
     //왜저장하려했더라;
-
 
     if (j.contains("Name"))
     {
@@ -504,7 +510,7 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
         VIBufferDesc.vSpeed = { j["Speed"][0].get<_float>(), j["Speed"][1].get<_float>() };
 
     if (j.contains("PType"))
-        VIBufferDesc.ePType = static_cast<PARTICLETYPE>(j["PType"].get<int>());
+        VIBufferDesc.ePType = static_cast<PARTICLETYPE>(j["PType"].get<_int>());
 
     if (j.contains("Loop"))
         VIBufferDesc.isLoop = j["Loop"].get<_bool>();
@@ -567,6 +573,15 @@ HRESULT CEffect_Manager::Ready_Prototype_Particle_VIBuffers(const json& j)
 
     if (j.contains("IsCircleRange"))
         VIBufferDesc.isCircleRange = j["IsCircleRange"].get<_bool>();
+
+    if (j.contains("CircleNormal") && j["CircleNormal"].is_array() && j["CircleNormal"].size() == 3)
+        VIBufferDesc.vCircleNormal = { j["CircleNormal"][0].get<_float>(), j["CircleNormal"][1].get<_float>(), j["CircleNormal"][2].get<_float>() };
+
+    if (j.contains("LoopInSet"))
+        VIBufferDesc.bLoopInSet = j["LoopInSet"].get<_bool>();
+    if (j.contains("LoopInSet_Delay"))
+        VIBufferDesc.fLoopInSet_LoopDelay = j["LoopInSet_Delay"].get<_float>();
+
 
     VIBufferDesc.isTool = false;
 

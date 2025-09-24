@@ -137,7 +137,7 @@ protected:
 	//
 	_float			m_fHeight = { 1.f };
 
-	_vector			m_vPushDir = {};
+	_float4			m_vPushDir = {};
 	_int			m_iCollisionCount = {};
 
 	_bool			m_bOffCollider = {};
@@ -150,16 +150,18 @@ protected:
 	_bool			m_CanFatal = { true };
 
 
-	_vector m_vKnockBackDir = {};
+	_float4 m_vKnockBackDir = {};
 	_float m_fKnockBackSpeed = {};
 
 	_bool m_isPatrol = {};
 	_float m_fPatrolTime = {};
+
+	_bool m_bSoundCheck = {};
 	
 
 private: /* [ 루트모션 관련 변수 ] */
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
+	_float4  m_PrevWorldRotation = {};
 	_bool    m_bIsFirstFrame = true;
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;

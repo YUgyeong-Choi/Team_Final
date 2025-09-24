@@ -44,6 +44,8 @@
 #include "SpringBoneSys.h"
 #include <ShortCutDoor.h>
 
+#include "Static_Decal.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUnit(pDevice, pContext)
 {
@@ -148,6 +150,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Ready_Stat()))
 		return E_FAIL;
 
+	if (FAILED(Add_Component(m_pGameInstance->GetCurrentLevelIndex(), TEXT("Prototype_Component_Texture_PlayerWet"),
+		TEXT("PlayerWet_Com"), reinterpret_cast<CComponent**>(&m_pWetTexture))))
+		return E_FAIL;
+
 	m_iLevel = 5;
 
 	Add_Ergo(10000.f);
@@ -222,6 +228,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		m_pControllerCom->Set_Transform(posTrans);
 	}
 
+	if (KEY_DOWN(DIK_9))
+	{
+		_vector pos = { -0.1171f, 0.296629f ,-172.0543f , 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
+
+	//if(KEY_DOWN(DIK_M))
+	//	m_fHp = 10.f;
+
+	/* 채영 */
 	if (KEY_PRESSING(DIK_LALT))
 	{
 		if (KEY_DOWN(DIK_R))
@@ -232,14 +248,9 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 		{
 			m_fTimeScale = 1.f;
 		}
-		if (KEY_DOWN(DIK_E))
+		if (KEY_PRESSING(DIK_E))
 		{
-			//CEffectContainer::DESC Lightdesc = {};
-			////Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-			//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc))
-			//	MSG_BOX("이펙트 생성 실패함");
+
 		}
 		
 		if (KEY_DOWN(DIK_Z))
@@ -251,6 +262,16 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 			EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), false);
 		}
 	}
+	if (m_bLostErgoRimlight)
+	{
+		m_fLostErgoRimlightAccTime += fTimeDelta;
+		if (m_fLostErgoRimlightAccTime > 2.f)
+		{
+			m_fLostErgoRimlightAccTime = 0.f;
+			LimActive(false, 1.5f);
+		}
+	}
+
 	/* [ 플레이어가 속한 구역탐색 ] */
 	m_pGameInstance->SetPlayerPosition(m_pTransformCom->Get_State(STATE::POSITION));
 	m_pGameInstance->FindAreaContainingPoint();
@@ -265,6 +286,11 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	PriorityUpdate_Slot(fTimeDelta);
 
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDead)
+	{
+		m_pGameInstance->Remove_Callback(TEXT("Player_Status"), this);
+	}
 }
 
 void CPlayer::Update(_float fTimeDelta)
@@ -285,6 +311,8 @@ void CPlayer::Update(_float fTimeDelta)
 
 	/* [ 문열기 관련 ] */
 	SlidDoorMove(fTimeDelta);
+
+	StartEnding(fTimeDelta);
 
 	/* [ 상태 관련 ] */
 	UpdateCurrentState(fTimeDelta);
@@ -311,6 +339,12 @@ void CPlayer::Update(_float fTimeDelta)
 	else
 		OffLim(fTimeDelta);
 
+	/* [ 젖은 셰이더 ] */
+	if (m_bWet)
+		OnWet(fTimeDelta);
+	else
+		OffWet(fTimeDelta);
+
 	/* [ 가드시간(0.2f) ] */
 	IsPerfectGard(fTimeDelta);
 
@@ -330,6 +364,14 @@ void CPlayer::Update(_float fTimeDelta)
 		Check_Dead_FestivalReader();
 	}
 
+	if (KEY_DOWN(DIK_L))
+	{
+		Spawn_Decal(
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+			TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+			XMVectorSet(5.f, 0.5f, 5.f, 0));
+	}
+
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -337,6 +379,8 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_SHADOW, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_PBRMESH, this);
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_LIMLIGHT, this);
+
+	WetSystem();
 
 	/* [ 특수행동 ] */
 	ItemWeapOnOff(fTimeDelta);
@@ -346,7 +390,6 @@ void CPlayer::Late_Update(_float fTimeDelta)
 	if (KEY_DOWN(DIK_U))
 	{
 		Reset();
-		SwitchDissolve(false, 1.f, _float3{ 0.f, 0.749f, 1.f }, {});
 	}
 
 	/* [ 아이템 ] */
@@ -481,6 +524,46 @@ HRESULT CPlayer::Render_LimLight()
 	return S_OK;
 }
 
+_bool CPlayer::IsNearOnXZ(const _vector vWorldPos, const _float3& vCenter, const _float fRadius)
+{
+	const _float fDx = XMVectorGetX(vWorldPos) - vCenter.x;
+	const _float fDz = XMVectorGetZ(vWorldPos) - vCenter.z;
+
+	const _float fDistSq = fDx * fDx + fDz * fDz;
+	const _float fRadiusSq = fRadius * fRadius;
+	return fDistSq <= fRadiusSq;
+}
+
+void CPlayer::WetSystem()
+{
+	AREAMGR m_eCurrentArea = m_pGameInstance->GetCurrentAreaMgr();
+	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+
+	if (m_eCurrentArea == AREAMGR::FESTIVAL || m_eCurrentArea == AREAMGR::OUTER)
+	{
+		if(m_pGameInstance->GetCurAreaIds() != 22)
+			SwitchWet(true, 0.3f);
+	}
+	else if (m_eCurrentArea == AREAMGR::STATION)
+	{
+		static const _float3 vRainPosA = { 62.f,  10.f, -7.2f };
+		static const _float3 vRainPosB = { 86.8f, 10.f, -7.3f };
+		static const _float  fRainRadius = 5.f;
+
+		if (IsNearOnXZ(vPos, vRainPosA, fRainRadius) || IsNearOnXZ(vPos, vRainPosB, fRainRadius))
+		{
+			SwitchWet(true, 0.3f);
+		}
+		else
+		{
+			SwitchWet(false, 0.3f);
+		}
+	}
+	else
+	{
+		SwitchWet(false, 0.3f);
+	}
+}
 
 void CPlayer::Reset()
 {	
@@ -502,6 +585,8 @@ void CPlayer::Reset()
 
 	Callback_DownBelt();
 	Callback_UpBelt();
+
+	Find_Slot(TEXT("Prototype_GameObject_Portion"));
 
 	SetbIsGroggyAttack(false);
 	SetIsFatalBoss(false);
@@ -538,7 +623,7 @@ CPlayer::EHitDir CPlayer::ComputeHitDir()
 	_vector vPlayerRight = XMVector3Normalize(m_pTransformCom->Get_State(STATE::RIGHT));
 	_vector vPlayerLook = XMVector3Normalize(m_pTransformCom->Get_State(STATE::LOOK));
 
-	_vector vIncoming = XMVector3Normalize(ProjectToXZ(m_vHitNormal));
+	_vector vIncoming = XMVector3Normalize(ProjectToXZ(XMLoadFloat4(&m_vHitNormal)));
 	_vector vLookFlat = XMVector3Normalize(ProjectToXZ(vPlayerLook));
 	_vector vRightFlat = XMVector3Normalize(ProjectToXZ(vPlayerRight));
 
@@ -1090,6 +1175,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1120,6 +1216,17 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1144,16 +1251,28 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		{
 			if (!m_bMoveReset)
 			{
-				m_vMoveDir = ComputeLatchedMoveDir(m_bSwitchFront, m_bSwitchBack, m_bSwitchLeft, m_bSwitchRight);
+				_vector vPos = ComputeLatchedMoveDir(m_bSwitchFront, m_bSwitchBack, m_bSwitchLeft, m_bSwitchRight);
+				XMStoreFloat4(&m_vMoveDir, vPos);
 				m_bMoveReset = true;
 			}
 
-			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, m_vMoveDir, m_fDistance, m_pControllerCom);
+			m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, XMLoadFloat4(&m_vMoveDir), m_fDistance, m_pControllerCom);
 			SyncTransformWithController();
 		}
 
 		if (!m_bSetOnce && m_fStamina >= 0.f)
 		{
+			// 구르기는 화속성 공격을 끌 수 있다.
+			if (m_vecElements[0].fElementWeight >= 0.f)
+			{
+				_float fDamege = m_vecElements[0].fElementWeight - 0.3f;
+				m_vecElements[0].fElementWeight = fDamege;
+				if (m_vecElements[0].fElementWeight < 0.f)
+					m_vecElements[0].fElementWeight = 0.f;
+
+				m_pGameInstance->Notify(L"Player_Status", L"Fire", &m_vecElements[0].fElementWeight);
+			}
+
 			m_fStamina -= 30.f;
 			Callback_Stamina();
 			m_bSetOnce = true;
@@ -1247,7 +1366,22 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.35f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
+
 
 		break;
 	}
@@ -1260,7 +1394,20 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			m_bSetOnce = true;
 		}
 
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.3f;
+		_float  m_fDistance = 1.f;
+
+		if (!m_bMove)
+		{
+			if (0.2f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		break;
 	}
@@ -1268,9 +1415,10 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		if (!m_bSetOnce)
 		{
+			m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
 			m_pLegionArm->Use_LegionEnergy(20.f);
-			//m_fLegionArmEnergy -= 20.f;
 			m_bSetOnce = true;
+			Create_LeftArm_Lightning(TEXT("EC_Player_LeftarmBIGLIGHT"));
 
 			//CEffectContainer::DESC Lightdesc = {};
 			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
@@ -1286,7 +1434,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLA:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.4f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.35f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1307,22 +1469,25 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 			}
 		}
 
-		if (!m_bSetSound)
-		{
-			//m_pSoundCom->Play_Random("SE_PC_SK_WS_Glaive_P_B_S_", 3);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_ClockworkBlunt_2H_FableArts_Whoosh_", 4);
-			//m_pSoundCom->Play_Random("SE_PC_SK_FX_SwordLance_2H_FableArts_Whoosh_End_", 3);
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Motor_0");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Frenzy_Rise");
-			//m_pSoundCom->Play("SE_PC_SK_FX_Saber_1H_B_FableArts_Start_01");
-			m_bSetSound = true;
-		}
-
 		break; 
 	}
 	case eAnimCategory::MAINSKILLB:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.25f;
+		_float  m_fDistance = 2.f;
+
+		if (!m_bMove)
+		{
+			if (0.4f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1346,7 +1511,21 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	}
 	case eAnimCategory::MAINSKILLC:
 	{
-		RootMotionActive(fTimeDelta);
+		//RootMotionActive(fTimeDelta);
+
+		m_fMoveTime += fTimeDelta;
+		_float  m_fTime = 0.2f;
+		_float  m_fDistance = 2.5f;
+
+		if (!m_bMove)
+		{
+			if (0.5f < m_fMoveTime)
+			{
+				_vector vLook = m_pTransformCom->Get_State(STATE::LOOK);
+				m_bMove = m_pTransformCom->Move_Special(fTimeDelta, m_fTime, vLook, m_fDistance, m_pControllerCom);
+				SyncTransformWithController();
+			}
+		}
 
 		if (!m_bSetTwo)
 		{
@@ -1423,8 +1602,44 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 		RootMotionActive(fTimeDelta);
 		break;
 	}
-	case eAnimCategory::GRINDER:
+	case eAnimCategory::GRINDERSTART:
 	{
+
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
+			m_bSetOnce = true;
+		}
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDERLOOP:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+			m_bSetOnce = true;
+		}
+
+		if (!m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0"))
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
+
+		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
+		break;
+	}
+	case eAnimCategory::GRINDEREND:
+	{
+		if (!m_bSetOnce)
+		{
+			m_pSoundCom->StopAll();
+
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
+			m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
+
+			m_bSetOnce = true;
+		}
+
 		m_pTransformCom->Set_SpeedPerSec(g_fWalkSpeed);
 		break;
 	}
@@ -1642,6 +1857,11 @@ void CPlayer::TriggerStateEffects(_float fTimeDelta)
 	{
 		break;
 	}
+	case eAnimCategory::INTERACTIONFOG:
+	{
+		RootMotionActive(fTimeDelta);
+		break;
+	}
 
 
 	default:
@@ -1682,7 +1902,13 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 	if (stateName.find("EquipWeapon") == 0) return eAnimCategory::EQUIP;
 	if (stateName.find("PutWeapon") == 0) return eAnimCategory::EQUIP;
 
-	if (stateName == "Grinder") return eAnimCategory::GRINDER;
+	if (stateName.find("Grinder_Start") == 0)
+		return eAnimCategory::GRINDERSTART;
+	if (stateName.find("Grinder_Loop") == 0)
+		return eAnimCategory::GRINDERLOOP;
+	if (stateName.find("Grinder_End") == 0)
+		return eAnimCategory::GRINDEREND;
+
 	if (stateName.find("OnLamp_Walk") == 0 || stateName.find("FailItem_Walk") == 0
 		||stateName.find("Item_Get_Walk") == 0)
 		return eAnimCategory::ITEM_WALK;
@@ -1724,10 +1950,10 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::FESTIVALDOOR;
 	if (stateName.find("SlidingDoor") == 0)
 		return eAnimCategory::FIRSTDOOR;
-	if (stateName.find("Arm_NormalAttack") == 0)
-		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_NormalAttack2") == 0)
 		return eAnimCategory::ARM_ATTACKB;
+	if (stateName.find("Arm_NormalAttack") == 0)
+		return eAnimCategory::ARM_ATTACKA;
 	if (stateName.find("Arm_ChargeAttack") == 0)
 		return eAnimCategory::ARM_ATTACKCHARGE;
 	if (stateName.find("Fail_Arm") == 0)
@@ -1736,6 +1962,9 @@ CPlayer::eAnimCategory CPlayer::GetAnimCategoryFromName(const string& stateName)
 		return eAnimCategory::PULSE;
 	if (stateName.find("FatalAttack") == 0)
 		return eAnimCategory::FATAL;
+
+	if (stateName.find("Interaction_Fog") == 0)
+		return eAnimCategory::INTERACTIONFOG;
 	
 	return eAnimCategory::NONE;
 }
@@ -1991,39 +2220,7 @@ void CPlayer::Register_SoundEvents()
 				m_pSoundCom->Play("SE_PC_MT_BodyFall_Cloth_M_01");
 		});
 
-	m_pAnimator->RegisterEventListener("GrinderStartSound", [this]()
-		{
-			if (m_pSoundCom)
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Start_0");
-		});
-	m_pAnimator->RegisterEventListener("GrinderLoopSound", [this]()
-		{
-			if (m_pSoundCom)
-			{
-				_bool isPlaying = m_pSoundCom->IsPlaying("SE_PC_MT_Item_Grinder_Loop_0");
-				if (m_bUseGrinder == false)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", 0);
-					m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-					return;
-				}
-				if (!isPlaying)
-				{
-					m_pSoundCom->Set_Loop("SE_PC_MT_Item_Grinder_Loop_0", -1);
-					m_pSoundCom->Play("SE_PC_MT_Item_Grinder_Loop_0");
-				}
-			}
-		});
-	m_pAnimator->RegisterEventListener("GrinderEndSound", [this]()
-		{
-			if (m_pSoundCom)
-			{
-				m_pSoundCom->StopAllSpecific("SE_PC_MT_Item_Grinder_Loop_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_End_0");
-				m_pSoundCom->Play("SE_PC_MT_Item_Grinder_TwoHand_01");
-			}
-		});
-
+	
 	m_pAnimator->RegisterEventListener("FailItemSound", [this]()
 		{
 			if (m_pSoundCom)
@@ -2085,8 +2282,31 @@ void CPlayer::Register_SoundEvents()
 		{
 			if (m_pSoundCom)
 			{
-				m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
+				//m_pSoundCom->SetVolume("SE_PC_SK_Hit_Metal_Blood_Slice_01", 0.5f);
 				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Spear_v2");
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FestivalEnterSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->SetVolume("SE_PC_MT_Prop_DoubleDoor_Boss", 0.7f);
+				m_pSoundCom->Play("SE_PC_MT_Prop_DoubleDoor_Boss");
+			}
+		});
+
+	//SE_PC_MT_Body_Motor_06
+
+	m_pAnimator->RegisterEventListener("FatalSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_PC_SK_Hit_RV_S_01");
+				m_pSoundCom->Play("SE_PC_SK_Hit_Metal_Blood_Slice_01");
+				m_pSoundCom->Play("SE_PC_SK_WS_Sword_2H_Cast");
 			}
 		});
 }
@@ -2110,7 +2330,7 @@ _bool CPlayer::MoveToDoor(_float fTimeDelta, _vector vTargetPos)
 _bool CPlayer::RotateToDoor(_float fTimeDelta, _vector vRotation)
 {
 	m_Input.bMove = false;
-	m_bWalk = false;
+	m_bWalk = true;
 	_bool bFinishRotate = m_pTransformCom->RotateToDirectionSmoothly(vRotation, fTimeDelta);
 	return bFinishRotate;
 }
@@ -2150,7 +2370,7 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 
 		if (fDeltaMag < 1e-6f)
 		{
-			m_PrevWorldDelta = XMVectorZero();
+			m_PrevWorldDelta = {};
 			return;
 		}
 
@@ -2160,10 +2380,10 @@ void CPlayer::RootMotionActive(_float fTimeDelta)
 		if (fDeltaMag > fSmoothThreshold)
 		{
 			_float alpha = clamp(fTimeDelta * fSmoothSpeed, 0.f, 1.f);
-			finalDelta = XMVectorLerp(m_PrevWorldDelta, finalDelta, alpha);
+			finalDelta = XMVectorLerp(XMLoadFloat4(&m_PrevWorldDelta), finalDelta, alpha);
 		}
 
-		m_PrevWorldDelta = finalDelta;
+		XMStoreFloat4(&m_PrevWorldDelta , finalDelta);
 
 		PxVec3 pos{
 			XMVectorGetX(finalDelta),
@@ -2237,7 +2457,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal , vHitNormal);
 		}
 
 
@@ -2279,7 +2500,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 			_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 			m_pHitedTarget = pUnit;
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 
 		//가드 중이라면?
@@ -2348,7 +2570,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal,vHitNormal);
 		}
 		else
 		{
@@ -2361,7 +2584,8 @@ void CPlayer::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType,
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal , vHitNormal);
 		}
 
 		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
@@ -2472,7 +2696,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 		_vector vOtherPos = pUnit->Get_TransfomCom()->Get_State(STATE::POSITION);
 
 		m_pHitedTarget = pUnit;
-		m_vHitNormal = vOtherPos - vPlayerPos;
+		_vector vHitNormal = vOtherPos - vPlayerPos;
+		XMStoreFloat4(&m_vHitNormal , vHitNormal);
 
 		//가드 중이라면?
 		if (m_bIsGuarding)
@@ -2547,7 +2772,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pBoss->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 		else
 		{
@@ -2560,7 +2786,8 @@ void CPlayer::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 
 			_vector vPlayerPos = m_pTransformCom->Get_State(STATE::POSITION);
 			_vector vOtherPos = pRANGED->Get_TransfomCom()->Get_State(STATE::POSITION);
-			m_vHitNormal = vOtherPos - vPlayerPos;
+			_vector vHitNormal = vOtherPos - vPlayerPos;
+			XMStoreFloat4(&m_vHitNormal, vHitNormal);
 		}
 
 		cout << " 현재 보스 공격 타입 :" << static_cast<_int>(m_eHitedAttackType) << endl;
@@ -2738,6 +2965,7 @@ void CPlayer::IsTeleport(_float fTimeDelta)
 			CCamera_Manager::Get_Instance()->SetbMoveable(true);
 			CUI_Manager::Get_Instance()->On_Panel();
 			
+			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertLocation_02");
 		}
 
 
@@ -2754,6 +2982,51 @@ void CPlayer::Set_Ergo(_float fErgo)
 CWeapon* CPlayer::Get_Equip_Legion()
 {
 	return m_pLegionArm;
+}
+
+void CPlayer::Set_bEndingWalk(_bool bWalk)
+{
+	m_bEndingWalk = bWalk;
+	if (bWalk)
+	{
+		_vector pos = { -0.409f, 0.296629f, -175.085f, 1.f };
+		m_pControllerCom->Set_Transform(VectorToPxVec3(pos));
+	}
+}
+
+void CPlayer::StartEnding(_float fTimeDelta)
+{
+	if (m_bEnding)
+	{
+		m_fEndingTime += fTimeDelta;
+
+		if (m_fEndingTime > 8.f)
+		{
+			if (!m_bEndSetting)
+			{
+				m_pCamera_Manager->SetbMoveable(false);
+
+				m_bEndSetting = true;
+
+				m_pCamera_Manager->GetCutScene()->Set_CutSceneData(CUTSCENE_TYPE::FINAL);
+				m_pCamera_Manager->Play_CutScene(CUTSCENE_TYPE::FINAL);
+
+				m_pAnimator->ResetParameters();
+				WeaponReset();
+			}
+		}
+	}
+
+	if (m_bEndingWalk)
+	{
+		m_Input.bMove = true;
+		m_bWalk = true;
+
+		m_pAnimator->SetBool("Sprint", false);
+		m_pAnimator->SetBool("Run", false);
+		_vector pos = { -0.229305f, 0.296629f, -165.758087f , 1.f };
+		m_pTransformCom->Go_FrontByPosition(fTimeDelta, pos, m_pControllerCom);
+	}
 }
 
 void CPlayer::Apply_Stat()
@@ -2820,6 +3093,11 @@ void CPlayer::Apply_Stat()
 	Callback_HP();
 	Callback_Stamina();
 
+	Compute_MaxErgo(m_iLevel);
+
+
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"CurrentErgo"), &m_fErgo);
+	m_pGameInstance->Notify(TEXT("Player_Status"), _wstring(L"LevelUp"), &m_fMaxErgo);
 }
 
 void CPlayer::Add_Ergo(_float fErgo)
@@ -2864,7 +3142,7 @@ void CPlayer::Recovery_Ergo()
 
 void CPlayer::Check_RainArea()
 {
-	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr())
+	if (AREAMGR::OUTER == m_pGameInstance->GetCurrentAreaMgr() || AREAMGR::FESTIVAL == m_pGameInstance->GetCurrentAreaMgr())
 	{
 		EFFECT_MANAGER->Set_Active_Effect(TEXT("PlayerRainVolume"), true);
 	}
@@ -2960,7 +3238,10 @@ void CPlayer::Detect_FootstepSurface(eAnimCategory eAnim)
 	if (bRayHit)
 	{
 		const PxRaycastHit& block = hit.block;
-		CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData);
+		//CStaticMesh* pHitMesh = reinterpret_cast<CStaticMesh*>(block.actor->userData.);
+		CPhysXActor* pHitActor = static_cast<CPhysXActor*>(hit.block.actor->userData);
+		CStaticMesh* pHitMesh = static_cast<CStaticMesh*> (pHitActor->Get_Owner());
+
 		if (pHitMesh)
 		{
 			//wcout << pHitMesh->Get_MeshName() << endl;
@@ -3109,6 +3390,40 @@ void CPlayer::Check_Dead_FestivalReader()
 		
 	}
 }
+
+HRESULT CPlayer::Spawn_Decal(const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
+{
+#pragma region 영웅 데칼 생성코드
+	CStatic_Decal::DECAL_DESC DecalDesc = {};
+	DecalDesc.bNormalOnly = true;
+	DecalDesc.iLevelID = ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION);
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
+	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
+	DecalDesc.bHasLifeTime = true;
+	DecalDesc.fLifeTime = 50.f;
+
+	// [기존 플레이어 월드 행렬]
+	_matrix WorldMatrix = m_pTransformCom->Get_WorldMatrix();
+
+	// [스케일 행렬 생성] (XMVector를 float3로 변환해서 사용)
+	_matrix ScaleMatrix = XMMatrixScaling(
+		XMVectorGetX(vDecalScale),
+		XMVectorGetY(vDecalScale),
+		XMVectorGetZ(vDecalScale));
+
+	// [스케일 * 기존 월드 행렬]
+	XMStoreFloat4x4(&DecalDesc.WorldMatrix, ScaleMatrix * WorldMatrix);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Prototype_GameObject_Static_Decal"),
+		ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("Layer_Static_Decal"), &DecalDesc)))
+	{
+		return E_FAIL;
+	}
+#pragma endregion
+
+	return S_OK;
+}
+
 
 HRESULT CPlayer::Ready_Weapon()
 {
@@ -3291,7 +3606,7 @@ HRESULT CPlayer::Ready_UIParameters()
 	//auto pLamp = m_pGameInstance->Clone_Prototype(PROTOTYPE::TYPE_GAMEOBJECT, ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Lamp"), nullptr);
 	//m_pBelt_Down->Add_Item(static_cast<CItem*>(pLamp), 1);
 
-	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), [this](_wstring eventName, void* data) {
+	m_pGameInstance->Register_PullCallback(TEXT("Player_Status"), this, [this](_wstring eventName, void* data) {
 
 		if (eventName == L"AddHp")
 		{
@@ -3526,6 +3841,10 @@ void CPlayer::Interaction_Door(INTERACT_TYPE eType, CGameObject* pObj, _bool bOp
 	case INNERDOOR:
 		stateName = "InnerDoor_Open";
 		break;
+	case RESTARTFESTIVAL:
+	case RESTARTFUOCO:
+		stateName = "Interaction_Fog";
+		break;
 	default:
 		break;
 	}
@@ -3723,7 +4042,7 @@ void CPlayer::BurnActive(_float fDeltaTime)
 		
 		if (m_fHp > 0.f)
 		{
-			m_fHp -= 0.05f;
+			m_fHp -= 0.2f;
 		}
 		else
 		{
@@ -3812,6 +4131,31 @@ void CPlayer::OffLim(_float fTimeDelta)
 	}
 }
 
+void CPlayer::OnWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity <= 1.f)
+	{
+		m_fWetIntensity += fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity > 1.f)
+			m_fWetIntensity = 1.f;
+	}
+}
+
+void CPlayer::OffWet(_float fTimeDelta)
+{
+	if (m_fWetIntensity >= 0.f)
+	{
+		m_fWetIntensity -= fTimeDelta * m_fWetSpeed;
+		if (m_fWetIntensity < 0.f)
+			m_fWetIntensity = 0.f;
+	}
+}
+void CPlayer::SwitchWet(_bool bWet, _float fWetSpeed)
+{
+	m_bWet = bWet;
+	m_fWetSpeed = fWetSpeed;
+}
+
 void CPlayer::LockOnState(_float fTimeDelta)
 {
 	if (m_pGameInstance->Mouse_Down(DIM::WHEELBUTTON))
@@ -3893,10 +4237,10 @@ void CPlayer::Callback_DownBelt()
 
 void CPlayer::Use_Item()
 {
-	if (nullptr == m_pSelectItem)
+	if (nullptr == m_pUseItem)
 		return;
 
-	m_pSelectItem->Use();
+	m_pUseItem->Use();
 
 	if(m_isSelectUpBelt)
 		Callback_UpBelt();
@@ -4043,7 +4387,7 @@ void CPlayer::Create_HitEffect()
 	m_vHitPos = m_vHitPos;
 	int a = 0;
 		
-	vPos += XMVector3Normalize(m_vHitNormal) * 0.3f;
+	vPos += XMVector3Normalize(XMLoadFloat4(&m_vHitNormal)) * 0.3f;
 	_float3 vEffPos = {};
 	XMStoreFloat3(&vEffPos, vPos);
 	vEffPos.y += 1.7f;
@@ -4091,7 +4435,7 @@ void CPlayer::Create_GuardEffect(_bool isPerfect)
 	//	MSG_BOX("이펙트 생성 실패함");
 }
 
-void CPlayer::Create_LeftArm_Lightning()
+void CPlayer::Create_LeftArm_Lightning(const _wstring& strECTag)
 {
 	//CEffectContainer::DESC Lightdesc = {};
 	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
@@ -4099,6 +4443,26 @@ void CPlayer::Create_LeftArm_Lightning()
 	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
 	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Player_TESTCutscene_Fuoco_LeftarmLightning"), &Lightdesc))
 	//	MSG_BOX("이펙트 생성 실패함");
+	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_LeftArm_Lightning_Hand(const _wstring& strECTag)
+{
+	//CEffectContainer::DESC Lightdesc = {};
+	//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bip001-L-Hand"));
+	//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), strECTag, &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_LostErgo_RimLight()
+{
+	LimActive(true, 1.5f, { 0.34f ,0.58f, 0.8f, 1.f });
+	m_bLostErgoRimlight = true;
+	m_fLostErgoRimlightAccTime = 0.f;
 }
 
 void CPlayer::Movement(_float fTimeDelta)
@@ -4129,11 +4493,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	_vector vTargetEye = vPlayerPos + XMVectorSet(-10.f, 30.f, 10.f, 0.f);
 	_vector vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 
@@ -4144,11 +4508,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 40.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(80.0f);
@@ -4158,11 +4522,11 @@ HRESULT CPlayer::UpdateShadowCamera()
 	vTargetEye = vPlayerPos + XMVectorSet(-10.f, 60.f, 10.f, 0.f);
 	vTargetAt = vPlayerPos;
 
-	m_vShadowCam_Eye = vTargetEye;
-	m_vShadowCam_At = vTargetAt;
+	XMStoreFloat4(&m_vShadowCam_Eye, vTargetEye);
+	XMStoreFloat4(&m_vShadowCam_At, vTargetAt);
 
-	XMStoreFloat4(&Desc.vEye, m_vShadowCam_Eye);
-	XMStoreFloat4(&Desc.vAt, m_vShadowCam_At);
+	XMStoreFloat4(&Desc.vEye, XMLoadFloat4(&m_vShadowCam_Eye));
+	XMStoreFloat4(&Desc.vAt, XMLoadFloat4(&m_vShadowCam_At));
 	Desc.fNear = 0.1f;
 	Desc.fFar = 1000.f;
 	Desc.fFovy = XMConvertToRadians(120.0f);

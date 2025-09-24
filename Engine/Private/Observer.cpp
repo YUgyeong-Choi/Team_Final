@@ -1,5 +1,5 @@
 #include "Observer.h"
-
+#include "GameObject.h"
 
 CObserver::CObserver()
 {
@@ -13,17 +13,19 @@ void CObserver::OnNotify(const _wstring& eventType, void* data)
 
 void CObserver::OnNotify_Pull(const _wstring& eventType, void* data)
 {
-	for (auto& callback : m_PullCallbacks)
+	for (auto& pair : m_PullCallbacks)
 	{
-		callback(eventType, data);
+		if(pair.first && !pair.first->Get_bDead())
+			pair.second(eventType, data);
 	}
 }
 
 void CObserver::OnNotify_Push(const _wstring& eventType, void* data)
 {
-	for (auto& callback : m_PushCallbacks)
+	for (auto& pair : m_PushCallbacks)
 	{
-		callback(eventType, data);
+		if (pair.first && !pair.first->Get_bDead())
+			pair.second(eventType, data);
 	}
 }
 
@@ -31,6 +33,20 @@ void CObserver::Reset()
 {
 	Clear_PullCallback();
 	Clear_PushCallback();
+}
+
+void CObserver::Remove_PullCallback(CGameObject* pOwner)
+{
+	m_PullCallbacks.remove_if([pOwner](const auto& entry) {
+		return entry.first == pOwner;
+		});
+}
+
+void CObserver::Remove_PushCallback(CGameObject* pOwner)
+{
+	m_PushCallbacks.remove_if([pOwner](const auto& entry) {
+		return entry.first == pOwner;
+		});
 }
 
 

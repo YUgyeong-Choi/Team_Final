@@ -58,6 +58,10 @@ HRESULT CButtler_Basic::Initialize(void* pArg)
 
 	}
 
+	m_pWeapon->Set_WeaponTrail_Active(false);
+
+	m_pSoundCom->StopAll();
+
 	return S_OK;
 }
 
@@ -78,10 +82,9 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 			cout << pCurState->stateName << endl;
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
-			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this);
+			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
 			m_pWeapon->SetbIsActive(false);
-
-			//
+			
 		}
 	}
 
@@ -97,6 +100,7 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 		m_pPhysXActorCom->Init_SimulationFilterData();
 
 		static_cast<CPlayer*>(m_pPlayer)->Set_HitTarget(this, true);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 	}
 }
 
@@ -118,6 +122,7 @@ void CButtler_Basic::Update(_float fTimeDelta)
 	if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{
 		m_pWeapon->SetisAttack(false);
+		m_pWeapon->Set_WeaponTrail_Active(false);
 	}
 
 	if (m_strStateName.find("Getup") != m_strStateName.npos)
@@ -148,7 +153,8 @@ void CButtler_Basic::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		++m_iCollisionCount;
-		m_vPushDir -= HitNormal;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), HitNormal));
+		m_vPushDir.w = 0.f;
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
@@ -160,7 +166,9 @@ void CButtler_Basic::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
 		_vector vCorrection = HitNormal * 0.01f;
-		m_vPushDir -= vCorrection;
+
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vCorrection));
+		m_vPushDir.w = 0.f;
 	}
 }
 
@@ -309,6 +317,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 		static_cast<CPlayer*>(m_pPlayer)->Add_Mana(10.f);
 
+
 		if (nullptr != m_pHPBar)
 			m_pHPBar->Set_RenderTime(2.f);
 
@@ -343,9 +352,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
 
-			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
-
-			XMVector3Normalize(m_vKnockBackDir);
+			XMStoreFloat4(&m_vKnockBackDir, XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
 
 			return;
 		}
@@ -409,11 +416,11 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 		_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-		m_vPushDir = XMVector3Normalize(m_vPushDir);
+		XMStoreFloat4(&m_vPushDir, XMVector3Normalize(XMLoadFloat4(&m_vPushDir)));
 
-		m_vPushDir.m128_f32[3] = 0.f;
+		m_vPushDir.z = 0.f;
 
-		_vector vDir = XMVector3Normalize(vLook) + m_vPushDir;
+		_vector vDir = XMVector3Normalize(vLook) + XMLoadFloat4(&m_vPushDir);
 
 
 		m_pTransformCom->Go_Dir(vDir, fTimeDelta * fSpeed, nullptr, m_pNaviCom);
@@ -476,7 +483,7 @@ void CButtler_Basic::Calc_Pos(_float fTimeDelta)
 
 			RootMotionActive(fTimeDelta);
 
-			m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
+			m_pTransformCom->Go_Dir(XMLoadFloat4(&m_vKnockBackDir), fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 		}
 
 	}
@@ -505,21 +512,113 @@ void CButtler_Basic::Register_Events()
 
 		m_pWeapon->SetisAttack(true);
 		m_pWeapon->Clear_CollisionObj();
+		m_pWeapon->Set_WeaponTrail_Active(true);
 		});
 
 	m_pAnimator->RegisterEventListener("AttackOff", [this]() {
 
 		m_pWeapon->SetisAttack(false);
 		m_pWeapon->Clear_CollisionObj();
+		m_pWeapon->Set_WeaponTrail_Active(false);
 		});
 
 	
+}
+
+void CButtler_Basic::Register_SoundEvent()
+{
+
+	m_pAnimator->RegisterEventListener("WalkSound", [this]()
+		{
+
+
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Movement_04");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Movement_04");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("HitSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->SetVolume("SE_NPC_Servant02_MT_Dmg_00", 1.f);
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("KnockBackSound", [this]()
+		{
+			if (m_pSoundCom)
+			{
+				m_pSoundCom->Play("SE_NPC_SK_GetHit_ToughSpecialHit_Heartbeat_01");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("IdleSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				m_pSoundCom->Stop("SE_NPC_Servant02_MT_Dmg_00");
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Dmg_00");
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("GetupSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 3.9f)));
+
+				m_pSoundCom->Play("SE_NPC_Servant02_MT_Getup_0" + to_string(iNum));
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("DeadSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 8.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Dead_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+	m_pAnimator->RegisterEventListener("AttackSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 17.9f)));
+
+				string strTag = "VO_NPC_NHM_Servant02_Attack_" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
+
+
+	m_pAnimator->RegisterEventListener("FallSound", [this]()
+		{
+			if (m_pSoundCom && m_bSoundCheck)
+			{
+				_int iNum = _int(floorf(m_pGameInstance->Compute_Random(0.f, 2.9f)));
+
+				string strTag = "SE_NPC_Servant02_MT_Bodyfall_0" + to_string(iNum);
+
+				m_pSoundCom->Play(strTag);
+			}
+		});
 }
 
 void CButtler_Basic::Block_Reaction()
 {
 	m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 	m_pAnimator->SetTrigger("Hit");
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::Start_Fatal_Reaction()
@@ -530,6 +629,7 @@ void CButtler_Basic::Start_Fatal_Reaction()
 	m_isFatal = true;
 	m_pWeapon->SetisAttack(false);
 	m_pWeapon->Clear_CollisionObj();
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::Reset()
@@ -567,6 +667,7 @@ void CButtler_Basic::Reset()
 	}
 
 	m_pWeapon->SetDamage(50.f);
+	m_pWeapon->Set_WeaponTrail_Active(false);
 }
 
 void CButtler_Basic::PlayDetectSound()
@@ -615,8 +716,6 @@ HRESULT CButtler_Basic::Ready_Sound()
 	/* For.Com_Sound */
 	if (FAILED(__super::Add_Component(static_cast<int>(LEVEL::STATIC), TEXT("Prototype_Component_Sound_Buttler"), TEXT("Com_Sound"), reinterpret_cast<CComponent**>(&m_pSoundCom))))
 		return E_FAIL;
-
-
 
 
 	return S_OK;
