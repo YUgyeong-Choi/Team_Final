@@ -75,7 +75,8 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 	{
 		
 		m_fEmissive = 0.f;
-		// µ·À» Ãß°¡?
+		m_pWeapon->SetbIsActive(false);
+
 
 		if (!m_pAnimator->IsBlending() && m_pAnimator->IsFinished())
 		{
@@ -83,7 +84,7 @@ void CButtler_Basic::Priority_Update(_float fTimeDelta)
 			//(m_pWeapon)->Set_bDead();
 			//Set_bDead();
 			m_pGameInstance->Push_WillRemove(L"Layer_Monster_Normal", this, false);
-			m_pWeapon->SetbIsActive(false);
+			
 			
 		}
 	}
@@ -331,7 +332,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 
 			CLockOn_Manager::Get_Instance()->Set_Off(this);
 			m_bUseLockon = false;
-
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			if (nullptr != m_pHPBar)
 				m_pHPBar->Set_RenderTime(0.f);
 			return;
@@ -341,6 +342,7 @@ void CButtler_Basic::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 			m_bUseLockon = false;	
 			m_isLookAt = false;
+			m_pWeapon->Set_WeaponTrail_Active(false);
 			
 			return;
 		}
