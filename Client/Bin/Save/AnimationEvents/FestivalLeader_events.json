@@ -1552,10 +1552,6 @@
                     "Time": 8.0
                 },
                 {
-                    "EventName": "OneHandSlam_R_Effect",
-                    "Time": 9.0
-                },
-                {
                     "EventName": "GroundImpactSound",
                     "Time": 9.0
                 },
