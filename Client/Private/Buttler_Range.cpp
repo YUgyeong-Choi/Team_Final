@@ -149,7 +149,8 @@ void CButtler_Range::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eCollid
 	if (eColliderType == COLLIDERTYPE::MONSTER)
 	{
 		++m_iCollisionCount;
-		m_vPushDir -= HitNormal;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), HitNormal));
+		m_vPushDir.w = 0.f;
 	}
 	else if (eColliderType == COLLIDERTYPE::PLAYER)
 		m_isCollisionPlayer = true;
@@ -161,7 +162,8 @@ void CButtler_Range::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eCollide
 	{
 		// 계속 충돌중이면 빠져나갈 수 있게 좀 보정을
 		_vector vCorrection = HitNormal * 0.01f;
-		m_vPushDir -= vCorrection;
+		XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vCorrection));
+		m_vPushDir.w = 0.f;
 	}
 }
 
@@ -340,9 +342,7 @@ void CButtler_Range::ReceiveDamage(CGameObject* pOther, COLLIDERTYPE eColliderTy
 			m_pAnimator->SetInt("Dir", ENUM_CLASS(Calc_HitDir(m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION))));
 
 
-			m_vKnockBackDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
-
-			XMVector3Normalize(m_vKnockBackDir);
+			XMStoreFloat4(&m_vKnockBackDir, XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)));
 
 			return;
 		}
@@ -436,7 +436,9 @@ void CButtler_Range::Calc_Pos(_float fTimeDelta)
 
 		RootMotionActive(fTimeDelta);
 
-		m_pTransformCom->Go_Dir(m_vKnockBackDir, fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
+
+
+		m_pTransformCom->Go_Dir(XMLoadFloat4(& m_vKnockBackDir), fTimeDelta * m_fKnockBackSpeed * 0.5f, nullptr, m_pNaviCom);
 	}
 	else if (m_strStateName.find("Hit") != m_strStateName.npos)
 	{
@@ -674,11 +676,11 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 {
 
 	// offset 적당히 줘서 보정
-	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() - (m_pTransformCom->Get_State(STATE::POSITION) + m_vRayOffset );
+	_vector vDir = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + static_cast<CUnit*>(m_pPlayer)->Get_RayOffset() - (m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset) );
 
 	vDir = XMVector3Normalize(vDir);
 
-	PxVec3 origin = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
+	PxVec3 origin = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset));
 	XMFLOAT3 fLook;
 	XMStoreFloat3(&fLook, vDir);
 	PxVec3 direction = PxVec3(fLook.x, fLook.y, fLook.z);
@@ -727,7 +729,7 @@ void CButtler_Range::RayCast(CPhysXActor* actor)
 #ifdef _DEBUG
 	if (m_pGameInstance->Get_RenderCollider()) {
 		DEBUGRAY_DATA _data{};
-		_data.vStartPos = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + (m_vRayOffset));
+		_data.vStartPos = VectorToPxVec3(m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&m_vRayOffset));
 		XMFLOAT3 fLook;
 		XMStoreFloat3(&fLook, vDir);
 		_data.vDirection = PxVec3(fLook.x, fLook.y, fLook.z);
