@@ -1293,11 +1293,10 @@ void CFestivalLeader::ChosePatternWeightByDistance(_float fDistance)
 
 void CFestivalLeader::Ready_EffectNames()
 {
-
 	// Phase 1
 
-	m_EffectMap[EF_ONE_HANDSLAM].emplace_back(TEXT("EC_Fes_OnehandSlam"));
-	m_EffectMap[EF_SCRATCH].emplace_back(TEXT("EC_Fes_Scratch"));
+	m_EffectMap[EF_ONE_HANDSLAM].emplace_back(TEXT("EC_Fes_OnehandSlam")); // 좌우 나눔 !!!! EC_Fes_OnehandSlamL / EC_Fes_OnehandSlamR
+	m_EffectMap[EF_SCRATCH].emplace_back(TEXT("EC_Fes_Scratch")); // 좌우 나눔 !!!! EC_Fes_ScratchL / EC_Fes_ScratchR
 	m_EffectMap[EF_SMOKE].emplace_back(TEXT("EC_Fes_Falling_Smoke_P1"));
 
 	m_EffectMap[EF_LShoulder_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
@@ -1306,8 +1305,8 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_LForearm_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Small_LForearm"));
 
 	// Phase 2
-	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2"));
-	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee"));
+	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2L / EC_Fes_DefaultSlam_NoSmoke_P2R
+	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2_KneeL / EC_Fes_DefaultSlam_NoSmoke_P2_KneeR
 
 	m_EffectMap[EF_GROUND_SPARK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 	m_EffectMap[EF_HAMMER_SLAM].emplace_back(TEXT("EC_Fes_P2_HammerSlam"));
@@ -1334,13 +1333,11 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 	CEffectContainer::DESC desc = {};
 
 	// P1
-	if (stEffectTag == TEXT("EC_Fes_OnehandSlam")) // 한 손 바닥 찍기
+	if (stEffectTag == TEXT("EC_Fes_OnehandSlamL")) // 왼 손 바닥 찍기
 	{
-		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
-
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1351,14 +1348,27 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-	else if (stEffectTag == TEXT("EC_Fes_Scratch")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
+	if (stEffectTag == TEXT("EC_Fes_OnehandSlamR")) // 오른손 바닥 찍기
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_ScratchL")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
 	{   
-		_uint iFinger = m_bLeftHand ? LeftMiddleFingerStart : RightMiddleFingerStart;
-
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
 
-		const _float4x4* socketPtr = m_BoneRefs[iFinger]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = m_BoneRefs[LeftMiddleFingerStart]->Get_CombinedTransformationMatrix();
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1369,13 +1379,42 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")) // 넘어지며 양 손 스파크
-	{
-		_uint iHand = m_bLeftHand ? LeftHand : RightHand;
-
+	else if (stEffectTag == TEXT("EC_Fes_ScratchR")) // 바닥 긁기, 손마다 개별 생성이므로 두번 호출
+	{   
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = m_BoneRefs[iHand]->Get_CombinedTransformationMatrix();
+
+		const _float4x4* socketPtr = m_BoneRefs[RightMiddleFingerStart]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2L")) // 넘어지며 왼
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[LeftHand]->Get_CombinedTransformationMatrix();
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+	}
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2R")) // 넘어지며 오
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[RightHand]->Get_CombinedTransformationMatrix();
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);
 		_matrix parent = XMLoadFloat4x4(parentPtr);
@@ -1387,13 +1426,28 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 
 	}
-	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee")) // 넘어지며 양 무릎 스파크
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_KneeL")) // 넘어지며 왼무
 	{
-		_uint iKnee = m_bLeftKnee ? LeftKnee : RightKnee;
-
 		desc.pSocketMatrix = nullptr;
 		desc.pParentMatrix = nullptr;
-		const _float4x4* socketPtr = m_BoneRefs[iKnee]->Get_CombinedTransformationMatrix();
+		const _float4x4* socketPtr = m_BoneRefs[LeftKnee]->Get_CombinedTransformationMatrix();
+
+		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
+		_matrix socket = XMLoadFloat4x4(socketPtr);
+		_matrix parent = XMLoadFloat4x4(parentPtr);
+
+		_matrix comb = socket * parent;
+
+		_vector position = XMVectorSetY(comb.r[3], parent.r[3].m128_f32[1]);
+
+		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
+
+	}
+	else if (stEffectTag == TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_KneeR")) // 넘어지며 오무
+	{
+		desc.pSocketMatrix = nullptr;
+		desc.pParentMatrix = nullptr;
+		const _float4x4* socketPtr = m_BoneRefs[RightKnee]->Get_CombinedTransformationMatrix();
 
 		const _float4x4* parentPtr = m_pTransformCom->Get_WorldMatrix_Ptr();
 		_matrix socket = XMLoadFloat4x4(socketPtr);

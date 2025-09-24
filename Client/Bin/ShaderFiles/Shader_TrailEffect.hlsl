@@ -43,9 +43,10 @@ VS_OUT VS_MAIN_DROP(VS_IN In)
     float3 vOuterPos = In.vOuterPos;
     float3 vInnerPos = In.vInnerPos;
 
-    if (lifeRatio >= 0.5f)
+    //if (lifeRatio >= 0.3f)
     {
-        float fade = smoothstep(0.5, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
+        float fade = lifeRatio;
+        //float fade = smoothstep(0.3, 1.0, lifeRatio); 
 
         vOuterPos = float3(In.vOuterPos.x, In.vOuterPos.y - fade * 0.8f, In.vOuterPos.z);
         vInnerPos = float3(In.vInnerPos.x, In.vInnerPos.y - fade * 0.8f, In.vInnerPos.z);
@@ -196,24 +197,35 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
-struct PS_Blood_Blend
+struct PS_Blood
 {
-    vector vColor : SV_TARGET0;
+    vector vAccumulation : SV_TARGET0;
+    vector fRevealage : SV_TARGET1;
+    vector vEmissive : SV_TARGET2;
 };
 
-PS_Blood_Blend PS_MAIN_Blood(PS_IN In)
+PS_Blood PS_MAIN_Blood(PS_IN In)
 {
-    PS_Blood_Blend Out;
-    vector vColor = g_DiffuseTexture.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset));
-    vColor = ColorAdjustment_Multiply(vColor, g_vColor);
-    float fMask = g_MaskTexture1.Sample(DefaultSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    PS_Blood Out;
+    float fPremask = g_DiffuseTexture.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
+    float fMask = g_MaskTexture1.Sample(LinearClampSampler, UVTexcoord(In.vTexcoord, g_fTileSize, g_fTileOffset)).r;
     float lifeRatio = saturate(In.vLifeTime.y / In.vLifeTime.x);
     float fade = 1.0 - smoothstep(0.8, 1.0, lifeRatio); // 마지막 20%에서만 스르륵
-    vColor.a *= fade * fMask;
+        
+    float4 vPreColor;
+    float lerpFactor = saturate((fPremask - g_fThreshold) / (1.f - g_fThreshold));
 
-    float3 vPremulRGB = vColor.rgb * vColor.a;
-    Out.vColor = float4(vPremulRGB, vColor.a);
+    vPreColor = lerp(g_vColor, g_vCenterColor, lerpFactor);
     
+    float4 vColor;
+    vColor.rgb = vPreColor.rgb * fPremask * g_fIntensity;
+    vColor.a = g_vColor.a * fMask * fade * fPremask;
+    
+    float3 vPremulRGB = vColor.rgb * vColor.a;
+    Out.vAccumulation = float4(vPremulRGB, vColor.a);
+    Out.fRevealage = vColor.a;
+    Out.vEmissive = float4(vPremulRGB * g_fEmissiveIntensity, 0.f);
+
     return Out;
 }
 
