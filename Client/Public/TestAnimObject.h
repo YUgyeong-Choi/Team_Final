@@ -57,16 +57,16 @@ private:
 	class CCamera_Orbital* m_pCamera_Orbital = { nullptr };
 
 private:
-	_vector m_vShadowCam_Eye = {};
-	_vector m_vShadowCam_At = {};
+	_float4 m_vShadowCam_Eye = {};
+	_float4 m_vShadowCam_At = {};
 
 private:
 	CModel* m_pModelCom = nullptr; // 모델 컴포넌트
 	CShader* m_pShaderCom = nullptr; // 셰이더 컴포넌트
 	CAnimator* m_pAnimator = nullptr; // 애니메이터
 	CPhysXController* m_pControllerCom = { nullptr };
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
+	_float4  m_PrevWorldRotation = {};
 	_bool    m_bIsFirstFrame = true;
 	_float   m_fRotSmoothSpeed = 8.0f; // 회전 스무딩 속도
 	_float   m_fSmoothSpeed = 8.0f;

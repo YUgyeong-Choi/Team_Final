@@ -31,7 +31,7 @@ HRESULT CTriggerBox::Initialize(void* pArg)
 	if (FAILED(Ready_Components(pArg)))
 		return E_FAIL;
 
-	m_pTransformCom->Set_State(STATE::POSITION, TriggerBoxDESC->vPos);
+	m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&TriggerBoxDESC->vPos));
 	m_pTransformCom->Rotation(XMConvertToRadians(TriggerBoxDESC->Rotation.x), XMConvertToRadians(TriggerBoxDESC->Rotation.y), XMConvertToRadians(TriggerBoxDESC->Rotation.z));
 
 	if (FAILED(Ready_Trigger(TriggerBoxDESC)))
@@ -92,12 +92,12 @@ HRESULT CTriggerBox::Ready_Trigger(TRIGGERBOX_DESC* pDesc)
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
+	positionVec += VectorToPxVec3(XMLoadFloat4(&pDesc->vTriggerOffset));
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
+	PxVec3 halfExtents = VectorToPxVec3(XMLoadFloat4(&pDesc->vTriggerSize));
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);

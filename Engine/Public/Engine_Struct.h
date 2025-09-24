@@ -221,8 +221,8 @@ namespace Engine
 
 	struct ENGINE_DLL NavigationEdge
 	{
-		_vector		vDir;
-		_vector		vNormal;
+		_float4		vDir;
+		_float3		vNormal;
 	};
 
 	inline XMFLOAT3 AABB_Center(const AABBBOX& b)

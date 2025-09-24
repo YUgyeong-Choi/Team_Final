@@ -184,9 +184,6 @@
     <Filter Include="01.Levels\LevelCY\Tool\ToolSprite">
       <UniqueIdentifier>{6d34bfb0-9856-4dbe-b836-409dcbeea80a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\LevelCY\Tool\ToolTrail%3f">
-      <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.Weapon\00.Bayonet">
       <UniqueIdentifier>{abbca159-0435-45fc-ab65-08cd84a25567}</UniqueIdentifier>
     </Filter>
@@ -565,7 +562,10 @@
     <Filter Include="02.GameObjects\13. Door\CutSceneDoor">
       <UniqueIdentifier>{7b517a7f-3094-4928-9c6d-40264130dc65}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.Effect\MeshEmitter">
+    <Filter Include="01.Levels\LevelCY\Tool\ToolTrail">
+      <UniqueIdentifier>{15ae98e9-5562-47c1-89a7-afdbb157f889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Effect\MeshEmitter%3f">
       <UniqueIdentifier>{27f0ce26-06a0-4848-ac27-0f3a1159fcb9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -971,7 +971,7 @@
       <Filter>02.GameObjects\11.Decal</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ToolTrail.h">
-      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_MonsterHP_Bar.h">
       <Filter>02.GameObjects\99.UI\World\MonsterHP</Filter>
@@ -1124,7 +1124,7 @@
       <Filter>02.GameObjects\16.Stargazer</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MeshEmitter.h">
-      <Filter>02.GameObjects\07.Effect\MeshEmitter</Filter>
+      <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI_Script_StarGazer.h">
       <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>
@@ -1564,7 +1564,7 @@
       <Filter>02.GameObjects\01.Unit\02. Monster\Buttler\Train</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ToolTrail.cpp">
-      <Filter>01.Levels\LevelCY\Tool\ToolTrail%3f</Filter>
+      <Filter>01.Levels\LevelCY\Tool\ToolTrail</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_MonsterHP_Bar.cpp">
       <Filter>02.GameObjects\99.UI\World\MonsterHP</Filter>
@@ -1717,7 +1717,7 @@
       <Filter>02.GameObjects\01.Unit\02. Monster\WatchDog</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MeshEmitter.cpp">
-      <Filter>02.GameObjects\07.Effect\MeshEmitter</Filter>
+      <Filter>02.GameObjects\07.Effect\MeshEmitter%3f</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Script_StarGazer.cpp">
       <Filter>02.GameObjects\99.UI\Container\Script\StarGazer</Filter>

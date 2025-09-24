@@ -39,7 +39,8 @@ HRESULT CUI_Feature_Rotation::Initialize(void* pArg)
 
     m_vInitPos = { pDesc->fInitPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - pDesc->fInitPos.y * g_iWinSizeY, 0.f, 1.f };
     m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
-    m_vOffset =   m_vCenter - m_vInitPos;
+
+    XMStoreFloat4(&m_vOffset, XMVectorSubtract(XMLoadFloat4(&m_vCenter), XMLoadFloat4(&m_vInitPos)));
 
     return S_OK;
 }
@@ -80,8 +81,8 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     _vector vScale = pUI->Get_TransfomCom()->Get_Scale();
     _matrix mScale = XMMatrixScalingFromVector(vScale);
 
-    _vector vRotatedOffset = XMVector3TransformCoord(m_vOffset, matRotate);
-    _vector vFinalPos = m_vCenter + vRotatedOffset;
+    _vector vRotatedOffset = XMVector3TransformCoord(XMLoadFloat4(&m_vOffset), matRotate);
+    _vector vFinalPos = XMLoadFloat4(&m_vCenter) + vRotatedOffset;
 
     _matrix mWorld = mScale* matRotate * XMMatrixTranslationFromVector(vFinalPos);
     pUI->Get_TransfomCom()->Set_WorldMatrix(mWorld);
@@ -105,7 +106,7 @@ UI_FEATURE_TOOL_DESC CUI_Feature_Rotation::Get_Desc_From_Tool()
     eDesc.fStartRotation = m_fStartRotation;
     eDesc.fEndRotation = m_fEndRotation;
     eDesc.fRotationPos = m_fRotationPos;
-    eDesc.fInitPos = { m_vInitPos.m128_f32[0], m_vInitPos.m128_f32[1] };
+    eDesc.fInitPos = { m_vInitPos.x, m_vInitPos.y };
     eDesc.strTypeTag = "Rotation";
 
     return eDesc;
@@ -120,7 +121,7 @@ UI_FEATRE_DESC& CUI_Feature_Rotation::Get_Desc()
     m_eDesc.fEndRotation = m_fEndRotation;
     m_eDesc.fRotationPos = m_fRotationPos;
     m_eDesc.strProtoTag = "Prototype_Component_UI_Feature_Rotation";
-    m_eDesc.fInitPos = { m_vInitPos.m128_f32[0], m_vInitPos.m128_f32[1] };
+    m_eDesc.fInitPos = { m_vInitPos.x, m_vInitPos.y };
 
     return m_eDesc;
 }
@@ -163,7 +164,8 @@ void CUI_Feature_Rotation::Deserialize(const json& j)
 
     m_vInitPos = { m_fInitPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fInitPos.y * g_iWinSizeY, 0.f, 1.f };
     m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
-    m_vOffset = m_vInitPos - m_vCenter  ;
+
+    XMStoreFloat4(&m_vOffset, XMVectorSubtract(XMLoadFloat4(&m_vCenter), XMLoadFloat4(&m_vInitPos)));
 }
 
 

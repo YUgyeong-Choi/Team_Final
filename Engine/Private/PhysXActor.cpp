@@ -86,7 +86,7 @@ void CPhysXActor::ReCreate_Shape(PxRigidActor* pRigidActor,const PxGeometry& geo
     {
         oldFlags = m_pShape->getFlags(); // 기존 shape 플래그 백업
         simFilterData = m_pShape->getSimulationFilterData();
-        qryFilterData = m_pShape->getQueryFilterData();
+        qryFilterData = m_pShape->getQueryFilterData(); 
         localPose = m_pShape->getLocalPose();
         fContactOffset = m_pShape->getContactOffset();
         fRestOffset = m_pShape->getRestOffset();

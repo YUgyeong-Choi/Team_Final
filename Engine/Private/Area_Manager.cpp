@@ -103,8 +103,8 @@ HRESULT CArea_Manager::FinalizePartition()
 
 _int CArea_Manager::FindAreaContainingPoint()
 {
-    XMFLOAT3 vPoint;
-    XMStoreFloat3(&vPoint, m_vPlayerPos);
+    _float3 vPoint;
+    XMStoreFloat3(&vPoint, XMLoadFloat4(&m_vPlayerPos));
 
     auto FnVolume = [](const AREA& a) -> _double 
         {
@@ -354,7 +354,7 @@ void CArea_Manager::DebugDrawCells()
     for (const AREA& tArea : m_vecAreas)
     {
         XMFLOAT3 vPos;
-        XMStoreFloat3(&vPos, m_vPlayerPos);        
+        XMStoreFloat3(&vPos, XMLoadFloat4(&m_vPlayerPos));
 
         const _bool bOverlapped = tArea.ContainsPoint(vPos);
 

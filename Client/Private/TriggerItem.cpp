@@ -25,9 +25,9 @@ HRESULT CTriggerItem::Initialize(void* pArg)
 	}
 
 	m_pTransformCom->Set_WorldMatrix(pDesc->triggerWorldMatrix);
-	_vector offSetPos = m_pTransformCom->Get_State(STATE::POSITION) + pDesc->vOffSetObj;
+	_vector offSetPos = m_pTransformCom->Get_State(STATE::POSITION) + XMLoadFloat4(&pDesc->vOffSetObj);
 	m_pTransformCom->Set_State(STATE::POSITION, offSetPos);
-	m_pTransformCom->SetUp_Scale(XMVectorGetX(pDesc->vScaleObj),XMVectorGetY(pDesc->vScaleObj),XMVectorGetZ(pDesc->vScaleObj));
+	m_pTransformCom->SetUp_Scale((pDesc->vScaleObj.x),(pDesc->vScaleObj.y),(pDesc->vScaleObj.z));
 
 	return S_OK;
 }

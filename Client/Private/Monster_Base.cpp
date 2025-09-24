@@ -376,28 +376,28 @@ void CMonster_Base::RootMotionActive(_float fTimeDelta)
 			if (fDeltaMag > m_fSmoothThreshold)
 			{
 				_float alpha = clamp(fTimeDelta * m_fSmoothSpeed, 0.f, 1.f);
-				finalDelta = XMVectorLerp(m_PrevWorldDelta, vWorldDelta, alpha);
+				finalDelta = XMVectorLerp(XMLoadFloat4(&m_PrevWorldDelta), vWorldDelta, alpha);
 			}
 			else
 			{
 				finalDelta = vWorldDelta;
 			}
-			m_PrevWorldDelta = finalDelta;
 
-			m_PrevWorldDelta.m128_f32[3] = 0;
+			XMStoreFloat4(&m_PrevWorldDelta, finalDelta);
 
-			vTrans += m_PrevWorldDelta;
+			m_PrevWorldDelta.z = 0;
 
-			XMVector3Normalize(m_vPushDir);
+			vTrans += XMLoadFloat4(&m_PrevWorldDelta);
 
-			vTrans += m_vPushDir * 0.01f;
+
+			vTrans += XMVector3Normalize(XMLoadFloat4(&m_vPushDir)) * 0.01f;
 
 
 			// 네비 이동 가능 여부 체크 후 위치 재설정
 
 			if (nullptr != m_pNaviCom && !m_pNaviCom->isMove(vTrans))
 			{
-				vTrans -= (m_PrevWorldDelta + m_vPushDir * 0.01f);
+				vTrans -= (XMLoadFloat4(&m_PrevWorldDelta) + XMLoadFloat4(&m_vPushDir) * 0.01f);
 				m_pTransformCom->Set_State(STATE::POSITION, vTrans);
 			}
 		}
@@ -602,8 +602,8 @@ CMonster_Base::MONSTER_DIR CMonster_Base::Calc_TurnDir(_vector vOtherPos)
 void CMonster_Base::Push_Other(_vector vHitPos, _vector vNormal)
 {
 	
-	m_vPushDir -= vNormal;
 
+	XMStoreFloat4(&m_vPushDir, XMVectorSubtract(XMLoadFloat4(&m_vPushDir), vNormal));
 	
 }
 
