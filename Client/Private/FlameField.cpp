@@ -75,7 +75,7 @@ void CFlameField::Update(_float fTimeDelta)
 			if (m_pPlayer)
 			{
 				_vector vPlayerPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-				_vector vFieldPos = m_vBegningRayPos;
+				_vector vFieldPos = XMLoadFloat4(&m_vBegningRayPos);
 
 				_vector vDir = vPlayerPos - vFieldPos;
 				vDir = XMVectorSetY(vDir, 0.f);
@@ -304,7 +304,7 @@ void CFlameField::Check_SpawnEffectDistance()
 	_float fOffSetY = 1.f; // 불꽃 필드의 Y 오프셋
 	_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 	_vector vOffsetPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + fOffSetY);
-	m_vBegningRayPos = vOffsetPos;
+	XMStoreFloat4(&m_vBegningRayPos, vOffsetPos);
 	PxVec3 origin(XMVectorGetX(vOffsetPos), XMVectorGetY(vOffsetPos), XMVectorGetZ(vOffsetPos));
 	PxHitFlags hitFlags(PxHitFlag::eDEFAULT);
 	PxQueryFilterData filterData;

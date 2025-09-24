@@ -26,12 +26,12 @@ public:
 		LEVEL			m_eMeshLevelID;
 
 		_tchar		szModelPrototypeTag[MAX_PATH] = { 0 };
-		_vector vColliderOffSet;
-		_vector vColliderSize;
+		_float4 vColliderOffSet;
+		_float4 vColliderSize;
 
 		INTERACT_TYPE eInteractType;
-		_vector vTriggerSize;
-		_vector vTriggerOffset;
+		_float4 vTriggerSize;
+		_float4 vTriggerOffset;
 	}DEFAULTDOOR_DESC;
 
 protected:
@@ -69,8 +69,8 @@ protected:
 	CAnimator*		m_pAnimator = { nullptr };
 	CTexture*		m_pTextureCom = { nullptr };
 	CTexture*		m_pEmissiveCom = { nullptr };
+	_float4			m_vColliderOffSet;
 	CPhysXDynamicActor* m_pPhysXActorCom = { nullptr };
-	_vector m_vColliderOffSet;
 
 	// 트리거 박스
 	CPhysXStaticActor* m_pPhysXTriggerCom = { nullptr };

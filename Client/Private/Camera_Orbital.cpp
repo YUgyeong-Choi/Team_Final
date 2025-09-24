@@ -116,9 +116,14 @@ void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(fPitch, fYaw));
 		Set_PitchYaw(fPitch, fYaw); // Set_PitchYaw 내부에서 Wrap 적용
 
-		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		_vector vPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		XMStoreFloat4(&m_vPlayerPosition, vPosition);
+		m_vPlayerPosition.y += 1.7f;
+
+		_vector vLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+		_vector vOffset = XMVectorScale(XMVector3Normalize(vLook), -0.15f);
+		vPosition = XMVectorAdd(vPosition, vOffset);
+		XMStoreFloat4(&m_vPlayerPosition, vPosition);
 		m_vPrevLookTarget = m_vPlayerPosition;
 	}
 }
@@ -180,17 +185,22 @@ _matrix CCamera_Orbital::Get_OrbitalWorldMatrix(_float fPitch, _float fYaw)
 	if (!m_pPlayer)
 		return _matrix();
 
-	m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION) + XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-	m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+	XMVECTOR vPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+	vPos = XMVectorAdd(vPos, XMVectorSet(0.f, 1.7f, 0.f, 0.f));
+
+	XMVECTOR vLooks = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+	XMVECTOR vOffsets = XMVectorScale(XMVector3Normalize(vLooks), -0.15f);
+	vPos = XMVectorAdd(vPos, vOffsets);
+	XMStoreFloat4(&m_vPlayerPosition, vPos);
 
 	_float x = m_fDistance * cosf(fPitch) * sinf(fYaw);
 	_float y = m_fDistance * sinf(fPitch);
 	_float z = m_fDistance * cosf(fPitch) * cosf(fYaw);
 	_vector vOffset = XMVectorSet(x, y, z, 0.f);
 
-	_vector vCamPos = m_vPlayerPosition + vOffset;
+	_vector vCamPos = XMLoadFloat4(&m_vPlayerPosition) + vOffset;
 
-	_vector vLook = XMVector3Normalize(m_vPlayerPosition - vCamPos);
+	_vector vLook = XMVector3Normalize(XMLoadFloat4(&m_vPlayerPosition) - vCamPos);
 	_vector vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook));
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
@@ -279,20 +289,21 @@ void CCamera_Orbital::Update_CameraLook(_float fTimeDelta)
 	}
 	else
 	{
-		vTargetLookPos = m_vPlayerPosition;
+		vTargetLookPos = XMLoadFloat4(&m_vPlayerPosition);
 	}
 
 	// init
 	if (!m_bPrevLookInit) {
-		m_vPrevLookTarget = vTargetLookPos;
+		XMStoreFloat4(&m_vPrevLookTarget, vTargetLookPos);
 		m_bPrevLookInit = true;
 	}
 
 	// smoothing (exp decay)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+	_vector vLookTarget = XMVectorLerp(XMLoadFloat4(&m_vPrevLookTarget), vTargetLookPos, alpha);
+	XMStoreFloat4(&m_vPrevLookTarget, vLookTarget);
 
-	m_pTransformCom->LookAt(m_vPrevLookTarget);
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vPrevLookTarget));
 }
 
 void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
@@ -315,20 +326,21 @@ void CCamera_Orbital::Update_TargetCameraLook(_float fTimeDelta)
 	}
 	else
 	{
-		vTargetLookPos = m_vPlayerPosition;
+		vTargetLookPos = XMLoadFloat4(&m_vPlayerPosition);
 	}
 
 	// init
 	if (!m_bPrevLookInit) {
-		m_vPrevLookTarget = vTargetLookPos;
+		XMStoreFloat4(&m_vPrevLookTarget, vTargetLookPos);
 		m_bPrevLookInit = true;
 	}
 
 	// smoothing
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vTargetLookPos, alpha);
+	_vector vLookTarget = XMVectorLerp(XMLoadFloat4(&m_vPrevLookTarget), vTargetLookPos, alpha);
+	XMStoreFloat4(&m_vPrevLookTarget, vLookTarget);
 
-	m_pTransformCom->LookAt(m_vPrevLookTarget);
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vPrevLookTarget));
 
 	// use angular deltas for completion (wrap-safe)
 	const float eps = 0.001f;
@@ -376,8 +388,9 @@ void CCamera_Orbital::Update_LockOnCameraLook(_float fTimeDelta)
 
 	// exp decay (부드럽게 목표 지점 따라가기)
 	float alpha = 1.f - expf(-m_fLookLerpSpeed * fTimeDelta);
-	m_vPrevLookTarget = XMVectorLerp(m_vPrevLookTarget, vAim, alpha);
-	m_pTransformCom->LookAt(m_vPrevLookTarget);
+	_vector vLookTarget = XMVectorLerp(XMLoadFloat4(&m_vPrevLookTarget), vAim, alpha);
+	XMStoreFloat4(&m_vPrevLookTarget, vLookTarget);
+	m_pTransformCom->LookAt(XMLoadFloat4(&m_vPrevLookTarget));
 
 	// 현재 카메라 LOOK벡터로부터 각도 재도출
 	_vector vCamLook = m_pTransformCom->Get_State(STATE::LOOK) * -1;
@@ -410,24 +423,29 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	// follow point (player + height + slight back)
 	if (!m_bTalkActive)
 	{
-		m_vPlayerPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		m_vPlayerPosition += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
-		m_vPlayerPosition += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		XMVECTOR vPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		vPos = XMVectorAdd(vPos, XMVectorSet(0.f, 1.7f, 0.f, 0.f));
+
+		XMVECTOR vLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
+		XMVECTOR vOffset = XMVectorScale(XMVector3Normalize(vLook), -0.15f);
+		vPos = XMVectorAdd(vPos, vOffset);
+		XMStoreFloat4(&m_vPlayerPosition, vPos);
 	}
 
 	// offset from yaw/pitch
 	_float x = m_fDistance * cosf(m_fPitch) * sinf(m_fYaw);
 	_float y = m_fDistance * sinf(m_fPitch);
 	_float z = m_fDistance * cosf(m_fPitch) * cosf(m_fYaw);
-	_vector vOffset = XMVectorSet(x, y, z, 0.f);
+	_vector vOffset = XMVectorSet( x, y, z, 0.f );
 
 	// target cam pos
-	m_vTargetCamPos = m_vPlayerPosition + vOffset;
+	_vector vCampos = XMLoadFloat4(&m_vPlayerPosition) + vOffset;
+	XMStoreFloat4(&m_vTargetCamPos, vCampos);
 
 	// --- spring-arm Raycast ---
 	_vector vRayDir = XMVector3Normalize(vOffset);
 
-	PxVec3 origin = VectorToPxVec3(m_vPlayerPosition);
+	PxVec3 origin = VectorToPxVec3(XMLoadFloat4(&m_vPlayerPosition));
 	PxVec3 direction = VectorToPxVec3(vRayDir);
 
 	PxRaycastBuffer hit;
@@ -451,7 +469,8 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 			_float fHitDist = hit.block.distance - 0.3f; // margin
 			fHitDist = max(fHitDist, 0.5f);              // min distance
 
-			m_vTargetCamPos = m_vPlayerPosition + vRayDir * fHitDist;
+			_vector vCamPos = XMLoadFloat4(&m_vPlayerPosition) + vRayDir * fHitDist;
+			XMStoreFloat4(&m_vTargetCamPos, vCamPos);
 		}
 	}
 	// --- end spring-arm Raycast ---
@@ -461,10 +480,10 @@ void CCamera_Orbital::Update_CameraPos(_float fTimeDelta)
 	const _float a = 1.f - expf(-kPos * fTimeDelta);
 
 	_vector vCurPos = m_pTransformCom->Get_State(STATE::POSITION);
-	_vector vNewPos = XMVectorLerp(vCurPos, m_vTargetCamPos, a);
+	_vector vNewPos = XMVectorLerp(vCurPos, XMLoadFloat4(&m_vTargetCamPos), a);
 
-	if (XMVectorGetX(XMVector3LengthSq(vNewPos - m_vTargetCamPos)) < 1e-6f)
-		vNewPos = m_vTargetCamPos;
+	if (XMVectorGetX(XMVector3LengthSq(vNewPos - XMLoadFloat4(&m_vTargetCamPos))) < 1e-6f)
+		vNewPos = XMLoadFloat4(&m_vTargetCamPos);
 
 	m_pTransformCom->Set_State(STATE::POSITION, vNewPos);
 }

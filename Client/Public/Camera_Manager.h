@@ -43,7 +43,7 @@ public:
     _bool GetbMoveable() { return m_bMoveable; }
     void SetbMoveable(_bool bMove) { m_bMoveable = bMove; }
     _bool GetIsShake() { return m_pCurCamera->GetIsShake(); }
-    _vector GetPureCamPos() const { return m_pCurCamera->GetPureCamPos(); }
+    _fvector GetPureCamPos() const;
 
     void Play_CutScene(CUTSCENE_TYPE cutSceneType);
 
@@ -60,9 +60,9 @@ public:
         m_pCurCamera->SetDOFDesc(dof);
     }
 public:
-    const _vector& GetCurCamRight() const { return m_vCurCamRight; }
-    const _vector& GetCurCamUp() const { return m_vCurCamUp; }
-    const _vector& GetCurCamLook() const { return m_vCurCamLook; }
+    const _float4& GetCurCamRight() const { return m_vCurCamRight; }
+    const _float4& GetCurCamUp() const { return m_vCurCamUp; }
+    const _float4& GetCurCamLook() const { return m_vCurCamLook; }
 public:
     void SetPlayer(CGameObject* pPlayer);
     void Set_Level(LEVEL eLevel) { m_eCurLevel = eLevel; }
@@ -71,7 +71,7 @@ public:
     void	SetOrbitalCam() { m_pCurCamera = m_pCamera_Orbital; m_bMoveable = true; }
     void	SetCutSceneCam() { m_pCurCamera = m_pCamera_CutScene; m_bMoveable = false; }
     void	Shake_Camera(_float fIntensity = 1.f, _float fDuration = 1.f, _float fShakeFreqPos = 100.f, _float fShakeFreqRot = 40.f);
-    void	Rot_Camera(_vector vRot, _float fDuration = 1.f);
+    void	Rot_Camera(_fvector vRot, _float fDuration = 1.f);
 
     void FestivalLight_OnOff(_float fTimeDelta);
 
@@ -96,9 +96,9 @@ private:
     CCamera_CutScene* m_pCamera_CutScene = { nullptr };
 
 private:
-    _vector m_vCurCamRight = {};
-    _vector m_vCurCamUp = {};
-    _vector m_vCurCamLook = {};
+    _float4 m_vCurCamRight = {};
+    _float4 m_vCurCamUp = {};
+    _float4 m_vCurCamLook = {};
 
 private:
     _bool m_bStartGame = {};

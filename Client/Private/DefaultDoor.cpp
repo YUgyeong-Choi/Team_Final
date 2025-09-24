@@ -163,9 +163,9 @@ void CDefaultDoor::Update_ColliderPos()
 	// 위치 추출
 	_float3 vPos;
 	XMStoreFloat3(&vPos, vTranslation);
-	vPos.x += XMVectorGetX(m_vColliderOffSet);
-	vPos.y += XMVectorGetY(m_vColliderOffSet);
-	vPos.z += XMVectorGetZ(m_vColliderOffSet);
+	vPos.x += m_vColliderOffSet.x;
+	vPos.y += m_vColliderOffSet.y;
+	vPos.z += m_vColliderOffSet.z;
 
 	// 회전 추출
 	_float4 vRot;
@@ -209,13 +209,13 @@ HRESULT CDefaultDoor::Ready_Trigger(DEFAULTDOOR_DESC* pDesc)
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(pDesc->vTriggerOffset);
+	positionVec += VectorToPxVec3(XMLoadFloat4(&pDesc->vTriggerOffset));
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
 	//PxVec3 halfExtents = { 1.f,0.2f,1.f };
-	PxVec3 halfExtents = VectorToPxVec3(pDesc->vTriggerSize);
+	PxVec3 halfExtents = VectorToPxVec3(XMLoadFloat4(&pDesc->vTriggerSize));
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXTriggerCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXTriggerCom->Set_ShapeFlag(false, true, false);
@@ -369,12 +369,12 @@ HRESULT CDefaultDoor::Ready_Collider(void* pArg)
 	PxVec3 scaleVec = PxVec3(XMVectorGetX(S), XMVectorGetY(S), XMVectorGetZ(S));
 	PxQuat rotationQuat = PxQuat(XMVectorGetX(R), XMVectorGetY(R), XMVectorGetZ(R), XMVectorGetW(R));
 	PxVec3 positionVec = PxVec3(XMVectorGetX(T), XMVectorGetY(T), XMVectorGetZ(T));
-	positionVec += VectorToPxVec3(DefaultDoorDESC->vColliderOffSet);
+	positionVec += VectorToPxVec3(XMLoadFloat4(&DefaultDoorDESC->vColliderOffSet));
 
 	PxTransform pose(positionVec, rotationQuat);
 	PxMeshScale meshScale(scaleVec);
 
-	PxVec3 halfExtents = VectorToPxVec3(DefaultDoorDESC->vColliderSize);
+	PxVec3 halfExtents = VectorToPxVec3(XMLoadFloat4(&DefaultDoorDESC->vColliderSize));
 	PxBoxGeometry geom = m_pGameInstance->CookBoxGeometry(halfExtents);
 	m_pPhysXActorCom->Create_Collision(m_pGameInstance->GetPhysics(), geom, pose, m_pGameInstance->GetMaterial(L"Default"));
 	m_pPhysXActorCom->Set_ShapeFlag(true, false, true);

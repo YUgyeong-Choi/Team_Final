@@ -167,7 +167,7 @@ HRESULT CBullet::Ready_Components()
 HRESULT CBullet::Ready_Effect()
 {
     _vector vFrom = XMVectorSet(0.f, 0.f, 1.f, 0.f); // 기준: +Y
-    _vector vTo = XMVector3Normalize(m_vDirection);         // 원하는 방향
+    _vector vTo = XMVector3Normalize(XMLoadFloat3(&m_vDirection));         // 원하는 방향
 
     _vector qRot = XMQuaternionRotationVectorToVector(vFrom, vTo);
     _matrix mRot = XMMatrixRotationQuaternion(qRot);

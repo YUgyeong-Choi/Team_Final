@@ -117,7 +117,7 @@ public: /* [ 애니메이션 관련 ] */
 	eAnimCategory	GetAnimCategoryFromName(const string& stateName);
 	_vector			ComputeLatchedMoveDir(_bool bSwitchFront, _bool bSwitchBack, _bool bSwitchLeft, _bool bSwitchRight);
 	virtual void	Register_Events() override;
-
+	
 public: /* [ 컷씬 용 ] */
 	_bool	Get_HaveKey() { return m_bHaveKey; }
 	void	Set_GetKey() { m_bHaveKey = true; }
@@ -403,8 +403,8 @@ protected:
 	CPhysXControllerHitReport* m_pHitReport = { nullptr };
 
 private: /* [ 그림자 변수 ] */
-	_vector m_vShadowCam_Eye = {};
-	_vector m_vShadowCam_At = {};
+	_float4 m_vShadowCam_Eye = {};
+	_float4 m_vShadowCam_At = {};
 
 private: /* [ 소유할 수 있는 객체 ] */
 	CGameObject*			m_pTarget = { nullptr };
@@ -427,8 +427,8 @@ private: /* [ 전투관련 변수 ] */
 
 	_float  m_fReceiveDamage = {};
 	_float  m_fPerfectGardTime = {};
-	_vector m_vHitPos = {};
-	_vector m_vHitNormal = {};
+	_float4 m_vHitPos = {};
+	_float4 m_vHitNormal = {};
 	EHitDir m_eDir = EHitDir::END;
 
 	_bool   m_bGardHit = {};
@@ -447,7 +447,7 @@ private: /* [ 이동관련 변수 ] */
 	_float   m_fMoveTime = {};
 	_int	 m_iMoveStep = {};
 
-	_vector	 m_vMoveDir = {};
+	_float4	 m_vMoveDir = {};
 	_bool	 m_bSwitchLeft = {};
 	_bool	 m_bSwitchRight = {};
 	_bool	 m_bSwitchFront = {};
@@ -475,10 +475,10 @@ private: /* [ 인터렉션 관련변수 ] */
 		"Item_Get_Walk"
 	};
 	_int m_iTestInt = { 0 };
-
+	
 private: /* [ 루트모션 관련 변수 ] */
-	_vector  m_PrevWorldDelta = XMVectorZero();
-	_vector  m_PrevWorldRotation = XMVectorZero();
+	_float4  m_PrevWorldDelta = {};
+	_float4  m_PrevWorldRotation = {};
 	_bool    m_bIsFirstFrame = true;
 	_float   m_fRotSmoothSpeed = 8.0f;
 	_float   m_fSmoothSpeed = 8.0f;

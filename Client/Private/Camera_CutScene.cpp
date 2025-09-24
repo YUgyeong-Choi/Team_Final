@@ -547,19 +547,19 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			}
 
 			// 오프셋 회전 저장 (최종 회전은 update에서 적용)
-			m_vCurrentShakeRot = result;
+			XMStoreFloat4(&m_vCurrentShakeRot, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakeRot = XMLoadFloat3(&vec.front().offSetRot);
+		m_vCurrentShakeRot = _float4{ vec.front().offSetRot.x,vec.front().offSetRot.y,vec.front().offSetRot.z, 0.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetRot == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakeRot = XMLoadFloat3(&vec.back().offSetRot);
+			m_vCurrentShakeRot = _float4{ vec.back().offSetRot.x,vec.back().offSetRot.y,vec.back().offSetRot.z, 0.f };;
 }
 
 void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
@@ -605,19 +605,19 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 			}
 
 			// 오프셋 위치 저장 (최종 위치는 update에서 적용)
-			m_vCurrentShakePos = result;
+			XMStoreFloat4(&m_vCurrentShakePos, result);
 			return;
 		}
 	}
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakePos = XMLoadFloat3(&vec.front().offSetPos);
+		m_vCurrentShakePos = _float4{ vec.front().offSetPos.x,vec.front().offSetPos.y,vec.front().offSetPos.z, 1.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetPos == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakePos = XMLoadFloat3(&vec.back().offSetPos);
+			m_vCurrentShakePos = _float4{ vec.back().offSetPos.x,vec.back().offSetPos.y,vec.back().offSetPos.z, 1.f };
 }
 
 // 각도 유틸(라디안)

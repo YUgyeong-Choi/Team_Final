@@ -58,7 +58,7 @@ private:
 	_float m_fRemainTime = 2.f;
 	_float m_fDamageInterval = 0.25f; // 데미지 간격
 	_float m_fDamgeElapsedTime = 0.f; // 누적 데미지 시간
-	_vector m_vBegningRayPos = XMVectorZero();
+	_float4 m_vBegningRayPos = {};
 	vector<_float> m_SpawnEffectDistanceList; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_LastSpawnDist; // 이펙트를 생성할 거리 리스트
 	vector<_float> m_MergeDist; // 72방향에서 레이를 쏴서 얻은 거리의 평균
