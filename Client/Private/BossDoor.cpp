@@ -271,20 +271,20 @@ void CBossDoor::Register_Events()
 
 void CBossDoor::Create_CrashDoorEffect()
 {
-	CEffectContainer::DESC Lightdesc = {};
-	auto a = XMLoadFloat4x4(m_pSecondModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("joint17"))) * m_pTransformCom->Get_WorldMatrix();
-	_vector vPos = a.r[3];
-	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
+	//CEffectContainer::DESC Lightdesc = {};
+	//auto a = XMLoadFloat4x4(m_pSecondModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("joint17"))) * m_pTransformCom->Get_WorldMatrix();
+	//_vector vPos = a.r[3];
+	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
 
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Cutscene_DoorDistortion"), &Lightdesc))
-		MSG_BOX("이펙트 생성 실패함");
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_Cutscene_DoorDistortion"), &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	vPos.m128_f32[0] -= 1.f;
-	vPos.m128_f32[1] -= 1.f;
-	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
+	//vPos.m128_f32[0] -= 1.f;
+	//vPos.m128_f32[1] -= 1.f;
+	//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(vPos));
 
-	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Circle"), &Lightdesc))
-		MSG_BOX("이펙트 생성 실패함");
+	//if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Circle"), &Lightdesc))
+	//	MSG_BOX("이펙트 생성 실패함");
 }
 
 void CBossDoor::Create_RetryDoor()

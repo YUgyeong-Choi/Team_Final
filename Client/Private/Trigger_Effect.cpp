@@ -44,18 +44,18 @@ void CTrigger_Effect::Priority_Update(_float fTimeDelta)
 		// 죽기 전에 이펙트 생성하고 죽이기
 		for (size_t i = 0; i < iSize; ++i)
 		{
-			CEffectContainer::DESC eDesc = {};
+			//CEffectContainer::DESC eDesc = {};
 
-			XMStoreFloat4x4(&eDesc.PresetMatrix, XMMatrixIdentity());
+			//XMStoreFloat4x4(&eDesc.PresetMatrix, XMMatrixIdentity());
 
-			eDesc.PresetMatrix._41 = m_vMakePos[i].x;
-			eDesc.PresetMatrix._42 = m_vMakePos[i].y;
-			eDesc.PresetMatrix._43 = m_vMakePos[i].z;
+			//eDesc.PresetMatrix._41 = m_vMakePos[i].x;
+			//eDesc.PresetMatrix._42 = m_vMakePos[i].y;
+			//eDesc.PresetMatrix._43 = m_vMakePos[i].z;
 
-			CEffectContainer* pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), m_strEffectTag[i], &eDesc));
+			//CEffectContainer* pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), m_strEffectTag[i], &eDesc));
 
-			if (pEffect == nullptr)
-				MSG_BOX("asdsadsadasd");
+			//if (pEffect == nullptr)
+			//	MSG_BOX("asdsadsadasd");
 		}
 	}
 }

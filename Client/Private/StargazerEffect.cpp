@@ -197,32 +197,32 @@ void CStargazerEffect::Activate_Stargazer_Spread()
 }
 void CStargazerEffect::Activate_Stargazer_PlayerButterfly()
 {
-	if (m_pPlayerButterflyEffect)
-		return;
+	//if (m_pPlayerButterflyEffect)
+	//	return;
 
-	//플레이어의 월드를 가져온다.
-	CEffectContainer::DESC desc = {};
-	desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
+	////플레이어의 월드를 가져온다.
+	//CEffectContainer::DESC desc = {};
+	//desc.pSocketMatrix = m_pOwner->Get_TransfomCom()->Get_WorldMatrix_Ptr();
 
-	//나비 한마리를 소환한다.
-	XMStoreFloat4x4(&desc.PresetMatrix,
-		XMMatrixTranslation(
-			m_pGameInstance->Compute_Random(0.2f, 0.8f),
-			m_pGameInstance->Compute_Random(0.6f, 1.3f),
-			m_pGameInstance->Compute_Random(0.2f, 0.8f)));
-	m_pPlayerButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
-	if (m_pPlayerButterflyEffect == nullptr)
-		return;
+	////나비 한마리를 소환한다.
+	//XMStoreFloat4x4(&desc.PresetMatrix,
+	//	XMMatrixTranslation(
+	//		m_pGameInstance->Compute_Random(0.2f, 0.8f),
+	//		m_pGameInstance->Compute_Random(0.6f, 1.3f),
+	//		m_pGameInstance->Compute_Random(0.2f, 0.8f)));
+	//m_pPlayerButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
+	//if (m_pPlayerButterflyEffect == nullptr)
+	//	return;
 
-	//나비의 공전을 설정한다.
-	m_pPlayerButterflyTrans = m_pPlayerButterflyEffect->Get_TransfomCom();
-	if (m_pPlayerButterflyTrans)
-	{
-		m_pPlayerButterflyTrans->Set_Orbit(XMVectorSet(0.f, m_pGameInstance->Compute_Random(1.f, 2.f), 0.f, 0.f),
-			XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
-			m_pGameInstance->Compute_Random(0.2f, 1.f),
-			m_pGameInstance->Compute_Random(1.5f, 2.f));
-	}
+	////나비의 공전을 설정한다.
+	//m_pPlayerButterflyTrans = m_pPlayerButterflyEffect->Get_TransfomCom();
+	//if (m_pPlayerButterflyTrans)
+	//{
+	//	m_pPlayerButterflyTrans->Set_Orbit(XMVectorSet(0.f, m_pGameInstance->Compute_Random(1.f, 2.f), 0.f, 0.f),
+	//		XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
+	//		m_pGameInstance->Compute_Random(0.2f, 1.f),
+	//		m_pGameInstance->Compute_Random(1.5f, 2.f));
+	//}
 }
 
 void CStargazerEffect::Activate_Stargazer_Shrink()

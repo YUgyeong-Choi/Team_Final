@@ -319,41 +319,41 @@ HRESULT CErgoItem::Ready_Components(void* pArg)
 
 HRESULT CErgoItem::Ready_Effect(void* pArg)
 {
-	CEffectContainer::DESC desc = {};
-	desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
+	//CEffectContainer::DESC desc = {};
+	//desc.pSocketMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixIdentity());
 
 
-	//ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
+	////ERGOITEM_DESC* pDesc = static_cast<ERGOITEM_DESC*>(pArg);
 
-	wstring wsEffectName = {};
+	//wstring wsEffectName = {};
 
-	if (m_eItemTag == ITEM_TAG::PULSE_CELL)
-		wsEffectName = TEXT("EC_YW_PulseCell_Effect_Edit");
-	else if (m_eItemTag == ITEM_TAG::LOST_ERGO)
-	{
-		wsEffectName = TEXT("EC_LostErgo_alt");
-		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 0.3f, 0.f));
+	//if (m_eItemTag == ITEM_TAG::PULSE_CELL)
+	//	wsEffectName = TEXT("EC_YW_PulseCell_Effect_Edit");
+	//else if (m_eItemTag == ITEM_TAG::LOST_ERGO)
+	//{
+	//	wsEffectName = TEXT("EC_LostErgo_alt");
+	//	XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslation(0.f, 0.3f, 0.f));
 
-		/* 주변을 도는 나비 생성 및 공전 설정 */
-		m_pButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
-		if (m_pButterflyEffect == nullptr)
-			return E_FAIL;
-		m_pButterflyTrans = m_pButterflyEffect->Get_TransfomCom();
-		if (m_pButterflyTrans == nullptr)
-			return E_FAIL;
-		m_pButterflyTrans->Set_Orbit(
-			/* Center */XMVectorSet(0.f, 0.3f, 0.f, 1.f),
-			/* Axis */XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
-			/* range */0.4f,
-			/* speed */0.8f);
-	}
-	else
-		wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
+	//	/* 주변을 도는 나비 생성 및 공전 설정 */
+	//	m_pButterflyEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Butterfly_superfastsupermany"), &desc));
+	//	if (m_pButterflyEffect == nullptr)
+	//		return E_FAIL;
+	//	m_pButterflyTrans = m_pButterflyEffect->Get_TransfomCom();
+	//	if (m_pButterflyTrans == nullptr)
+	//		return E_FAIL;
+	//	m_pButterflyTrans->Set_Orbit(
+	//		/* Center */XMVectorSet(0.f, 0.3f, 0.f, 1.f),
+	//		/* Axis */XMVector3Normalize(XMVectorSet(0.f, 1.f, 0.f, 0.f)),
+	//		/* range */0.4f,
+	//		/* speed */0.8f);
+	//}
+	//else
+	//	wsEffectName = TEXT("EC_ErgoItem_M3P1_WB");
 
-	m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
-	if (m_pEffect == nullptr)
-		return E_FAIL;
+	//m_pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), wsEffectName, &desc));
+	//if (m_pEffect == nullptr)
+	//	return E_FAIL;
 
 
 

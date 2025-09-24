@@ -1540,8 +1540,8 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 
 		XMStoreFloat4x4(&desc.PresetMatrix, XMMatrixTranslationFromVector(position));
 	}
-	if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//if (MAKE_EFFECT(ENUM_CLASS(m_iLevelID), stEffectTag, &desc) == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 }
 
 HRESULT CFestivalLeader::EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce) // 어떤 이펙트를 스폰할지 결정
@@ -1600,42 +1600,42 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 
 HRESULT CFestivalLeader::Ready_Effect()
 {
-	CGameObject* pEC = { nullptr };
-	CEffectContainer::DESC P2HeadSmokeDesc = {};
-	P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
-	P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	//CGameObject* pEC = { nullptr };
+	//CEffectContainer::DESC P2HeadSmokeDesc = {};
+	//P2HeadSmokeDesc.pSocketMatrix = m_BoneRefs[Neck]->Get_CombinedTransformationMatrix();
+	//P2HeadSmokeDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixIdentity());
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
-	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
-	
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_L"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_L"), false);
+	//
 
-	/**************************************/
-	XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
-	pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
-	if (pEC == nullptr)
-		MSG_BOX("이펙트 생성 실패함");
+	///**************************************/
+	//XMStoreFloat4x4(&P2HeadSmokeDesc.PresetMatrix, XMMatrixRotationAxis(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f)));
+	//pEC = MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fes_P2_HeadSmoke"), &P2HeadSmokeDesc);
+	//if (pEC == nullptr)
+	//	MSG_BOX("이펙트 생성 실패함");
 
-	EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
-	EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
+	//EFFECT_MANAGER->Store_EffectContainer(TEXT("Fes_P2_HeadSmoke_R"), static_cast<CEffectContainer*>(pEC));
+	//EFFECT_MANAGER->Set_Active_Effect(TEXT("Fes_P2_HeadSmoke_R"), false);
 
-	/************************ 소드 트레일 이펙트 **************************/
-	CSwordTrailEffect::DESC desc = {};
-	desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	desc.iLevelID = m_iLevelID;
+	///************************ 소드 트레일 이펙트 **************************/
+	//CSwordTrailEffect::DESC desc = {};
+	//desc.pParentCombinedMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//desc.iLevelID = m_iLevelID;
 
-	desc.pInnerSocketMatrix = m_BoneRefs[EBossBones::RightHand]->Get_CombinedTransformationMatrix();
-	desc.pOuterSocketMatrix = m_BoneRefs[EBossBones::Hammer]->Get_CombinedTransformationMatrix();
-	m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
-	if (!m_pTrailEffect)
-		return E_FAIL;
+	//desc.pInnerSocketMatrix = m_BoneRefs[EBossBones::RightHand]->Get_CombinedTransformationMatrix();
+	//desc.pOuterSocketMatrix = m_BoneRefs[EBossBones::Hammer]->Get_CombinedTransformationMatrix();
+	//m_pTrailEffect = dynamic_cast<CSwordTrailEffect*>(MAKE_SINGLEEFFECT(ENUM_CLASS(m_iLevelID), TEXT("TE_Test_20_30_3"), TEXT("Layer_Effect"), 0.f, 0.f, 0.f, &desc));
+	//if (!m_pTrailEffect)
+	//	return E_FAIL;
 
-	m_pTrailEffect->Set_TrailActive(false);
+	//m_pTrailEffect->Set_TrailActive(false);
 
-	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
+	////EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
 }
 

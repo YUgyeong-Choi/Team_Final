@@ -174,12 +174,12 @@ void COil::Explode_Oil()
 
 			// ÀÌÆåÆ® »ý¼º
 
-			CEffectContainer::DESC Desc = {};
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Desc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
+			//CEffectContainer::DESC Desc = {};
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Desc.PresetMatrix, m_pTransformCom->Get_WorldMatrix());
 
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Desc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(m_pGameInstance->GetCurrentLevelIndex(), TEXT("EC_GL_Explosion"), &Desc));
 
 			m_pSoundCom->Play("SE_NPC_SK_FX_FIre_Explo_Heavy_01");
 			m_bSoundPlaying = true;

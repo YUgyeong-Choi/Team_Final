@@ -551,32 +551,32 @@ HRESULT CShortCutDoor::Render_Key()
 
 void CShortCutDoor::Start_Effect(_float fTimeDelta)
 {
-	m_fEffectTime += fTimeDelta;
+	//m_fEffectTime += fTimeDelta;
 
-	CEffectContainer::DESC ECDesc = {};
-	ECDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	//CEffectContainer::DESC ECDesc = {};
+	//ECDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
 
-	if (m_bCanOpen) // ¹® ¿°
-	{
-		if (m_fEffectTime > 1.15f)
-		{
-			m_bEffectActive = false;
-			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.6f, -0.42f));
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_UnLocked_Door"), &ECDesc))
-				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
-		}
-	}
-	else 	
-	{
-		if (m_fEffectTime > 1.4f)
-		{
-			m_bEffectActive = false;
-			XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.5f, 0.2f));
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_Locked_LightningDoor_alt_real"), &ECDesc))
-				MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
-			m_pPlayer->Create_LeftArm_Lightning_Hand(TEXT("EC_Shortcut_Locked_LightningHand"));
-		}
-	}
+	//if (m_bCanOpen) // ¹® ¿°
+	//{
+	//	if (m_fEffectTime > 1.15f)
+	//	{
+	//		m_bEffectActive = false;
+	//		XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.6f, -0.42f));
+	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_UnLocked_Door"), &ECDesc))
+	//			MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
+	//	}
+	//}
+	//else 	
+	//{
+	//	if (m_fEffectTime > 1.4f)
+	//	{
+	//		m_bEffectActive = false;
+	//		XMStoreFloat4x4(&ECDesc.PresetMatrix, XMMatrixTranslation(0.f, 1.5f, 0.2f));
+	//		if (nullptr == MAKE_EFFECT(ENUM_CLASS(LEVEL::KRAT_CENTERAL_STATION), TEXT("EC_Shortcut_Locked_LightningDoor_alt_real"), &ECDesc))
+	//			MSG_BOX("ÀÌÆåÆ® »ý¼º ½ÇÆÐ");
+	//		m_pPlayer->Create_LeftArm_Lightning_Hand(TEXT("EC_Shortcut_Locked_LightningHand"));
+	//	}
+	//}
 }
 
 void CShortCutDoor::Play_Sound(_float fTimeDelta)

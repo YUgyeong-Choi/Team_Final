@@ -1084,21 +1084,21 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1550)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
-
-
-
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-
-			Lightdesc.PresetMatrix._41 = 4.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -203.f;
+			//CEffectContainer* pEffect = { nullptr };
 
 
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+
+			//Lightdesc.PresetMatrix._41 = 4.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -203.f;
+
+
+
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			
 
@@ -1110,18 +1110,18 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1600)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
+			//CEffectContainer* pEffect = { nullptr };
 
 
 
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
-			Lightdesc.PresetMatrix._41 = -4.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -205.f;
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(15.f)));
+			//Lightdesc.PresetMatrix._41 = -4.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -205.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
 			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
@@ -1130,15 +1130,15 @@ void CCamera_CutScene::Event()
 		if (m_iCurrentFrame == 1650)
 		{
 			//EFFECT_MANAGER->
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
-			Lightdesc.PresetMatrix._41 = 2.3f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -200.f;
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationX(XMConvertToRadians(-15.f)));
+			//Lightdesc.PresetMatrix._41 = 2.3f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -200.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
 			m_pGameInstance->Change_BGM("MU_MS_Boss_FireEater_PH01_Intro", "MU_MS_Boss_FireEater_PH02");
 
@@ -1148,18 +1148,18 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1700)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
-			Lightdesc.PresetMatrix._41 = -1.f;
-			Lightdesc.PresetMatrix._42 = 0.3f;
-			Lightdesc.PresetMatrix._43 = -210.f;
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationZ(XMConvertToRadians(-15.f)));
+			//Lightdesc.PresetMatrix._41 = -1.f;
+			//Lightdesc.PresetMatrix._42 = 0.3f;
+			//Lightdesc.PresetMatrix._43 = -210.f;
 
-			CEffectContainer* pEffect = { nullptr };
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
+			//CEffectContainer* pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Steam"), &Lightdesc));
 
-			if (pEffect == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
 
 			m_pSoundCom->Stop("AMB_OJ_FX_Steam_S_04");
 			m_pSoundCom->Play("AMB_OJ_FX_Steam_S_04");
@@ -1208,16 +1208,16 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 975)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
 
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 407.f;
-			Lightdesc.PresetMatrix._42 = 15.7f;
-			Lightdesc.PresetMatrix._43 = -49.f;
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			//Lightdesc.PresetMatrix._41 = 407.f;
+			//Lightdesc.PresetMatrix._42 = 15.7f;
+			//Lightdesc.PresetMatrix._43 = -49.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_Smoke_Hand"), &Lightdesc));
 		}
 
 		if (m_iCurrentFrame == 1005)
@@ -1289,18 +1289,18 @@ void CCamera_CutScene::Event()
 
 		if (m_iCurrentFrame == 1430)
 		{
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 407.f;
-			Lightdesc.PresetMatrix._42 = 15.7f;
-			Lightdesc.PresetMatrix._43 = -49.f;
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+			//Lightdesc.PresetMatrix._41 = 407.f;
+			//Lightdesc.PresetMatrix._42 = 15.7f;
+			//Lightdesc.PresetMatrix._43 = -49.f;
 
-			CEffectContainer* pEffect = { nullptr };
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
+			//CEffectContainer* pEffect = { nullptr };
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Metal_Paper_Dust"), &Lightdesc));
 
-			if (pEffect == nullptr)
-				MSG_BOX("이펙트 생성 실패함");
+			//if (pEffect == nullptr)
+			//	MSG_BOX("이펙트 생성 실패함");
 
 			//pEffect = { nullptr };
 			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_YW_Paper_Dust"), &Lightdesc));
@@ -1332,26 +1332,26 @@ void CCamera_CutScene::Event()
 
 			// 먼지 이펙트 생성
 
-			CEffectContainer::DESC Lightdesc = {};
+			//CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(15.f)));
-			Lightdesc.PresetMatrix._41 = -0.28f;
-			Lightdesc.PresetMatrix._42 = 0.29f;
-			Lightdesc.PresetMatrix._43 = -177.f;
+			//CEffectContainer* pEffect = { nullptr };
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(15.f)));
+			//Lightdesc.PresetMatrix._41 = -0.28f;
+			//Lightdesc.PresetMatrix._42 = 0.29f;
+			//Lightdesc.PresetMatrix._43 = -177.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
 
-			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke1"), pEffect);
+			//CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke1"), pEffect);
 
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(-15.f)));
-			Lightdesc.PresetMatrix._41 = -0.28f;
-			Lightdesc.PresetMatrix._42 = 0.29f;
-			Lightdesc.PresetMatrix._43 = -177.f;
+			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixRotationY(XMConvertToRadians(-15.f)));
+			//Lightdesc.PresetMatrix._41 = -0.28f;
+			//Lightdesc.PresetMatrix._42 = 0.29f;
+			//Lightdesc.PresetMatrix._43 = -177.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
+			//pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc));
 
-			CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
+			//CEffect_Manager::Get_Instance()->Store_EffectContainer(TEXT("FinalDoorSmoke2"), pEffect);
 
 			m_pSoundCom->SetVolume(1.f);
 			m_pSoundCom->Play("EndingSound_Effect");
@@ -1367,31 +1367,31 @@ void CCamera_CutScene::Event()
 
 
 		// 불 띄우기
-		if (m_iCurrentFrame == 260)
-		{
-			CEffectContainer::DESC Lightdesc = {};
+		//if (m_iCurrentFrame == 260)
+		//{
+		//	CEffectContainer::DESC Lightdesc = {};
 
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = 0.25f;
-			Lightdesc.PresetMatrix._42 = 2.2f;
-			Lightdesc.PresetMatrix._43 = -150.4f;
+		//	CEffectContainer* pEffect = { nullptr };
+		//	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+		//	Lightdesc.PresetMatrix._41 = 0.25f;
+		//	Lightdesc.PresetMatrix._42 = 2.2f;
+		//	Lightdesc.PresetMatrix._43 = -150.4f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
-		}
+		//	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		//}
 
-		if (m_iCurrentFrame == 290)
-		{
-			CEffectContainer::DESC Lightdesc = {};
-			  
-			CEffectContainer* pEffect = { nullptr };
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.PresetMatrix._41 = -0.7f;
-			Lightdesc.PresetMatrix._42 = 2.5f;
-			Lightdesc.PresetMatrix._43 = -150.f;
+		//if (m_iCurrentFrame == 290)
+		//{
+		//	CEffectContainer::DESC Lightdesc = {};
+		//	  
+		//	CEffectContainer* pEffect = { nullptr };
+		//	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
+		//	Lightdesc.PresetMatrix._41 = -0.7f;
+		//	Lightdesc.PresetMatrix._42 = 2.5f;
+		//	Lightdesc.PresetMatrix._43 = -150.f;
 
-			pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
-		}
+		//	pEffect = static_cast<CEffectContainer*>(MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_OilballProjectile_test_M1P1"), &Lightdesc));
+		//}
 
 		if (m_iCurrentFrame == 430)
 		{

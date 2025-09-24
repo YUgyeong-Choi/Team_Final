@@ -310,19 +310,19 @@ void CBreakableMesh::Break()
 		// 이펙트 생성해준다
 		if (!m_bMakeEffect)
 		{
-			CEffectContainer::DESC eDesc = {};
+			//CEffectContainer::DESC eDesc = {};
 
-			_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
+			//_vector vPos = m_pTransformCom->Get_State(STATE::POSITION);
 
-			XMStoreFloat4x4(&eDesc.PresetMatrix, XMMatrixScaling(1.f, 2.f, 1.f));
+			//XMStoreFloat4x4(&eDesc.PresetMatrix, XMMatrixScaling(1.f, 2.f, 1.f));
 
 
-			eDesc.PresetMatrix._41 = vPos.m128_f32[0] + 4.09f;
-			eDesc.PresetMatrix._42 = vPos.m128_f32[1] - 1.45f; 
-			eDesc.PresetMatrix._43 = vPos.m128_f32[2] + 1.21f;
+			//eDesc.PresetMatrix._41 = vPos.m128_f32[0] + 4.09f;
+			//eDesc.PresetMatrix._42 = vPos.m128_f32[1] - 1.45f; 
+			//eDesc.PresetMatrix._43 = vPos.m128_f32[2] + 1.21f;
 
-			if (nullptr == MAKE_EFFECT(m_iLevelID, TEXT("EC_GL_Smoke_UpToDown"), &eDesc))
-				MSG_BOX("make fail effect smokeupdown");
+			//if (nullptr == MAKE_EFFECT(m_iLevelID, TEXT("EC_GL_Smoke_UpToDown"), &eDesc))
+			//	MSG_BOX("make fail effect smokeupdown");
 			
 			
 			m_bMakeEffect = true;
