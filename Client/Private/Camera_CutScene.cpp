@@ -531,7 +531,7 @@ void CCamera_CutScene::Interp_OffsetRot(_int curFrame)
 			switch (interp)
 			{
 			case INTERPOLATION_CAMERA::NONE:
-				m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 0.f };
+				m_vCurrentShakeRot = { 0.f, 0.f, 0.f, 1.f };
 				break;
 			case INTERPOLATION_CAMERA::LERP:
 			default:
@@ -614,12 +614,12 @@ void CCamera_CutScene::Interp_OffsetPos(_int curFrame)
 
 	// 범위 바깥이면 시작/끝값
 	if (curFrame <= vec.front().iKeyFrame)
-		m_vCurrentShakePos = _float4{ vec.front().offSetPos.x,vec.front().offSetPos.y,vec.front().offSetPos.z, 1.f };
+		m_vCurrentShakePos = _float4{ vec.front().offSetPos.x,vec.front().offSetPos.y,vec.front().offSetPos.z, 0.f };
 	else if (curFrame >= vec.back().iKeyFrame)
 		if (vec.back().interpOffSetPos == INTERPOLATION_CAMERA::NONE)
 			m_vCurrentShakePos = { 0.f, 0.f, 0.f, 0.f };
 		else
-			m_vCurrentShakePos = _float4{ vec.back().offSetPos.x,vec.back().offSetPos.y,vec.back().offSetPos.z, 1.f };
+			m_vCurrentShakePos = _float4{ vec.back().offSetPos.x,vec.back().offSetPos.y,vec.back().offSetPos.z, 0.f };
 }
 
 // 각도 유틸(라디안)
