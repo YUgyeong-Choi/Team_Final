@@ -37,8 +37,10 @@ public:
 	//void 
 
 private:
-	CModel*			m_pModelCom = { nullptr };
-
+	CModel*					m_pModelCom = { nullptr };
+	vector<vector<_float>>	m_CDFPerMesh;
+	//vector<_float>			m_
+	_uint					m_iNumMesh = {};
 
 private:
 	virtual HRESULT Ready_Components() override;

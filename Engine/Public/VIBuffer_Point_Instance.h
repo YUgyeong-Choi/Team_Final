@@ -71,6 +71,9 @@ public:
 	void Set_InitRotation(_fmatrix matRot);
 
 	_float3 Get_InitLocalCenter() { return m_vLocalCenter; }
+
+	void Bind_MeshEmitterDesc()
+
 #ifdef USE_IMGUI
 	void Set_CBuffer(const PARTICLECBUFFER& tCBuffer) { m_tCBuffer = tCBuffer; }
 	const PARTICLECBUFFER& Get_CBuffer() { return m_tCBuffer; }

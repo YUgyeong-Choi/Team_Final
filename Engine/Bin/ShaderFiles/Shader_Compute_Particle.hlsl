@@ -1,3 +1,6 @@
+// HLSL (Compute Shader)
+
+float Random(uint iSeed, float fMin, float fMax);
 
 /* [ 파티클 개별 속성 통합본 ] */
 struct ParticleParam
@@ -86,23 +89,103 @@ struct AnimMeshVertex
     float4 vBlendWeights : BLENDWEIGHT;
 };
 
-cbuffer BoneTransforms : register(b1)
+struct MeshInfo
 {
-    matrix g_BoneMatrices[512];
+    uint vertexOffset; // g_AllVertices에서의 시작 위치
+    uint indexOffset; // g_AllIndices에서의 시작 위치
+    uint cdfOffset; // g_AllCDFs에서의 시작 위치
+    uint triangleCount;
 };
+
+cbuffer SkinningCB : register(b1)
+{
+    row_major matrix g_BoneMatrices[512];
+    uint g_NumMeshes;
+};
+
 // 모델의 월드 행렬 (모델 자체의 변환)
 cbuffer ModelTransforms : register(b2)
 {
     matrix g_WorldMatrix;
 };
 
+StructuredBuffer<AnimMeshVertex> g_AllVertices : register(t1);
+StructuredBuffer<uint> g_AllIndices : register(t2);
+StructuredBuffer<float> g_AllCDFs : register(t3);
+StructuredBuffer<float> g_MeshAreaCDF : register(t4);
+StructuredBuffer<MeshInfo> g_MeshInfo : register(t5);
+
 /************************************************************************************************/
 
-// HLSL (Compute Shader)
+// --- 2. CDF 탐색을 위한 이진 탐색 함수 ---
 
-// 스키닝 계산 함수 - VtxAnimMesh VS_MAIN 참조
-float4 CalculateSkinnedPosition(AnimMeshVertex vertex)
+uint BinarySearch(StructuredBuffer<float> cdf, uint offset, uint count, float value)
 {
+    uint low = 0;
+    uint high = count - 1;
+    uint mid = 0;
+
+    while (low <= high)
+    {
+        mid = low + (high - low) / 2;
+        float cdfVal = cdf[offset + mid];
+        float prevCdfVal = (mid == 0) ? 0.0f : cdf[offset + mid - 1];
+        
+        if (value > prevCdfVal && value <= cdfVal)
+        {
+            return mid;
+        }
+        else if (value > cdfVal)
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+    return mid; // 보통은 루프 안에서 찾아야 함
+}
+
+
+// --- 3. 메쉬에서 위치를 샘플링하는 메인 함수 ---
+
+float3 SpawnOnMesh(uint particleID)
+{
+    // --- 1단계: 메쉬 선택 ---
+    float r_mesh = Random(particleID, 0.f, 1.f);
+    uint selectedMeshIndex = BinarySearch(g_MeshAreaCDF, 0, g_NumMeshes, r_mesh);
+    MeshInfo meshInfo = g_MeshInfo[selectedMeshIndex];
+
+    // --- 2단계: 삼각형 선택 ---
+    float r_tri = Random(particleID + 1, 0.f, 1.f);
+    uint selectedTriIndex = BinarySearch(g_AllCDFs, meshInfo.cdfOffset, meshInfo.triangleCount, r_tri);
+
+    // --- 3단계: 삼각형 내 위치 샘플링 (바리센트릭) ---
+    uint i0 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 0];
+    uint i1 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 1];
+    uint i2 = g_AllIndices[meshInfo.indexOffset + selectedTriIndex * 3 + 2];
+
+    AnimMeshVertex v0 = g_AllVertices[meshInfo.vertexOffset + i0];
+    AnimMeshVertex v1 = g_AllVertices[meshInfo.vertexOffset + i1];
+    AnimMeshVertex v2 = g_AllVertices[meshInfo.vertexOffset + i2];
+    
+    float r1 = Random(particleID + 2, 0.f, 1.f);
+    float r2 = Random(particleID + 3, 0.f, 1.f);
+    if (r1 + r2 > 1.0f)
+    {
+        r1 = 1.0f - r1;
+        r2 = 1.0f - r2;
+    }
+    float r0 = 1.0f - r1 - r2;
+
+    // 위치, 가중치 등 보간
+    float3 localPos = v0.Pos * r0 + v1.Pos * r1 + v2.Pos * r2;
+    float4 weights = v0.Weights * r0 + v1.Weights * r1 + v2.Weights * r2;
+    // 뼈 ID는 가장 가중치가 높은 버텍스의 것을 따르는 것이 간단함
+    uint4 boneIDs = v0.BoneIDs;
+
+    // --- 4단계: 스키닝 ---
     float fWeightW = 1.f - (vertex.vBlendWeights.x + vertex.vBlendWeights.y + vertex.vBlendWeights.z);
     
     matrix BoneMatrix = g_BoneMatrices[vertex.vBlendIndices.x] * vertex.vBlendWeights.x +
@@ -111,9 +194,13 @@ float4 CalculateSkinnedPosition(AnimMeshVertex vertex)
         g_BoneMatrices[vertex.vBlendIndices.w] * fWeightW;
 
     vector vPosition = mul(vector(vertex.vPosition, 1.f), BoneMatrix);
-    
-    return vPosition;
+
+
+    // --- 5단계: 월드 변환 ---
+    return mul(vPosition, g_CombinedMatrix).xyz;
 }
+
+
 
 /************************************************************************************************/
 // 공전

@@ -29,6 +29,9 @@ HRESULT CMeshEmitter::Initialize(void* pArg)
 	
 	Create_CDF();
 
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -88,57 +91,61 @@ HRESULT CMeshEmitter::Bind_ShaderResources()
 
 void CMeshEmitter::Create_CDF()
 {
-	_uint iNumMesh = m_pModelCom->Get_NumMeshes();
+    m_iNumMesh = m_pModelCom->Get_NumMeshes();
+    m_CDFPerMesh.resize(m_iNumMesh); // 메쉬마다 CDF 배열을 저장할 컨테이너
 
-	m_CDFPerMesh.resize(iNumMesh); // 메쉬마다 CDF 배열을 저장할 컨테이너
+    for (_uint iMesh = 0; iMesh < m_iNumMesh; ++iMesh)
+    {
+        auto* pMesh = m_pModelCom->Get_Mesh(iMesh);
+        const auto& vertices = pMesh->Get_Vertices();
+        const auto& indices = pMesh->Get_Indices();
+        const _uint iNumIndices = pMesh->Get_NumIndices();
 
-	for (_uint iMesh = 0; iMesh < iNumMesh; iMesh++)
-	{
-		auto* pMesh = m_pModelCom->Get_Mesh(iMesh); // 메쉬 객체 가져오기
-		const auto& vertices = pMesh->Get_Vertices(); // 정점 배열
-		const auto& indices = pMesh->Get_Indices();   // 인덱스 배열 (삼각형 기준)
+        const _uint triCount = iNumIndices / 3;
+        if (triCount == 0) // 삼각형이 없는 메쉬는 건너뛰기
+            continue;
 
-		size_t triCount = (indices) / 3;
+        // CDF 벡터를 필요한 크기로 미리 할당
+        vector<_float> cdf(triCount);
+        _float totalArea = 0.0f;
 
-		std::vector<float> areas(triCount);
-		std::vector<float> cdf(triCount);
+        // 1. 면적 계산과 누적합(CDF) 계산을 한 번의 루프로 통합
+        for (_uint t = 0; t < triCount; ++t)
+        {
+            // 인덱스로부터 버텍스 위치 가져오기
+            _float3 v0 = vertices[indices[t * 3 + 0]];
+            _float3 v1 = vertices[indices[t * 3 + 1]];
+            _float3 v2 = vertices[indices[t * 3 + 2]];
 
-		// 1. 각 삼각형의 면적 계산
-		for (size_t t = 0; t < triCount; t++)
-		{
-			XMFLOAT3 v0 = vertices[indices[t * 3 + 0]].vPosition;
-			XMFLOAT3 v1 = vertices[indices[t * 3 + 1]].vPosition;
-			XMFLOAT3 v2 = vertices[indices[t * 3 + 2]].vPosition;
+            // 면적 계산
+            _vector e1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
+            _vector e2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
+            _float area = 0.5f * XMVectorGetX(XMVector3Length(XMVector3Cross(e1, e2)));
 
-			XMVECTOR e1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
-			XMVECTOR e2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
-			float area = 0.5f * XMVectorGetX(XMVector3Length(XMVector3Cross(e1, e2)));
+            // 누적합 계산
+            totalArea += area;
+            cdf[t] = totalArea;
+        }
 
-			areas[t] = area;
-		}
+        // 2. CDF 정규화 (0.0 ~ 1.0 사이 값으로)
+        if (totalArea > 1e-6f) // 총 면적이 0에 가까운 경우(예: 모든 삼각형이 퇴화) 나누기 방지
+        {
+            for (_uint t = 0; t < triCount; ++t)
+            {
+                cdf[t] /= totalArea;
+            }
+        }
 
-		// 2. 누적합(CDF) 계산
-		float accum = 0.0f;
-		for (size_t t = 0; t < triCount; t++)
-		{
-			accum += areas[t];
-			cdf[t] = accum;
-		}
-
-		// 3. 메쉬별로 저장
-		m_CDFPerMesh[iMesh] = std::move(cdf);
-
-		// 필요하다면 총 면적도 따로 저장 가능
-		// m_TotalAreaPerMesh[iMesh] = accum;
-	}
+        // 3. 메쉬별로 저장
+        m_CDFPerMesh[iMesh] = std::move(cdf);
+    }
 }
-
 
 _float CMeshEmitter::CalcTriangleArea(const _float3& v0, const _float3& v1, const _float3& v2)
 {
-	_vector e1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
-	_vector e2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
-	return 0.5f * XMVectorGetX(XMVector3Length(XMVector3Cross(e1, e2)));
+	//_vector e1 = XMLoadFloat3(&v1) - XMLoadFloat3(&v0);
+	//_vector e2 = XMLoadFloat3(&v2) - XMLoadFloat3(&v0);
+	//return 0.5f * XMVectorGetX(XMVector3Length(XMVector3Cross(e1, e2)));
 }
 
 CMeshEmitter* CMeshEmitter::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -28,7 +28,6 @@ public:
 		/* Buffer Tag */
 		_wstring			strBufferTag;
 
-
 	}DESC;
 
 protected:
@@ -69,6 +68,7 @@ protected:
 	_float						m_fMaxLifeTime = {};
 	_bool						m_bLocal = { true };
 	_float						m_fStretchFactor = { 0.015f };
+
 protected:
 	virtual HRESULT Ready_Components() override;
 	virtual HRESULT Bind_ShaderResources() override;
