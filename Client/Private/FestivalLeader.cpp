@@ -114,6 +114,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
+#ifdef _DEBUG
 	if (KEY_DOWN(DIK_B))
 	{
 		EnterCutScene();
@@ -130,12 +131,9 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_I))
 	{
-	
 		m_fHp -= 500.f;
-	//	SwitchSecondEmissive(true, 1.f);
-		//	ReChallenge();
 	}
-#ifdef _DEBUG
+
 
 
 	
@@ -423,29 +421,6 @@ void CFestivalLeader::Ready_BoneInformation()
 void CFestivalLeader::Update_Collider()
 {
 	__super::Update_Collider();
-	// static 변수로 오프셋 값을 선언하여 키 입력에 따라 값이 유지되도록 함
-	static _float fOffsetX = 0.f;
-	static _float fOffsetY = 0.f;
-	static _float fOffsetZ = 0.f;
-
-	if (KEY_DOWN(DIK_W)) { // W 키: Z축 증가 (Up)
-		fOffsetZ += 0.1f;
-	}
-	if (KEY_DOWN(DIK_S)) { // S 키: Z축 감소 (Down)
-		fOffsetZ -= 0.1f;
-	}
-	if (KEY_DOWN(DIK_A)) { // A 키: X축 감소 (Left)
-		fOffsetX -= 0.1f;
-	}
-	if (KEY_DOWN(DIK_D)) { // D 키: X축 증가 (Right)
-		fOffsetX += 0.1f;
-	}
-	if (KEY_DOWN(DIK_E)) { // E 키: Y축 증가 (Page Up)
-		fOffsetY += 0.1f;
-	}
-	if (KEY_DOWN(DIK_Q)) { // Q 키: Y축 감소 (Page Down)
-		fOffsetY -= 0.1f;
-	}
 
 	for (_int i = 0; i < EBossBones::Collider_Count; i++)
 	{
@@ -453,7 +428,6 @@ void CFestivalLeader::Update_Collider()
 
 		if (i == EBossBones::Hammer)
 		{
-			//_vector vWorldOffset = XMVectorSet(fOffsetX, fOffsetY, fOffsetZ, 1.f);
 			_vector vWorldOffset = XMVectorSet(1.5f, 0.f, 1.49011612e-08f, 1.f);
 			_matrix matWorldOffset = XMMatrixTranslationFromVector(vWorldOffset);
 			m_Colliders[i]->Set_Transform(GetBonePose(m_BoneRefs[i], &matWorldOffset));
@@ -757,13 +731,11 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		{
 			m_pAnimator->SetBool("IsCombo", false);
 		}
-		//m_eAttackType = EAttackType::NORMAL;
 	}
 	break;
 	case Client::CFestivalLeader::CrossSlam:
 	{
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFestivalLeader::JumpAttack:
@@ -784,15 +756,12 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		if (m_fCanSmashDistance >= Get_DistanceToPlayer())
 			m_pAnimator->SetInt("SmashCount", iSmashCount);
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::STAMP;
 	}
 	break;
 	case Client::CFestivalLeader::Spin:
-		//	m_eAttackType = EAttackType::NORMAL;
 		break;
 	case Client::CFestivalLeader::HalfSpin:
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::FURY_AIRBORNE;
 		break;
 	case Client::CFestivalLeader::HammerSlam:
 	{
@@ -800,23 +769,18 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	}
 	break;
 	case Client::CFestivalLeader::DashSwing:
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 		break;
 	case Client::CFestivalLeader::Swing:
 	{
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFestivalLeader::FuryHammerSlam:
-		//	m_eAttackType = EAttackType::FURY_STAMP;
 		break;
 	case Client::CFestivalLeader::FurySwing:
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
 		break;
 	case Client::CFestivalLeader::FuryBodySlam:
-		//	m_eAttackType = EAttackType::FURY_STAMP;
 		break;
 	default:
 		break;
@@ -830,7 +794,6 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	{
 		m_bRootMotionClamped = false;
 	}
-	//static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
 void CFestivalLeader::Register_Events()
@@ -998,106 +961,78 @@ void CFestivalLeader::Register_Events()
 		});
 
 
-	m_pAnimator->RegisterEventListener("OneHandSlamEffect", [this]()
+	m_pAnimator->RegisterEventListener("OneHandSlam_L_Effect", [this]()
 		{
-			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)
-				|| m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop3)
-				|| m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop))
+
+			EffectSpawn_Active(EF_ONE_HANDSLAM_L, true);
+
+			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop))
 			{
-				m_bLeftHand = m_bLeftHand ? false : true;
-			}
-			else
-			{
-				m_bLeftHand = false;
-			}
-
-			EffectSpawn_Active(EF_ONE_HANDSLAM, true);
-
-			if (m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_FuryBodySlam_Loop) || m_iCurNodeID == ENUM_CLASS(BossStateID::Atk_AlternateSmash_Loop)/*|| GetFuryState() == CBossUnit::EFuryState::Fury*/)
-			{
-				//이거 키면 절할 때 두손에서 이펙트 생겨버려서 z파이팅나버림,
-				//그렇다고 꺼버리면 한손 씩 땅찍는 공격 때 오른손 데칼이 안나옴
-				//절할 때는 하나만 나오게 하고 싶은데 어케할까요 장원햄(이걸로 해결한듯)
-
-				//이제는 퓨리큰절 할때만 두손에서 나와버림
-
 				Spawn_Decal(m_BoneRefs[EBossBones::Neck],
 					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
 					TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
-					XMVectorSet(10.f, 1.f, 10.f, 0));
+					XMVectorSet(5.f, 1.f, 5.f, 0));
 
 			}
-			else if (m_bLeftHand)
+			else
 			{
 				Spawn_Decal(m_BoneRefs[LeftHand],
 					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
 					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-					XMVectorSet(5.f, 0.5f, 5.f, 0));
+					XMVectorSet(5.f, 0.5f, 5.f, 0), 1.5f);
 			}
-			else
-			{
-				Spawn_Decal(m_pRightWeaponBone,
-					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-					XMVectorSet(5.f, 0.5f, 5.f, 0));
-			}
+		});
+
+	m_pAnimator->RegisterEventListener("OneHandSlam_R_Effect", [this]()
+		{
+			EffectSpawn_Active(EF_ONE_HANDSLAM_R, true);
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
+				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+				XMVectorSet(5.f, 0.5f, 5.f, 0), 1.5f);
 		});
 
 	m_pAnimator->RegisterEventListener("LeftScratchEffect", [this]()
 		{
-			m_bLeftHand = true;
-			EffectSpawn_Active(EF_SCRATCH, true);
+			EffectSpawn_Active(EF_SCRATCH_L, true);
 		});
 
 	m_pAnimator->RegisterEventListener("RightScratchEffect", [this]()
 		{
-			m_bLeftHand = false;
-			EffectSpawn_Active(EF_SCRATCH, true);
+			EffectSpawn_Active(EF_SCRATCH_R, true);
 
 		});
 
 	m_pAnimator->RegisterEventListener("SlamNoSmokeEffect", [this]()
 		{
-			m_bLeftHand = true;
-			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE_L, true);
 
 			Spawn_Decal(m_BoneRefs[LeftHand],
-				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
 				XMVectorSet(5.f, 0.5f, 5.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("SmokeEffect", [this]()
 		{
-			m_bLeftHand = true;
 			EffectSpawn_Active(EF_SMOKE, true);
-		});
-
-	m_pAnimator->RegisterEventListener("KneeEffect", [this]()
-		{
-			m_bLeftHand = true;
-			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
 		});
 
 	m_pAnimator->RegisterEventListener("LeftFallingEffect", [this]()
 		{
-			m_bLeftHand = true;
-			m_bLeftKnee = true;
-			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
-			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+			EffectSpawn_Active(EF_NOSMOKE_KNEE_L, true);
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE_L, true);
 
 			Spawn_Decal(m_BoneRefs[EBossBones::Neck],
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Normal"),
 				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
-				XMVectorSet(10.f, 1.f, 10.f, 0));
+				XMVectorSet(5.f, 1.f, 5.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("RightFallingEffect", [this]()
 		{
-			m_bLeftHand = false;
-			m_bLeftKnee = false;
-			EffectSpawn_Active(EF_NOSMOKE_KNEE, true);
-			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE, true);
+			EffectSpawn_Active(EF_NOSMOKE_KNEE_R, true);
+			EffectSpawn_Active(EF_DEFAULT_SLAM_NOSMOKE_R, true);
 		});
 
 	m_pAnimator->RegisterEventListener("LShooulderSparkEffect", [this]()
@@ -1134,15 +1069,10 @@ void CFestivalLeader::Register_Events()
 	m_pAnimator->RegisterEventListener("ShockWaveEffect", [this]()
 		{
 			EffectSpawn_Active(EF_HAMMER_SLAM, true);
-
-			if (m_bLeftHand == false)
-			{
-				Spawn_Decal(m_pRightWeaponBone,
-					TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-					TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
-					XMVectorSet(5.f, 0.5f, 5.f, 0));
-			}
-
+			Spawn_Decal(m_pRightWeaponBone,
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+				XMVectorSet(7.f, 0.5f, 7.f, 0));
 		});
 
 	m_pAnimator->RegisterEventListener("P2_StartEffect", [this]()
@@ -1155,8 +1085,8 @@ void CFestivalLeader::Register_Events()
 			EffectSpawn_Active(EF_BASKET_SLAM, true);
 
 			Spawn_Decal(m_BoneRefs[EBossBones::Basket],
-				TEXT("Prototype_Component_Texture_FireEater_Slam_Normal"),
-				TEXT("Prototype_Component_Texture_FireEater_Slam_Mask"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
+				TEXT("Prototype_Component_Texture_FestivalLeader_TwoHand_Mask"),
 				XMVectorSet(10.f, 0.5f, 10.f, 0));
 		});
 
@@ -1295,8 +1225,10 @@ void CFestivalLeader::Ready_EffectNames()
 {
 	// Phase 1
 
-	m_EffectMap[EF_ONE_HANDSLAM].emplace_back(TEXT("EC_Fes_OnehandSlam")); // 좌우 나눔 !!!! EC_Fes_OnehandSlamL / EC_Fes_OnehandSlamR
-	m_EffectMap[EF_SCRATCH].emplace_back(TEXT("EC_Fes_Scratch")); // 좌우 나눔 !!!! EC_Fes_ScratchL / EC_Fes_ScratchR
+	m_EffectMap[EF_ONE_HANDSLAM_L].emplace_back(TEXT("EC_Fes_OnehandSlamL"));
+	m_EffectMap[EF_ONE_HANDSLAM_R].emplace_back(TEXT("EC_Fes_OnehandSlamR"));
+	m_EffectMap[EF_SCRATCH_L].emplace_back(TEXT("EC_Fes_ScratchL"));
+	m_EffectMap[EF_SCRATCH_R].emplace_back(TEXT("EC_Fes_ScratchR"));
 	m_EffectMap[EF_SMOKE].emplace_back(TEXT("EC_Fes_Falling_Smoke_P1"));
 
 	m_EffectMap[EF_LShoulder_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Big_LClavicle"));
@@ -1305,8 +1237,10 @@ void CFestivalLeader::Ready_EffectNames()
 	m_EffectMap[EF_LForearm_SPARK].emplace_back(TEXT("EC_OldSparkDrop_Small_LForearm"));
 
 	// Phase 2
-	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2L / EC_Fes_DefaultSlam_NoSmoke_P2R
-	m_EffectMap[EF_NOSMOKE_KNEE].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_Knee")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2_KneeL / EC_Fes_DefaultSlam_NoSmoke_P2_KneeR
+	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE_L].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2L")); 
+	m_EffectMap[EF_DEFAULT_SLAM_NOSMOKE_R].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2R")); 
+	m_EffectMap[EF_NOSMOKE_KNEE_L].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_KneeL")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2_KneeL / EC_Fes_DefaultSlam_NoSmoke_P2_KneeR
+	m_EffectMap[EF_NOSMOKE_KNEE_R].emplace_back(TEXT("EC_Fes_DefaultSlam_NoSmoke_P2_KneeR")); // 좌우 나눔 !!!! EC_Fes_DefaultSlam_NoSmoke_P2_KneeL / EC_Fes_DefaultSlam_NoSmoke_P2_KneeR
 
 	m_EffectMap[EF_GROUND_SPARK].emplace_back(TEXT("EC_Fuoco_Spin3_FloorFountain_P5"));
 	m_EffectMap[EF_HAMMER_SLAM].emplace_back(TEXT("EC_Fes_P2_HammerSlam"));
@@ -1327,7 +1261,6 @@ void CFestivalLeader::ProcessingEffects(const _wstring& stEffectTag)
 {
 	if (m_BoneRefs[Hammer] == nullptr || m_BoneRefs[Basket] == nullptr)
 		return;
-
 
 
 	CEffectContainer::DESC desc = {};
@@ -1632,7 +1565,6 @@ HRESULT CFestivalLeader::Spawn_Effect() // 이펙트를 스폰 (대신 각각의
 {
 	if (m_ActiveEffect.empty())
 	{
-		Reset_EffectFlags();
 		return S_OK;
 	}
 
@@ -1689,15 +1621,7 @@ HRESULT CFestivalLeader::Ready_Effect()
 
 	m_pTrailEffect->Set_TrailActive(false);
 
-	//EFFECT_MANAGER->Set_Dead_EffectContainer(TEXT("Fuoco_HeadSmoke2")); 삭제시
 	return S_OK;
-}
-
-void CFestivalLeader::Reset_EffectFlags()
-{
-	m_bLeftHand = false;
-	m_bLeftKnee = false;
-	m_bFullbodyEffect = false;
 }
 
 void CFestivalLeader::Ready_SoundEvents()
@@ -2016,22 +1940,12 @@ void CFestivalLeader::EnterNextCutScene()
 	}
 }
 
-void CFestivalLeader::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-
-}
-
 void CFestivalLeader::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
 
 }
-
-void CFestivalLeader::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
 
 void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {

@@ -81,8 +81,14 @@ void CUI_Feature_Rotation::Update(_int& iCurrentFrame, CDynamic_UI* pUI, _bool i
     _vector vScale = pUI->Get_TransfomCom()->Get_Scale();
     _matrix mScale = XMMatrixScalingFromVector(vScale);
 
-    _vector vRotatedOffset = XMVector3TransformCoord(XMLoadFloat4(&m_vOffset), matRotate);
-    _vector vFinalPos = XMLoadFloat4(&m_vCenter) + vRotatedOffset;
+    _vector vOffset = XMLoadFloat4(&m_vOffset);
+    vOffset = XMVectorSetW(vOffset, 1.0f);
+
+    _vector vCenter = XMLoadFloat4(&m_vCenter);
+    vCenter = XMVectorSetW(vCenter, 1.0f);
+
+    _vector vRotatedOffset = XMVector3TransformCoord(vOffset, matRotate);
+    _vector vFinalPos = vCenter + vRotatedOffset;
 
     _matrix mWorld = mScale* matRotate * XMMatrixTranslationFromVector(vFinalPos);
     pUI->Get_TransfomCom()->Set_WorldMatrix(mWorld);
@@ -165,7 +171,7 @@ void CUI_Feature_Rotation::Deserialize(const json& j)
     m_vInitPos = { m_fInitPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fInitPos.y * g_iWinSizeY, 0.f, 1.f };
     m_vCenter = { m_fRotationPos.x * g_iWinSizeX - 0.5f * g_iWinSizeX, 0.5f * g_iWinSizeY - m_fRotationPos.y * g_iWinSizeY, 0.f, 1.f };
 
-    XMStoreFloat4(&m_vOffset, XMVectorSubtract(XMLoadFloat4(&m_vCenter), XMLoadFloat4(&m_vInitPos)));
+    XMStoreFloat4(&m_vOffset, XMVectorSubtract(XMLoadFloat4(&m_vInitPos), XMLoadFloat4(&m_vCenter)));
 }
 
 

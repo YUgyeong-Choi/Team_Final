@@ -48,7 +48,7 @@ CSound_Core::CSound_Core(CSound_Core& Prototype)
 void CSound_Core::Play()
 {
     // 비활성 채널들 정리
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     FMOD::Channel* pNewChannel = nullptr;
 
@@ -124,7 +124,7 @@ void CSound_Core::Set_Volume(_float Volume)
 {
     m_fDefaultVolume = Volume;
 
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     // 현재 재생 중인 모든 채널에 볼륨 적용
     for (auto& channel : m_ActiveChannels)
@@ -138,7 +138,7 @@ void CSound_Core::Set_Pitch(_float Pitch)
 {
     m_fDefaultPitch = Pitch;
 
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     // 현재 재생 중인 모든 채널에 피치 적용
     for (auto& channel : m_ActiveChannels)
@@ -162,7 +162,7 @@ void CSound_Core::Update3DPosition(_float3& vPos)
     _float3 vSoundVel = _float3{ vPos.x - m_vSoundPos.x, vPos.y - m_vSoundPos.y, vPos.z - m_vSoundPos.z };
     m_vSoundPos = vPos;
 
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     // 모든 활성 채널에 3D 위치 업데이트
     for (auto& channel : m_ActiveChannels)
@@ -178,7 +178,7 @@ void CSound_Core::Set3DState(_float fMin, _float fMax)
     m_fMinDis = fMin;
     m_fMaxDis = fMax;
 
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     // 모든 활성 채널에 3D 거리 설정 적용  
     for (auto& channel : m_ActiveChannels)
@@ -205,7 +205,7 @@ _bool CSound_Core::IsPlaying() const
 
 void CSound_Core::SetPaused(_bool paused)
 {
-    RemoveInactiveChannels();
+    //RemoveInactiveChannels();
 
     // 모든 활성 채널에 일시정지 적용
     for (auto& channel : m_ActiveChannels)

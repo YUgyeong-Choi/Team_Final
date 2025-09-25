@@ -516,6 +516,137 @@ HRESULT CAnimTool::Render_Parameters()
 	return S_OK;
 }
 
+HRESULT CAnimTool::Render_StateNodes(CAnimController* pCtrl)
+{
+	if (pCtrl == nullptr || m_pCurAnimator == nullptr)
+		return S_OK;
+	for (const auto& Pair : m_CategoryStates)
+	{
+		auto& category = Pair.first; // 카테고리
+		auto& states = Pair.second; // 해당 카테고리의 상태들
+
+		auto& transitions = pCtrl->GetTransitionsForEditor();
+		for (const auto& visState : states)
+		{
+			_bool bIsVisible = m_bShowAll || m_CategoryVisibility[category];
+			for (auto& state : pCtrl->GetStatesForEditor())
+			{
+				_bool isAny = (state.iNodeId == ANY_NODE_ID);
+				_bool isExit = (state.iNodeId == EXIT_NODE_ID);
+
+
+				if ((isAny || isExit) && !m_bShowAll)
+					bIsVisible = true;
+				else
+					bIsVisible = m_bShowAll || m_CategoryVisibility[category];
+				if (state.stateName != visState || !bIsVisible)
+					continue;
+
+				if (isAny)
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(60, 140, 170, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(75, 160, 190, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(90, 180, 210, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(60, 140, 170, 255));
+				}
+				else if (isExit)
+				{
+					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(185, 70, 70, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(205, 90, 90, 255));
+					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(225, 110, 110, 255));
+					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(185, 70, 70, 255));
+				}
+				ImNodes::BeginNode(state.iNodeId);
+
+				ImNodes::BeginNodeTitleBar();
+				ImGui::TextUnformatted(state.stateName.c_str());
+
+				if (state.iNodeId == pCtrl->GetEntryNodeId())
+				{
+					ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
+				}
+
+				ImNodes::EndNodeTitleBar();
+
+				ImGui::BeginGroup();
+
+				// 현재 활성 상태인지 확인 (현재 재생 중인 애니메이션 상태)
+				_bool isCurrentState = (pCtrl->GetCurrentStateForEditor() &&
+					pCtrl->GetCurrentStateForEditor()->iNodeId == state.iNodeId);
+
+				if (isCurrentState)
+				{
+					ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "[ACTIVE]");
+
+					// 현재 애니메이션 진행률 표시
+					_float progress = m_pCurAnimator->GetCurrentAnimProgress();
+					ImGui::ProgressBar(progress, ImVec2(120, 0), "");
+					ImGui::SameLine();
+					ImGui::Text("%.1f%%", progress * 100.0f);
+				}
+				else
+				{
+					ImGui::Text("");
+					ImGui::Dummy(ImVec2(120, ImGui::GetFrameHeight())); // 진행바 크기만큼 
+				}
+
+				const ImVec4 kInColor = ImVec4(0.3f, 0.8f, 0.3f, 1.f);
+				const ImVec4 kOutColor = ImVec4(0.8f, 0.4f, 0.2f, 1.f);
+
+				if (ImGui::BeginTable(
+					("pins##" + std::to_string(state.iNodeId)).c_str(), // 노드별 고유 ID
+					2,
+					ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody,
+					ImVec2(140.0f, 0.0f))) // 최소 가로폭 
+				{
+					ImGui::TableSetupColumn("L", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+					ImGui::TableSetupColumn("R", ImGuiTableColumnFlags_WidthFixed, 60.0f);
+
+					ImGui::TableNextRow();
+
+					// 왼쪽 컬럼: In 핀
+					ImGui::TableSetColumnIndex(0);
+					if (!isAny)
+					{
+						const _int inPin = state.iNodeId * 10 + 1;
+						ImNodes::BeginInputAttribute(inPin);
+						ImGui::TextColored(kInColor, "In");
+						ImNodes::EndInputAttribute();
+						m_DrawnInPins.insert(inPin);
+					}
+
+					// 오른쪽 컬럼: Out 핀
+					ImGui::TableSetColumnIndex(1);
+					const _int outPin = state.iNodeId * 10 + 2;
+					ImNodes::BeginOutputAttribute(outPin);
+					ImGui::TextColored(kOutColor, "Out");
+					ImNodes::EndOutputAttribute();
+					m_DrawnOutPins.insert(outPin);
+
+					ImGui::EndTable();
+				}
+				ImGui::EndGroup();
+
+				ImNodes::EndNode();
+
+				// 노드 위치 저장
+				ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
+				state.fNodePos = { pos.x, pos.y };
+
+				if (isAny || isExit)
+				{
+					ImNodes::PopColorStyle(); // 노드 아웃라인
+					ImNodes::PopColorStyle(); // 타이틀 바 선택
+					ImNodes::PopColorStyle(); // 타이틀 바 호버
+					ImNodes::PopColorStyle(); // 타이틀 바
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
 HRESULT CAnimTool::Render_AnimControllers()
 {
 	ImGui::Begin("Controller");
@@ -647,8 +778,7 @@ HRESULT CAnimTool::Render_OverrideAnimControllers()
 					m_NewOverrideAnimController = m_pCurAnimator->GetOverrideAnimControllersMap()[overrideCtrlNames[i]];
 					// 선택된 컨트롤러의 이름을 현재 이름으로 설정
 					strcpy_s(m_OverrideControllerName, overrideCtrlNames[i].c_str());
-					//	strcpy_s(m_NewOverrideControllerName, overrideCtrlNames[i].c_str());
-						// 리네임 필드 초기화
+					// 리네임 필드 초기화
 					strcpy_s(m_OverrideControllerRename, overrideCtrlNames[i].c_str());
 				}
 				if (isSelected)
@@ -1116,191 +1246,11 @@ HRESULT CAnimTool::Render_AnimationStateMachine()
 	m_DrawnInPins.clear();
 	m_DrawnOutPins.clear();
 
-	for (const auto& Pair : m_CategoryStates)
-	{
-		auto& category = Pair.first; // 카테고리
-		auto& states = Pair.second; // 해당 카테고리의 상태들
 
-		auto& transitions = pCtrl->GetTransitionsForEditor();
-		for (const auto& visState : states)
-		{
-			_bool bIsVisible = m_bShowAll || m_CategoryVisibility[category];
-			for (auto& state : pCtrl->GetStatesForEditor())
-			{
-				_bool isAny = (state.iNodeId == ANY_NODE_ID);
-				_bool isExit = (state.iNodeId == EXIT_NODE_ID);
+	Render_StateNodes(pCtrl);
 
+	Render_Transitions(pCtrl, isAnyLinkSelected, isAnyNodeSelected);
 
-				if ((isAny || isExit) && !m_bShowAll)
-					bIsVisible = true;
-				else
-					bIsVisible = m_bShowAll || m_CategoryVisibility[category];
-				if (state.stateName != visState || !bIsVisible)
-					continue;
-
-				if (isAny)
-				{
-					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(60, 140, 170, 255));
-					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(75, 160, 190, 255));
-					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(90, 180, 210, 255));
-					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(60, 140, 170, 255));
-				}
-				else if (isExit)
-				{
-					ImNodes::PushColorStyle(ImNodesCol_TitleBar, IM_COL32(185, 70, 70, 255));
-					ImNodes::PushColorStyle(ImNodesCol_TitleBarHovered, IM_COL32(205, 90, 90, 255));
-					ImNodes::PushColorStyle(ImNodesCol_TitleBarSelected, IM_COL32(225, 110, 110, 255));
-					ImNodes::PushColorStyle(ImNodesCol_NodeOutline, IM_COL32(185, 70, 70, 255));
-				}
-				ImNodes::BeginNode(state.iNodeId);
-
-				ImNodes::BeginNodeTitleBar();
-				ImGui::TextUnformatted(state.stateName.c_str());
-
-				if (state.iNodeId == pCtrl->GetEntryNodeId())
-				{
-					ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0.0f, 0.8f, 0.0f, 1.0f), "[ENTRY]"); // 녹색으로 Entry 표시
-				}
-		
-				ImNodes::EndNodeTitleBar();
-
-				ImGui::BeginGroup();
-
-				// 현재 활성 상태인지 확인 (현재 재생 중인 애니메이션 상태)
-				_bool isCurrentState = (pCtrl->GetCurrentStateForEditor() &&
-					pCtrl->GetCurrentStateForEditor()->iNodeId == state.iNodeId);
-
-				if (isCurrentState)
-				{
-					ImGui::TextColored(ImVec4(1.f, 1.f, 0.f, 1.f), "[ACTIVE]");
-
-					// 현재 애니메이션 진행률 표시
-					_float progress = m_pCurAnimator->GetCurrentAnimProgress();
-					ImGui::ProgressBar(progress, ImVec2(120, 0), "");
-					ImGui::SameLine();
-					ImGui::Text("%.1f%%", progress * 100.0f);
-				}
-				else
-				{
-					ImGui::Text("");
-					ImGui::Dummy(ImVec2(120, ImGui::GetFrameHeight())); // 진행바 크기만큼 
-				}
-
-				const ImVec4 kInColor = ImVec4(0.3f, 0.8f, 0.3f, 1.f);
-				const ImVec4 kOutColor = ImVec4(0.8f, 0.4f, 0.2f, 1.f);
-
-				if (ImGui::BeginTable(
-					("pins##" + std::to_string(state.iNodeId)).c_str(), // 노드별 고유 ID
-					2,
-					ImGuiTableFlags_SizingFixedFit | ImGuiTableFlags_NoBordersInBody,
-					ImVec2(140.0f, 0.0f))) // 최소 가로폭 
-				{
-					ImGui::TableSetupColumn("L", ImGuiTableColumnFlags_WidthFixed, 60.0f);
-					ImGui::TableSetupColumn("R", ImGuiTableColumnFlags_WidthFixed, 60.0f);
-
-					ImGui::TableNextRow();
-
-					// 왼쪽 컬럼: In 핀
-					ImGui::TableSetColumnIndex(0);
-					if (!isAny)
-					{
-						const _int inPin = state.iNodeId * 10 + 1;
-						ImNodes::BeginInputAttribute(inPin);
-						ImGui::TextColored(kInColor, "In");
-						ImNodes::EndInputAttribute();
-						m_DrawnInPins.insert(inPin);
-					}
-
-					// 오른쪽 컬럼: Out 핀
-					ImGui::TableSetColumnIndex(1);
-					const _int outPin = state.iNodeId * 10 + 2;
-					ImNodes::BeginOutputAttribute(outPin);
-					ImGui::TextColored(kOutColor, "Out");
-					ImNodes::EndOutputAttribute();
-					m_DrawnOutPins.insert(outPin);
-
-					ImGui::EndTable();
-				}
-				ImGui::EndGroup();
-
-				ImNodes::EndNode();
-
-				// 노드 위치 저장
-				ImVec2 pos = ImNodes::GetNodeEditorSpacePos(state.iNodeId);
-				state.fNodePos = { pos.x, pos.y };
-
-				if (isAny || isExit)
-				{
-					ImNodes::PopColorStyle(); // 노드 아웃라인
-					ImNodes::PopColorStyle(); // 타이틀 바 선택
-					ImNodes::PopColorStyle(); // 타이틀 바 호버
-					ImNodes::PopColorStyle(); // 타이틀 바
-				}
-			}
-		}
-	}
-
-	Render_Transitions(pCtrl, isAnyLinkSelected,isAnyNodeSelected);
-
-	//for (auto& t : pCtrl->GetTransitions())
-	//{
-
-	//	const _bool fromIsSpecial = (t.iFromNodeId == ANY_NODE_ID || t.iFromNodeId == EXIT_NODE_ID);
-	//	const _bool toIsSpecial = (t.iToNodeId == ANY_NODE_ID || t.iToNodeId == EXIT_NODE_ID);
-
-	//	const _int startPinID = t.iFromNodeId * 10 + 2; // Out
-	//	const _int endPinID = t.iToNodeId * 10 + 1; // In
-	//	_bool startDrawn = (m_DrawnInPins.count(endPinID) > 0);
-	//	_bool endDrawn = (m_DrawnOutPins.count(startPinID) > 0);
-	//	if (!startDrawn || !endDrawn)
-	//		continue; //노드 그린거 없으면 안그리기
-	//	// 카테고리 기반 가시성
-	//	string fromName = pCtrl->GetStateNameByNodeId(t.iFromNodeId);
-	//	string toName = pCtrl->GetStateNameByNodeId(t.iToNodeId);
-	//	string fromCat = GetStateCategory(fromName);
-	//	string toCat = GetStateCategory(toName);
-
-	//	_bool fromVisible = m_bShowAll || m_CategoryVisibility[fromCat];
-	//	_bool toVisible = m_bShowAll || m_CategoryVisibility[toCat];
-
-	//	// 선택 상태 계산
-	//	_bool thisLinkSelected = ImNodes::IsLinkSelected(t.link.iLinkId);
-	//	_bool fromNodeSelected = ImNodes::IsNodeSelected(t.iFromNodeId);
-	//	_bool toNodeSelected = ImNodes::IsNodeSelected(t.iToNodeId);
-	//	_bool anySelectedThis = thisLinkSelected || fromNodeSelected || toNodeSelected;
-
-
-	//	_bool passCategory = (fromVisible && toVisible);
-
-
-	//	if (!passCategory && anySelectedThis && (fromIsSpecial || toIsSpecial))
-	//		passCategory = true;
-
-	//	if (!passCategory)
-	//		continue;
-
-	//	// 그릴지 최종 결정
-	//	_bool bDrawLink = false;
-	//	if (isAnyLinkSelected)
-	//	{
-	//		// 선택된 링크만
-	//		bDrawLink = thisLinkSelected;
-	//	}
-	//	else if (isAnyNodeSelected)
-	//	{
-	//		// 선택된 노드와 연결된 링크만
-	//		bDrawLink = (fromNodeSelected || toNodeSelected);
-	//	}
-	//	else
-	//	{
-	//		// 일반 모드
-	//		bDrawLink = m_bShowAllLink;
-	//	}
-
-	//	if (bDrawLink)
-	//		ImNodes::Link(t.link.iLinkId, startPinID, endPinID);
-	//}
 
 	ImNodes::EndNodeEditor();
 
@@ -1311,136 +1261,17 @@ HRESULT CAnimTool::Render_AnimationStateMachine()
 		ImNodes::ClearNodeSelection();
 	}
 
-	Handle_Links(pCtrl);
+	if (FAILED(Handle_Links(pCtrl)))
+		return E_FAIL;
 
-	//_bool bCanLink = pCtrl->GetStates().size() >= 2;
-	//if (bCanLink)
-	//{
-	//	_int startPinID = -1, endPinID = -1;
-	//	if (ImNodes::IsLinkCreated(&startPinID, &endPinID))
-	//	{
-	//		_int fromNodeID = (startPinID - 2) / 10;
-	//		_int toNodeID = (endPinID - 1) / 10;
 
-	//		// 유효한 아이디인지 
-	//		_bool validFromNode = false, validToNode = false;
-	//		for (const auto& state : pCtrl->GetStates())
-	//		{
-	//			if (state.iNodeId == fromNodeID)
-	//				validFromNode = true;
-	//			if (state.iNodeId == toNodeID)
-	//				validToNode = true;
-	//		}
-
-	//		if (validFromNode && validToNode && fromNodeID != toNodeID)
-	//		{
-	//			Engine::Link link;
-	//			link.iLinkId = m_iSpecificNodeId++;
-	//			link.iLinkStartID = startPinID;
-	//			link.iLinkEndID = endPinID;
-
-	//			// 트랜지션 추가
-	//			pCtrl->AddTransition(fromNodeID, toNodeID, link, 0.2f, true);
-	//		}
-
-	//	}
-	//}
-	//if (ImNodes::NumSelectedLinks() > 0)
-	//{
-	//	vector<int> selectedLinks(ImNodes::NumSelectedLinks());
-	//	ImNodes::GetSelectedLinks(selectedLinks.data());
-	//	auto& transitions = pCtrl->GetTransitionsForEditor();
-
-	//	_bool bDeleteLink = false;
-	//	if (ImGui::IsKeyPressed(ImGuiKey_Delete))
-	//	{
-
-	//		for (_int linkId : selectedLinks)
-	//		{
-	//			for (_int i = static_cast<_int>(transitions.size()) - 1; i >= 0; --i)
-	//			{
-	//				if (transitions[i].link.iLinkId == linkId)
-	//				{
-	//					bDeleteLink = true;
-	//					transitions.erase(transitions.begin() + i);
-	//					break;
-	//				}
-	//			}
-	//		}
-	//		ImNodes::ClearLinkSelection();
-	//	}
-
-	//	// 링크 선택시 트랜지션 상태 표시
-	//	// 선택된 링크의 Condition을 찾아서 표시
-
-	//	if (bDeleteLink == false) // 삭제 안한 경우에만
-	//	{
-
-	//		auto pCtrl = m_pCurAnimator->Get_CurrentAnimController();
-	//		for (_int linkId : selectedLinks)
-	//		{
-	//			for (auto& transition : transitions)
-	//			{
-	//				if (transition.link.iLinkId == linkId)
-	//				{
-	//					ImGui::Begin("Transition Info");
-	//					if (pCtrl->GetStateAnimationByNodeIdForEditor(transition.iFromNodeId))
-	//					{
-
-	//						auto FromNodeName = pCtrl->GetStateAnimationByNodeIdForEditor(transition.iFromNodeId)->Get_Name();
-	//						if (FromNodeName.empty())
-	//							FromNodeName = "Unknown";
-
-	//						ImGui::Text("From Node: %s", FromNodeName.c_str());
-	//					}
-
-	//					if (pCtrl->GetStateAnimationByNodeIdForEditor(transition.iToNodeId))
-	//					{
-	//						auto ToNodeName = pCtrl->GetStateAnimationByNodeIdForEditor(transition.iToNodeId)->Get_Name();
-	//						if (ToNodeName.empty())
-	//							ToNodeName = "Unknown";
-	//						ImGui::Text("To Node : %s", ToNodeName.c_str());
-	//					}
-
-	//					ImGui::Text("Link ID: %d", transition.link.iLinkId);
-	//					//ImGui::Text("Condition: %s", transition.condition.paramName.c_str());
-	//					ImGui::End();
-
-	//					if (FAILED(Modify_Transition(transition)))
-	//					{
-	//						ImGui::End();
-	//						return E_FAIL;
-	//					}
-	//					break;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-	// 노드 삭제 (스테이트 삭제)
-	if (ImNodes::NumSelectedNodes() > 0 && ImGui::IsKeyPressed(ImGuiKey_Delete))
+	if (SUCCEEDED(Delete_AnimState(pCtrl)))
 	{
-		vector<_int> selectedNodes(ImNodes::NumSelectedNodes());
-		ImNodes::GetSelectedNodes(selectedNodes.data());
-		auto& states = pCtrl->GetStatesForEditor();
-		for (_int nodeId : selectedNodes)
-		{
-
-			for (auto it = states.begin(); it != states.end(); ++it)
-			{
-				if (it->iNodeId == nodeId)
-				{
-					states.erase(it);
-					break;
-				}
-			}
-		}
-		ImNodes::ClearNodeSelection();
 		ImGui::End();
 		return S_OK;
 	}
 
+	// 선택된 노드
 	_int hoveredNodeID = -1;
 	if (ImNodes::IsNodeHovered(&hoveredNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
 	{
@@ -1448,249 +1279,8 @@ HRESULT CAnimTool::Render_AnimationStateMachine()
 	}
 	ImGui::End();
 
+	Modify_State(pCtrl);
 
-	vector<CAnimation*>& anims = m_bIsObject ? m_pCurModel->GetAnimations() : m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
-
-	vector<string> animNames;
-	animNames.reserve(anims.size() + 1);
-	animNames.push_back("None");
-	auto& animsByName = m_pCurModel->GetAnimationsByIndex();
-	for (_int i = 0; i < anims.size(); ++i)
-	{
-		animNames.push_back(animsByName[i]);
-	}
-
-	if (m_iSelectedNodeID != -1)
-	{
-		for (auto& state : pCtrl->GetStatesForEditor())
-		{
-			if (state.iNodeId == m_iSelectedNodeID)
-			{
-				ImGui::Begin("State Info");
-
-				_char buf[64];
-				strcpy_s(buf, state.stateName.c_str());
-				ImGui::InputText("State Name", buf, IM_ARRAYSIZE(buf));
-				if (ImGui::IsItemDeactivatedAfterEdit())
-				{
-					state.stateName = buf; // 이름 변경
-				}
-
-				if (ImGui::Button("Active Upper MaskBone"))
-				{
-					if (state.maskBoneName.empty())
-					{
-						state.maskBoneName = "Bip001-Spine2"; // 기본 마스크 본
-					}
-					else
-					{
-						state.maskBoneName.clear(); // 마스크 본 제거
-					}
-				}
-
-				if (state.clip)
-				{
-					ImGui::Text("Clip: %s", state.clip->Get_Name().c_str());
-					ImGui::Text("Node ID: %d", state.iNodeId);
-					ImGui::Text("Duration: %.2f", state.clip->GetDuration());
-					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
-					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
-					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
-					if (m_pCurAnimation)
-						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
-
-
-					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
-					m_pCurAnimation = state.clip;
-					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-					{
-						pCtrl->SetState(m_iSelectedNodeID);
-					}
-				}
-				else if (state.maskBoneName.empty() == false)
-				{
-					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
-					{
-						pCtrl->SetState(m_iSelectedNodeID);
-					}
-				}
-				else
-				{
-					ImGui::Text("No Clip Assigned");
-
-				}
-
-				auto& transitions = pCtrl->GetTransitions();
-
-				// 트랜지션 리스트
-				for (const auto& transition : transitions)
-				{
-					if (transition.iFromNodeId == state.iNodeId)
-					{
-						const string& stateName = pCtrl->GetStateNameByNodeId(transition.iToNodeId);
-						ImGui::Text("Transition to: %s", stateName.c_str());
-						ImGui::Text("Transition to Node ID: %d", transition.iToNodeId);
-						ImGui::Text("Link ID: %d", transition.link.iLinkId);
-					}
-				}
-
-
-				if (state.maskBoneName.empty())
-				{
-					if (ImGui::BeginCombo("Clips", m_iDefaultSelectedAnimIndex >= 0 ? animNames[m_iDefaultSelectedAnimIndex].c_str() : "Select Clip"))
-					{
-						for (_int i = 0; i < animNames.size(); ++i)
-						{
-							_bool isSelected = (i == m_iDefaultSelectedAnimIndex);
-							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
-							{
-								m_iDefaultSelectedAnimIndex = i;
-								if (i == 0) // "None"이 선택된 경우
-								{
-									state.clip = nullptr;
-								}
-								else // 다른 애니메이션이 선택된 경우
-								{
-									if (state.maskBoneName.empty())
-									{
-										state.clip = anims[i - 1];
-									}
-									else
-									{
-										state.clip = nullptr;
-									}
-								}
-							}
-							if (isSelected)
-								ImGui::SetItemDefaultFocus();
-						}
-						ImGui::EndCombo();
-					}
-
-				}
-				else if (state.maskBoneName.empty() == false)
-				{
-					ImGui::Text("Mask Bone Name: %s", state.maskBoneName.c_str());
-					ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
-					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
-
-					// 마스크 본 선택
-					auto& bones = m_pCurModel->Get_Bones();
-
-					if (m_vecMaskBoneNames.empty())
-					{
-						m_vecMaskBoneNames.reserve(bones.size());
-						for (const auto& bone : bones)
-						{
-							m_vecMaskBoneNames.push_back(bone->Get_Name());
-						}
-					}
-
-
-					if (ImGui::BeginCombo("Mask Bone", m_iSelectedMaskBoneIndex >= 0 ? m_vecMaskBoneNames[m_iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
-					{
-						for (_int i = 0; i < m_vecMaskBoneNames.size(); ++i)
-						{
-							_bool isSelected = (i == m_iSelectedMaskBoneIndex);
-							if (ImGui::Selectable(m_vecMaskBoneNames[i].c_str(), isSelected))
-							{
-								m_iSelectedMaskBoneIndex = i;
-								state.maskBoneName = m_vecMaskBoneNames[m_iSelectedMaskBoneIndex];
-							}
-							if (isSelected)
-								ImGui::SetItemDefaultFocus();
-						}
-						ImGui::EndCombo();
-					}
-
-					if (ImGui::BeginCombo("Upper Animations", m_iSelectedUpperAnimIndex >= 0 ? animNames[m_iSelectedUpperAnimIndex].c_str() : "Select Upper"))
-					{
-						for (_int i = 0; i < animNames.size(); ++i)
-						{
-							_bool isSelected = (i == m_iSelectedUpperAnimIndex);
-							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
-							{
-								m_iSelectedUpperAnimIndex = i;
-
-								if (i == 0) // "None"이 선택된 경우
-								{
-									state.upperClipName = ""; // 상체 애니메이션 초기화
-								}
-								else // 다른 애니메이션이 선택된 경우
-								{
-									state.upperClipName = anims[i - 1]->Get_Name();
-								}
-
-							}
-							if (isSelected)
-								ImGui::SetItemDefaultFocus();
-						}
-						ImGui::EndCombo();
-					}
-
-					if (ImGui::BeginCombo("Lower Animations", m_iSelectedLowerAnimIndex >= 0 ? animNames[m_iSelectedLowerAnimIndex].c_str() : "Select Lower"))
-					{
-						for (_int i = 0; i < animNames.size(); ++i)
-						{
-							_bool isSelected = (i == m_iSelectedLowerAnimIndex);
-							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
-							{
-								m_iSelectedLowerAnimIndex = i;
-								if (i == 0) // "None"이 선택된 경우
-								{
-									state.lowerClipName = ""; // 상체 애니메이션 초기화
-								}
-								else // 다른 애니메이션이 선택된 경우
-								{
-									state.lowerClipName = anims[i - 1]->Get_Name();
-								}
-							}
-							if (isSelected)
-								ImGui::SetItemDefaultFocus();
-						}
-						ImGui::EndCombo();
-					}
-				}
-				if (Button("Set Entry This State"))
-				{
-					pCtrl->SetEntry(state.stateName);
-				}
-
-				// 애니메이션 StartTime 정하기
-				// 마스크 본이 아니면 LowerStartTime만 설정 아니면 Upper까지
-				if (state.clip)
-				{
-					_float fStartTime = state.fLowerStartTime;
-					if (ImGui::DragFloat("Start Time", &fStartTime, 0.01f, 0.f, 1.f, "%.2f"))
-					{
-						state.fLowerStartTime = fStartTime;
-					}
-				}
-				else if (state.maskBoneName.empty() == false)
-				{
-					_float fUpperStartTime = state.fUpperStartTime;
-					if (ImGui::DragFloat("Upper Start Time", &fUpperStartTime, 0.01f, 0.f, 1.f, "%.2f"))
-					{
-						state.fUpperStartTime = fUpperStartTime;
-					}
-					_float fLowerStartTime = state.fLowerStartTime;
-					if (ImGui::DragFloat("Lower Start Time", &fLowerStartTime, 0.01f, 0.f, 1.f, "%.2f"))
-					{
-						state.fLowerStartTime = fLowerStartTime;
-					}
-				}
-				_bool bCanSameAnimReset = state.bCanSameAnimReset;
-
-				if (ImGui::Checkbox("Can Same Anim Reset", &bCanSameAnimReset))
-				{
-					state.bCanSameAnimReset = bCanSameAnimReset;
-				}
-
-				ImGui::End();
-				break;
-			}
-		}
-	}
 	return S_OK;
 }
 
@@ -1775,7 +1365,7 @@ HRESULT CAnimTool::Render_Spawn_Object()
 				m_vecObjects.emplace_back(pObj);
 				if (m_vecObjects.back()->Get_Name() != L"Player")
 				{
-				pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
+					pObj->Get_TransfomCom()->Set_State(STATE::POSITION, XMVectorSet(0.f, 0.f, 0.f, 1.f));
 				}
 			}
 		}
@@ -1793,8 +1383,10 @@ HRESULT CAnimTool::Render_Spawn_Object()
 
 HRESULT CAnimTool::Render_Transitions(CAnimController* pCtrl, _bool bIsAnyLinkSelected, _bool bIsAnyNodeSelected)
 {
+
 	if (!pCtrl)
-		return E_FAIL;
+		return S_OK;
+
 	for (auto& t : pCtrl->GetTransitions())
 	{
 
@@ -1859,6 +1451,8 @@ HRESULT CAnimTool::Render_Transitions(CAnimController* pCtrl, _bool bIsAnyLinkSe
 
 HRESULT CAnimTool::Handle_Links(CAnimController* pCtrl)
 {
+	if (!pCtrl)
+		return E_FAIL;
 	_bool bCanLink = pCtrl->GetStates().size() >= 2;
 	if (bCanLink)
 	{
@@ -1965,6 +1559,35 @@ HRESULT CAnimTool::Handle_Links(CAnimController* pCtrl)
 	return S_OK;
 }
 
+
+HRESULT CAnimTool::Delete_AnimState(CAnimController* pCtrl)
+{
+	if (!pCtrl)
+		return E_FAIL;
+	// 노드 삭제 (스테이트 삭제)
+	if (ImNodes::NumSelectedNodes() > 0 && ImGui::IsKeyPressed(ImGuiKey_Delete))
+	{
+		vector<_int> selectedNodes(ImNodes::NumSelectedNodes());
+		ImNodes::GetSelectedNodes(selectedNodes.data());
+		auto& states = pCtrl->GetStatesForEditor();
+		for (_int nodeId : selectedNodes)
+		{
+
+			for (auto it = states.begin(); it != states.end(); ++it)
+			{
+				if (it->iNodeId == nodeId)
+				{
+					states.erase(it);
+					break;
+				}
+			}
+		}
+		ImNodes::ClearNodeSelection();
+		return S_OK;
+		//	ImGui::End();
+	}
+	return E_FAIL;
+}
 
 
 HRESULT CAnimTool::Render_SpawnedObject()
@@ -2211,15 +1834,15 @@ void CAnimTool::ApplyCategoryLayout(CAnimController* pCtrl)
 		return;
 
 	// 카테고리별 정렬 
-	for (auto& kv : visibleCats) 
+	for (auto& kv : visibleCats)
 	{
 		auto& list = kv.second;
-		sort(list.begin(), list.end(), [&](_int a, _int b) 
+		sort(list.begin(), list.end(), [&](_int a, _int b)
 			{
-			_int da = degree.count(a) ? degree[a] : 0;
-			_int db = degree.count(b) ? degree[b] : 0;
-			if (da != db) return da > db;
-			return a < b;
+				_int da = degree.count(a) ? degree[a] : 0;
+				_int db = degree.count(b) ? degree[b] : 0;
+				if (da != db) return da > db;
+				return a < b;
 			});
 	}
 
@@ -2709,6 +2332,255 @@ HRESULT CAnimTool::Modify_Transition(CAnimController::Transition& transition)
 	return S_OK;
 }
 
+HRESULT CAnimTool::Modify_State(CAnimController* pCtrl)
+{
+	if (m_pCurModel == nullptr || pCtrl == nullptr)
+		return E_FAIL;
+	vector<CAnimation*>& anims = m_bIsObject ? m_pCurModel->GetAnimations() : m_LoadedAnimations[m_stSelectedModelName]; // 현재 선택된 모델의 애니메이션들
+
+	vector<string> animNames;
+	animNames.reserve(anims.size() + 1);
+	animNames.push_back("None");
+	auto& animsByName = m_pCurModel->GetAnimationsByIndex();
+	for (_int i = 0; i < anims.size(); ++i)
+	{
+		animNames.push_back(animsByName[i]);
+	}
+
+	if (m_iSelectedNodeID != -1)
+	{
+		for (auto& state : pCtrl->GetStatesForEditor())
+		{
+			if (state.iNodeId == m_iSelectedNodeID)
+			{
+				ImGui::Begin("State Info");
+
+				_char buf[64];
+				strcpy_s(buf, state.stateName.c_str());
+				ImGui::InputText("State Name", buf, IM_ARRAYSIZE(buf));
+				if (ImGui::IsItemDeactivatedAfterEdit())
+				{
+					state.stateName = buf; // 이름 변경
+				}
+
+				if (ImGui::Button("Active Upper MaskBone"))
+				{
+					if (state.maskBoneName.empty())
+					{
+						state.maskBoneName = "Bip001-Spine2"; // 기본 마스크 본
+					}
+					else
+					{
+						state.maskBoneName.clear(); // 마스크 본 제거
+					}
+				}
+
+				if (state.clip)
+				{
+					ImGui::Text("Clip: %s", state.clip->Get_Name().c_str());
+					ImGui::Text("Node ID: %d", state.iNodeId);
+					ImGui::Text("Duration: %.2f", state.clip->GetDuration());
+					ImGui::Text("Current Track Position: %.2f", state.clip->GetCurrentTrackPosition());
+					ImGui::Text("Tick Per Second: %.2f", state.clip->GetTickPerSecond());
+					ImGui::Text("Loop: %s", state.clip->Get_isLoop() ? "True" : "False");
+					if (m_pCurAnimation)
+						ImGui::Text("CurAnimLoop: %s", m_pCurAnimation->Get_isLoop() ? "True" : "False");
+
+
+					// 클립이 있었던 경우에는 현재 애니메이션을 state의 애니메이션으로 변경
+					m_pCurAnimation = state.clip;
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						pCtrl->SetState(m_iSelectedNodeID);
+					}
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					if (ImNodes::IsNodeSelected(m_iSelectedNodeID) && ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+					{
+						pCtrl->SetState(m_iSelectedNodeID);
+					}
+				}
+				else
+				{
+					ImGui::Text("No Clip Assigned");
+
+				}
+
+				auto& transitions = pCtrl->GetTransitions();
+
+				// 트랜지션 리스트
+				for (const auto& transition : transitions)
+				{
+					if (transition.iFromNodeId == state.iNodeId)
+					{
+						const string& stateName = pCtrl->GetStateNameByNodeId(transition.iToNodeId);
+						ImGui::Text("Transition to: %s", stateName.c_str());
+						ImGui::Text("Transition to Node ID: %d", transition.iToNodeId);
+						ImGui::Text("Link ID: %d", transition.link.iLinkId);
+					}
+				}
+
+
+				if (state.maskBoneName.empty())
+				{
+					if (ImGui::BeginCombo("Clips", m_iDefaultSelectedAnimIndex >= 0 ? animNames[m_iDefaultSelectedAnimIndex].c_str() : "Select Clip"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iDefaultSelectedAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								m_iDefaultSelectedAnimIndex = i;
+								if (i == 0) // "None"이 선택된 경우
+								{
+									state.clip = nullptr;
+								}
+								else // 다른 애니메이션이 선택된 경우
+								{
+									if (state.maskBoneName.empty())
+									{
+										state.clip = anims[i - 1];
+									}
+									else
+									{
+										state.clip = nullptr;
+									}
+								}
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					ImGui::Text("Mask Bone Name: %s", state.maskBoneName.c_str());
+					ImGui::Text("Upper Clip: %s", state.upperClipName.c_str());
+					ImGui::Text("Lower Clip: %s", state.lowerClipName.c_str());
+
+					// 마스크 본 선택
+					auto& bones = m_pCurModel->Get_Bones();
+
+					if (m_vecMaskBoneNames.empty())
+					{
+						m_vecMaskBoneNames.reserve(bones.size());
+						for (const auto& bone : bones)
+						{
+							m_vecMaskBoneNames.push_back(bone->Get_Name());
+						}
+					}
+
+
+					if (ImGui::BeginCombo("Mask Bone", m_iSelectedMaskBoneIndex >= 0 ? m_vecMaskBoneNames[m_iSelectedMaskBoneIndex].c_str() : "Select Mask Bone"))
+					{
+						for (_int i = 0; i < m_vecMaskBoneNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedMaskBoneIndex);
+							if (ImGui::Selectable(m_vecMaskBoneNames[i].c_str(), isSelected))
+							{
+								m_iSelectedMaskBoneIndex = i;
+								state.maskBoneName = m_vecMaskBoneNames[m_iSelectedMaskBoneIndex];
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+					if (ImGui::BeginCombo("Upper Animations", m_iSelectedUpperAnimIndex >= 0 ? animNames[m_iSelectedUpperAnimIndex].c_str() : "Select Upper"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedUpperAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								m_iSelectedUpperAnimIndex = i;
+
+								if (i == 0) // "None"이 선택된 경우
+								{
+									state.upperClipName = ""; // 상체 애니메이션 초기화
+								}
+								else // 다른 애니메이션이 선택된 경우
+								{
+									state.upperClipName = anims[i - 1]->Get_Name();
+								}
+
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+
+					if (ImGui::BeginCombo("Lower Animations", m_iSelectedLowerAnimIndex >= 0 ? animNames[m_iSelectedLowerAnimIndex].c_str() : "Select Lower"))
+					{
+						for (_int i = 0; i < animNames.size(); ++i)
+						{
+							_bool isSelected = (i == m_iSelectedLowerAnimIndex);
+							if (ImGui::Selectable(animNames[i].c_str(), isSelected))
+							{
+								m_iSelectedLowerAnimIndex = i;
+								if (i == 0) // "None"이 선택된 경우
+								{
+									state.lowerClipName = ""; // 상체 애니메이션 초기화
+								}
+								else // 다른 애니메이션이 선택된 경우
+								{
+									state.lowerClipName = anims[i - 1]->Get_Name();
+								}
+							}
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndCombo();
+					}
+				}
+				if (Button("Set Entry This State"))
+				{
+					pCtrl->SetEntry(state.stateName);
+				}
+
+				// 애니메이션 StartTime 정하기
+				// 마스크 본이 아니면 LowerStartTime만 설정 아니면 Upper까지
+				if (state.clip)
+				{
+					_float fStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Start Time", &fStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fStartTime;
+					}
+				}
+				else if (state.maskBoneName.empty() == false)
+				{
+					_float fUpperStartTime = state.fUpperStartTime;
+					if (ImGui::DragFloat("Upper Start Time", &fUpperStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fUpperStartTime = fUpperStartTime;
+					}
+					_float fLowerStartTime = state.fLowerStartTime;
+					if (ImGui::DragFloat("Lower Start Time", &fLowerStartTime, 0.01f, 0.f, 1.f, "%.2f"))
+					{
+						state.fLowerStartTime = fLowerStartTime;
+					}
+				}
+				_bool bCanSameAnimReset = state.bCanSameAnimReset;
+
+				if (ImGui::Checkbox("Can Same Anim Reset", &bCanSameAnimReset))
+				{
+					state.bCanSameAnimReset = bCanSameAnimReset;
+				}
+
+				ImGui::End();
+				break;
+			}
+		}
+	}
+	return S_OK;
+}
+
 HRESULT CAnimTool::Register_Objects()
 {
 	if (FAILED(m_pEditorObjectFactory->RegisterObject<CFuoco>(TEXT("Fuoco"))))
@@ -2854,6 +2726,7 @@ CGameObject* CAnimTool::Clone(void* pArg)
 
 void CAnimTool::Free()
 {
+	//ImNodes::DestroyContext();
 	__super::Free();
 
 	for (auto& pair : m_LoadedModels)
@@ -2882,7 +2755,6 @@ void CAnimTool::Free()
 
 	Safe_Release(m_pTransformCom);
 
-	ImNodes::DestroyContext();
 	Safe_Release(m_pEventMag);
 	Safe_Delete(m_pMySequence);
 	Safe_Release(m_pAnimShader);

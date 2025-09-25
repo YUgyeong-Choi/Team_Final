@@ -57,7 +57,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
 	}
-
+	m_fMaxHp = 1400.f;
+	m_fHp = m_fMaxHp;
 	m_fMaxRootMotionSpeed = 18.f;
 
 	m_fDamage = 15.f;
@@ -151,9 +152,6 @@ void CFuoco::Priority_Update(_float fTimeDelta)
 	}
 
 #endif
-
-	if (KEY_DOWN(DIK_M))
-		m_fHp -= 200;
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Priority_Update(fTimeDelta);
@@ -1926,20 +1924,10 @@ void CFuoco::ReChallenge()
 		ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_Monster_HPBar"), &eDesc));
 }
 
-void CFuoco::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-
-}
-
 void CFuoco::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
-
-}
-
-void CFuoco::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
 
 }
 

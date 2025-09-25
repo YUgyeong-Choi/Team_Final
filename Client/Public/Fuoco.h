@@ -124,9 +124,7 @@ public:
 public:
         virtual void ReChallenge() override;
 private:
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
@@ -159,7 +157,7 @@ private:
 
 	void ChosePatternWeightByDistance(_float fDistance);
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
-	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 12, _float fDistance = 15.f);
+	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 14, _float fDistance = 20.f);
 	void SpawnFlameField();
     virtual void Ready_EffectNames() override;
     virtual void ProcessingEffects(const _wstring& stEffectTag) override;
