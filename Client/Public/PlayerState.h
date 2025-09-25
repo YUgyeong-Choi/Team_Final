@@ -3396,7 +3396,6 @@ public:
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
-            m_pOwner->Create_RevivalParticle();
             // 이제 lost ergo 죽은 위치에 추가 하기 위해 위치 지정 // 
 
             _int iAreaID = m_pGameInstance->GetCurAreaIds();
@@ -3501,6 +3500,12 @@ public:
             m_pOwner->Create_RevivalParticle();
         }
 
+        if (m_fStateTime > 7.f && !m_bDoThree)
+        {
+            m_pOwner->Create_RevivalCompleteParticle();
+
+            m_bDoThree = true;
+        }
 
         if (m_fStateTime > 9.5f && !m_pOwner->m_bIsRrevival)
         {
@@ -3548,6 +3553,7 @@ public:
         m_pOwner->m_bIsInvincible = false;
         m_bDoOnce = false;
         m_bDoTwo = false;
+        m_bDoThree = false;
 
 
 

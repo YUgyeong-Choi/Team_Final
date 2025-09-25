@@ -55,6 +55,8 @@ void CBullet::Priority_Update(_float fTimeDelta)
         if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Projectile_Gun_Hit_P3"), &desc))
             MSG_BOX("이펙트 생성 실패함");
 
+        m_pPhysXActorCom->RemovePhysX();
+
         Set_bDead();
     }
 }

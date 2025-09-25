@@ -126,6 +126,7 @@ public:
 
 protected:
 	void Spawn_MonsterHit_Effect(const _float3& vPos);
+	void Spawn_FuryEffect();
 
 public:
 	_float GetHP() const { return m_fHp; }

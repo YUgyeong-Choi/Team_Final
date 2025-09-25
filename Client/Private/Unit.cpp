@@ -611,7 +611,7 @@ void CUnit::OffSecondEmissive(_float fTimeDelta)
 }
 
 void CUnit::OnFury(_float fTimeDelta)
-{
+{ 
 	m_pGameInstance->Add_RenderGroup(RENDERGROUP::RG_FURY, this);
 
 	if (m_fFurySwitch <= 1.2f)
@@ -620,6 +620,7 @@ void CUnit::OnFury(_float fTimeDelta)
 		if (m_fFurySwitch > 1.2f)
 			m_fFurySwitch = 1.2f;
 	}
+	Spawn_FuryEffect();
 }
 void CUnit::OffFury(_float fTimeDelta)
 {
@@ -681,6 +682,18 @@ void CUnit::Spawn_MonsterHit_Effect(const _float3& vPos)
 
 		if (pEffect == nullptr)
 			MSG_BOX("이펙트 생성 실패함");
+}
+
+void CUnit::Spawn_FuryEffect()
+{
+	_uint iNumBones = m_pModelCom->Get_NumBones();
+
+	CEffectContainer::DESC Lightdesc = {};
+
+	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(rand() % iNumBones)) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(mat.r[3]));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_Fury"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 CUnit* CUnit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

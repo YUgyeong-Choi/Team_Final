@@ -233,6 +233,7 @@ public:
 	void Create_LostErgo_RimLight();
 	void Create_DeathParticle();
 	void Create_RevivalParticle();
+	void Create_RevivalCompleteParticle();
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
