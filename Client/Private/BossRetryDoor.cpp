@@ -292,7 +292,7 @@ void CBossRetryDoor::Move_Player(_float fTimeDelta)
 			m_fResetTime = 0.f;
 			m_bEnd = false;
 			m_bFinish = false;
-			SwitchDissolve(true, 1.f, _float3{ 0.f, 0.8f, 0.5f }, {});
+			SwitchDissolve(true, 1.f, _float3{ 0.f, 0.f, 0.f }, {});
 			m_pPhysXActorCom->Set_SimulationFilterData(m_pPhysXActorCom->Get_FilterData());
 			m_pPhysXActorCom->Set_ShapeFlag(true, false, true);
 		}
