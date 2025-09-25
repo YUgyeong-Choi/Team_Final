@@ -2,8 +2,8 @@
     "EffectObject": [
         {
             "Accel": [
-                5.0,
-                8.0
+                -1.2000000476837158,
+                -1.2000000476837158
             ],
             "Animation": true,
             "Billboard": false,
@@ -16,7 +16,7 @@
                 0.3019607961177826,
                 0.6823529601097107,
                 1.0,
-                1.0
+                0.7329843044281006
             ],
             "CircleNormal": [
                 0.0,
@@ -24,16 +24,16 @@
                 0.0
             ],
             "Color": [
-                1.0,
-                1.0,
+                0.0,
+                0.2617802619934082,
                 1.0,
                 1.0
             ],
             "DistortionStrength": 10.0,
-            "Duration": 153,
+            "Duration": 21,
             "EffectType": 1,
-            "EmissiveIntensity": 0.550000011920929,
-            "EndTrack": 153,
+            "EmissiveIntensity": 6.199999809265137,
+            "EndTrack": 21,
             "FlipUV": false,
             "Gravity": 0.25,
             "IsCircleRange": false,
@@ -41,12 +41,12 @@
             "KeyFrames": [
                 {
                     "Color": [
-                        1.0,
-                        1.0,
+                        0.0,
+                        0.2617802619934082,
                         1.0,
                         1.0
                     ],
-                    "Intensity": 1.7300000190734863,
+                    "Intensity": 2.0,
                     "Interpolation": 0,
                     "Rotation": [
                         0.0,
@@ -67,41 +67,41 @@
                     ]
                 }
             ],
-            "LifeTime": 7524.32470703125,
+            "LifeTime": 13743.234375,
             "LifeTime_Particle": [
-                2.200000047683716,
-                3.200000047683716
+                1.0,
+                2.0
             ],
             "Local": true,
             "Loop": false,
             "LoopInSet": false,
-            "LoopInSet_Delay": 0.0,
+            "LoopInSet_Delay": 1.19921875,
             "MaxLifeTime": 4.0,
-            "MaxSpeed": 7.0,
-            "MinSpeed": 0.0,
+            "MaxSpeed": 3.0,
+            "MinSpeed": 0.5,
             "Name": "Revive",
-            "NumInstance": 5000,
+            "NumInstance": 70,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
-                0.4574957489967346,
-                0.7624928951263428,
-                0.4574957489967346
+                0.0,
+                1.0,
+                0.0
             ],
             "OrbitSpeed": [
-                -13.0,
-                13.0
+                -10.0,
+                10.0
             ],
             "PType": 3,
             "Pivot": [
                 0.0,
-                -6.0,
+                -3.0,
                 0.0
             ],
             "Range": [
-                9.0,
-                9.0,
-                9.0
+                3.0,
+                3.0,
+                3.0
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -114,18 +114,163 @@
                 0.0
             ],
             "ShaderPass": 3,
-            "ShrinkThreshold": 1.2999999523162842,
+            "ShrinkThreshold": 1.0,
             "Size": [
                 0.019999999552965164,
-                0.029999999329447746
+                0.07000000029802322
             ],
             "Speed": [
-                0.10000000149011612,
-                0.5
+                2.799999952316284,
+                2.799999952316284
             ],
             "Spin": false,
             "StartTrack": 0,
-            "StretchFactor": 0.020999999716877937,
+            "StretchFactor": 0.028999999165534973,
+            "TextureTags": [
+                "",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        },
+        {
+            "Accel": [
+                -1.7000000476837158,
+                -1.7000000476837158
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.08552397787570953,
+                0.12382551282644272,
+                0.3141361474990845,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                0.0,
+                0.13842856884002686,
+                0.5287958383560181,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 21,
+            "EffectType": 1,
+            "EmissiveIntensity": 8.350000381469727,
+            "EndTrack": 21,
+            "FlipUV": false,
+            "Gravity": 0.25,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        0.0,
+                        0.13842856884002686,
+                        0.5287958383560181,
+                        1.0
+                    ],
+                    "Intensity": 2.0399999618530273,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 9845.91015625,
+            "LifeTime_Particle": [
+                1.0,
+                2.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 1.19921875,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 3.0,
+            "MinSpeed": 0.5,
+            "Name": "Revive2",
+            "NumInstance": 40,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                -10.0,
+                10.0
+            ],
+            "PType": 3,
+            "Pivot": [
+                0.0,
+                -3.0,
+                0.0
+            ],
+            "Range": [
+                3.0,
+                2.0,
+                3.0
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 1.0,
+            "Size": [
+                0.019999999552965164,
+                0.07000000029802322
+            ],
+            "Speed": [
+                2.4000000953674316,
+                2.4000000953674316
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.026000000536441803,
             "TextureTags": [
                 "",
                 "T_Shere_04_C_HJS",
@@ -147,5 +292,5 @@
         }
     ],
     "Loop": false,
-    "MaxFrame": 150
+    "MaxFrame": 20
 }

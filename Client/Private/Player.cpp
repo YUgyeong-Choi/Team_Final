@@ -240,28 +240,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	{
 		if (KEY_DOWN(DIK_R))
 		{
-			m_fTimeScale = 0.5f;
+			m_fHp = 1.f;
 		}
 		if (KEY_DOWN(DIK_T))
 		{
-			m_fTimeScale = 1.f;
 		}
-		if (KEY_PRESSING(DIK_E))
+		if (KEY_DOWN(DIK_E))
 		{
-			CEffectContainer::DESC Lightdesc = {};
-			//Lightdesc.pSocketMatrix = m_pModelCom->Get_CombinedTransformationMatrix(m_pModelCom->Find_BoneIndex("Bn_L_ForeTwist"));
-			//Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			//XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixIdentity());
-			Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-			XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixScaling(1.f,1.f,4.f));
-
-			if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_GL_DoorSmoke"), &Lightdesc))
-				MSG_BOX("이펙트 생성 실패함");
-
-
-			CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertKill_02");
+			Create_RevivalParticle();
 		}
 		
 		if (KEY_DOWN(DIK_Z))
@@ -4496,10 +4482,25 @@ void CPlayer::Create_DeathParticle()
 void CPlayer::Create_RevivalParticle()
 {
 	CEffectContainer::DESC Lightdesc = {};
-	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
-	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslation(0.f, 6.f, 0.f));
+	auto m = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslation(m->_41, m->_42 + 2.f, m->_43));
 	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ReviveParticle"), &Lightdesc))
 		MSG_BOX("이펙트 생성 실패함");
+}
+
+void CPlayer::Create_RevivalCompleteParticle()
+{
+	_uint iNumBones = m_pModelCom->Get_NumBones();
+
+	CEffectContainer::DESC Lightdesc = {};
+
+	for (size_t i = 0; i < 7; i++) 
+	{
+		_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(rand() % iNumBones)) * XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+		XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(mat.r[3]));
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_DeathParticle"), &Lightdesc))
+			MSG_BOX("이펙트 생성 실패함");
+	}
 }
 
 void CPlayer::Movement(_float fTimeDelta)

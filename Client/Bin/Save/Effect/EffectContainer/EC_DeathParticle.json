@@ -67,20 +67,20 @@
                     ]
                 }
             ],
-            "LifeTime": 4440.033203125,
+            "LifeTime": 4779.298828125,
             "LifeTime_Particle": [
                 1.0,
-                4.0
+                2.5
             ],
             "Local": true,
             "Loop": false,
             "LoopInSet": false,
-            "LoopInSet_Delay": -3.0,
+            "LoopInSet_Delay": -1.5,
             "MaxLifeTime": 4.0,
-            "MaxSpeed": 2.0,
+            "MaxSpeed": 1.5,
             "MinSpeed": 0.0,
             "Name": "Death",
-            "NumInstance": 30,
+            "NumInstance": 20,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -99,9 +99,9 @@
                 0.0
             ],
             "Range": [
-                0.30000000149011612,
-                0.30000000149011612,
-                0.30000000149011612
+                0.30000001192092896,
+                0.30000001192092896,
+                0.30000001192092896
             ],
             "RenderGroup": 8,
             "RotationAxis": [
@@ -116,8 +116,8 @@
             "ShaderPass": 3,
             "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.015999999552965164,
-                0.03599999910593033
+                0.009999999776482582,
+                0.019999999552965164
             ],
             "Speed": [
                 0.30000001192092896,
@@ -144,8 +144,153 @@
             "TileX": 1,
             "TileY": 1,
             "isTileLoop": false
+        },
+        {
+            "Accel": [
+                0.0,
+                1.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 185,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.6000000238418579,
+            "EndTrack": 185,
+            "FlipUV": false,
+            "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 2.2899999618530273,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 226.91604614257813,
+            "LifeTime_Particle": [
+                1.0,
+                2.5
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
+            "MaxLifeTime": 2.5,
+            "MaxSpeed": 4.0,
+            "MinSpeed": 0.0,
+            "Name": "Death2",
+            "NumInstance": 7,
+            "NumKeyFrames": 1,
+            "Orbit": false,
+            "OrbitAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "OrbitSpeed": [
+                0.0,
+                0.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.20000000298023224,
+                0.0
+            ],
+            "Range": [
+                0.30000001192092896,
+                0.30000001192092896,
+                0.30000001192092896
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.009999999776482582,
+                0.019999999552965164
+            ],
+            "Speed": [
+                0.5,
+                0.699999988079071
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": false,
-    "MaxFrame": 200
+    "MaxFrame": 180
 }
