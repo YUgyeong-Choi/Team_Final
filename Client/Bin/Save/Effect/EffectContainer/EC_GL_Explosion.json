@@ -5,7 +5,7 @@
             "Billboard": true,
             "CenterColor": [
                 1.0,
-                0.5531373023986816,
+                0.6843836307525635,
                 0.4031413793563843,
                 1.0
             ],
@@ -50,7 +50,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1906.9893798828125,
+            "LifeTime": 2426.87841796875,
             "Loop": true,
             "Name": "Fire",
             "NumKeyFrames": 1,
@@ -74,81 +74,6 @@
             "TileTickPerSec": 81.0,
             "TileX": 9,
             "TileY": 9
-        },
-        {
-            "Animation": true,
-            "Billboard": true,
-            "CenterColor": [
-                0.9842932224273682,
-                0.7818008661270142,
-                0.5771771669387817,
-                1.0
-            ],
-            "Color": [
-                0.0,
-                0.0,
-                0.0,
-                1.0
-            ],
-            "DistortionStrength": 10.0,
-            "Duration": 32,
-            "EffectType": 0,
-            "EmissiveIntensity": 0.05000000074505806,
-            "EndTrack": 72,
-            "FlipUV": false,
-            "KeyFrames": [
-                {
-                    "Color": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "Intensity": 1.25,
-                    "Interpolation": 0,
-                    "Rotation": [
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "Scale": [
-                        4.0,
-                        4.0,
-                        4.0
-                    ],
-                    "TrackPosition": 0.0,
-                    "Translation": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ]
-                }
-            ],
-            "LifeTime": 481.8672180175781,
-            "Loop": true,
-            "Name": "Fire_Inner",
-            "NumKeyFrames": 1,
-            "RenderGroup": 8,
-            "ShaderPass": 5,
-            "StartTrack": 40,
-            "TextureTags": [
-                "",
-                "T_SubUV_Fire_14_8x4_SC_KMH",
-                "",
-                ""
-            ],
-            "TextureUsage": [
-                false,
-                true,
-                false,
-                false
-            ],
-            "Threshold": 0.0,
-            "TickPerSecond": 60.0,
-            "TileTickPerSec": 32.0,
-            "TileX": 8,
-            "TileY": 4
         }
     ],
     "Loop": false,
