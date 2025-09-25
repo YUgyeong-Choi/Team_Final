@@ -166,9 +166,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    RECT     rcWindowed = { 0, 0, g_iWinSizeX, g_iWinSizeY };
 
-   AdjustWindowRect(&rcWindowed, WS_OVERLAPPEDWINDOW, false);
+   AdjustWindowRect(&rcWindowed, WS_POPUP, false);
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_POPUP,
       CW_USEDEFAULT, 0, rcWindowed.right - rcWindowed.left, rcWindowed.bottom - rcWindowed.top,  nullptr, nullptr, hInstance, nullptr);
 
    if (!hWnd)
