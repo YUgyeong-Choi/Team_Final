@@ -116,14 +116,11 @@ void CCamera_Orbital::Set_InitCam(_float fPitch, _float fYaw)
 		m_pTransformCom->Set_WorldMatrix(Get_OrbitalWorldMatrix(fPitch, fYaw));
 		Set_PitchYaw(fPitch, fYaw); // Set_PitchYaw 내부에서 Wrap 적용
 
-		_vector vPosition = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
-		XMStoreFloat4(&m_vPlayerPosition, vPosition);
-		m_vPlayerPosition.y += 1.7f;
+		_vector vPos = m_pPlayer->Get_TransfomCom()->Get_State(STATE::POSITION);
+		vPos += XMVectorSet(0.f, 1.7f, 0.f, 0.f);
+		vPos += XMVector3Normalize(m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK)) * -0.15f;
+		XMStoreFloat4(&m_vPlayerPosition, vPos);
 
-		_vector vLook = m_pPlayer->Get_TransfomCom()->Get_State(STATE::LOOK);
-		_vector vOffset = XMVectorScale(XMVector3Normalize(vLook), -0.15f);
-		vPosition = XMVectorAdd(vPosition, vOffset);
-		XMStoreFloat4(&m_vPlayerPosition, vPosition);
 		m_vPrevLookTarget = m_vPlayerPosition;
 	}
 }
