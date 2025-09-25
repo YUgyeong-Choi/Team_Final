@@ -77,12 +77,9 @@ void CFireBall::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderTyp
 		|| eColliderType == COLLIDERTYPE::BREAKABLE_OBJECT)
 	{
 		m_CollisionPriority[Environment] = pOther;
-	//	Set_bDead();
-#ifdef _DEBUG
-		cout << "FireBall On_CollisionEnter ENVIRONMENT" << endl;
-#endif
 	}
-	
+	if(m_pPhysXActorCom)
+		m_pPhysXActorCom->Set_ShapeFlag(false, false, true);
 	//if(m_pEffect)
 	//	m_pEffect->End_Effect();
 }

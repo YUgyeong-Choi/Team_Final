@@ -140,21 +140,25 @@ class CFestivalLeader final : public CBossUnit
 	enum EBossEffect : _uint
 	{
 		EF_NONE = 0,
-		EF_ONE_HANDSLAM = 1,
-		EF_SCRATCH = 2,
-		EF_DEFAULT_SLAM_NOSMOKE = 3,
-		EF_NOSMOKE_KNEE = 4,
-		EF_SMOKE = 5,
-		EF_GROUND_SPARK = 6,
-		EF_LShoulder_SPARK = 7,
-		EF_RShoulder_SPARK = 8,
-		EF_LHand_SPARK = 9,
-		EF_LForearm_SPARK = 10,
-		EF_P2_START = 11,
-		EF_HAMMER_SLAM = 12,
-		EF_HAMMER_SLAM_END = 13,
-		EF_BASKET_SLAM = 14,
-		EF_GROGGY = 15
+		EF_ONE_HANDSLAM_L,
+		EF_ONE_HANDSLAM_R,
+		EF_NOSMOKE_KNEE_R,
+		EF_SCRATCH_L,
+		EF_SCRATCH_R,
+		EF_DEFAULT_SLAM_NOSMOKE_L,
+		EF_DEFAULT_SLAM_NOSMOKE_R,
+		EF_NOSMOKE_KNEE_L,
+		EF_SMOKE,
+		EF_GROUND_SPARK,
+		EF_LShoulder_SPARK,
+		EF_RShoulder_SPARK,
+		EF_LHand_SPARK,
+		EF_LForearm_SPARK,
+		EF_P2_START,
+		EF_HAMMER_SLAM,
+		EF_HAMMER_SLAM_END,
+		EF_BASKET_SLAM,
+		EF_GROGGY
 	};
 
 private:
@@ -214,7 +218,6 @@ private:
 	virtual HRESULT EffectSpawn_Active(_int iEffectId, _bool bActive, _bool bIsOnce = true) override;
 	virtual HRESULT Spawn_Effect();
 	virtual HRESULT Ready_Effect();
-	void Reset_EffectFlags();
 
 	const EBossAttackPattern GetCurrentAttackPattern() const { return m_eCurAttackPattern; }
 
@@ -250,10 +253,7 @@ private:
 	_float  m_fCanSmashDistance = 6.f;
 
 	// ¿Ã∆Â∆Æ
-	_bool	m_bLeftHand = true;
-	_bool   m_bLeftKnee = true;
 	_bool   m_bHeadSpark = false;
-	_bool   m_bFullbodyEffect = false;
 	_float3 m_vCurWeaponPos = {};
 	_float3 m_vPrevWeaponPos = {};
 	_float3 m_vWeaponDir = {};

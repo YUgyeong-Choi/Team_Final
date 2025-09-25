@@ -94,8 +94,7 @@ json CYGTool::SaveCameraFrameData(const CAMERA_FRAMEDATA& data)
 	// 1. Matrix Position Frame (WorldMatrix은 16개의 float 값으로 저장)
 	for (const auto& matrixPos : data.vecWorldMatrixData)
 	{
-		XMFLOAT4X4 mat;
-		XMStoreFloat4x4(&mat, matrixPos.WorldMatrix);
+		XMFLOAT4X4 mat = matrixPos.WorldMatrix;
 
 		std::vector<float> matValues(16);
 		memcpy(matValues.data(), &mat, sizeof(float) * 16);
@@ -224,7 +223,7 @@ CAMERA_FRAMEDATA CYGTool::LoadCameraFrameData(const json& j)
 			const std::vector<float>& matValues = worldJson["worldMatrix"];
 			XMFLOAT4X4 mat;
 			memcpy(&mat, matValues.data(), sizeof(float) * 16);
-			worldFrame.WorldMatrix = XMLoadFloat4x4(&mat);
+			worldFrame.WorldMatrix = mat;
 
 			worldFrame.curveType = worldJson.value("curveType", 0); // 0=Linear
 
@@ -653,7 +652,7 @@ HRESULT CYGTool::Render_CameraTool()
 
 					CAMERA_WORLDFRAME matrixFrame;
 					matrixFrame.iKeyFrame = m_pSelectedKey->keyFrame;
-					matrixFrame.WorldMatrix = finalMat;
+					XMStoreFloat4x4(&matrixFrame.WorldMatrix, finalMat);
 					matrixFrame.interpMatrixPos = m_pSelectedKey->interpWorldPos;
 
 					auto& v = m_CameraDatas.vecWorldMatrixData;
@@ -1077,8 +1076,7 @@ HRESULT CYGTool::Render_CameraFrame()
 
 		ImGui::SeparatorText("Edit Pos Key Info");
 
-		_float4x4 worldMat;
-		XMStoreFloat4x4(&worldMat, m_EditMatrixPosKey.WorldMatrix);
+		_float4x4 worldMat = m_EditMatrixPosKey.WorldMatrix;
 
 		_float matrix[16];
 		memcpy(matrix, &worldMat, sizeof(float) * 16);
@@ -1100,7 +1098,7 @@ HRESULT CYGTool::Render_CameraFrame()
 			if (CCamera* pCam = CCamera_Manager::Get_Instance()->GetCurCam())
 			{
 				CTransform* pTransform = pCam->Get_TransfomCom();
-				m_EditMatrixPosKey.WorldMatrix = pTransform->Get_WorldMatrix();
+				m_EditMatrixPosKey.WorldMatrix = pTransform->Get_World4x4();
 			}
 		}
 

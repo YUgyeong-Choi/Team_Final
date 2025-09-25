@@ -90,8 +90,8 @@ public:
 	_bool Get_RenderMapCollider();
 	HRESULT Add_DebugComponent(class CComponent* pDebugCom);	
 #endif
-	void SetPlayerPos(_fvector vPos) { m_vPlayerPosition = vPos; }
-	_vector GetPlayerPos() { return m_vPlayerPosition; }
+	void SetPlayerPos(_fvector vPos) { XMStoreFloat4(&m_vPlayerPosition, vPos); }
+	_vector GetPlayerPos() { return XMLoadFloat4(&m_vPlayerPosition); }
 #pragma endregion
 
 #pragma region TIMER_MANAGER
@@ -329,7 +329,7 @@ private:
 	_float					m_fAccTime = {}; // 게임 실행 후 누적 시간 전역으로 저장함 임시로..아마도
 
 private: /* [ 플레이어 포지션 ] */
-	_vector m_vPlayerPosition = {};
+	_float4 m_vPlayerPosition = {};
 	class CCamera* m_pCurCam = {};
 public:
 	void Release_Engine();

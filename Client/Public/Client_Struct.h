@@ -163,7 +163,7 @@ namespace Client
 	struct CAMERA_WORLDFRAME
 	{
 		_int iKeyFrame;
-		_matrix WorldMatrix;
+		_float4x4 WorldMatrix;
 		INTERPOLATION_CAMERA interpMatrixPos;
 		_int   curveType = 0; 
 		_float curveY[5] = { 0.f, 0.25f, 0.5f, 0.75f, 1.f }; 

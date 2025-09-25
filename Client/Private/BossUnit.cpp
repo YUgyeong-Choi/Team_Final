@@ -160,7 +160,7 @@ void CBossUnit::Ready_AttackPatternWeightForPhase2()
 {
 }
 
-HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale)
+HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wstring& MaskTag, _fvector vDecalScale, _float fLifeTime)
 {
 
 #pragma region 康旷 单漠 积己内靛
@@ -170,7 +170,7 @@ HRESULT CBossUnit::Spawn_Decal(CBone* pBone, const wstring& NormalTag, const wst
 	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::N)] = NormalTag;
 	DecalDesc.PrototypeTag[ENUM_CLASS(CStatic_Decal::TEXTURE_TYPE::MASK)] = MaskTag;
 	DecalDesc.bHasLifeTime = true;
-	DecalDesc.fLifeTime = 5.f;
+	DecalDesc.fLifeTime = fLifeTime;
 
 	auto worldmat = XMLoadFloat4x4(pBone->Get_CombinedTransformationMatrix()) * m_pTransformCom->Get_WorldMatrix();
 

@@ -89,44 +89,14 @@ HRESULT CAnimation::InitializeByBinary(ifstream& ifs, const vector<class CBone*>
 
 		m_Channels.push_back(pChannel);
 	}
-	//m_TransformMatrices.resize(Bones.size());
-	//for (auto& mat : m_TransformMatrices)
-	//	mat = XMMatrixIdentity();
-	//for (size_t i = 0; i < Bones.size(); ++i)
-	//{
-	//	m_TransformMatrices[i] =
-	//		XMLoadFloat4x4(Bones[i]->Get_TransformationMatrix());
-	//}
+
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
 	m_Bones = Bones; // 뼈대 정보 저장
-	//m_fTickPerSecond = 55.f;
+
 	return S_OK;
 }
 
-//_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop)
-//{
-//	m_isLoop = isLoop;
-//	m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
-//
-//	if (m_fCurrentTrackPosition >= m_fDuration)
-//	{
-//		m_fCurrentTrackPosition = 0.f;
-//		if (false == isLoop)
-//		{
-//			m_fCurrentTrackPosition = m_fDuration;
-//			return true;
-//		}
-//	}
-//
-//	// 채널이 각 뼈들의 정보 (예: 오른쪽 팔, 손목, 손가락등)
-//	for (_uint i = 0; i < m_iNumChannels; ++i)
-//	{
-//		m_Channels[i]->Update_TransformationMatrix(m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones);
-//	}
-//	return false;
-//}
-
-_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents,vector<_float4x4>* outLocalMatrices)
+_bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _bool isLoop, vector<string>* outEvents)
 {
 	constexpr _float fTargetTimeDelta = 1.f / 60.f;
 	_float fTimeScale = fTimeDelta / fTargetTimeDelta;
@@ -175,23 +145,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 	{
 		for (auto& ev : m_events)
 		{
-			/*	if (m_bReverse)
-				{
-					if (ev.fTime > m_fCurrentTrackPosition && ev.fTime <= prevPos)
-					{
-						outEvents->push_back(ev.name);
-					}
-				}
-				else
-				{
-
-				if (ev.fTime > prevPos && ev.fTime <= m_fCurrentTrackPosition)
-				{
-					outEvents->push_back(ev.name);
-				}
-				}*/
-
-				// prevPos == curPos (deltaTime=0) 인 경우 현재 프레임 이벤트도 잡아줌
+			// prevPos == curPos (deltaTime=0) 인 경우 현재 프레임 이벤트도 잡아줌
 			if (fabs(prevPos - m_fCurrentTrackPosition) < 0.0001f)
 			{
 				if (fabs(ev.fTime - m_fCurrentTrackPosition) < 0.0001f)
@@ -230,8 +184,7 @@ _bool CAnimation::Update_Bones(_float fTimeDelta, const vector<CBone*>& Bones, _
 		m_Channels[i]->Update_TransformationMatrix(
 			m_CurrentKeyFrameIndices[i],
 			m_fCurrentTrackPosition,
-			Bones, bIsReverse, outLocalMatrices
-		);
+			Bones, bIsReverse);
 	}
 
 	// 논루프 애니 종료 반환

@@ -968,7 +968,7 @@ HRESULT CAnimTool::Render_AnimationSequence()
 			m_pCurAnimator->StopAnimation(); // ´Ù½Ã pause
 			vector<string> events;
 
-			pCurAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pCurAnim->Get_isLoop(), &events, nullptr);
+			pCurAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pCurAnim->Get_isLoop(), &events);
 			m_pCurAnimator->DispatchAnimEventsForEditor(events);
 		}
 	}
@@ -2030,7 +2030,7 @@ void CAnimTool::UpdateCurrentModel(_float fTimeDelta)
 			vector<string> events;
 
 			m_pCurAnimator->Update(0.f);
-			pAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pAnim->Get_isLoop(), &events, nullptr);
+			pAnim->Update_Bones(0.f, m_pCurModel->Get_Bones(), pAnim->Get_isLoop(), &events);
 			m_pCurAnimator->DispatchAnimEventsForEditor(events);
 		}
 	}

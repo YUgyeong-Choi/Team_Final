@@ -159,7 +159,7 @@ private:
 
 	void ChosePatternWeightByDistance(_float fDistance);
 	void FireProjectile(ProjectileType type, _float fSpeed = 10.f);
-	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 12, _float fDistance = 23.f);
+	void FlamethrowerAttack(_float fConeAngle = 10.f, _int iRayCount = 12, _float fDistance = 15.f);
 	void SpawnFlameField();
     virtual void Ready_EffectNames() override;
     virtual void ProcessingEffects(const _wstring& stEffectTag) override;

@@ -281,7 +281,8 @@ HRESULT CTriggerTalk::Ready_TriggerObject(TRIGGERTALK_DESC* TriggerTalkDESC)
 	strTriggerObjectTag += wstring(TriggerTalkDESC->gameObjectTag.begin(), TriggerTalkDESC->gameObjectTag.end());
 
 	CTriggerItem::TRIGGERITEM_DESC Desc{};
-	Desc.triggerWorldMatrix = m_pTransformCom->Get_WorldMatrix();
+	XMStoreFloat4x4(&Desc.triggerWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	
 	Desc.vOffSetObj = TriggerTalkDESC->vOffSetObj;
 	Desc.vScaleObj = TriggerTalkDESC->vScaleObj;
 
