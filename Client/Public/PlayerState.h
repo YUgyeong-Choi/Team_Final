@@ -3353,11 +3353,14 @@ public:
         m_pOwner->m_vecElements[0].fDuration = 0.f;
 
         m_pOwner->m_pSoundCom->StopAll();
+        m_pOwner->m_bDeathParticle = true;
     }
 
     virtual void Execute(_float fTimeDelta) override
     {
         m_fStateTime += fTimeDelta;
+
+ 
 
         if (m_fStateTime > 1.f && !m_bDoOnce)
         {
@@ -3376,13 +3379,24 @@ public:
             CUI_Manager::Get_Instance()->Sound_Play("SE_UI_AlertDeath_01");
             m_bDoOnce = true;
 
-          
-            
+        }
+
+        if (m_fStateTime > 1.5f && m_pOwner->m_bDeathParticle == true)
+        {
+            m_pOwner->m_fDeathParticleAccTime += fTimeDelta;
+            // 사망 파티클의 수명 관리
+            m_pOwner->Create_DeathParticle();
+
+            if (m_pOwner->m_fDeathParticleAccTime > 1.f)
+            {
+                m_pOwner->m_fDeathParticleAccTime = 0.f;
+                m_pOwner->m_bDeathParticle = false;
+            }
         }
 
         if (m_fStateTime > 5.75f && !m_bDoTwo)
         {
-
+            m_pOwner->Create_RevivalParticle();
             // 이제 lost ergo 죽은 위치에 추가 하기 위해 위치 지정 // 
 
             _int iAreaID = m_pGameInstance->GetCurAreaIds();
@@ -3483,6 +3497,8 @@ public:
             default:
                 break;
             }*/
+
+            m_pOwner->Create_RevivalParticle();
         }
 
 

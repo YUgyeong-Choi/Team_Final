@@ -231,6 +231,8 @@ public:
 	void Create_LeftArm_Lightning(const _wstring& strECTag);
 	void Create_LeftArm_Lightning_Hand(const _wstring& strECTag);
 	void Create_LostErgo_RimLight();
+	void Create_DeathParticle();
+	void Create_RevivalParticle();
 
 public: /* [ 페이탈 함수 ] */
 	void	SetbIsBackAttack(_bool bIsBackAttack) { m_bIsBackAttack = bIsBackAttack; }
@@ -535,7 +537,7 @@ private: /* [ 아이템 사용 관련 변수 ] */
 	_bool	 m_bLampSwitch = {};
 	_float	 m_fLampTime = {};
 	_bool    m_bCanGetItem = { false };
-	
+
 private: /* [ 벨트 슬롯 ] */
 	_bool	 m_bUseLamp = {};
 	_bool	 m_bUseGrinder = {};
@@ -556,13 +558,13 @@ private: /* [ 이펙트 ] */
 	class CEffectContainer* m_pGrinderEffect = { nullptr };
 	_float		m_fLostErgoRimlightAccTime = {};
 	_bool		m_bLostErgoRimlight = { false };
+	_float		m_fDeathParticleAccTime = {};
+	_bool		m_bDeathParticle = { false };
 
 private: /* [ 공격한 적 ] */
 	class CUnit* m_pHitTarget = { nullptr };
 
 	_int m_iFatalAttackCount = {};
-
-
 
 private: // 그라인더용 변수
 	CSoundController* m_pGrinderSound = { nullptr };
@@ -576,6 +578,7 @@ private:
 	STAT_DESC m_eStat = {};
 	_float m_fArmor = {};
 	_float m_fDamageReduction = {};
+
 public:
 	static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg = nullptr) override;
@@ -583,4 +586,3 @@ public:
 };
 
 NS_END
-

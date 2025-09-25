@@ -369,7 +369,6 @@ void CPlayer::Update(_float fTimeDelta)
 	_vector vLockonPos = XMVector3TransformCoord(LockonMat.r[3], m_pTransformCom->Get_WorldMatrix());
 	XMStoreFloat4(&m_vLockonPos, vLockonPos);
 
-
 	m_pSpringBoneSys->Update(fTimeDelta);
 
 	if (m_eCurrentState == EPlayerState::DEAD)
@@ -4477,6 +4476,32 @@ void CPlayer::Create_LostErgo_RimLight()
 	LimActive(true, 1.5f, { 0.34f ,0.58f, 0.8f, 1.f });
 	m_bLostErgoRimlight = true;
 	m_fLostErgoRimlightAccTime = 0.f;
+}
+
+void CPlayer::Create_DeathParticle()
+{
+	//if (!m_bDeathParticle)
+	//	return;
+	_uint iNumBones = m_pModelCom->Get_NumBones();
+
+	CEffectContainer::DESC Lightdesc = {};
+
+	//for (size_t i = 0; i < 5; i++) // for문 돌렸다가 너무 많을까봐 일단 주석함
+	{
+		_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_CombinedTransformationMatrix(rand() % iNumBones))* XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrix_Ptr());
+		XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslationFromVector(mat.r[3]));
+		if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_DeathParticle"), &Lightdesc))
+			MSG_BOX("이펙트 생성 실패함");
+	}
+}
+
+void CPlayer::Create_RevivalParticle()
+{
+	CEffectContainer::DESC Lightdesc = {};
+	Lightdesc.pParentMatrix = m_pTransformCom->Get_WorldMatrix_Ptr();
+	XMStoreFloat4x4(&Lightdesc.PresetMatrix, XMMatrixTranslation(0.f, 6.f, 0.f));
+	if (nullptr == MAKE_EFFECT(ENUM_CLASS(m_iLevelID), TEXT("EC_ReviveParticle"), &Lightdesc))
+		MSG_BOX("이펙트 생성 실패함");
 }
 
 void CPlayer::Movement(_float fTimeDelta)

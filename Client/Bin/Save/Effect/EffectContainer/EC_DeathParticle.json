@@ -1,0 +1,151 @@
+{
+    "EffectObject": [
+        {
+            "Accel": [
+                0.0,
+                1.0
+            ],
+            "Animation": true,
+            "Billboard": false,
+            "Center": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "CenterColor": [
+                0.3019607961177826,
+                0.6823529601097107,
+                1.0,
+                1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
+            "Color": [
+                1.0,
+                1.0,
+                1.0,
+                1.0
+            ],
+            "DistortionStrength": 10.0,
+            "Duration": 200,
+            "EffectType": 1,
+            "EmissiveIntensity": 0.3499999940395355,
+            "EndTrack": 200,
+            "FlipUV": false,
+            "Gravity": -0.20000000298023224,
+            "IsCircleRange": false,
+            "IsGravity": false,
+            "KeyFrames": [
+                {
+                    "Color": [
+                        1.0,
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "Intensity": 1.0,
+                    "Interpolation": 0,
+                    "Rotation": [
+                        0.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "Scale": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "TrackPosition": 0.0,
+                    "Translation": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ],
+            "LifeTime": 4440.033203125,
+            "LifeTime_Particle": [
+                1.0,
+                4.0
+            ],
+            "Local": true,
+            "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -3.0,
+            "MaxLifeTime": 4.0,
+            "MaxSpeed": 2.0,
+            "MinSpeed": 0.0,
+            "Name": "Death",
+            "NumInstance": 30,
+            "NumKeyFrames": 1,
+            "Orbit": true,
+            "OrbitAxis": [
+                0.0999804139137268,
+                0.9899535179138184,
+                0.0999804139137268
+            ],
+            "OrbitSpeed": [
+                -100.0,
+                100.0
+            ],
+            "PType": 0,
+            "Pivot": [
+                0.0,
+                -0.20000000298023224,
+                0.0
+            ],
+            "Range": [
+                0.30000000149011612,
+                0.30000000149011612,
+                0.30000000149011612
+            ],
+            "RenderGroup": 8,
+            "RotationAxis": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "RotationSpeed": [
+                0.0,
+                0.0
+            ],
+            "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
+            "Size": [
+                0.015999999552965164,
+                0.03599999910593033
+            ],
+            "Speed": [
+                0.30000001192092896,
+                0.5
+            ],
+            "Spin": false,
+            "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
+            "TextureTags": [
+                "T_Shere_05_C_HJS",
+                "T_Shere_04_C_HJS",
+                "",
+                ""
+            ],
+            "TextureUsage": [
+                false,
+                true,
+                false,
+                false
+            ],
+            "Threshold": 0.0,
+            "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
+            "TileX": 1,
+            "TileY": 1,
+            "isTileLoop": false
+        }
+    ],
+    "Loop": false,
+    "MaxFrame": 200
+}
