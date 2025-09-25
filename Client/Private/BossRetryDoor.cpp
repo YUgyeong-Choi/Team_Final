@@ -56,8 +56,6 @@ void CBossRetryDoor::Priority_Update(_float fTimeDelta)
 			m_pPhysXActorCom->Set_ShapeFlag(false, false, false);
 		}
 	}
-
-
 }
 
 void CBossRetryDoor::Update(_float fTimeDelta)

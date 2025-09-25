@@ -3,7 +3,7 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
-//#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
+#define TESTMAP //테스트맵 하기 싫으면 주석하시오 (영웅)
 
 #ifdef TESTMAP
 
