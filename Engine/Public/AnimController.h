@@ -450,7 +450,6 @@ private:
 	string				   m_EntryStateName{};
 	vector<AnimState>      m_States;
 	vector<Transition>     m_Transitions;
-	vector<Condition>	   m_Conditions; // 아직 쓰는 곳 없음
 
 	class CAnimator*	   m_pAnimator = nullptr;  // 애니메이터 참조
 	unordered_map<string, Parameter> m_Params; // 파라미터 관리 (컨트롤러 별 개별로 관리)

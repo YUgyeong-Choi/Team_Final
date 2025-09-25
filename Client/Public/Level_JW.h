@@ -14,7 +14,7 @@ class CLevel_JW final : public CLevel
 {
 public:
 	enum class IMGUITOOL {
-		MAP,
+		ANIM,
 		END
 	};
 private:

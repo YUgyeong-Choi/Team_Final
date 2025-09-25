@@ -43,32 +43,35 @@ private:
 	HRESULT Render_Load_Model();
 	HRESULT Render_AnimEvents();
 	HRESULT Render_Parameters();
+	HRESULT Render_StateNodes(class CAnimController* pCtrl);
+
+
 	HRESULT Bind_Shader();
-
-
 	HRESULT Handle_Links(CAnimController* pCtrl);
-
 	HRESULT Delete_AnimState(CAnimController* pCtrl);
+
+
 
 	void InitImNodesStyle();
 
 	void UpdateCurrentModel(_float fTimeDelta);
 	void CreateModel(const string& fileName,const string& filePath);
+	HRESULT Register_Objects();
 	
 	void Setting_Sequence();
 
 	void SelectAnimation();
 	void Setting_AnimationProperties();
-	void ApplyCategoryLayout(class CAnimController* pCtrl);
 
+	void ApplyCategoryLayout(class CAnimController* pCtrl);
+	string GetStateCategory(const string& stateName);
+	
 	void SaveOrLoadEvents(_bool isSave = true);
 	void SaveOrLoadAnimStates(_bool isSave = true);
 
-	string GetStateCategory(const string& stateName);
 
 	HRESULT Modify_Transition(CAnimController::Transition& transition);
-
-	HRESULT Register_Objects();
+	HRESULT Modify_State(class CAnimController* pCtrl);
 
 private:
 	CAnimator* m_pCurAnimator = nullptr; // 현재 모델의 애니메이터
