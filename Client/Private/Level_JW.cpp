@@ -45,12 +45,12 @@ HRESULT CLevel_JW::Initialize()
 void CLevel_JW::Priority_Update(_float fTimeDelta)
 {
 
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Priority_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)]->Priority_Update(fTimeDelta);
 }
 
 void CLevel_JW::Update(_float fTimeDelta)
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)]->Update(fTimeDelta);
 	m_pCamera_Manager->Update(fTimeDelta);
 //	__super::Update(fTimeDelta);
 }
@@ -63,13 +63,13 @@ void CLevel_JW::Late_Update(_float fTimeDelta)
 		if (SUCCEEDED(m_pGameInstance->Change_Level(static_cast<_uint>(LEVEL::LOADING), CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::LOGO))))
 			return;
 	}
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Late_Update(fTimeDelta);
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)]->Late_Update(fTimeDelta);
 
 }
 
 HRESULT CLevel_JW::Render()
 {
-	SetWindowText(g_hWnd, TEXT("장원 레벨입니다."));
+	SetWindowText(g_hWnd, TEXT("Animation Tool Level."));
 
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
@@ -141,8 +141,8 @@ HRESULT CLevel_JW::Ready_Lights()
 
 HRESULT CLevel_JW::Ready_ImGuiTools()
 {
-	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)] = CAnimTool::Create(m_pDevice, m_pContext);
-	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)])
+	m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)] = CAnimTool::Create(m_pDevice, m_pContext);
+	if (nullptr == m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)])
 		return E_FAIL;
 
 	return S_OK;
@@ -159,12 +159,6 @@ HRESULT CLevel_JW::Ready_Layer_DummyMap(const _wstring strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObjectReturn(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
 		ENUM_CLASS(LEVEL::JW), strLayerTag, &pMap2, &Desc)))
 		return E_FAIL;
-
-	//Desc.szMeshID = TEXT("Station");
-	//lstrcpy(Desc.szName, TEXT("Station"));
-	//if (FAILED(m_pGameInstance->Add_GameObject(ENUM_CLASS(LEVEL::STATIC), TEXT("Prototype_GameObject_PBRMesh"),
-	//	ENUM_CLASS(LEVEL::CY), strLayerTag, &Desc)))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -195,7 +189,7 @@ HRESULT CLevel_JW::ImGui_Render()
 	if (FAILED(ImGui_Docking_Settings()))
 		return E_FAIL;
 
-	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]->Render()))
+	if (FAILED(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)]->Render()))
 		return E_FAIL;
 	return S_OK;
 }
@@ -260,14 +254,15 @@ CLevel_JW* CLevel_JW::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 void CLevel_JW::Free()
 {
+	
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable; // 멀티 뷰포트 비활성화
 	//ImGui::GetIO().Fonts->Clear(); // 폰트 캐시 정리
-
+	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::ANIM)]);
+	ImNodes::DestroyContext();
 	ImGui::DestroyContext();
 
-	Safe_Release(m_ImGuiTools[ENUM_CLASS(IMGUITOOL::MAP)]);
 	
 	__super::Free();
 

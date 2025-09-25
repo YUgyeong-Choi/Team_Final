@@ -1095,7 +1095,7 @@ json CAnimator::Serialize()
 
 		json ctrlJ = pCtrl->Serialize();
 
-		// 파일명: <exeDir>/Bin/Save/AnimationStates/<ControllerName>.json
+		// 파일명 <exeDir>/Bin/Save/AnimationStates/<ControllerName>.json
 		filesystem::path filePath = saveDir / (pCtrl->GetName() + ".json");
 
 		ofstream ofs(filePath.string());

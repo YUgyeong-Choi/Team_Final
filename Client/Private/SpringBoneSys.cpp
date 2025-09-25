@@ -406,15 +406,6 @@ void CSpringBoneSys::Deserialize(const json& j)
 	if (j.contains("exp"))
 		exp = j["exp"].get<_float>();
 
-	//if (j.contains("follow") && j["follow"].is_array() && j["follow"].size() == 2)
-	//	follow = { j["follow"][0].get<_float>(), j["follow"][1].get<_float>() };
-
-	//if (j.contains("maxDeg") && j["maxDeg"].is_array() && j["maxDeg"].size() == 2)
-	//	maxDeg = { j["maxDeg"][0].get<_float>(), j["maxDeg"][1].get<_float>() };
-
-	//if (j.contains("damping") && j["damping"].is_array() && j["damping"].size() == 2)
-	//	damping = { j["damping"][0].get<_float>(), j["damping"][1].get<_float>() };
-
 	// parts Ã³¸®
 	if (j.contains("parts"))
 	{
@@ -423,9 +414,6 @@ void CSpringBoneSys::Deserialize(const json& j)
 			SpringBoneProfile profile;
 
 			profile.fExp = exp;
-			//profile.followRange = follow;
-			//profile.maxDegRange = maxDeg;
-			//profile.dampingRange = damping;
 
 			if (val.contains("follow") && val["follow"].is_array() && val["follow"].size() == 2)
 				profile.followRange = { val["follow"][0].get<_float>(), val["follow"][1].get<_float>() };
