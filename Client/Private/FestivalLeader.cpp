@@ -114,6 +114,7 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (m_bDead)
 		m_pHPBar->Set_bDead();
+#ifdef _DEBUG
 	if (KEY_DOWN(DIK_B))
 	{
 		EnterCutScene();
@@ -130,12 +131,9 @@ void CFestivalLeader::Priority_Update(_float fTimeDelta)
 
 	if (KEY_DOWN(DIK_I))
 	{
-	
 		m_fHp -= 500.f;
-	//	SwitchSecondEmissive(true, 1.f);
-		//	ReChallenge();
 	}
-#ifdef _DEBUG
+
 
 
 	
@@ -733,13 +731,11 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		{
 			m_pAnimator->SetBool("IsCombo", false);
 		}
-		//m_eAttackType = EAttackType::NORMAL;
 	}
 	break;
 	case Client::CFestivalLeader::CrossSlam:
 	{
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFestivalLeader::JumpAttack:
@@ -760,15 +756,12 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 		if (m_fCanSmashDistance >= Get_DistanceToPlayer())
 			m_pAnimator->SetInt("SmashCount", iSmashCount);
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::STAMP;
 	}
 	break;
 	case Client::CFestivalLeader::Spin:
-		//	m_eAttackType = EAttackType::NORMAL;
 		break;
 	case Client::CFestivalLeader::HalfSpin:
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::FURY_AIRBORNE;
 		break;
 	case Client::CFestivalLeader::HammerSlam:
 	{
@@ -776,23 +769,18 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	}
 	break;
 	case Client::CFestivalLeader::DashSwing:
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 		break;
 	case Client::CFestivalLeader::Swing:
 	{
 		m_pAnimator->SetInt("IsCombo", bIsCombo);
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 	}
 	break;
 	case Client::CFestivalLeader::FuryHammerSlam:
-		//	m_eAttackType = EAttackType::FURY_STAMP;
 		break;
 	case Client::CFestivalLeader::FurySwing:
-		//	m_eAttackType = EAttackType::KNOCKBACK;
 		m_pAnimator->SetBool("IsCombo", bIsCombo);
 		break;
 	case Client::CFestivalLeader::FuryBodySlam:
-		//	m_eAttackType = EAttackType::FURY_STAMP;
 		break;
 	default:
 		break;
@@ -806,7 +794,6 @@ void CFestivalLeader::SetupAttackByType(_int iPattern)
 	{
 		m_bRootMotionClamped = false;
 	}
-	//static_cast<CPlayer*>(m_pPlayer)->SetHitedAttackType(m_eAttackType);
 }
 
 void CFestivalLeader::Register_Events()
@@ -1953,22 +1940,12 @@ void CFestivalLeader::EnterNextCutScene()
 	}
 }
 
-void CFestivalLeader::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-
-}
-
 void CFestivalLeader::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
 {
 
 	__super::On_CollisionStay(pOther, eColliderType, HitPos, HitNormal);
 
 }
-
-void CFestivalLeader::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
 
 void CFestivalLeader::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
