@@ -58,9 +58,9 @@ HRESULT CLevel_DH::Initialize()
 	//6锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ 188.27f, 10.18f, -8.23f, 1.f });
 	//1锅备开
-	//m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
+	m_pGameInstance->SetPlayerPosition(_fvector{ -0.2f, 1.f, 1.01f, 1.f });
 	//5锅备开
-	m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
+	//m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
 	//3锅备开
 	//m_pGameInstance->SetPlayerPosition(_fvector{ 127.851753f, 2.f, -7.543217f, 1.f });
 	//19锅备开

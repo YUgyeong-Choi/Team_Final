@@ -3340,8 +3340,10 @@ public:
         printf("Player_State : %ls \n", GetStateName());
         CLockOn_Manager::Get_Instance()->Set_Off(nullptr);
 
-        m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
-        m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
+        m_pOwner->m_pSoundCom->Play("SE_PC_MT_Hit_Dead_B_0");
+        m_pOwner->m_pSoundCom->Play("SE_PC_SK_GetHit_Guard_CarcassSkin_M_0");
+        //m_pOwner->m_pSoundCom->Play_Random("SE_PC_MT_Hit_Dead_B_", 3);
+        //m_pOwner->m_pSoundCom->Play_Random("SE_PC_SK_GetHit_Guard_CarcassSkin_M_", 3);
 
         m_pOwner->SetIsFatalBoss(false);
         m_pOwner->SetbIsBackAttack(false);

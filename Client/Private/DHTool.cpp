@@ -872,7 +872,8 @@ void CDHTool::Save_Lights(LEVEL_TYPE eLType)
 }
 void CDHTool::Load_Lights(LEVEL_TYPE eLType)
 {
-	wstring basePath = L"D:\\LieOfP\\Client\\Bin\\Save\\LightInfomation\\";
+	//wstring basePath = L"D:\\LieOfP\\Client\\Bin\\Save\\LightInfomation\\";
+	wstring basePath = L"..\\Bin\\Save\\LightInfomation\\";
 	wstring fileName = L"Light_Information.json";
 
 	ifstream ifs(basePath + fileName);

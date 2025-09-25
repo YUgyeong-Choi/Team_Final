@@ -89,6 +89,10 @@ HRESULT CFinalDoor::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fDissolveAmount", &fDissolve, sizeof(_float))))
 		return E_FAIL;
 
+	_bool vDissolve = false;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_bDissolve", &vDissolve, sizeof(_bool))))
+		return E_FAIL;
+
 	for (_uint i = 0; i < iNumMesh; i++)
 	{
 		_float Emissive = 0.f;
