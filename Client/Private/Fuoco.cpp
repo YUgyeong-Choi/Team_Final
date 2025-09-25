@@ -57,7 +57,8 @@ HRESULT CFuoco::Initialize(void* pArg)
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
 	}
-
+	m_fMaxHp = 1400.f;
+	m_fHp = m_fMaxHp;
 	m_fMaxRootMotionSpeed = 18.f;
 
 	m_fDamage = 15.f;
