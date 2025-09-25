@@ -60,15 +60,9 @@ public:
     virtual void Late_Update(_float fTimeDelta) override;
 
 	virtual void Update_Collider() override;
-	virtual void On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
-	virtual void On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
-	virtual void On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal);
-
-	/* Ray로 인항 충돌(HitPos& HitNormal) */
-	virtual void On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType);
 
 	virtual void On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType);
-	virtual void On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType);
+
 
 	_bool Get_ElbowHit() const { return m_bElbowHit; }
 	void  Set_ElbowHit(_bool bHit) { m_bElbowHit = bHit; }

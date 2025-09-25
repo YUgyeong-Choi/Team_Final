@@ -49,7 +49,7 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		lstrcpy(UnitDesc.szName, TEXT("Elite_Police"));
 		UnitDesc.szMeshID = TEXT("Elite_Police");
 		UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
-		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
+
 		UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
 		if (FAILED(__super::Initialize(&UnitDesc)))
@@ -63,10 +63,6 @@ HRESULT CElite_Police::Initialize(void* pArg)
 		pDesc->szMeshID = TEXT("Elite_Police");
 		pDesc->fRotationPerSec = XMConvertToRadians(300.f);
 		pDesc->fSpeedPerSec = m_fWalkSpeed;
-
-		//UnitDesc.InitPos = _float3(55.f, 0.f, -7.5f);
-		//UnitDesc.InitPos = _float3(55.5f, 0.f, -7.5f);
-		//UnitDesc.InitScale = _float3(0.9f, 0.9f, 0.9f);
 
 		if (FAILED(__super::Initialize(pArg)))
 			return E_FAIL;
@@ -234,9 +230,6 @@ void CElite_Police::Update(_float fTimeDelta)
 
 	if (nullptr != m_pHPBar)
 		m_pHPBar->Update(fTimeDelta);
-
-
-
 }
 
 void CElite_Police::Late_Update(_float fTimeDelta)
@@ -984,23 +977,6 @@ void CElite_Police::Update_Collider()
 	m_pPhysXElbow->Set_Transform(PxTransform(armPos, elbowRot));
 }
 
-void CElite_Police::On_CollisionEnter(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-
-}
-
-void CElite_Police::On_CollisionStay(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
-void CElite_Police::On_CollisionExit(CGameObject* pOther, COLLIDERTYPE eColliderType, _vector HitPos, _vector HitNormal)
-{
-}
-
-void CElite_Police::On_Hit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
 void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderType)
 {
 	ReceiveDamage(pOther, eColliderType);
@@ -1014,11 +990,6 @@ void CElite_Police::On_TriggerEnter(CGameObject* pOther, COLLIDERTYPE eColliderT
 		}
 	}
 }
-
-void CElite_Police::On_TriggerExit(CGameObject* pOther, COLLIDERTYPE eColliderType)
-{
-}
-
 
 CElite_Police* CElite_Police::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
