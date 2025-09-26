@@ -94,7 +94,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
 	++m_iRenderCount;
 
 	if (m_fTimeAcc >= 1.f)
@@ -105,7 +105,7 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Draw_Font(TEXT("Font_151"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-//#endif
+#endif
 
 
 	m_pGameInstance->End_Draw();
