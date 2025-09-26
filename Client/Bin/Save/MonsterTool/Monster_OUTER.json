@@ -1,7 +1,7 @@
 {
     "Buttler_Basic": [
         {
-            "SpawnType": 2,
+            "SpawnType": 0,
             "WorldMatrix": [
                 [
                     1.0,
