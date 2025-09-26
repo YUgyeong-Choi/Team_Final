@@ -18,6 +18,11 @@
                 0.17277485132217407,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.0,
@@ -27,10 +32,11 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 1.0,
+            "EmissiveIntensity": 2.049999952316284,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -68,6 +74,8 @@
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
@@ -665,6 +673,11 @@
                 0.1725490242242813,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.15706807374954224,
@@ -674,10 +687,11 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 1.0,
+            "EmissiveIntensity": 2.0,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 15.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -715,6 +729,8 @@
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -904,6 +920,11 @@
                 0.1725490242242813,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.1568627506494522,
@@ -913,10 +934,11 @@
             "DistortionStrength": 10.0,
             "Duration": 120,
             "EffectType": 1,
-            "EmissiveIntensity": 0.699999988079071,
+            "EmissiveIntensity": 2.0,
             "EndTrack": 120,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -954,6 +976,8 @@
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.5,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,

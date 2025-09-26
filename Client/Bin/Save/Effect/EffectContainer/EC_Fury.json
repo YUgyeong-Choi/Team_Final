@@ -80,7 +80,7 @@
             "MaxSpeed": 3.0,
             "MinSpeed": 0.0,
             "Name": "Fury",
-            "NumInstance": 5,
+            "NumInstance": 4,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [

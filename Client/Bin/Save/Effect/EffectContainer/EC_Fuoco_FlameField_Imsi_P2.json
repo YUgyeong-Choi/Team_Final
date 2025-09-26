@@ -9,7 +9,7 @@
             "Billboard": false,
             "Center": [
                 0.0,
-                -0.009999999776482582,
+                0.0,
                 0.0
             ],
             "CenterColor": [
@@ -17,6 +17,11 @@
                 0.6151695251464844,
                 0.27225130796432495,
                 1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
             ],
             "Color": [
                 1.0,
@@ -31,6 +36,7 @@
             "EndTrack": 213,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -61,13 +67,15 @@
                     ]
                 }
             ],
-            "LifeTime": 1100.95849609375,
+            "LifeTime": 1122.181640625,
             "LifeTime_Particle": [
-                0.5000000238418579,
+                0.25,
                 2.5
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 4.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -87,7 +95,7 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                0.0,
+                0.009999999776482582,
                 0.0
             ],
             "Range": [
@@ -106,6 +114,7 @@
                 0.0
             ],
             "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 1.5,
                 3.0
@@ -116,6 +125,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_SubUV_Fire_25_ECD_8x8_SC_LGS",
@@ -144,7 +154,7 @@
             "Billboard": false,
             "Center": [
                 0.0,
-                -0.009999999776482582,
+                0.0,
                 0.0
             ],
             "CenterColor": [
@@ -152,6 +162,11 @@
                 0.5628957152366638,
                 0.29842931032180786,
                 1.0
+            ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
             ],
             "Color": [
                 1.0,
@@ -166,6 +181,7 @@
             "EndTrack": 212,
             "FlipUV": false,
             "Gravity": 9.800000190734863,
+            "IsCircleRange": false,
             "IsGravity": false,
             "KeyFrames": [
                 {
@@ -196,13 +212,15 @@
                     ]
                 }
             ],
-            "LifeTime": 107.59972381591797,
+            "LifeTime": 128.75833129882813,
             "LifeTime_Particle": [
-                0.5000000238418579,
+                0.25,
                 2.5
             ],
             "Local": true,
             "Loop": true,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 3.0,
             "MaxSpeed": 1000.0,
             "MinSpeed": 0.0,
@@ -222,7 +240,7 @@
             "PType": 0,
             "Pivot": [
                 0.0,
-                0.0,
+                0.009999999776482582,
                 0.0
             ],
             "Range": [
@@ -241,6 +259,7 @@
                 0.0
             ],
             "ShaderPass": 2,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.75,
                 1.5
@@ -251,6 +270,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_SubUV_Fire_06_8x8_SC_KMH",
