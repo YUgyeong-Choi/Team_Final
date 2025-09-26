@@ -18,18 +18,25 @@
                 0.39790576696395874,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.15706807374954224,
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 2.799999952316284,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 9.899999618530273,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -60,13 +67,15 @@
                     ]
                 }
             ],
-            "LifeTime": 768.5325927734375,
+            "LifeTime": 1140.5545654296875,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.699999988079071
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 5.0,
@@ -105,6 +114,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.05000000074505806
@@ -115,6 +125,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -129,8 +140,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         },
         {
             "Accel": [
@@ -150,18 +163,25 @@
                 0.23560208082199097,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.8804582953453064,
                 0.7434555292129517,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 0.800000011920929,
             "EndTrack": 61,
             "FlipUV": false,
             "Gravity": 3.5999999046325684,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -192,18 +212,20 @@
                     ]
                 }
             ],
-            "LifeTime": 121.93746185302734,
+            "LifeTime": 493.6549377441406,
             "LifeTime_Particle": [
                 0.09000000357627869,
-                0.25
+                0.4000000059604645
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": -0.15000000596046448,
             "MaxLifeTime": 0.699999988079071,
             "MaxSpeed": 1000.0,
             "MinSpeed": 1.7699999809265137,
             "Name": "Player_GuardNormalParticle2",
-            "NumInstance": 9,
+            "NumInstance": 13,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -237,6 +259,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.05000000074505806,
                 0.10999999940395355
@@ -247,6 +270,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_LightHouse_02_C_KMH",
@@ -261,8 +285,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         }
     ],
     "Loop": false,

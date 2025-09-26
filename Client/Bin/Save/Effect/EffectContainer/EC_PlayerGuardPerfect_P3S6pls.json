@@ -18,18 +18,25 @@
                 0.39790576696395874,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.15706807374954224,
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 2.0,
             "EndTrack": 61,
             "FlipUV": false,
-            "Gravity": 9.899999618530273,
+            "Gravity": 4.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -60,13 +67,15 @@
                     ]
                 }
             ],
-            "LifeTime": 1558.4439697265625,
+            "LifeTime": 1679.7255859375,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 0.699999988079071
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.10000000149011612,
             "MaxSpeed": 1000.0,
             "MinSpeed": 5.0,
@@ -105,6 +114,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.05000000074505806
@@ -115,6 +125,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -129,8 +140,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         },
         {
             "Animation": false,
@@ -142,11 +155,12 @@
                 0.0
             ],
             "Color": [
-                1.0,
+                0.9842932224273682,
                 0.0,
                 0.0,
-                1.0
+                0.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 5.199999809265137,
@@ -208,7 +222,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1374.9168701171875,
+            "LifeTime": 1496.198486328125,
             "Loop": true,
             "Name": "PlayerPG_RingFlareSprite1",
             "NumKeyFrames": 2,
@@ -229,6 +243,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -243,10 +258,11 @@
             ],
             "Color": [
                 1.0,
-                0.2649598717689514,
-                0.18848168849945068,
-                1.0
+                0.1568627506494522,
+                0.0,
+                0.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 2.5999999046325684,
@@ -308,7 +324,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1106.2933349609375,
+            "LifeTime": 1227.574951171875,
             "Loop": true,
             "Name": "PlayerPG_CircleFlareSprite1",
             "NumKeyFrames": 2,
@@ -329,6 +345,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -343,10 +360,11 @@
             ],
             "Color": [
                 1.0,
-                0.3015816807746887,
-                0.10471206903457642,
+                1.0,
+                1.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 1.649999976158142,
@@ -408,7 +426,7 @@
                     ]
                 }
             ],
-            "LifeTime": 1082.6878662109375,
+            "LifeTime": 1203.969482421875,
             "Loop": true,
             "Name": "PlayerPG_LensFlareSprite1",
             "NumKeyFrames": 2,
@@ -429,6 +447,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -443,10 +462,11 @@
             ],
             "Color": [
                 1.0,
-                0.2666666805744171,
-                0.1882352977991104,
-                1.0
+                0.1568627506494522,
+                0.0,
+                0.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 2.5999999046325684,
@@ -508,7 +528,7 @@
                     ]
                 }
             ],
-            "LifeTime": 957.7005615234375,
+            "LifeTime": 1078.7415771484375,
             "Loop": true,
             "Name": "PlayerPG_CircleFlareSprite2",
             "NumKeyFrames": 2,
@@ -529,6 +549,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -542,11 +563,12 @@
                 1.0
             ],
             "Color": [
-                1.0,
-                1.0,
-                1.0,
-                1.0
+                -0.0066852569580078125,
+                -0.0066852569580078125,
+                -0.0066852569580078125,
+                -0.0066852569580078125
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 0.0,
@@ -608,7 +630,7 @@
                     ]
                 }
             ],
-            "LifeTime": 957.7005615234375,
+            "LifeTime": 1078.7415771484375,
             "Loop": true,
             "Name": "PlayerPG_DistortionSprite1",
             "NumKeyFrames": 2,
@@ -629,6 +651,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         },
@@ -650,18 +673,25 @@
                 1.0,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 1.0,
                 1.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 0.4000000059604645,
             "EndTrack": 61,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": 4.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -692,18 +722,20 @@
                     ]
                 }
             ],
-            "LifeTime": 957.7005615234375,
+            "LifeTime": 1078.7415771484375,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 1.0
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.699999988079071,
             "MaxSpeed": 1000.0,
             "MinSpeed": 3.0,
             "Name": "PlayerPG_SparkParticle2",
-            "NumInstance": 45,
+            "NumInstance": 70,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -737,6 +769,7 @@
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
                 0.029999999329447746,
                 0.05000000074505806
@@ -747,6 +780,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -761,8 +795,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         },
         {
             "Accel": [
@@ -782,18 +818,25 @@
                 0.2879580855369568,
                 1.0
             ],
+            "CircleNormal": [
+                0.0,
+                1.0,
+                0.0
+            ],
             "Color": [
                 1.0,
                 0.1256544589996338,
                 0.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 1,
             "EmissiveIntensity": 0.0,
             "EndTrack": 61,
             "FlipUV": false,
-            "Gravity": 9.800000190734863,
+            "Gravity": 4.0,
+            "IsCircleRange": false,
             "IsGravity": true,
             "KeyFrames": [
                 {
@@ -824,18 +867,20 @@
                     ]
                 }
             ],
-            "LifeTime": 877.2410888671875,
+            "LifeTime": 998.0839233398438,
             "LifeTime_Particle": [
                 0.09000000357627869,
                 1.0
             ],
             "Local": true,
             "Loop": false,
+            "LoopInSet": false,
+            "LoopInSet_Delay": 0.0,
             "MaxLifeTime": 0.699999988079071,
             "MaxSpeed": 100.0,
             "MinSpeed": 2.0,
             "Name": "PlayerPG_SparkParticle3",
-            "NumInstance": 40,
+            "NumInstance": 80,
             "NumKeyFrames": 1,
             "Orbit": true,
             "OrbitAxis": [
@@ -855,23 +900,24 @@
             ],
             "Range": [
                 0.029999999329447746,
-                0.009999999776482582,
+                0.029999999329447746,
                 0.029999999329447746
             ],
             "RenderGroup": 8,
             "RotationAxis": [
                 0.0,
                 0.0,
-                1.0
+                0.0
             ],
             "RotationSpeed": [
                 0.0,
                 0.0
             ],
             "ShaderPass": 3,
+            "ShrinkThreshold": 0.009999999776482582,
             "Size": [
-                0.09000000357627869,
-                0.10000000149011612
+                0.03999999910593033,
+                0.07999999821186066
             ],
             "Speed": [
                 5.730000019073486,
@@ -879,6 +925,7 @@
             ],
             "Spin": false,
             "StartTrack": 0,
+            "StretchFactor": 0.014999999664723873,
             "TextureTags": [
                 "",
                 "T_Shere_02_C_LGS",
@@ -893,8 +940,10 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
-            "TileY": 1
+            "TileY": 1,
+            "isTileLoop": false
         },
         {
             "Animation": false,
@@ -907,10 +956,11 @@
             ],
             "Color": [
                 1.0,
-                0.0,
-                0.0,
+                1.0,
+                1.0,
                 1.0
             ],
+            "DistortionStrength": 10.0,
             "Duration": 61,
             "EffectType": 0,
             "EmissiveIntensity": 10.0,
@@ -972,7 +1022,7 @@
                     ]
                 }
             ],
-            "LifeTime": 0.0,
+            "LifeTime": 120.9146957397461,
             "Loop": true,
             "Name": "PlayerPG_SlashSprite1",
             "NumKeyFrames": 2,
@@ -993,6 +1043,7 @@
             ],
             "Threshold": 0.0,
             "TickPerSecond": 60.0,
+            "TileTickPerSec": 60.0,
             "TileX": 1,
             "TileY": 1
         }
